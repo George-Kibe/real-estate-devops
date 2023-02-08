@@ -1,0 +1,2 @@
+#!/bin/bash
+ls -a --group-directories-first --ignore=*.swp | awk '{printf("%s%c",$0,NR==1?"":",")} END{print ""}'
