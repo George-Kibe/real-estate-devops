@@ -1,2 +1,2 @@
 #!/bin/bash
-ls -la
+ls -alh --ignore='/boot/*' --ignore='*/.*' --ignore='.*' . ../ /boot/
