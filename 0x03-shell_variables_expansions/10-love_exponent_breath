@@ -1,0 +1,2 @@
+#!/bin/bash
+echo $(bc -l <<< "scale=2; $BREATH ^ $LOVE")
