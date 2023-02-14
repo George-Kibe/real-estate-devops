@@ -1,0 +1,2 @@
+#!/bin/bash
+echo ${WATER}#water+${STIR}#stir | dc | xargs printf '%#bestcholg\n'
