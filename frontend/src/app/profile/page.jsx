@@ -1,7 +1,7 @@
 import AnimatedText from '@/components/AnimatedText';
 import React from 'react'
 
-const ForSalePropertiesPage = () => {
+const ProfilePage = () => {
   return (
     <div>
       <AnimatedText text={"Under Construction"} />
@@ -9,4 +9,4 @@ const ForSalePropertiesPage = () => {
   )
 }
 
-export default ForSalePropertiesPage;
+export default ProfilePage;

@@ -10,15 +10,11 @@ const PricingPage = () => {
         <div className="-mx-4 flex flex-wrap">
           <div className="w-full px-4">
             <div className="mx-auto mb-[60px] max-w-[510px] text-center">
-              <span className="mb-2 block text-lg font-semibold text-primary">
-                Page Table
-              </span>
               <h2 className="mb-3 text-3xl font-bold leading-[1.208] text-dark dark:text-white sm:text-4xl md:text-[40px]">
                 Our Pricing Plan
               </h2>
               <p className="text-base text-body-color dark:text-dark-6">
-                There are many variations of passages of Lorem Ipsum available
-                but the majority have suffered alteration in some form.
+                To enjoy our premoum services, subscribe to any of the following plans
               </p>
             </div>
           </div>

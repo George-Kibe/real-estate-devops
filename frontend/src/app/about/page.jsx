@@ -1,9 +1,10 @@
+import AnimatedText from '@/components/AnimatedText'
 import React from 'react'
 
 const AboutPage = () => {
   return (
     <div>
-      Under Construction
+      <AnimatedText text={"Under Construction"} />
     </div>
   )
 }

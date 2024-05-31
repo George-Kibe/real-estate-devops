@@ -6,8 +6,8 @@ import { ModeToggle } from './ModeToggle';
 
 const CustomLink = ({href,name, items, toggle}) => {
   const pathname = usePathname();
-  const inActiveLink = "relative py-2 px-2 text-gray-400 font-semibold hover:text-green-500 transition duration-300"
-  const activeLink = "relative py-2 px-2 text-green-500 font-semibold"
+  const inActiveLink = "relative py-2 px-2 font-semibold hover:text-green-500 transition duration-300"
+  const activeLink = "relative py-2 px-2 text-green-400 font-semibold"
   const router = useRouter();
   const handleClick = () => {
     toggle()
@@ -15,7 +15,7 @@ const CustomLink = ({href,name, items, toggle}) => {
   }
   return(
     <button onClick={handleClick} href={href} className={pathname === href? activeLink : inActiveLink}>
-     <p className="text-l text-black dark:text-white ml-2 text-start">{name}</p>
+     <p className="ml-2 text-start">{name}</p>
       {items > 0 && <div className="absolute top-0 left-16 px-2 text-emerald-600 rounded-full bg-white">{items}</div> }
     </button>
   )
@@ -44,6 +44,7 @@ const Navbar = () => {
                       <CustomLink href={"/sale"} name={"For Sale"} toggle={handleClick}/>
                       <CustomLink href={"/pricing"} name={"Pricing"} toggle={handleClick}/>
                       <CustomLink href={"/contact"} name={"Contacts"} toggle={handleClick}/>
+                      <CustomLink href={"/login"} name={"Login"} toggle={handleClick}/>
                     </div>
                 </div>
                 <div className="md:hidden flex items-center">
@@ -72,6 +73,7 @@ const Navbar = () => {
                 <CustomLink href={"/sale"} name={"For Sale"} toggle={handleClick}/>
                 <CustomLink href={"/pricing"} name={"Pricing"} toggle={handleClick}/>
                 <CustomLink href={"/contact"} name={"Contacts"} toggle={handleClick}/>
+                <CustomLink href={"/login"} name={"Login"} toggle={handleClick}/>
             </div> 
          )
         }

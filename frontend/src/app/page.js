@@ -1,5 +1,7 @@
+import AnimatedText from "@/components/AnimatedText";
 import Navbar from "@/components/NavBar";
 import Property from "@/components/Property";
+import SearchView from "@/components/SearchView";
 import { baseUrl, fetchApi } from "@/utils/fetchAPI";
 import { Box, Flex } from "@chakra-ui/react";
 import Image from "next/image";
@@ -10,7 +12,9 @@ export default async function Home() {
   // console.log(propertiesForSale);
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-4">
+    <main className="flex flex-col items-center justify-between p-4">
+      <SearchView />
+      <AnimatedText text={"Properties Around Minnesota"} />
       {/* <Box>
         <Flex flexWrap='wrap'>
           {propertiesForRent.map((property) => <Property property={property} key={property.id} />)}
@@ -19,6 +23,7 @@ export default async function Home() {
           {propertiesForSale.map((property) => <Property property={property} key={property.id} />)}
         </Flex>
       </Box>       */}
+
     </main>
   );
 }
