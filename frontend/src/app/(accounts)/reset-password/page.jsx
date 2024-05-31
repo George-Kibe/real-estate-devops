@@ -14,10 +14,12 @@ const ResetPasswordPage = () => {
     // validate code
     if (!code || !password) {
       toast.error("Missing details!");
+      return;
     }
     // validate password and passwordTwo match
     if (password !== passwordTwo) {
       toast.error('Passwords do not match');
+      return;
     }
     // send reset code and redirect to reset page
     toast.info('Resetting password for..', code)
