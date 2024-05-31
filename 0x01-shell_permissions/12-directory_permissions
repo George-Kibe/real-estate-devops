@@ -1,2 +1,0 @@
-#!/bin/bash
-if [ ! -d "my_dir" ] ; then mkdir my_dir ; fi; chmod 751 my_dir

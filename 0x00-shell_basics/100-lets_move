@@ -1,2 +1,0 @@
-#!/bin/bash
-find . -maxdepth 1 -regex '.*/[A-Z].*' -exec mv {} /tmp/u \;

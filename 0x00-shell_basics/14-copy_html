@@ -1,2 +1,0 @@
-#!/bin/bash
-find . -name "*.html" -type f -newer ../"$(basename "$PWD")" -exec cp {} ../"$(basename "$PWD")" \

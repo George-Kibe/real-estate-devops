@@ -1,2 +1,0 @@
-#!/bin/bash
-cut -f1 logs.tsv | sort | uniq -c | sort -nr | head -11
