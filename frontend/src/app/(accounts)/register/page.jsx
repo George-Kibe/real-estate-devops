@@ -10,7 +10,7 @@ const RegisterPage = () => {
   const [password, setPassword] = useState('');
   const [passwordTwo, setpasswordTwo] = useState('')
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
     if (!email || !password || !passwordTwo) {
       toast.error('Please fill all fields');
@@ -22,7 +22,26 @@ const RegisterPage = () => {
       return;
     }
     // send register data and redirect to dashboard
-    toast.info('Registering with...', email, password)
+    const body = JSON.stringify({ email, password })
+    try {
+      const response = await fetch("/api/auth/register/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body
+      });
+      if (response.status === 201) {
+        router.push("/login?success=Account has been successfully created")
+        toast.success("User Created Successfully! You can now login")
+      }else{
+        setError(true)
+        toast.error("Error creating User! Try Again")
+      }      
+    } catch (error) {
+      setError(true)
+      toast.error("Error creating User! Try Again")
+    }
   }
 
   return (

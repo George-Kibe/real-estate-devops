@@ -6,7 +6,7 @@ const UserSchema = new Schema({
     name: {
         type: String,
         unique: true,
-        required: true
+        required: false
     },
     email: {
         type: String,

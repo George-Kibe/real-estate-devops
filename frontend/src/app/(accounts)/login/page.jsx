@@ -1,17 +1,44 @@
 "use client"
 
 import AnimatedText from "@/components/AnimatedText";
+import { signIn, useSession } from 'next-auth/react'
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
+import { toast } from "react-toastify";
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const router = useRouter();
+  const session = useSession();
+  if (session.status === 'authenticated') {
+    router.push('/');
+  }
   
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
+    const body = JSON.stringify({ email, password })
     // send login data and redirect to dashboard
-    console.log('Logging in with..', email, password)
+    try {
+      const response = await fetch("/api/auth/login/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body
+      });
+      if (response.status === 200) {
+        router.push("/?success=Login successful")
+        toast.success("Login successful")
+      }else{
+        setError(true)
+        toast.error("Error creating User! Try Again")
+      }      
+    } catch (error) {
+      setError(true)
+      toast.error("Error creating User! Try Again")
+    }
   }
   return (
     <section className="bg-gray-1 dark:bg-dark ">
@@ -44,9 +71,9 @@ const LoginPage = () => {
               </p>
               <div className="flex items-center justify-center gap-2 bg-black dark:bg-white rounded-md py-2">
                 <img src="/svgs/google.svg" alt="" className="w-[25px]" />
-                <p className="text-white dark:text-black text-secondary-color dark:text-dark-7">
+                <button onClick={() => signIn("google")} className="text-white dark:text-black text-secondary-color dark:text-dark-7">
                     Login with Google
-                </p>
+                </button>
               </div>
               <a
                 href="/forgot-password"

@@ -1,8 +1,10 @@
 "use client"
+
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import React, { useState } from 'react'
 import { ModeToggle } from './ModeToggle';
+import { useSession, signOut } from 'next-auth/react';
 
 const CustomLink = ({href,name, items, toggle}) => {
   const pathname = usePathname();
@@ -23,9 +25,16 @@ const CustomLink = ({href,name, items, toggle}) => {
 
 const Navbar = () => {
   const [showMobileNav, setShowMobileNav] = useState(false)
+  const session = useSession();
+  console.log(session)
   const pathname = usePathname()
+
   const handleClick = () => {
     setShowMobileNav(!showMobileNav)
+  }
+  const handleLogout = () => {
+    // logout
+    console.log('Logging out')
   }
   return (    
     <nav className="darK:bg-black shadow-lg">
@@ -44,7 +53,15 @@ const Navbar = () => {
                       <CustomLink href={"/sale"} name={"For Sale"} toggle={handleClick}/>
                       <CustomLink href={"/pricing"} name={"Pricing"} toggle={handleClick}/>
                       <CustomLink href={"/contact"} name={"Contacts"} toggle={handleClick}/>
-                      <CustomLink href={"/login"} name={"Login"} toggle={handleClick}/>
+                      {
+                        session.status === 'authenticated' ? (
+                          <button onClick={() => signOut()} className="flex flex-row items-center justify-center">
+                            <img src={session.data.user.image} alt="" className="w-8 h-8 rounded-full" />
+                            <p className='ml-2 font-bold '>Logout</p>
+                          </button>
+                        ) : (
+                          <CustomLink href={"/login"} name={"Login"} toggle={handleClick}/>
+                        )}
                     </div>
                 </div>
                 <div className="md:hidden flex items-center">

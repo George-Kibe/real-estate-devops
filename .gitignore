@@ -9,7 +9,7 @@ node_modules/
 .next/
 # testing
 /coverage
-
+venv/
 # next.js
 /.next/
 /out/

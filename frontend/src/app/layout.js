@@ -5,6 +5,7 @@ import Footer from "@/components/Footer";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import AuthProvider from "@/context/AuthProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -26,9 +27,11 @@ export default function RootLayout({ children }) {
         disableTransitionOnChange
         storageKey="abdul-simba"
         >
-          <NavBar />
-            {children}
-          <Footer />
+          <AuthProvider>
+            <NavBar />
+              {children}
+            <Footer />
+          </AuthProvider>
         </ThemeProvider>
         </body>
     </html>

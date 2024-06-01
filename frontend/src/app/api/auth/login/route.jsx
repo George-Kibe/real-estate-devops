@@ -8,7 +8,7 @@ async function handler(req, res) {
   if (req.method === 'POST') {
     const { email, password } = await req.json();
 
-    const user = await User.findOne({ email: usernameOrEmail });
+    const user = await User.findOne({ email });
     console.log('User: ', user)
 
     if (!user) {
