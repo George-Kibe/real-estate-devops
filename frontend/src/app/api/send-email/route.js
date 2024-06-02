@@ -20,14 +20,14 @@ export async function POST(req) {
         port: 465,
         secure: true,
         auth: {
-          user: 'tasicigor123@gmail.com',
-          pass: 'qdhxmcvfonmldrqv',
+          user: 'buenasconsultants@gmail.com',
+          pass: process.env.BUENAS_PASSWORD,
         },
       });
 
       const mailOptions = {
-        from: email,
-        to: 'tasicigor123@gmail.com',
+        from: 'buenasconsultants@gmail.com',
+        to: email,
         subject: 'Contact Form Submission',
         html: `
         <h2>Contact Form Submission</h2>
