@@ -7,21 +7,21 @@ import { Box, Flex } from "@chakra-ui/react";
 import Image from "next/image";
 
 export default async function Home() {
-  const response = await fetchProperties();
-  const {propertiesForSale, propertiesForRent} = response;
+  // const response = await fetchProperties();
+  // const {propertiesForSale, propertiesForRent} = response;
 
   return (
     <main className="flex flex-col items-center justify-between p-4">
       <SearchView />
       <AnimatedText text={"Properties Around Minnesota"} />
-      <Box>
+      {/* <Box>
         <Flex flexWrap='wrap'>
           {propertiesForRent.map((property) => <Property property={property} key={property.id} />)}
         </Flex>
         <Flex flexWrap='wrap'>
           {propertiesForSale.map((property) => <Property property={property} key={property.id} />)}
         </Flex>
-      </Box>
+      </Box> */}
     </main>
   );
 }
