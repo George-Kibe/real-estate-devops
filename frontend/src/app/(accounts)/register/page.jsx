@@ -1,4 +1,5 @@
 "use client"
+import { useRouter } from 'next/navigation';
 
 import AnimatedText from "@/components/AnimatedText";
 import Link from "next/link";
@@ -7,8 +8,10 @@ import { toast } from "react-toastify";
 
 const RegisterPage = () => {
   const [email, setEmail] = useState('');
+  const [error, setError] = useState(false)
   const [password, setPassword] = useState('');
   const [passwordTwo, setpasswordTwo] = useState('')
+  const router = useRouter();
 
   const handleSubmit = async(e) => {
     e.preventDefault();
@@ -24,7 +27,7 @@ const RegisterPage = () => {
     // send register data and redirect to dashboard
     const body = JSON.stringify({ email, password })
     try {
-      const response = await fetch("/api/auth/register/", {
+      const response = await fetch("/api/auth/users/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -34,10 +37,7 @@ const RegisterPage = () => {
       if (response.status === 201) {
         router.push("/login?success=Account has been successfully created")
         toast.success("User Created Successfully! You can now login")
-      }else{
-        setError(true)
-        toast.error("Error creating User! Try Again")
-      }      
+      }   
     } catch (error) {
       setError(true)
       toast.error("Error creating User! Try Again")

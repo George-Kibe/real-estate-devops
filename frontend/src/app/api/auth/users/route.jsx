@@ -10,6 +10,7 @@ export const POST = async (request) => {
     const hashedPassword = await bcrypt.hash(password, 5)
     const newUser = new User({
         email,
+        name: email.split("@")[0],
         password:hashedPassword
     })
     
@@ -21,6 +22,23 @@ export const POST = async (request) => {
         }
         await newUser.save();
         return new NextResponse("User has been created", {status: 201})
+    } catch (error) {
+        return new NextResponse(error.message, {status: 500,})
+    }
+
+}
+
+export const GET = async (request) => {
+    const params = new URLSearchParams(request.url.split('?')[1]);
+    const email = params.get("email")
+    try {
+        // check if user already exists using email to avoid duplicates
+        const user = await User.findOne({email});
+        if (!user) {
+            return new NextResponse("User not found", {status: 404})
+        }
+        const userObject = JSON.stringify(user)
+        return new NextResponse(userObject, {status: 200}, )
     } catch (error) {
         return new NextResponse(error.message, {status: 500,})
     }

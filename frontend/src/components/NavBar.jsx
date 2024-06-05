@@ -56,7 +56,7 @@ const Navbar = () => {
                       {
                         session.status === 'authenticated' ? (
                           <button onClick={() => signOut()} className="flex flex-row items-center justify-center">
-                            <img src={session.data.user.image} alt="" className="w-8 h-8 rounded-full" />
+                            <img src={session.data.user.image || '/images/defaultProfile.png' } alt="Profile" className="w-8 h-8 rounded-full" />
                             <p className='ml-2 font-bold '>Logout</p>
                           </button>
                         ) : (
