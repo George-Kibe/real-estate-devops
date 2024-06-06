@@ -9,8 +9,6 @@ async function handler(req, res) {
     const { email, password } = await req.json();
 
     const user = await User.findOne({ email });
-    console.log('User: ', user)
-
     if (!user) {
       return new NextResponse('User not found', { status: 401 });
     }

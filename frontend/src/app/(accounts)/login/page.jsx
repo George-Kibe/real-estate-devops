@@ -18,28 +18,12 @@ const LoginPage = () => {
   
   const handleSubmit = async(e) => {
     e.preventDefault();
-    const body = JSON.stringify({ email, password })
-    // send login data and redirect to dashboard
-    try {
-      const response = await fetch("/api/auth/login/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body
-      });
-      if (response.status === 200) {
-        router.push("/?success=Login successful")
-        toast.success("Login successful")
-      }else{
-        setError(true)
-        toast.error("Error creating User! Try Again")
-      }      
-    } catch (error) {
-      setError(true)
-      toast.error("Error creating User! Try Again")
-    }
+    signIn("credentials", {
+      email,
+      password,
+    });
   }
+  
   return (
     <section className="bg-gray-1 dark:bg-dark ">
         <AnimatedText text={"Login"} />
