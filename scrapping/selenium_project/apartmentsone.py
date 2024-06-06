@@ -2,13 +2,12 @@ from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
+from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.support import expected_conditions as EC
 import time
 
-service = Service(executable_path="/usr/local/bin/chromedriver")
-driver=webdriver.Chrome(service=service)
+driver=webdriver.Chrome(service=Service(ChromeDriverManager().install()))
 
 driver.get('https://www.apartments.com/')
 search_boxid='quickSearchLookup'
