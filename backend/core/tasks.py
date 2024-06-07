@@ -1,23 +1,15 @@
-import random
-
+from django.apps import apps
 from celery import shared_task
 
 
 @shared_task
-def add(x, y): # arguments should be json ready, avoid using model instances
-    # Celery recognizes this as the `movies.tasks.add` task
-    # the name is purposefully omitted here.
-    return x + y
-
-
-@shared_task(name="multiply_two_numbers")
-def mul(x, y):
-    # Celery recognizes this as the `multiple_two_numbers` task
-    total = x * (y * random.randint(3, 100))
-    return total
-
-
-@shared_task(name="sum_list_numbers")
-def xsum(numbers):
-    # Celery recognizes this as the `sum_list_numbers` task
-    return sum(numbers)
+def scrap_apartments_com(search_term):
+    Property = apps.get_model('core.Property')
+    # open the url
+    #scrap the url
+    # save the data to the database
+    # loop through all returned properties and save them to the database
+    Property.objects.create(
+        user=apps.get_model('accounts.User').objects.get(id=user_id),
+        message=message
+    )

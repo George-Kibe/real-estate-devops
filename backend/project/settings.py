@@ -1,17 +1,16 @@
+
+from dotenv import load_dotenv
 from pathlib import Path
 import os
+
+load_dotenv()  # Load environment variables from .env file
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
-
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-w(j%m3exsl^00&pt9x_owf_xv+v4g48pqhxo%sjrh03%1(+=@-"
-
+SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", default="random_key")
+print("SECRET_KEY: ", SECRET_KEY)
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get("DEBUG", default=True)
 
 ALLOWED_HOSTS = []
 
@@ -26,6 +25,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     #Third party apps
+    'rest_framework',
     "django_celery_beat",
     "django_celery_results",
     # Project Apps
@@ -43,6 +43,11 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = "project.urls"
+
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10
+}
 
 TEMPLATES = [
     {
@@ -124,6 +129,6 @@ CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
 #CELERY_BROKER_URL = config("CELERY_BROKER_REDIS_URL", default="redis://localhost:6379")
 # if you out to use os.environ the config is:
 CELERY_BROKER_URL = os.environ.get('CELERY_BROKER_REDIS_URL', 'redis://localhost:6379')
-
+print("Celery broker url", CELERY_BROKER_URL)
 # this allows you to schedule items in the Django admin.
 CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers.DatabaseScheduler"
