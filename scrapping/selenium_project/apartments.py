@@ -28,8 +28,8 @@ WebDriverWait(driver, 5).until(
 
 search_button = driver.find_element(By.CSS_SELECTOR, '.go.btn.btn-lg.btn-primary')
 search_button.click()
-#soup = BeautifulSoup(driver.page_source, 'lxml')
-#print(soup.prettify())
+soup = BeautifulSoup(driver.page_source, 'lxml')
+print(soup.prettify())
 
 time.sleep(10)
 driver.quit()

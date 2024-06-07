@@ -10,10 +10,12 @@ node_modules/
 # testing
 /coverage
 venv/
+.env
 # next.js
 /.next/
 /out/
-
+*.pyc
+*.pyc
 # production
 /build
 
