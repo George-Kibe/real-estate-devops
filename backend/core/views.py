@@ -1,6 +1,7 @@
 from .models import Property, Message
-from rest_framework import permissions, viewsets
+from rest_framework import permissions, viewsets, status
 from rest_framework.response import Response
+from django.core.exceptions import ObjectDoesNotExist
 from .serializers import PropertySerializer, MessageSerializer
 
 
@@ -52,9 +53,12 @@ class PropertyViewSet(viewsets.ModelViewSet):
         serializer = PropertySerializer(self.queryset, many=True)
         return Response(serializer.data)
     def retrieve(self, request, pk=None):
-        property = self.queryset.get(pk=pk)
+        try:
+            property = self.queryset.get(pk=pk)
+        except ObjectDoesNotExist:
+            return Response(data={"error": "Property not found"}, status=status.HTTP_404_NOT_FOUND)
         serializer = PropertySerializer(property)
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
     def create(self, request, *args, **kwargs):
         serializer = PropertySerializer(data=request.data, context={'request': request})
         if serializer.is_valid():
@@ -69,7 +73,10 @@ class PropertyViewSet(viewsets.ModelViewSet):
             return Response(serializer.data)
         return Response(serializer.errors, status=400)
     def destroy(self, request, pk=None):
-        property = self.queryset.get(pk=pk)
+        try:
+            property = self.queryset.get(pk=pk)
+        except ObjectDoesNotExist:
+            return Response(data={"error": "Property not found"}, status=status.HTTP_404_NOT_FOUND)
         property.delete()
-        return Response(status=204)
+        return Response(data={"message": "Property deleted successfully"}, status=status.HTTP_200_OK)
     
