@@ -22,15 +22,30 @@ class Property(TimeStampedUUIDModel):
         verbose_name=_("Description"),
         default="Default description...update me please....",
     )
-    city = models.CharField(verbose_name=_("City"), max_length=180, default="Nairobi")
+    property_detail_link=models.CharField(
+        verbose_name=_("Property detail Link"), max_length=500, default=""
+    )
+    city = models.CharField(verbose_name=_("City"), max_length=180, default="")
     postal_code = models.CharField(
-        verbose_name=_("Postal Code"), max_length=100, default="140"
+        verbose_name=_("Postal Code"), max_length=100, default="140", null=True
     )
     street_address = models.CharField(
-        verbose_name=_("Street Address"), max_length=150, default="MoiKG8 Avenue"
+        verbose_name=_("Street Address"), max_length=150, default=""
     )
-    price = models.DecimalField(
-        verbose_name=_("Price"), max_digits=8, decimal_places=2, default=0.0
+    price = models.CharField(
+        verbose_name=_("Price Range"), max_length=150, default=""
+    )
+    email_listing=models.CharField(
+        verbose_name=_("Listing Email"), max_length=500, default=""
+    )
+    phone_number=models.CharField(
+        verbose_name=_("Phone Number"), max_length=50, default=""
+    )
+    details_link=models.CharField(
+        verbose_name=_("Details Link"), max_length=50, default=""
+    )
+    application_link=models.CharField(
+        verbose_name=_("Application Email"), max_length=100, default=""
     )
     plot_area = models.DecimalField(
         verbose_name=_("Plot Area(m^2)"), max_digits=8, decimal_places=2, default=0.0

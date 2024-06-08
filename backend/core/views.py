@@ -50,8 +50,18 @@ class PropertyViewSet(viewsets.ModelViewSet):
     serializer_class = PropertySerializer
 
     def list(self, request):
-        serializer = PropertySerializer(self.queryset, many=True)
+        # serializer = PropertySerializer(self.queryset, many=True)
+        # return Response(serializer.data)
+        queryset = self.filter_queryset(self.get_queryset())
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
+    
     def retrieve(self, request, pk=None):
         try:
             property = self.queryset.get(pk=pk)
