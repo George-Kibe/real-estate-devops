@@ -1,10 +1,16 @@
 import AnimatedText from "@/components/AnimatedText";
+import FAQS from "@/components/FAQs";
+import Features from "@/components/Features";
+import OurOffering from "@/components/OurOffering";
 import PricingCard from "@/components/PricingCard";
 import React from "react";
 
 const FeaturesPage = () => {
   return (
     <section className="relative z-10 overflow-hidden pb-12 pt-20 dark:bg-dark lg:pb-[90px] lg:pt-[120px]">
+      <OurOffering />
+      <Features />
+      <FAQS />
       <div className="container mx-auto">
         <div className="-mx-4 flex flex-wrap">
           <div className="w-full px-4">

@@ -1,4 +1,5 @@
 "use client"
+import { list } from "@chakra-ui/react";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import React from "react";
@@ -12,7 +13,9 @@ const PricingCard = ({
   subscription,
   buttonText,
   active,
-  priceId
+  priceId,
+  listItems
+
 }) => {
   // POST request 
   const handleSubscription = async (id) => {
@@ -52,7 +55,14 @@ const PricingCard = ({
           <p className="mb-8 border-b border-stroke pb-8 text-base text-body-color dark:border-dark-3 dark:text-dark-6">
             {description}
           </p>
-          <div className="mb-9 flex flex-col gap-[14px]">{children}</div>
+          
+          <div className="mb-9 flex flex-col gap-[14px]">
+            {
+              listItems.map((item, index) => (
+                <List key={index}>{item}</List>
+              ))
+            }
+          </div>
           <button onClick={() => handleSubscription(priceId)}
             className={` ${
               active
