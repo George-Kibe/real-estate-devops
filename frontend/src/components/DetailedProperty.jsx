@@ -11,7 +11,7 @@ import millify from 'millify';
 
 import DefaultImage from '../../public/images/house.png';
 
-const Property = ({ property: { images, price, rentFrequency, rooms, bathrooms,phone_number, street_address, title, area, isVerified, externalID  } }) => {
+const DetailedProperty = ({ property: { images, price, rentFrequency, rooms, title, baths, area, agency, isVerified, externalID  } }) => {
   return (
     <Link href={`/property/${externalID}`} passHref>
       <Flex flexWrap='wrap' w='420px' p='5' paddingTop='0px' justifyContent='flex-start' cursor='pointer' >
@@ -32,16 +32,10 @@ const Property = ({ property: { images, price, rentFrequency, rooms, bathrooms,p
           </Flex>
           <Flex alignItems='center' p='1' justifyContent='space-between' w='250px' color='blue.400'>
             {rooms}
-            <FaBed /> | {parseInt(bathrooms)} <FaBath /> | {millify(area)} sqft <BsGridFill />
+            <FaBed /> | {baths} <FaBath /> | {millify(area)} sqft <BsGridFill />
           </Flex>
           <Text fontSize='lg'>
             {title.length > 30 ? title.substring(0, 30) + '...' : title}
-          </Text>
-          <Text fontSize='lg'>
-            {street_address.length > 30 ? street_address.substring(0, 30) + '...' : street_address}
-          </Text>
-          <Text fontSize='lg'>
-            {phone_number}
           </Text>
         </Box>
       </Flex>
@@ -49,4 +43,4 @@ const Property = ({ property: { images, price, rentFrequency, rooms, bathrooms,p
   );
 }
 
-export default Property;
+export default DetailedProperty;

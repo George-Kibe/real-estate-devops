@@ -28,11 +28,13 @@ INSTALLED_APPS = [
     'rest_framework',
     "django_celery_beat",
     "django_celery_results",
+    "corsheaders",
     # Project Apps
-    "core"
+    "core",
 ]
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -43,6 +45,17 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = "project.urls"
+
+CORS_ALLOW_ALL_ORIGINS = True
+
+CORS_ALLOW_METHODS = [
+    "DELETE",
+    "GET",
+    "OPTIONS",
+    "PATCH",
+    "POST",
+    "PUT",
+]
 
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
