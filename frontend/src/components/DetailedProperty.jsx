@@ -1,46 +1,47 @@
-'use client'
-
-import Link from 'next/link';
-import Image from 'next/image';
-import { Box, Flex, Text } from '@chakra-ui/layout';
-import { Avatar } from '@chakra-ui/avatar';
+import { Card, Image } from "@nextui-org/react";
 import { FaBed, FaBath } from 'react-icons/fa';
 import { BsGridFill } from 'react-icons/bs';
-import { GoVerified } from 'react-icons/go';
-import millify from 'millify';
+import { IoMdCall } from "react-icons/io";
+import { MdOutlineEmail } from "react-icons/md";
 
-import DefaultImage from '../../public/images/house.png';
-
-const DetailedProperty = ({ property: { images, price, rentFrequency, rooms, title, baths, area, agency, isVerified, externalID  } }) => {
+const PropertyCard = ({ property }) => {
+  console.log(property);
   return (
-    <Link href={`/property/${externalID}`} passHref>
-      <Flex flexWrap='wrap' w='420px' p='5' paddingTop='0px' justifyContent='flex-start' cursor='pointer' >
-        <Box>
-          <img src={images.length > 0 ? images[0] : DefaultImage} width={300} height={200} 
-            className='flex object-cover'  
-          />
-        </Box>
-        <Box w='full'>
-          <Flex paddingTop='2' alignItems='center' justifyContent='space-between'>
-            <Flex alignItems='center'>
-              <Box paddingRight='3' color='green.400'>{isVerified && <GoVerified />}</Box>
-              <Text fontWeight='bold' fontSize='lg'>US$ {price}{rentFrequency && `/${rentFrequency}`}</Text>
-            </Flex>
-            {/* <Box>
-              <Avatar size='sm' src={agency?.logo?.url}></Avatar>
-            </Box> */}
-          </Flex>
-          <Flex alignItems='center' p='1' justifyContent='space-between' w='250px' color='blue.400'>
-            {rooms}
-            <FaBed /> | {baths} <FaBath /> | {millify(area)} sqft <BsGridFill />
-          </Flex>
-          <Text fontSize='lg'>
-            {title.length > 30 ? title.substring(0, 30) + '...' : title}
-          </Text>
-        </Box>
-      </Flex>
-    </Link>
+    <Card className="flec-col md:flex-row gap-4 container items-center self-center flex flex-col hover:scale-105 rounded-md" shadow="md">
+      <Image
+        radius="none"
+        src={
+          property.images.length > 1 ? property.images[0]
+            : `/images/${Math.floor(Math.random() * 9 + 1)}.jpg`
+        }
+        className="object-contain w-full h-64"
+      />
+      <div className="flex flex-col justify-around w-4/5">
+        <div className="p-4">
+          <p className="text-xl font-bold">{property.title}</p>
+          <p className="flex flex-wrap">Description: {property.description}</p>
+          <p className="">Type: {property.advert_type}</p>
+          <p className="">City: {property.city}</p>
+          <p className="">Status: {property.status}</p>
+          <p className="">Property type: {property.property_type}</p>
+          <p className="">
+            {property.postal_code}, {property.street_address}
+          </p>
+          <p className="flex gap-2 items-center flex-row"><IoMdCall /> {property.phone_number}</p>
+          <p className="flex gap-2 items-center flex-row"><MdOutlineEmail /> {property.email_listing}</p>
+          
+        </div>
+        <div className="flex flex-row items-center gap-2 ">
+        {property.bedrooms}
+          <FaBed /> | {property.bathrooms} <FaBath /> | {property.area} sqft <BsGridFill />
+          <div className="bg-black/80 dark:bg-white/80 rounded-md p-4 text-white dark:text-black flex justify-between">
+            <p>Price: ${property.price}</p>
+          </div>
+        </div>
+        
+      </div>
+    </Card>
   );
-}
+};
 
-export default DetailedProperty;
+export default PropertyCard;

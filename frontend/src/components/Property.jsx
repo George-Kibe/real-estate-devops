@@ -1,52 +1,44 @@
-'use client'
-
-import Link from 'next/link';
-import Image from 'next/image';
-import { Box, Flex, Text } from '@chakra-ui/layout';
-import { Avatar } from '@chakra-ui/avatar';
+import { Card, Image } from "@nextui-org/react";
 import { FaBed, FaBath } from 'react-icons/fa';
 import { BsGridFill } from 'react-icons/bs';
 import { GoVerified } from 'react-icons/go';
-import millify from 'millify';
+import Link from "next/link";
 
-import DefaultImage from '../../public/images/house.png';
-
-const Property = ({ property: { images, price, rentFrequency, rooms, bathrooms,phone_number, street_address, title, area, isVerified, externalID  } }) => {
+const PropertyCard = ({ property }) => {
+  console.log(property);
   return (
-    <Link href={`/property/${externalID}`} passHref>
-      <Flex flexWrap='wrap' w='420px' p='5' paddingTop='0px' justifyContent='flex-start' cursor='pointer' >
-        <Box>
-          <img src={images.length > 0 ? images[0] : DefaultImage} width={300} height={200} 
-            className='flex object-cover'  
-          />
-        </Box>
-        <Box w='full'>
-          <Flex paddingTop='2' alignItems='center' justifyContent='space-between'>
-            <Flex alignItems='center'>
-              <Box paddingRight='3' color='green.400'>{isVerified && <GoVerified />}</Box>
-              <Text fontWeight='bold' fontSize='lg'>US$ {price}{rentFrequency && `/${rentFrequency}`}</Text>
-            </Flex>
-            {/* <Box>
-              <Avatar size='sm' src={agency?.logo?.url}></Avatar>
-            </Box> */}
-          </Flex>
-          <Flex alignItems='center' p='1' justifyContent='space-between' w='250px' color='blue.400'>
-            {rooms}
-            <FaBed /> | {parseInt(bathrooms)} <FaBath /> | {millify(area)} sqft <BsGridFill />
-          </Flex>
-          <Text fontSize='lg'>
-            {title.length > 30 ? title.substring(0, 30) + '...' : title}
-          </Text>
-          <Text fontSize='lg'>
-            {street_address.length > 30 ? street_address.substring(0, 30) + '...' : street_address}
-          </Text>
-          <Text fontSize='lg'>
-            {phone_number}
-          </Text>
-        </Box>
-      </Flex>
-    </Link>
+    <Card className="w-72 flex flex-col hover:scale-105 rounded-md" shadow="md">
+      <Image
+        radius="none"
+        src={
+          property.images.length > 1 ? property.images[0]
+            : `/images/${Math.floor(Math.random() * 9 + 1)}.jpg`
+        }
+        className="object-fill w-96 h-48"
+      />
+      <div className="flex flex-col mt-auto">
+        <div className="p-4">
+          <p className="font-semibold">{property.title}</p>
+          <p className="">
+            {property.postal_code}, {property.street_address}
+          </p>
+        </div>
+        <div className="flex flex-row items-center gap-2 ">
+        {property.bedrooms}
+          <FaBed /> | {property.bathrooms} <FaBath /> | {property.area} sqft <BsGridFill />
+        </div>
+        <div className="bg-black/80 dark:bg-white/80 rounded-md p-4 text-white dark:text-black flex justify-between">
+          <p>${property.price}</p>
+          <Link
+            className="hover:text-primary-500 transition-colors rounded-sm px-1 bg-black/80 dark:bg-white/80 "
+            href={`/properties/${property.pkid}`}
+          >
+            View Details
+          </Link>
+        </div>
+      </div>
+    </Card>
   );
-}
+};
 
-export default Property;
+export default PropertyCard;

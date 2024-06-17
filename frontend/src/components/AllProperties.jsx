@@ -5,7 +5,6 @@ import React, { useEffect, useState } from 'react'
 import Property from './Property';
 import { Flex } from '@chakra-ui/react';
 
-console.log(process.env.NEXT_PUBLIC_BACKEND_API_URL)
 export async function fetchDjangoProperties({page}) {
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/properties/?page=${page}`);
@@ -48,7 +47,7 @@ const AllProperties = () => {
     }, [page]);
     
     const pages = createArrayOfNumbers(count/100 + 1);
-    console.log(pages)
+    // console.log(pages)
     // console.log("Properties: ", properties.length);
     return (
       <div>
@@ -59,7 +58,7 @@ const AllProperties = () => {
           ))}
         </ul>
         <div className="container items-center justify-around">
-            <Flex flexWrap='wrap'>
+            <Flex flexWrap='wrap' className='flex flex-wrap justify-center gap-6'>
             {properties.map((property) => <Property property={property} key={property.id} />)}
             </Flex>
         </div>
