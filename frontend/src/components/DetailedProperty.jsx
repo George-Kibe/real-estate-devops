@@ -5,7 +5,6 @@ import { IoMdCall } from "react-icons/io";
 import { MdOutlineEmail } from "react-icons/md";
 
 const PropertyCard = ({ property }) => {
-  console.log(property);
   return (
     <Card className="flec-col md:flex-row gap-4 container items-center self-center flex flex-col hover:scale-105 rounded-md" shadow="md">
       <Image

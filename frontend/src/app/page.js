@@ -1,21 +1,5 @@
 import AllProperties from "@/components/AllProperties";
-import AnimatedText from "@/components/AnimatedText";
-import Navbar from "@/components/NavBar";
-import Property from "@/components/Property";
 import SearchView from "@/components/SearchView";
-import { baseUrl, fetchApi } from "@/utils/fetchAPI";
-import { Box, Flex } from "@chakra-ui/react";
-import Image from "next/image";
-
-export async function fetchProperties() {
-  const propertyForSale = await fetchApi(`${baseUrl}/properties/list?locationExternalIDs=5002&purpose=for-sale&hitsPerPage=6`);
-  const propertyForRent = await fetchApi(`${baseUrl}/properties/list?locationExternalIDs=5002&purpose=for-rent&hitsPerPage=6`);
-
-  return {
-      propertiesForSale: propertyForSale?.hits,
-      propertiesForRent: propertyForRent?.hits,
-  };
-}
 
 export async function fetchDjangoProperties() {
   try {
@@ -29,15 +13,9 @@ export async function fetchDjangoProperties() {
 }
 
 export default async function Home() {
-  // const response = await fetchProperties();
-  // const {propertiesForSale, propertiesForRent} = response;
-  const allProperties = await fetchDjangoProperties();
-  console.log("All Properties: ", allProperties.length);
-
   return (
     <main className="flex flex-col items-center justify-between p-4">
       <SearchView />
-      <AnimatedText text={"Properties Around Minnesota"} />
       <AllProperties />
     </main>
   );

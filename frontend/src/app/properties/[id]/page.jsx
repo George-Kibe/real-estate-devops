@@ -12,7 +12,7 @@ const ProfilePage = () => {
   useEffect(() => {
     const fetchProperty = async () => {
       try {
-        const res = await fetch(`http://localhost:8000/api/properties/${id}`)
+        const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/properties/${id}`)
         const data = await res.json()
         console.log("Response Data: ", data)
         setProperty(data)

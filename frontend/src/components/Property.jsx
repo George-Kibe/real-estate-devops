@@ -5,7 +5,6 @@ import { GoVerified } from 'react-icons/go';
 import Link from "next/link";
 
 const PropertyCard = ({ property }) => {
-  console.log(property);
   return (
     <Card className="w-72 flex flex-col hover:scale-105 rounded-md" shadow="md">
       <Image

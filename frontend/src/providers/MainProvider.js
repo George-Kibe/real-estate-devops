@@ -7,15 +7,15 @@ const MainContext = createContext({});
 
 export function MainProvider({children}) {
   const [user, setUser] = useState(null);
-  const [location, setLocation] = useState('');
-  const [properties, setProperties] = useState([]);
+  const [location, setLocation] = useState('Minnesota');
+  const [customProperties, setCustomProperties] = useState([]);
   
   return (
     <MainContext.Provider
       value={{
         user, setUser,
         location, setLocation,
-        properties, setProperties
+        customProperties, setCustomProperties
       }}>
       <SessionProvider>
         {children}

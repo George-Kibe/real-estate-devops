@@ -4,6 +4,7 @@ import AnimatedText from '@/components/AnimatedText';
 import React, { useEffect, useState } from 'react'
 import Property from './Property';
 import { Flex } from '@chakra-ui/react';
+import { useMainProvider } from '@/providers/MainProvider';
 
 export async function fetchDjangoProperties({page}) {
     try {
@@ -30,6 +31,7 @@ const AllProperties = () => {
     const [properties, setProperties] = useState([]);
     const [page, setPage] = useState(1);
     const [count, setCount] = useState(1);
+    const {customProperties} = useMainProvider()
 
 
     const fetchProperties = async () => {
@@ -52,16 +54,20 @@ const AllProperties = () => {
     return (
       <div>
         {/* <AnimatedText text={"All Properties"} /> */}
-        <ul>
-          {properties.map((property) => (
-            <li key={property.id}>{property.name}</li>
-          ))}
-        </ul>
-        <div className="container items-center justify-around">
+        {customProperties && 
+          <div className="container items-center justify-around">
+            <Flex flexWrap='wrap' className='flex flex-wrap justify-center gap-6'>
+            {customProperties.map((property) => <Property property={property} key={property.id} />)}
+            </Flex>
+          </div>
+        }
+        {!customProperties.length &&
+          <div className="container items-center justify-around">
             <Flex flexWrap='wrap' className='flex flex-wrap justify-center gap-6'>
             {properties.map((property) => <Property property={property} key={property.id} />)}
             </Flex>
-        </div>
+          </div>
+        }
         <div className="py-10 text-center dark:bg-dark">
             <ul className="flex items-center justify-center gap-2">
                 {
