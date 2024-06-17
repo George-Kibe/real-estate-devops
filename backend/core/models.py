@@ -67,6 +67,7 @@ class Property(TimeStampedUUIDModel):
     )
     #images = ArrayField(models.URLField(), blank=True, default=list) 
     images = models.JSONField(default=list, null=True, blank=True)
+    amenities = models.JSONField(default=list, null=True, blank=True)
     class Meta:
         verbose_name = "Property"
         verbose_name_plural = "Properties"

@@ -10,3 +10,11 @@ class MessageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Message
         fields = "__all__"
+
+class ScrappedPropertySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Property
+        fields = [
+            'title', 'street_address', 'price', 'description', 'bathrooms',
+            'phone_number', 'amenities', 'images'  # Include other fields as needed
+        ]

@@ -10,51 +10,36 @@ import time
 
 # Options for production and compatibility with docker environment
 chrome_options = Options()
-# chrome_options.add_argument('--headless')
+#chrome_options.add_experimental_option("detach", True)
+chrome_options.add_argument('--headless')
 # chrome_options.add_argument('--no-sandbox')
 # chrome_options.add_argument('--disable-dev-shm-usage')
 # chrome_options.add_argument('--disable-gpu')
-# chrome_options.add_argument('--window-size=1920x1080')
-# chrome_options.add_argument('--headless')
-# chrome_options.add_argument('--no-sandbox')
-# chrome_options.add_argument('--disable-dev-shm-usage')
-# chrome_options.add_argument('--disable-gpu')
-# chrome_options.add_argument('--window-size=1920x1080')
-# chrome_options.add_argument('--disable-software-rasterizer')
-# chrome_options.add_argument('--disable-extensions')
-# chrome_options.add_argument('--disable-popup-blocking')
-# chrome_options.add_argument('user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3')
-# # Enable logging
-# chrome_options.add_argument('--enable-logging')
-# chrome_options.add_argument('--v=1')
-
+chrome_options.add_argument('--window-size=1920x1080')
 
 driver=webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
 
-def get_apartments(search_term):
-    driver.get('https://www.apartments.com/')
-    search_boxid='quickSearchLookup'
+driver.get('https://www.apartments.com/')
+search_boxid='quickSearchLookup'
 
-    WebDriverWait(driver, 5).until(
-        EC.presence_of_element_located((By.ID, search_boxid))
-    )
+WebDriverWait(driver, 5).until(
+    EC.presence_of_element_located((By.ID, search_boxid))
+)
 
-    search_box = driver.find_element(By.ID, search_boxid)
+search_box = driver.find_element(By.ID, search_boxid)
 
-    search_box.clear()
-    search_box.send_keys('Miami')
-    search_box.send_keys(search_term)    
+search_box.clear()
+search_box.send_keys('Miami')
 
-    WebDriverWait(driver, 5).until(
-        EC.presence_of_element_located((By.CSS_SELECTOR, '.go.btn.btn-lg.btn-primary'))
-    )
+WebDriverWait(driver, 5).until(
+    EC.presence_of_element_located((By.CSS_SELECTOR, '.go.btn.btn-lg.btn-primary'))
+)
 
-    previous_url = driver.current_url
-    search_button = driver.find_element(By.CSS_SELECTOR, '.go.btn.btn-lg.btn-primary')
-    search_button.click()
-    new_properties = get_properties(previous_url)
-    return new_properties
+previous_url = driver.current_url
+search_button = driver.find_element(By.CSS_SELECTOR, '.go.btn.btn-lg.btn-primary')
+search_button.click()
 
+properties = []
 def get_properties(previous_url):
     # Wait for URL change
     WebDriverWait(driver, 10).until(EC.url_changes(previous_url))
@@ -74,11 +59,10 @@ def get_properties(previous_url):
     # Find all properties with the specified class names
     new_properties = driver.find_elements(By.CSS_SELECTOR, 'article.placard.has-header')
     print("Adding additional properties: ", len(new_properties))
-    properties = get_json_properties(new_properties)
-    return properties
+    properties.extend(new_properties)
+    return new_properties
 
-def get_json_properties(properties):
-    json_properties = []
+def show_properties(properties):
     # Extract the HTML content of each property
     for property in properties:
         html_content = property.get_attribute('outerHTML')
@@ -101,31 +85,22 @@ def get_json_properties(properties):
         #extract image from
         image_url = soup.find('img').get('src')
         
-        # json of a property
-        json_property = {
-            'title': title,
-            'street_address': address,
-            'price': pricing,
-            'description': beds,
-            'amenities': amenities,
-            'phone_number': phone,
-            'images': [image_url]
-        }
-        json_properties.append(json_property)
-        
-        # # Print the extracted information
-        # print(f'Title: {title}')
-        # print(f'Address: {address}')
-        # print(f'Pricing: {pricing}')
-        # print(f'Beds: {beds}')
-        # print(f'Amenities: {", ".join(amenities)}')
-        # print(f'Phone: {phone}')
-        # print(f'Image URL: {image_url}')
-        # print('-----------------------------')
-        # # time.sleep(1)
-    return json_properties
+        # Print the extracted information
+        print(f'Title: {title}')
+        print(f'Address: {address}')
+        print(f'Pricing: {pricing}')
+        print(f'Beds: {beds}')
+        print(f'Amenities: {", ".join(amenities)}')
+        print(f'Phone: {phone}')
+        print(f'Image URL: {image_url}')
+        print('-----------------------------')
+        # time.sleep(1)
 
-# def main():
-#     new_properties = get_properties(previous_url)
-#     print("Total properties found: ", len(properties))
-#     show_properties(new_properties)
+
+def main():
+    new_properties = get_properties(previous_url)
+    print("Total properties found: ", len(properties))
+    show_properties(new_properties)
+
+if __name__ == '__main__':
+    main()

@@ -15,7 +15,7 @@ chrome_options.add_experimental_option("detach", True)
 # chrome_options.add_argument("--no-sandbox")
 # chrome_options.add_argument("--disable-dev-shm-usage")
 
-driver=webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+driver=webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
 
 driver.get('https://www.apartments.com/')
 search_boxid='quickSearchLookup'
@@ -45,9 +45,6 @@ def get_properties(previous_url):
     new_url = driver.current_url
     # Get the new page source
     new_page_source = driver.page_source
-    soup = BeautifulSoup(new_page_source, 'html.parser')
-    #print("New Page source: ", new_page_source)
-
     print("New URL: ", new_url)
     driver.get(new_url)
     try:
@@ -60,6 +57,7 @@ def get_properties(previous_url):
     # Find all properties with the specified class names
     new_properties = driver.find_elements(By.CSS_SELECTOR, 'article.placard.has-header')
     print("Adding additional properties: ", len(new_properties))
+    show_properties(new_properties)
     properties.extend(new_properties)
     WebDriverWait(driver, 5).until(
         EC.presence_of_all_elements_located((By.CSS_SELECTOR, 'a.next'))
@@ -76,40 +74,42 @@ def get_properties(previous_url):
 
 
 print(f'Total properties found: {len(properties)}')
-# Extract the HTML content of each property
-for property in properties:
-    html_content = property.get_attribute('outerHTML')
-     # Parse the HTML content with BeautifulSoup
-    soup = BeautifulSoup(html_content, 'html.parser')
-    # Extract text attributes
-    title = soup.find('div', class_='property-title').text.strip() if soup.find('div', class_='property-title') else None
-    if title is None:
-        break
-    address = soup.find('div', class_='property-address').text.strip() if soup.find('div', class_='property-address') else None
-    pricing = soup.find('p', class_='property-pricing').text.strip() if soup.find('p', class_='property-pricing') else None
-    beds = soup.find('p', class_='property-beds').text.strip() if soup.find('p', class_='property-beds') else None
-    
-    # Extract amenities
-    amenities_tags = soup.find('p', class_='property-amenities').find_all('span') if soup.find('p', class_='property-amenities') else []
-    amenities = [tag.text.strip() for tag in amenities_tags]
-    
-    # Extract phone number
-    phone = soup.find('a', class_='phone-link').text.strip() if soup.find('a', class_='phone-link') else None
-    #extract image from
-    image_url = soup.find('img').get('src')
-    
-    
-    # Print the extracted information
-    print(f'Title: {title}')
-    print(f'Address: {address}')
-    print(f'Pricing: {pricing}')
-    print(f'Beds: {beds}')
-    print(f'Amenities: {", ".join(amenities)}')
-    print(f'Phone: {phone}')
-    print(f'Image URL: {image_url}')
-    print('-----------------------------')
-    
-    time.sleep(10)
+
+def show_properties(properties):
+    # Extract the HTML content of each property
+    for property in properties:
+        html_content = property.get_attribute('outerHTML')
+        # Parse the HTML content with BeautifulSoup
+        soup = BeautifulSoup(html_content, 'html.parser')
+        # Extract text attributes
+        title = soup.find('div', class_='property-title').text.strip() if soup.find('div', class_='property-title') else None
+        if title is None:
+            break
+        address = soup.find('div', class_='property-address').text.strip() if soup.find('div', class_='property-address') else None
+        pricing = soup.find('p', class_='property-pricing').text.strip() if soup.find('p', class_='property-pricing') else None
+        beds = soup.find('p', class_='property-beds').text.strip() if soup.find('p', class_='property-beds') else None
+        
+        # Extract amenities
+        amenities_tags = soup.find('p', class_='property-amenities').find_all('span') if soup.find('p', class_='property-amenities') else []
+        amenities = [tag.text.strip() for tag in amenities_tags]
+        
+        # Extract phone number
+        phone = soup.find('a', class_='phone-link').text.strip() if soup.find('a', class_='phone-link') else None
+        #extract image from
+        image_url = soup.find('img').get('src')
+        
+        
+        # Print the extracted information
+        print(f'Title: {title}')
+        print(f'Address: {address}')
+        print(f'Pricing: {pricing}')
+        print(f'Beds: {beds}')
+        print(f'Amenities: {", ".join(amenities)}')
+        print(f'Phone: {phone}')
+        print(f'Image URL: {image_url}')
+        print('-----------------------------')
+        
+        time.sleep(10)
 
 
 def main():

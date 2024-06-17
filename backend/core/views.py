@@ -1,9 +1,10 @@
 from .models import Property, Message
 from rest_framework import permissions, viewsets, status
+from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.core.exceptions import ObjectDoesNotExist
-from .serializers import PropertySerializer, MessageSerializer
-
+from .serializers import PropertySerializer, MessageSerializer, ScrappedPropertySerializer
+from .apartments import get_apartments
 
 class MessageViewSet(viewsets.ModelViewSet):
     """
@@ -90,3 +91,27 @@ class PropertyViewSet(viewsets.ModelViewSet):
         property.delete()
         return Response(data={"message": "Property deleted successfully"}, status=status.HTTP_200_OK)
     
+
+class ScrapeProperties(APIView):
+    def get(self, request):
+        # print("Search term: ", request.query_params.get('search'))
+        search_term = request.query_params.get('search')
+        # Perform scraping based on search term
+        properties = []
+        apartments = get_apartments(search_term)
+        serialized_properties = []
+        for apartment in apartments:
+            print(apartment)
+            # Assuming 'item' represents each scraped property data
+            serializer = ScrappedPropertySerializer(data=apartment)
+            if serializer.is_valid():
+                # Save the property to Django database (optional)
+                serializer.save()
+                # Append serialized data to response list
+                serialized_properties.append(serializer.data)
+            else:
+                # Handle validation errors if necessary
+                pass
+        
+        # Return the serialized data as JSON response
+        return Response(serialized_properties)
