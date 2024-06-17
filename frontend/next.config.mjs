@@ -8,6 +8,7 @@ const nextConfig = {
             "bayut-production.s3.eu-central-1.amazonaws.com",
             "cdn.rentcafe.com",
             "s3.amazonaws.com",
+            "apartments.com",
         ]
     }
 };

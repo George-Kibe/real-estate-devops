@@ -5,9 +5,10 @@ import React, { useEffect, useState } from 'react'
 import Property from './Property';
 import { Flex } from '@chakra-ui/react';
 
+console.log(process.env.NEXT_PUBLIC_BACKEND_API_URL)
 export async function fetchDjangoProperties({page}) {
     try {
-      const response = await fetch(`http://localhost:8000/api/properties/?page=${page}`);
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/properties/?page=${page}`);
       const data = await response.json();
       const count = data.count;
       return {results: data.results, count: count};

@@ -17,10 +17,10 @@ const PricingCard = ({
   listItems
 
 }) => {
+  const session = useSession();
+  const email = session?.data?.user?.email;
   // POST request 
   const handleSubscription = async (id) => {
-    const session = useSession();
-    const email = session?.data?.user?.email;
     // e.preventDefault();
     if(price === 'Free'){
       toast.success("You are now subscribed for free");

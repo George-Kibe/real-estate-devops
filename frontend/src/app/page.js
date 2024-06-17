@@ -38,19 +38,6 @@ export default async function Home() {
     <main className="flex flex-col items-center justify-between p-4">
       <SearchView />
       <AnimatedText text={"Properties Around Minnesota"} />
-      {/* <Box>
-        <Flex flexWrap='wrap'>
-          {propertiesForRent.map((property) => <Property property={property} key={property.id} />)}
-        </Flex>
-        <Flex flexWrap='wrap'>
-          {propertiesForSale.map((property) => <Property property={property} key={property.id} />)}
-        </Flex>
-      </Box> */}
-      {/* <div className="container items-center justify-around">
-        <Flex flexWrap='wrap'>
-          {allProperties.map((property) => <Property property={property} key={property.id} />)}
-        </Flex>
-      </div> */}
       <AllProperties />
     </main>
   );

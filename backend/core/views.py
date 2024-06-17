@@ -1,10 +1,11 @@
 from .models import Property, Message
-from rest_framework import permissions, viewsets, status
+from rest_framework import permissions, viewsets, status, generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.core.exceptions import ObjectDoesNotExist
 from .serializers import PropertySerializer, MessageSerializer, ScrappedPropertySerializer
 from .apartments import get_apartments
+from django.db.models import Q  # Import Q object for complex queries
 
 class MessageViewSet(viewsets.ModelViewSet):
     """
@@ -92,6 +93,34 @@ class PropertyViewSet(viewsets.ModelViewSet):
         return Response(data={"message": "Property deleted successfully"}, status=status.HTTP_200_OK)
     
 
+class PropertySearchAPIView(generics.ListAPIView):
+    serializer_class = PropertySerializer
+
+    def get_queryset(self):
+        search_term = self.request.query_params.get('search', None)
+        print("Search term: ", search_term)
+        if search_term:
+            queryset = Property.objects.filter(
+                Q(title__icontains=search_term) |
+                Q(description__icontains=search_term) |
+                Q(city__icontains=search_term) |
+                Q(postal_code__icontains=search_term) |
+                Q(street_address__icontains=search_term) |
+                Q(price__icontains=search_term) |
+                Q(email_listing__icontains=search_term) |
+                Q(phone_number__icontains=search_term) |
+                Q(advert_type__icontains=search_term) |
+                Q(property_type__icontains=search_term)
+            )
+            return queryset
+        else:
+            return Property.objects.none()  # Return an empty queryset if no search term provided
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        page = self.paginate_queryset(queryset)  # Paginate the queryset
+        serializer = self.get_serializer(page, many=True)
+        return self.get_paginated_response(serializer.data)
 class ScrapeProperties(APIView):
     def get(self, request):
         # print("Search term: ", request.query_params.get('search'))
