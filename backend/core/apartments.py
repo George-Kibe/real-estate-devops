@@ -1,6 +1,6 @@
 from bs4 import BeautifulSoup
 from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
+from selenium.webdriver import ChromeOptions
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -9,24 +9,8 @@ from selenium.webdriver.support import expected_conditions as EC
 import time
 
 # Options for production and compatibility with docker environment
-chrome_options = Options()
-# chrome_options.add_argument('--headless')
-# chrome_options.add_argument('--no-sandbox')
-# chrome_options.add_argument('--disable-dev-shm-usage')
-# chrome_options.add_argument('--disable-gpu')
-# chrome_options.add_argument('--window-size=1920x1080')
-# chrome_options.add_argument('--headless')
-# chrome_options.add_argument('--no-sandbox')
-# chrome_options.add_argument('--disable-dev-shm-usage')
-# chrome_options.add_argument('--disable-gpu')
-# chrome_options.add_argument('--window-size=1920x1080')
-# chrome_options.add_argument('--disable-software-rasterizer')
-# chrome_options.add_argument('--disable-extensions')
-# chrome_options.add_argument('--disable-popup-blocking')
-# chrome_options.add_argument('user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3')
-# # Enable logging
-# chrome_options.add_argument('--enable-logging')
-# chrome_options.add_argument('--v=1')
+chrome_options = ChromeOptions()
+chrome_options.add_argument("--headless=new")
 
 
 driver=webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
@@ -42,7 +26,6 @@ def get_apartments(search_term):
     search_box = driver.find_element(By.ID, search_boxid)
 
     search_box.clear()
-    search_box.send_keys('Miami')
     search_box.send_keys(search_term)    
 
     WebDriverWait(driver, 5).until(
