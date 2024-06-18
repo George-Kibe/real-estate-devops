@@ -239,7 +239,7 @@ const Footer = () => {
                 <p className="text-base text-gray-7">
                   Designed and Developed by 
                   <a
-                    href="https://realhiconsultantsom"
+                    href="https://www.realhiveconsultants.com/"
                     rel="nofollow noopner"
                     target="_blank"
                     className="text-gray-1 hover:underline"

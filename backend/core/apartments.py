@@ -1,6 +1,6 @@
 from bs4 import BeautifulSoup
 from selenium import webdriver
-from selenium.webdriver import ChromeOptions
+from selenium.webdriver import ChromeOptions, Remote
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -9,16 +9,23 @@ from selenium.webdriver.support import expected_conditions as EC
 import time
 
 # Options for production and compatibility with docker environment
-chrome_options = ChromeOptions()
-#chrome_options.add_argument("--headless=new")
+options = ChromeOptions()
+options.add_argument("--headless=new")
+# The Docker container running Selenium
+SELENIUM_CMD_EXECUTOR = "http://selenium:4444/wd/hub"
 
-driver=webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
 
+# driver=webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+driver = Remote(command_executor=SELENIUM_CMD_EXECUTOR, options=options)
 def get_apartments(search_term):
+    print("Searching for apartments in ", search_term)
     driver.get('https://www.apartments.com/')
     search_boxid='quickSearchLookup'
-
-    WebDriverWait(driver, 5).until(
+    # confirm driver was able to access url
+    # soup = BeautifulSoup(driver.page_source, 'html.parser')
+    #print(soup.prettify())
+    print("Current URL: ", driver.current_url)
+    WebDriverWait(driver, 10).until(
         EC.presence_of_element_located((By.ID, search_boxid))
     )
 
@@ -27,7 +34,7 @@ def get_apartments(search_term):
     search_box.clear()
     search_box.send_keys(search_term)    
 
-    WebDriverWait(driver, 5).until(
+    WebDriverWait(driver, 10).until(
         EC.presence_of_element_located((By.CSS_SELECTOR, '.go.btn.btn-lg.btn-primary'))
     )
 

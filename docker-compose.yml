@@ -10,6 +10,12 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8000:8000"
+  selenium:
+    environment:
+      - VNC_NO_PASSWORD=1
+    image: selenium/standalone-chrome:117.0
+    ports:
+      - 7900:7900
   
   nginx: 
     build: ./backend/nginx
