@@ -13,6 +13,7 @@ const SearchView = () => {
   const handleClick = async(e) => {
     if(!searchtext){
       toast.error('Please enter Location to search');
+      return
     };
     e.preventDefault();
     // call the backend API to search for houses based on the location

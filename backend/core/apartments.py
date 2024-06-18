@@ -10,8 +10,7 @@ import time
 
 # Options for production and compatibility with docker environment
 chrome_options = ChromeOptions()
-chrome_options.add_argument("--headless=new")
-
+#chrome_options.add_argument("--headless=new")
 
 driver=webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
 
