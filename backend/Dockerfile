@@ -28,5 +28,5 @@ EXPOSE 8000
 # Start the application
 CMD ["gunicorn", "project.wsgi:application", "--bind", "0.0.0.0:8000"]
 
-# Run Django server
+# # Run Django server
 # CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

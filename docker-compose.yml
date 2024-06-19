@@ -1,21 +1,42 @@
 version: '3'
 services:
   backend:
+    container_name: backend
     volumes:
       - static:/static
-    env_file:
-      - ./backend/.env
-    build: 
-      context: ./backend
-      dockerfile: Dockerfile
+    # env_file:
+    #   - ./backend/.env
+    image: georgekibe/django_backend
     ports:
       - "8000:8000"
+    depends_on:
+      - selenium
+    networks:
+      - realestatenetwork
+    restart: always
+  
+  frontend:
+    container_name: frontend
+    image: georgekibe/next_frontend
+    env_file:
+      - ./frontend/.env.local
+    ports:
+      - "3000:3000"
+    networks:
+      - realestatenetwork
+    depends_on:
+      - backend
+    restart: always
+
   selenium:
     environment:
       - VNC_NO_PASSWORD=1
     image: selenium/standalone-chrome:117.0
     ports:
       - 7900:7900
+    networks:
+      - realestatenetwork
+    restart: always
   
   nginx: 
     build: ./backend/nginx
@@ -25,6 +46,13 @@ services:
       - "80:80"
     depends_on:
       - backend
+    networks:
+      - realestatenetwork
+    restart: always
 
 volumes:
   static:
+  
+networks:
+  realestatenetwork:
+    driver: bridge

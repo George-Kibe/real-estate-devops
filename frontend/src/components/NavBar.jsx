@@ -88,7 +88,7 @@ const Navbar = () => {
                 <CustomLink href={"/#"} name={"Home"} toggle={handleClick}/>
                 <CustomLink href={"/rent"} name={"For Rent"} toggle={handleClick}/>
                 <CustomLink href={"/sale"} name={"For Sale"} toggle={handleClick}/>
-                <CustomLink href={"/fatures"} name={"Features"} toggle={handleClick}/>
+                <CustomLink href={"/features"} name={"Features"} toggle={handleClick}/>
                 <CustomLink href={"/contact"} name={"Contacts"} toggle={handleClick}/>
                 <CustomLink href={"/login"} name={"Login"} toggle={handleClick}/>
             </div> 

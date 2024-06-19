@@ -11,11 +11,11 @@ const SearchView = () => {
   const {location, setCustomProperties, setLocation} = useMainProvider()
 
   const handleClick = async(e) => {
+    e.preventDefault();
     if(!searchtext){
       toast.error('Please enter Location to search');
       return
     };
-    e.preventDefault();
     // call the backend API to search for houses based on the location
     try {
       const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/search-properties/?search=${searchtext}`)

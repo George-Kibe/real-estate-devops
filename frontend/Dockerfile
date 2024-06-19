@@ -4,6 +4,9 @@ WORKDIR /frontend
 
 ENV NODE_ENV production
 
+# Install curl
+RUN apk --no-cache add curl
+
 # Copy package.json and package-lock.json
 COPY package.json ./
 
@@ -20,4 +23,4 @@ RUN npm run build
 EXPOSE 3000
 
 # Start the application using the standalone server
-CMD ["node", ".next/standalone/server.js"]
+CMD ["npm", "run", "start"]
