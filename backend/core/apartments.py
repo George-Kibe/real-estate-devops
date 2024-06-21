@@ -1,10 +1,8 @@
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver import ChromeOptions, Remote
-from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
-from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.support import expected_conditions as EC
 import time
 
@@ -12,17 +10,18 @@ import time
 options = ChromeOptions()
 options.add_argument("--headless=new")
 # The Docker container running Selenium
-SELENIUM_CMD_EXECUTOR = "http://selenium:4444/wd/hub"
+# SELENIUM_CMD_EXECUTOR = "http://localhost:4444/wd/hub"
 
 
 # driver=webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
-driver = Remote(command_executor=SELENIUM_CMD_EXECUTOR, options=options)
+# driver = Remote(command_executor=SELENIUM_CMD_EXECUTOR, options=options)
+driver= webdriver.Chrome(options=options)
 def get_apartments(search_term):
     print("Searching for apartments in ", search_term)
     driver.get('https://www.apartments.com/')
     search_boxid='quickSearchLookup'
     # confirm driver was able to access url
-    # soup = BeautifulSoup(driver.page_source, 'html.parser')
+    #soup = BeautifulSoup(driver.page_source, 'html.parser')
     #print(soup.prettify())
     print("Current URL: ", driver.current_url)
     WebDriverWait(driver, 10).until(

@@ -8,3 +8,7 @@ Python django for REST APIs and Beautifulsoup for data scrapping
 ### Resetting all containers and images
 ```docker stop $(docker ps -q) && docker rm $(docker ps -a -q) && docker rmi $(docker images -q)```
 
+### Running selenium standalone
+
+```docker run -d -p 4444:4444 -v /dev/shm:/dev/shm selenium/standalone-chrome```
+
