@@ -9,7 +9,7 @@ import time
 
 # https://googlechromelabs.github.io/chrome-for-testing/#stable
 
-service = Service(executable_path="/usr/local/bin/chromedriver")
+service = Service(executable_path="./bin/chromedriver")
 driver = webdriver.Chrome(service=service)
 
 driver.get('https://google.com')

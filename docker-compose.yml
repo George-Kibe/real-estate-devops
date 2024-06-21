@@ -1,12 +1,15 @@
-version: '3'
+# version: '3'
 services:
   backend:
     container_name: backend
+    # image: georgekibe/django_backend
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
     volumes:
       - static:/static
-    # env_file:
-    #   - ./backend/.env
-    image: georgekibe/django_backend
+    env_file:
+      - ./backend/.env
     ports:
       - "8000:8000"
     depends_on:
@@ -17,7 +20,10 @@ services:
   
   frontend:
     container_name: frontend
-    image: georgekibe/next_frontend
+    # image: georgekibe/next_frontend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
     env_file:
       - ./frontend/.env.local
     ports:
