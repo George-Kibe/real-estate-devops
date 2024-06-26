@@ -1,17 +1,18 @@
-FROM node:20-alpine 
+# Use the official Node.js 20 Alpine image
+FROM node:20-alpine
 
+# Set the working directory inside the container
 WORKDIR /frontend
 
-ENV NODE_ENV production
-
-# Install curl
+# Install curl (if needed)
 RUN apk --no-cache add curl
 
-# Copy package.json and package-lock.json
-COPY package.json ./
+# Copy package.json and package-lock.json to the working directory
+COPY package.json .
+COPY package-lock.json .
 
 # Install dependencies
-RUN npm install
+RUN npm install 
 
 # Copy the rest of the application code
 COPY . .
@@ -22,5 +23,6 @@ RUN npm run build
 # Expose the port the app runs on
 EXPOSE 3000
 
-# Start the application using the standalone server
+# Start the application
 CMD ["npm", "run", "start"]
+# CMD [ "node", ".next/standalone/server.js" ]

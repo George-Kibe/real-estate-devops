@@ -5,7 +5,7 @@ import DetailedProperty from '@/components/DetailedProperty';
 import { useParams } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
 
-const ProfilePage = () => {
+const PropertyDetailed = () => {
   const [property, setProperty] = useState()
   const {id} = useParams()
 
@@ -14,7 +14,7 @@ const ProfilePage = () => {
       try {
         const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/properties/${id}`)
         const data = await res.json()
-        console.log("Response Data: ", data)
+        console.log("Response Data: ", data, "Next public backend URL", process.env.NEXT_PUBLIC_BACKEND_API_URL)
         setProperty(data)
       } catch (error) {
         console.log(error)
@@ -23,7 +23,6 @@ const ProfilePage = () => {
     fetchProperty()
   }, [id])
   if (!property) return null
-  console.log("Property: ", property)
   return (
     <div>
       <AnimatedText text={"Detailed Property Page"} />
@@ -32,4 +31,4 @@ const ProfilePage = () => {
   )
 }
 
-export default ProfilePage;
+export default PropertyDetailed;

@@ -8,14 +8,15 @@ import time
 
 # Options for production and compatibility with docker environment
 options = ChromeOptions()
-options.add_argument("--headless=new")
+#options.add_argument("--headless=new")
 # The Docker container running Selenium
-SELENIUM_CMD_EXECUTOR = "http://selenium:4444/wd/hub"
+#SELENIUM_CMD_EXECUTOR = "http://selenium:4444/wd/hub"
 
 
 # driver=webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
-driver = Remote(command_executor=SELENIUM_CMD_EXECUTOR, options=options)
-#driver= webdriver.Chrome(options=options)
+#driver = Remote(command_executor=SELENIUM_CMD_EXECUTOR, options=options)
+driver= webdriver.Chrome(options=options)
+
 def get_apartments(search_term):
     print("Searching for apartments in ", search_term)
     driver.get('https://www.apartments.com/')
@@ -39,6 +40,7 @@ def get_apartments(search_term):
 
     previous_url = driver.current_url
     search_button = driver.find_element(By.CSS_SELECTOR, '.go.btn.btn-lg.btn-primary')
+    time.sleep(1)
     search_button.click()
     new_properties = get_properties(previous_url)
     return new_properties

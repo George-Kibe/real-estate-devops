@@ -7,7 +7,8 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     volumes:
-      - static:/static
+      - ./backend/static:/static
+      - ./backend:/backend
     env_file:
       - ./backend/.env
     ports:
@@ -24,6 +25,8 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+    volumes:
+      - ./frontend:/frontend
     env_file:
       - ./frontend/.env.local
     ports:
