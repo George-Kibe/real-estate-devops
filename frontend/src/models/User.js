@@ -13,6 +13,11 @@ const UserSchema = new Schema({
         unique: true,
         required: true
     },
+    emailVerified: {
+        type: Boolean,
+        required: true,
+        default: false,
+    },
     password: {
         type: String,
         required: true
@@ -26,6 +31,10 @@ const UserSchema = new Schema({
         type: Boolean,
         required: true,
         default: false,
+    },
+    image: {
+        type: String,
+        required: false
     },
     members: {type: [mongoose.Types.ObjectId], ref: 'user', require: false},
 },{ timestamps: true}

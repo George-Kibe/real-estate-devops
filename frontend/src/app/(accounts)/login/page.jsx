@@ -12,6 +12,7 @@ const LoginPage = () => {
   const [password, setPassword] = useState('');
   const router = useRouter();
   const session = useSession();
+  
   if (session.status === 'authenticated') {
     router.push('/');
   }

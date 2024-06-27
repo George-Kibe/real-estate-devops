@@ -1,7 +1,6 @@
 'use client'
 /* eslint-disable react/react-in-jsx-scope */
-import {createContext, useContext, useEffect, useState} from 'react';
-import {SessionProvider} from "next-auth/react";
+import {createContext, useContext, useState} from 'react';
 
 const MainContext = createContext({});
 
@@ -17,9 +16,7 @@ export function MainProvider({children}) {
         location, setLocation,
         customProperties, setCustomProperties
       }}>
-      <SessionProvider>
         {children}
-      </SessionProvider>
     </MainContext.Provider>
   );
 }

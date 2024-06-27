@@ -5,10 +5,10 @@ import connect from "@/lib/db";
 import bcrypt from "bcryptjs";
 import User from "@/models/User";
 import { MongoDBAdapter } from "@auth/mongodb-adapter";
-import clientPromise from "@/lib/authDb";
+import client from "@/lib/authDb";
 
 const handler = NextAuth({
-  adapter: MongoDBAdapter(clientPromise),
+  // adapter: MongoDBAdapter(client),
   providers: [
     CredentialsProvider({
       id: "credentials",
@@ -51,22 +51,22 @@ const handler = NextAuth({
       }
     }),
   ],
-  callbacks: {
-    async jwt(token, user) {
-      if (user) {
-        token.id = user.id;
-        token.email = user.email;
-        token.name = user.name;
-      }
-      return token;
-    },
-    async session(session, token) {
-      session.user.id = token.id;
-      session.user.email = token.email;
-      session.user.name = token.name;
-      return session;
-    },
-  },
+  // callbacks: {
+  //   async jwt(token, user) {
+  //     if (user) {
+  //       token.id = user.id;
+  //       token.email = user.email;
+  //       token.name = user.name;
+  //     }
+  //     return token;
+  //   },
+  //   async session(session, token) {
+  //     session.user.id = token.id;
+  //     session.user.email = token.email;
+  //     session.user.name = token.name;
+  //     return session;
+  //   },
+  // },
   
   pages: {
     error: "/login",

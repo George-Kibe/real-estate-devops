@@ -6,6 +6,7 @@ import { ThemeProvider } from "@/components/ThemeProvider";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { MainProvider } from "@/providers/MainProvider";
+import AuthProvider  from "@/providers/AuthProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -28,9 +29,11 @@ export default function RootLayout({ children }) {
         storageKey="abdul-simba"
         >
           <MainProvider>
+          <AuthProvider>
             <NavBar />
               {children}
             <Footer />
+          </AuthProvider>
           </MainProvider>
         </ThemeProvider>
         </body>
