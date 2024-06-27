@@ -2,9 +2,12 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { ModeToggle } from './ModeToggle';
 import { useSession, signOut } from 'next-auth/react';
+import { toast } from 'react-toastify';
+import { UserMenu } from './UserMenu';
+import LoadingPage from './Loading';
 
 const CustomLink = ({href,name, items, toggle}) => {
   const pathname = usePathname();
@@ -24,9 +27,32 @@ const CustomLink = ({href,name, items, toggle}) => {
 }
 
 const Navbar = () => {
-  const [showMobileNav, setShowMobileNav] = useState(false)
+  const [showMobileNav, setShowMobileNav] = useState(false);
+  const [currentuser, setCurrentuser] = useState({})
   const session = useSession();
+  const email = session.data?.user?.email
+  
+  const fetchUser = async() => {
+    try {
+      const res = await fetch(`/api/auth/users?email=${email}`)
+      const data = await res.json()
+      setCurrentuser(data)
+    } catch (error) {
+      toast.error("Error Fetching user")
+    }
+  }
+  // console.log(currentuser)
   console.log(session)
+
+  useEffect(() => {
+    console.log("Email: ", session?.data?.user?.email)
+    if (!session?.data?.user?.email){
+      console.log("No session, No Logged in user")
+      return
+    }
+    fetchUser()
+  }, [session?.data?.user.email])
+
   const pathname = usePathname()
 
   const handleClick = () => {
@@ -35,6 +61,9 @@ const Navbar = () => {
   const handleLogout = () => {
     // logout
     console.log('Logging out')
+  }
+  if (session.loading){
+    return <LoadingPage />
   }
   return (    
     <nav className="darK:bg-black shadow-lg">
@@ -55,10 +84,10 @@ const Navbar = () => {
                       <CustomLink href={"/contact"} name={"Contacts"} toggle={handleClick}/>
                       {
                         session.status === 'authenticated' ? (
-                          <button onClick={() => signOut()} className="flex flex-row items-center justify-center">
-                            <img src={session.data.user.image || '/images/defaultProfile.png' } alt="Profile" className="w-8 h-8 rounded-full" />
-                            <p className='ml-2 font-bold '>Logout</p>
-                          </button>
+                          <div className="flex flex-row items-center justify-center">
+                            <img src={currentuser?.image || '/images/defaultProfile.png' } alt="Profile" className="w-8 h-8 rounded-full" />
+                            <UserMenu />
+                          </div>
                         ) : (
                           <CustomLink href={"/login"} name={"Login"} toggle={handleClick}/>
                         )}
@@ -90,7 +119,15 @@ const Navbar = () => {
                 <CustomLink href={"/sale"} name={"For Sale"} toggle={handleClick}/>
                 <CustomLink href={"/features"} name={"Features"} toggle={handleClick}/>
                 <CustomLink href={"/contact"} name={"Contacts"} toggle={handleClick}/>
-                <CustomLink href={"/login"} name={"Login"} toggle={handleClick}/>
+                {
+                  session.status === 'authenticated' ? (
+                    <button className="flex flex-row ml-2 mb-2">
+                      <img src={currentuser?.image || '/images/defaultProfile.png' } alt="Profile" className="w-8 h-8 rounded-full" />
+                      <UserMenu />
+                    </button>
+                  ) : (
+                    <CustomLink href={"/login"} name={"Login"} toggle={handleClick}/>
+                )}
             </div> 
          )
         }

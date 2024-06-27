@@ -1,4 +1,5 @@
 import AllProperties from "@/components/AllProperties";
+import HomeLinks from "@/components/HomeLinks";
 import SearchView from "@/components/SearchView";
 
 export async function fetchDjangoProperties() {
@@ -17,6 +18,7 @@ export default async function Home() {
     <main className="flex flex-col items-center justify-between p-4">
       <SearchView />
       <AllProperties />
+      <HomeLinks />
     </main>
   );
 }
