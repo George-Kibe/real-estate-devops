@@ -8,6 +8,7 @@ import { useSession, signOut } from 'next-auth/react';
 import { toast } from 'react-toastify';
 import { UserMenu } from './UserMenu';
 import LoadingPage from './Loading';
+import { useMainProvider } from '@/providers/MainProvider';
 
 const CustomLink = ({href,name, items, toggle}) => {
   const pathname = usePathname();
@@ -28,7 +29,7 @@ const CustomLink = ({href,name, items, toggle}) => {
 
 const Navbar = () => {
   const [showMobileNav, setShowMobileNav] = useState(false);
-  const [currentuser, setCurrentuser] = useState({})
+  const {currentUser, setCurrentUser} = useMainProvider();
   const session = useSession();
   const email = session.data?.user?.email
   
@@ -36,7 +37,7 @@ const Navbar = () => {
     try {
       const res = await fetch(`/api/auth/users?email=${email}`)
       const data = await res.json()
-      setCurrentuser(data)
+      setCurrentUser(data)
     } catch (error) {
       toast.error("Error Fetching user")
     }
@@ -85,7 +86,7 @@ const Navbar = () => {
                       {
                         session.status === 'authenticated' ? (
                           <div className="flex flex-row items-center justify-center">
-                            <img src={currentuser?.image || '/images/defaultProfile.png' } alt="Profile" className="w-8 h-8 rounded-full" />
+                            <img src={currentUser?.image || '/images/defaultProfile.png' } alt="Profile" className="w-8 h-8 rounded-full" />
                             <UserMenu />
                           </div>
                         ) : (
@@ -122,7 +123,7 @@ const Navbar = () => {
                 {
                   session.status === 'authenticated' ? (
                     <button className="flex flex-row ml-2 mb-2">
-                      <img src={currentuser?.image || '/images/defaultProfile.png' } alt="Profile" className="w-8 h-8 rounded-full" />
+                      <img src={currentUser?.image || '/images/defaultProfile.png' } alt="Profile" className="w-8 h-8 rounded-full" />
                       <UserMenu />
                     </button>
                   ) : (

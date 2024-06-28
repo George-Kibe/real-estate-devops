@@ -49,10 +49,10 @@ import {
               <CreditCard className='mr-2 h-4 w-4' />
               <Link href='/billing'>Billing</Link>
             </CommandItem>
-            <CommandItem>
+            {/* <CommandItem>
               <Settings className='mr-2 h-4 w-4' />
               <Link href='/settings'>Settings</Link>
-            </CommandItem>
+            </CommandItem> */}
           </CommandGroup>
         </CommandList>
       </Command>

@@ -13,6 +13,10 @@ const UserSchema = new Schema({
         unique: true,
         required: true
     },
+    phoneNumber: {
+        type: String,
+        required: false
+    },
     emailVerified: {
         type: Boolean,
         required: true,
@@ -33,6 +37,10 @@ const UserSchema = new Schema({
         default: false,
     },
     image: {
+        type: String,
+        required: false
+    },
+    favouriteLocation: {
         type: String,
         required: false
     },

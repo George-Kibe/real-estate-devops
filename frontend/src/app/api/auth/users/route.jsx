@@ -45,3 +45,21 @@ export const GET = async (request) => {
     }
 
 }
+
+export const PUT = async (request) => {
+    const body = await request.json();
+    const {_id} = body;
+    try {
+      // await CheckIn.find();
+      const newUserDoc = await User.findOneAndUpdate({_id}, {...body});
+      const updatedUserDoc = await User.findOne({
+        _id: newUserDoc._id,
+      })//.populate('lastLocation');
+
+      const newUser = JSON.stringify(updatedUserDoc);
+      return new NextResponse(newUser, {status: 200});
+    } catch (error) {
+      console.log('User Updating error!');
+      return new NextResponse(error.message, {status: 422});
+    }
+}
