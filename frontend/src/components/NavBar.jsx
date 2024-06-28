@@ -27,19 +27,22 @@ const CustomLink = ({href,name, items, toggle}) => {
   )
 }
 
-const Navbar = () => {
+const NavBar = () => {
   const [showMobileNav, setShowMobileNav] = useState(false);
-  const {currentUser, setCurrentUser} = useMainProvider();
+  const {currentUser, setCurrentUser, setLoading} = useMainProvider();
   const session = useSession();
   const email = session.data?.user?.email
   
   const fetchUser = async() => {
+    setLoading(true)
     try {
       const res = await fetch(`/api/auth/users?email=${email}`)
       const data = await res.json()
       setCurrentUser(data)
+      setLoading(false)
     } catch (error) {
       toast.error("Error Fetching user")
+      setLoading(false)
     }
   }
   // console.log(currentuser)
@@ -137,4 +140,4 @@ const Navbar = () => {
   )
 }
 
-export default Navbar
+export default NavBar

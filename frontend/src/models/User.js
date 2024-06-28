@@ -19,12 +19,13 @@ const UserSchema = new Schema({
     },
     emailVerified: {
         type: Boolean,
-        required: true,
+        required: false,
         default: false,
     },
     password: {
         type: String,
-        required: true
+        required: false,
+
     },
     isAdmin: {
         type: Boolean,
@@ -45,6 +46,7 @@ const UserSchema = new Schema({
         required: false
     },
     members: {type: [mongoose.Types.ObjectId], ref: 'user', require: false},
+    organization: {type: mongoose.Types.ObjectId, ref: 'user', require: false},
 },{ timestamps: true}
 )
 

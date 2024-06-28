@@ -34,7 +34,7 @@ export const GET = async (request) => {
     await connect();
     try {
         // check if user already exists using email to avoid duplicates
-        const user = await User.findOne({email});
+        const user = await User.findOne({email}).populate('members');
         if (!user) {
             return new NextResponse("User not found", {status: 404})
         }

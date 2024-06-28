@@ -7,25 +7,33 @@ import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import { useMainProvider } from '@/providers/MainProvider';
 
-const InviteMemberModal = ({ isOpen, onClose }) => {
+const InviteMemberModal = ({ isOpen, onClose, setLoading }) => {
   const [email, setEmail] = useState("");
-  const {currentUser} = useMainProvider()
-  const router = useRouter();
+  const [name, setName] = useState('');
+  const {currentUser} = useMainProvider();
   const username = currentUser?.name
 
   const inviteMember = async(e) => {
     e.preventDefault()
-    if(!email |!username){
+    setLoading(true);
+    if(!email |!username |!name){
       toast.error("You have missing details!");
       return
     }
-    const data = {username, email}
+    const data = {username, name, email, _id:currentUser._id};
     toast.info(`Inviting ${email} to your organization`)
     try {
       // invite member logic
+      const response = await axios.post('/api/invite-member', data);
       onClose()
+      if (response.status === 200){
+        toast.success("Invitation sent successfully!")
+      }
+      setLoading(false);
+      setEmail('');
+      setName('')
     } catch (error) {
-      toast.error("Post not added to database. Try again!")
+      toast.error("Sending Invitation failed! Try Again!")
     }
   }
 
@@ -53,6 +61,13 @@ const InviteMemberModal = ({ isOpen, onClose }) => {
         <input type="email" placeholder='Email' 
           value={email}
           onChange={ev => setEmail(ev.target.value)}
+          className="border-2 border-gray-300 rounded-md p-1 w-full 
+          mb-2 focus:border-blue-900" 
+        /> 
+        <p className="">Name</p>
+        <input type="text" placeholder='Name' 
+          value={name}
+          onChange={ev => setName(ev.target.value)}
           className="border-2 border-gray-300 rounded-md p-1 w-full 
           mb-2 focus:border-blue-900" 
         /> 

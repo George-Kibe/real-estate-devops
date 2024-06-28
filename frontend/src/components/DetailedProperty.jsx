@@ -6,11 +6,11 @@ import { MdOutlineEmail } from "react-icons/md";
 
 const PropertyCard = ({ property }) => {
   return (
-    <Card className="flec-col md:flex-row gap-4 container items-center self-center flex flex-col hover:scale-105 rounded-md" shadow="md">
-      <Image
+    <Card className="flex flex-col md:flex-row gap-4 container items-center self-center hover:scale-105 rounded-md" shadow="md">
+      <img
         radius="none"
         src={
-          property.images.length > 1 ? property.images[0]
+          property.images.length > 0 ? property.images[0]
             : `/images/${Math.floor(Math.random() * 9 + 1)}.jpg`
         }
         className="object-contain w-full h-64"

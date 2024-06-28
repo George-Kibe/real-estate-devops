@@ -5,12 +5,13 @@ import { GoVerified } from 'react-icons/go';
 import Link from "next/link";
 
 const PropertyCard = ({ property }) => {
+  console.log("Property: ", property.images);
   return (
     <Card className="w-72 flex flex-col hover:scale-105 rounded-md" shadow="md">
-      <Image
+      <img
         radius="none"
         src={
-          property.images.length > 1 ? property.images[0]
+          property.images.length > 0 ? property.images[0]
             : `/images/${Math.floor(Math.random() * 9 + 1)}.jpg`
         }
         className="object-fill w-96 h-48"
