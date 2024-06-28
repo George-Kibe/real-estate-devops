@@ -12,7 +12,7 @@ import {
   import {
     LayoutDashboard,
     Newspaper,
-    Folders,
+    Users,
     CreditCard,
     Settings,
     User,
@@ -28,33 +28,30 @@ import {
           <CommandGroup heading='Suggestions'>
             <CommandItem>
               <LayoutDashboard className='mr-2 h-4 w-4' />
-              <Link href='/'>Dashboard</Link>
+              <Link href='/dashboard'>Dashboard</Link>
             </CommandItem>
             <CommandItem>
               <Newspaper className='mr-2 h-4 w-4' />
-              <Link href='/posts'>Posts</Link>
+              <Link href='/reports'>Reports</Link>
             </CommandItem>
             <CommandItem>
-              <Folders className='mr-2 h-4 w-4' />
-              <Link href='#'>Categories</Link>
+              <Users className='mr-2 h-4 w-4' />
+              <Link href='/members'>Members</Link>
             </CommandItem>
           </CommandGroup>
           <CommandSeparator />
           <CommandGroup heading='Settings'>
             <CommandItem>
               <User className='mr-2 h-4 w-4' />
-              <span>Profile</span>
-              <CommandShortcut>⌘P</CommandShortcut>
+              <Link href='/my-account'>My Account</Link>
             </CommandItem>
             <CommandItem>
               <CreditCard className='mr-2 h-4 w-4' />
-              <span>Billing</span>
-              <CommandShortcut>⌘B</CommandShortcut>
+              <Link href='/billing'>Billing</Link>
             </CommandItem>
             <CommandItem>
               <Settings className='mr-2 h-4 w-4' />
-              <span>Settings</span>
-              <CommandShortcut>⌘S</CommandShortcut>
+              <Link href='/settings'>Settings</Link>
             </CommandItem>
           </CommandGroup>
         </CommandList>

@@ -15,8 +15,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-
-import data from '@/data/analytics';
+import data from '../../../data/analytics';
 
 const AnalyticsChart = () => {
   return (
@@ -24,7 +23,7 @@ const AnalyticsChart = () => {
       <Card>
         <CardHeader>
           <CardTitle>Analytics For This Year</CardTitle>
-          <CardDescription>Views Per Month</CardDescription>
+          <CardDescription>New Properties Per Month</CardDescription>
         </CardHeader>
         <CardContent>
           <div style={{ width: '100%', height: 300 }}>
