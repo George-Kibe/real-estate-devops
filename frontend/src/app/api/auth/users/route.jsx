@@ -31,6 +31,7 @@ export const POST = async (request) => {
 export const GET = async (request) => {
     const params = new URLSearchParams(request.url.split('?')[1]);
     const email = params.get("email")
+    await connect();
     try {
         // check if user already exists using email to avoid duplicates
         const user = await User.findOne({email});

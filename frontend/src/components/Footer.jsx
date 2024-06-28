@@ -22,8 +22,7 @@ const Footer = () => {
                 />
               </Link>
               <p className="mb-8 max-w-[270px] text-base text-gray-7">
-                We create digital experiences for brands and companies by using
-                technology.
+                We help you find your dream home by leveraging technology.
               </p>
               <div className="-mx-3 flex items-center">
                 <a

@@ -47,9 +47,16 @@ const AllProperties = () => {
     useEffect(() => {
         fetchProperties()
     }, [page]);
+
+    let pages;
+    console.log(count)
     
-    const pages = createArrayOfNumbers(count/100 + 1);
-    // console.log(pages)
+    if (count/100 < 12 ){
+      pages = createArrayOfNumbers(count/100 + 1);
+    } else{
+      pages = createArrayOfNumbers(12)
+    }
+    console.log("Pages: ", pages)
     // console.log("Properties: ", properties.length);
     return (
       <div>
