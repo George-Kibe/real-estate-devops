@@ -55,7 +55,7 @@ const NavBar = () => {
       return
     }
     fetchUser()
-  }, [currentUser])
+  }, [currentUser?._id])
 
   const pathname = usePathname()
 
