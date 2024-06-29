@@ -1880,7 +1880,7 @@ function getSuggestedContentDiv(item, index) {
   } else {
     extraContainerClasses.push('suggestion-with-icon');
     const iconClass = getIconForSuggestedItem(item);
-    thumbnail = `<div><img class="${iconClass}"></div>`;
+    thumbnail = `<div><img className="${iconClass}"></div>`;
   }
 
   let favicon = '';
@@ -1895,28 +1895,28 @@ function getSuggestedContentDiv(item, index) {
   }
 
   return `
-  <div class="offline-content-suggestion ${extraContainerClasses.join(' ')}"
+  <div className="offline-content-suggestion ${extraContainerClasses.join(' ')}"
     onclick="launchOfflineItem('${item.ID}', '${item.name_space}')">
-      <div class="offline-content-suggestion-texts">
+      <div className="offline-content-suggestion-texts">
         <div id="offline-content-suggestion-title-${index}"
-             class="offline-content-suggestion-title">
+             className="offline-content-suggestion-title">
         </div>
-        <div class="offline-content-suggestion-attribution-freshness">
+        <div className="offline-content-suggestion-attribution-freshness">
           <div id="offline-content-suggestion-favicon-${index}"
-               class="offline-content-suggestion-favicon">
+               className="offline-content-suggestion-favicon">
             ${favicon}
           </div>
           <div id="offline-content-suggestion-attribution-${index}"
-               class="offline-content-suggestion-attribution">
+               className="offline-content-suggestion-attribution">
           </div>
-          <div class="offline-content-suggestion-freshness">
+          <div className="offline-content-suggestion-freshness">
             ${item.date_modified}
           </div>
-          <div class="offline-content-suggestion-pin-spacer"></div>
-          <div class="offline-content-suggestion-pin"></div>
+          <div className="offline-content-suggestion-pin-spacer"></div>
+          <div className="offline-content-suggestion-pin"></div>
         </div>
       </div>
-      <div class="offline-content-suggestion-thumbnail">
+      <div className="offline-content-suggestion-thumbnail">
         ${thumbnail}
       </div>
   </div>`;
@@ -6452,17 +6452,17 @@ Runner.spriteDefinitionByType = {
 };
   </script>
  </head>
- <body class="neterror" id="t" jstcache="0" style='font-family: "sans", Arial, sans-serif; font-size: 75%'>
-  <div class="interstitial-wrapper" id="main-frame-error" jstcache="0">
+ <body className="neterror" id="t" jstcache="0" style='font-family: "sans", Arial, sans-serif; font-size: 75%'>
+  <div className="interstitial-wrapper" id="main-frame-error" jstcache="0">
    <div id="main-content" jstcache="0">
-    <div class="icon icon-generic" jstcache="0">
+    <div className="icon icon-generic" jstcache="0">
     </div>
     <div id="main-message" jstcache="0">
      <h1 jstcache="0">
       <span jsselect="heading" jstcache="9" jsvalues=".innerHTML:msg">
        This site can’t be reached
       </span>
-      <a class="hidden" id="error-information-button" jstcache="0" onclick="toggleErrorInformationPopup();">
+      <a className="hidden" id="error-information-button" jstcache="0" onclick="toggleErrorInformationPopup();">
       </a>
      </h1>
      <p jsselect="summary" jstcache="1" jsvalues=".innerHTML:msg">
@@ -6488,11 +6488,11 @@ Runner.spriteDefinitionByType = {
            </li>
           </ul>
          </div>
-         <div class="error-code" jscontent="errorCode" jstcache="17">
+         <div className="error-code" jscontent="errorCode" jstcache="17">
           ERR_HTTP2_PROTOCOL_ERROR
          </div>
          <p id="error-information-popup-close" jstcache="0">
-          <a class="link-button" jscontent="closeDescriptionPopup" jstcache="20" onclick="toggleErrorInformationPopup();">
+          <a className="link-button" jscontent="closeDescriptionPopup" jstcache="20" onclick="toggleErrorInformationPopup();">
            null
           </a>
          </p>
@@ -6500,23 +6500,23 @@ Runner.spriteDefinitionByType = {
        </div>
       </div>
      </div>
-     <div class="hidden" id="download-links-wrapper" jstcache="0">
+     <div className="hidden" id="download-links-wrapper" jstcache="0">
       <div id="download-link-wrapper" jstcache="0">
-       <a class="link-button" id="download-link" jscontent="msg" jsselect="downloadButton" jstcache="6" jsvalues=".disabledText:disabledMsg" onclick="downloadButtonClick()" style="display: none;">
+       <a className="link-button" id="download-link" jscontent="msg" jsselect="downloadButton" jstcache="6" jsvalues=".disabledText:disabledMsg" onclick="downloadButtonClick()" style="display: none;">
        </a>
       </div>
-      <div class="hidden" id="download-link-clicked-wrapper" jstcache="0">
-       <div class="link-button" id="download-link-clicked" jscontent="disabledMsg" jsselect="downloadButton" jstcache="11" style="display: none;">
+      <div className="hidden" id="download-link-clicked-wrapper" jstcache="0">
+       <div className="link-button" id="download-link-clicked" jscontent="disabledMsg" jsselect="downloadButton" jstcache="11" style="display: none;">
        </div>
       </div>
      </div>
-     <div class="hidden" id="save-page-for-later-button" jstcache="0">
-      <a class="link-button" jscontent="savePageMsg" jsselect="savePageLater" jstcache="10" onclick="savePageLaterClick()" style="display: none;">
+     <div className="hidden" id="save-page-for-later-button" jstcache="0">
+      <a className="link-button" jscontent="savePageMsg" jsselect="savePageLater" jstcache="10" onclick="savePageLaterClick()" style="display: none;">
       </a>
      </div>
-     <div class="hidden" id="cancel-save-page-button" jsselect="savePageLater" jstcache="4" jsvalues=".innerHTML:cancelMsg" onclick="cancelSavePageClick()" style="display: none;">
+     <div className="hidden" id="cancel-save-page-button" jsselect="savePageLater" jstcache="4" jsvalues=".innerHTML:cancelMsg" onclick="cancelSavePageClick()" style="display: none;">
      </div>
-     <div class="list-hidden" hidden="" id="offline-content-list" jstcache="0">
+     <div className="list-hidden" hidden="" id="offline-content-list" jstcache="0">
       <div id="offline-content-list-visibility-card" jstcache="0" onclick="toggleOfflineContentListVisibility(true)">
        <div id="offline-content-list-title" jscontent="title" jsselect="offlineContentList" jstcache="12" style="display: none;">
        </div>
@@ -6530,27 +6530,27 @@ Runner.spriteDefinitionByType = {
       <div id="offline-content-suggestions" jstcache="0">
       </div>
       <div id="offline-content-list-action" jstcache="0">
-       <a class="link-button" jscontent="actionText" jsselect="offlineContentList" jstcache="13" onclick="launchDownloadsPage()" style="display: none;">
+       <a className="link-button" jscontent="actionText" jsselect="offlineContentList" jstcache="13" onclick="launchDownloadsPage()" style="display: none;">
        </a>
       </div>
      </div>
     </div>
    </div>
-   <div class="nav-wrapper suggested-right" id="buttons" jstcache="0">
+   <div className="nav-wrapper suggested-right" id="buttons" jstcache="0">
     <div hidden="" id="control-buttons" jstcache="0">
-     <button class="blue-button text-button" id="reload-button" jscontent="msg" jsselect="reloadButton" jstcache="5" jsvalues=".url:reloadUrl" onclick="reloadButtonClick(this.url);" style="display: none;">
+     <button className="blue-button text-button" id="reload-button" jscontent="msg" jsselect="reloadButton" jstcache="5" jsvalues=".url:reloadUrl" onclick="reloadButtonClick(this.url);" style="display: none;">
      </button>
-     <button class="blue-button text-button" id="download-button" jscontent="msg" jsselect="downloadButton" jstcache="6" jsvalues=".disabledText:disabledMsg" onclick="downloadButtonClick()" style="display: none;">
+     <button className="blue-button text-button" id="download-button" jscontent="msg" jsselect="downloadButton" jstcache="6" jsvalues=".disabledText:disabledMsg" onclick="downloadButtonClick()" style="display: none;">
      </button>
     </div>
-    <button class="secondary-button text-button small-link singular" id="details-button" jscontent="details" jsdisplay="(suggestionsDetails &amp;&amp; suggestionsDetails.length &gt; 0) || diagnose" jstcache="2" jsvalues=".detailsText:details; .hideDetailsText:hideDetails;" onclick="detailsButtonClick(); toggleHelpBox()" style="display: none;">
+    <button className="secondary-button text-button small-link singular" id="details-button" jscontent="details" jsdisplay="(suggestionsDetails &amp;&amp; suggestionsDetails.length &gt; 0) || diagnose" jstcache="2" jsvalues=".detailsText:details; .hideDetailsText:hideDetails;" onclick="detailsButtonClick(); toggleHelpBox()" style="display: none;">
     </button>
    </div>
-   <div class="hidden" id="details" jstcache="0">
-    <div class="suggestions" jsinstance="*0" jsselect="suggestionsDetails" jstcache="3" style="display: none;">
-     <div class="suggestion-header" jstcache="7" jsvalues=".innerHTML:header">
+   <div className="hidden" id="details" jstcache="0">
+    <div className="suggestions" jsinstance="*0" jsselect="suggestionsDetails" jstcache="3" style="display: none;">
+     <div className="suggestion-header" jstcache="7" jsvalues=".innerHTML:header">
      </div>
-     <div class="suggestion-body" jstcache="8" jsvalues=".innerHTML:body">
+     <div className="suggestion-body" jstcache="8" jsvalues=".innerHTML:body">
      </div>
     </div>
    </div>
@@ -6558,7 +6558,7 @@ Runner.spriteDefinitionByType = {
   <div id="sub-frame-error" jstcache="0">
    <!-- Show details when hovering over the icon, in case the details are
          hidden because they're too large. -->
-   <div class="icon" jstcache="0">
+   <div className="icon" jstcache="0">
    </div>
    <div id="sub-frame-error-details" jsselect="summary" jstcache="1" jsvalues=".innerHTML:msg">
     The webpage at

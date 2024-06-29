@@ -91,9 +91,7 @@ const SearchFilters = () => {
             Location
           </div>
           <Dropdown
-            overlay={
-              <Menu>
-                {[
+            menu={[
                   { value: "Minnesota" },
                   { value: "Minneapolis" },
                   { value: "Arizona" },
@@ -105,8 +103,7 @@ const SearchFilters = () => {
                       {option.value || ""}
                     </a>
                   </Menu.Item>
-                ))}
-              </Menu>
+                ))
             }
             placement="bottomLeft"
             trigger={["hover"]}
@@ -123,9 +120,8 @@ const SearchFilters = () => {
           </div>
           <Dropdown
             className="self-stretch"
-            overlay={
-              <Menu>
-                {[
+            menu={
+                [
                   { value: "Apartments" },
                   { value: "Condos" },
                   { value: "Houses" },
@@ -138,8 +134,7 @@ const SearchFilters = () => {
                       {option.value || ""}
                     </a>
                   </Menu.Item>
-                ))}
-              </Menu>
+                ))
             }
             placement="bottomLeft"
             trigger={["hover"]}
@@ -156,9 +151,7 @@ const SearchFilters = () => {
           </div>
           <Dropdown
             className="self-stretch"
-            overlay={
-              <Menu>
-                {[
+            menu={[
                   { value: "US$ 500-US$ 1000" },
                   { value: "US$ 1000-US$ 1500" },
                   { value: "US$ 1500-US$ 2000" },
@@ -174,8 +167,7 @@ const SearchFilters = () => {
                       {option.value || ""}
                     </a>
                   </Menu.Item>
-                ))}
-              </Menu>
+                ))
             }
             placement="bottomLeft"
             trigger={["hover"]}
