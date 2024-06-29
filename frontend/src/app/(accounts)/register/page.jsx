@@ -80,12 +80,12 @@ const RegisterPage = () => {
               <p className="mb-6 text-base text-secondary-color dark:text-dark-7">
                 OR
               </p>
-              <div className="flex items-center justify-center gap-2 bg-black dark:bg-white rounded-md py-2">
+              {/* <div className="flex items-center justify-center gap-2 bg-black dark:bg-white rounded-md py-2">
                 <img src="/svgs/google.svg" alt="" className="w-[25px]" />
                 <p className="text-white dark:text-black text-secondary-color dark:text-dark-7">
                     SignUp with Google
                 </p>
-              </div>
+              </div> */}
               <a
                 href="/forgot-password"
                 className="mb-2 pt-2 inline-block text-base text-dark hover:text-primary hover:underline"

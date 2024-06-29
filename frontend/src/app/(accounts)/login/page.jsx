@@ -1,28 +1,50 @@
 "use client"
 
 import AnimatedText from "@/components/AnimatedText";
+import { useMainProvider } from "@/providers/MainProvider";
 import { signIn, useSession } from 'next-auth/react'
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { set } from "nprogress";
 import React, { useState } from "react";
 import { toast } from "react-toastify";
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
-  const session = useSession();
+  // const session = useSession();
+  const {currentUser, setCurrentUser} = useMainProvider();
   
-  if (session.status === 'authenticated') {
-    router.push('/');
-  }
+  // if (session.status === 'authenticated') {
+  //   router.push('/');
+  // }
   
   const handleSubmit = async(e) => {
     e.preventDefault();
-    signIn("credentials", {
-      email,
-      password,
-    });
+    // signIn("credentials", {
+    //   email,
+    //   password,
+    // });
+    setLoading(true);
+    try {
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        body: JSON.stringify({ email, password }),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      const data = await response.json();
+      console.log("login Response data: ", data);
+      setCurrentUser(data);
+      router.push('/');
+      setLoading(false);
+    } catch (error) {
+      toast.error("Sign in Error! Try Again!")
+      setLoading(false); 
+    }
   }
   
   return (
@@ -46,7 +68,7 @@ const LoginPage = () => {
                 <div className="mb-10">
                   <input
                     type="submit"
-                    value="Sign In"
+                    value={loading ? "Loading..." : "Sign In"}
                     className="w-full cursor-pointer bg-blue-600 text-white rounded-md border border-primary px-5 py-3 text-base font-medium transition hover:bg-opacity-90"
                   />
                 </div>
@@ -54,12 +76,12 @@ const LoginPage = () => {
               <p className="mb-6 text-base text-secondary-color dark:text-dark-7">
                 OR
               </p>
-              <div className="flex items-center justify-center gap-2 bg-black dark:bg-white rounded-md py-2">
+              {/* <div className="flex items-center justify-center gap-2 bg-black dark:bg-white rounded-md py-2">
                 <img src="/svgs/google.svg" alt="" className="w-[25px]" />
                 <button onClick={() => signIn("google")} className="text-white dark:text-black text-secondary-color dark:text-dark-7">
                     Login with Google
                 </button>
-              </div>
+              </div> */}
               <a
                 href="/forgot-password"
                 className="mb-2 pt-2 inline-block text-base text-dark hover:text-primary hover:underline"

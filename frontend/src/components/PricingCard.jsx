@@ -1,4 +1,5 @@
 "use client"
+import { useMainProvider } from "@/providers/MainProvider";
 import { list } from "@chakra-ui/react";
 import axios from "axios";
 import { useSession } from "next-auth/react";
@@ -17,8 +18,9 @@ const PricingCard = ({
   listItems
 
 }) => {
-  const session = useSession();
-  const email = session?.data?.user?.email;
+  //const session = useSession();
+  //const email = session?.data?.user?.email;
+  const {currentUser} = useMainProvider();
   // POST request 
   const handleSubscription = async (id) => {
     // e.preventDefault();

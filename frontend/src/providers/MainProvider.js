@@ -10,6 +10,7 @@ export function MainProvider({children}) {
   const [customProperties, setCustomProperties] = useState([]);
   const [currentUser, setCurrentUser] = useState();
   const [loading, setLoading] = useState(false);
+  const [organization, setOrganization] = useState({})
   
   return (
     <MainContext.Provider
@@ -18,7 +19,8 @@ export function MainProvider({children}) {
         location, setLocation,
         customProperties, setCustomProperties,
         currentUser, setCurrentUser,
-        loading, setLoading
+        loading, setLoading,
+        organization, setOrganization
       }}>
         {children}
     </MainContext.Provider>

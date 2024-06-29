@@ -30,8 +30,9 @@ const CustomLink = ({href,name, items, toggle}) => {
 const NavBar = () => {
   const [showMobileNav, setShowMobileNav] = useState(false);
   const {currentUser, setCurrentUser, setLoading} = useMainProvider();
-  const session = useSession();
-  const email = session.data?.user?.email
+  //const session = useSession();
+  //const email = session.data?.user?.email
+  const email = currentUser?.email
   
   const fetchUser = async() => {
     setLoading(true)
@@ -45,30 +46,23 @@ const NavBar = () => {
       setLoading(false)
     }
   }
-  // console.log(currentuser)
-  console.log(session)
+  console.log("Current User: ", currentUser)
 
   useEffect(() => {
-    console.log("Email: ", session?.data?.user?.email)
-    if (!session?.data?.user?.email){
+    
+    if (!currentUser){
       console.log("No session, No Logged in user")
       return
     }
     fetchUser()
-  }, [session?.data?.user.email])
+  }, [currentUser])
 
   const pathname = usePathname()
 
   const handleClick = () => {
     setShowMobileNav(!showMobileNav)
   }
-  const handleLogout = () => {
-    // logout
-    console.log('Logging out')
-  }
-  if (session.loading){
-    return <LoadingPage />
-  }
+
   return (    
     <nav className="darK:bg-black shadow-lg">
         <div className="mx-auto px-4 mr-8">
@@ -87,7 +81,7 @@ const NavBar = () => {
                       <CustomLink href={"/features"} name={"Features"} toggle={handleClick}/>
                       <CustomLink href={"/contact"} name={"Contacts"} toggle={handleClick}/>
                       {
-                        session.status === 'authenticated' ? (
+                        currentUser ? (
                           <div className="flex flex-row items-center justify-center">
                             <img src={currentUser?.image || '/images/defaultProfile.png' } alt="Profile" className="w-8 h-8 rounded-full" />
                             <UserMenu />
@@ -124,7 +118,7 @@ const NavBar = () => {
                 <CustomLink href={"/features"} name={"Features"} toggle={handleClick}/>
                 <CustomLink href={"/contact"} name={"Contacts"} toggle={handleClick}/>
                 {
-                  session.status === 'authenticated' ? (
+                  currentUser ? (
                     <button className="flex flex-row ml-2 mb-2">
                       <img src={currentUser?.image || '/images/defaultProfile.png' } alt="Profile" className="w-8 h-8 rounded-full" />
                       <UserMenu />
