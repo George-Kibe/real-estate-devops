@@ -8,8 +8,7 @@ WORKDIR /frontend
 RUN apk --no-cache add curl
 
 # Copy package.json and package-lock.json to the working directory
-COPY package.json .
-COPY package-lock.json .
+COPY package.json package-lock.json ./
 
 # Install dependencies
 RUN npm install 
@@ -25,4 +24,3 @@ EXPOSE 3000
 
 # Start the application
 CMD ["npm", "run", "start"]
-# CMD [ "node", ".next/standalone/server.js" ]

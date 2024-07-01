@@ -15,6 +15,7 @@ import {
     Users,
     CreditCard,
     Settings,
+    Star,
     User,
   } from 'lucide-react';
   import Link from 'next/link';
@@ -29,6 +30,10 @@ import {
             <CommandItem>
               <LayoutDashboard className='mr-2 h-4 w-4' />
               <Link href='/dashboard'>Dashboard</Link>
+            </CommandItem>
+            <CommandItem>
+              <Star className='mr-2 h-4 w-4' />
+              <Link href='/favorites'>Favorites</Link>
             </CommandItem>
             <CommandItem>
               <Newspaper className='mr-2 h-4 w-4' />
