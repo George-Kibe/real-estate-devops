@@ -22,7 +22,7 @@ venv/
 # misc
 .DS_Store
 *.pem
-
+migrations/
 # debug
 npm-debug.log*
 yarn-debug.log*

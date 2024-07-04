@@ -1,29 +1,26 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import AnimatedText from './AnimatedText';
 import { useMainProvider } from '@/providers/MainProvider';
-import { Menu, Dropdown, Button } from "antd";
-import {  DownOutlined} from "@ant-design/icons";
 import axios from 'axios';
+import { Button } from './ui/button';
 
 const SearchView = () => {
-  const [searchtext, setSearchtext] = useState('')
-  const {location, setCustomProperties, setLocation} = useMainProvider()
+  const [searchtext, setSearchtext] = useState('');
+  const {location, setCustomProperties, setLocation} = useMainProvider();
+  const [type, setType] = useState('');
+  const [minPrice, setMinPrice] = useState('');
+  const [maxPrice, setMaxPrice] = useState('');
+  const [bedrooms, setBedrooms] = useState('');
+  const [property, setProperty] = useState('');
 
-  const handleClick = async(e) => {
-    e.preventDefault();
-    if(!searchtext){
-      toast.error('Please enter Location to search');
-      return
-    };
-    // call the backend API to search for houses based on the location
+  const searchForProperties = async (text) => {
     try {
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/search-properties/?search=${searchtext}`)
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/search-properties/?search=${text}`)
       if (response.data.count > 0){
         setCustomProperties(response.data.results)
-        setLocation(searchtext)
       }else{
         toast.error('No properties found for the given location. Try Another Location or Advanced Search');
       } 
@@ -32,13 +29,29 @@ const SearchView = () => {
       toast.error("Error searching. Please try again");
       console.log(error)
     }
-  };
+  }
+  useEffect(() => {
+    if (!type){
+      return;
+    }
+    if (type === 'All') {
+      searchForProperties('a');
+    } else if (type === 'Subsidized') {
+      searchForProperties(type);
+    }
+  }, [type])
+  
 
-  const handleAdvancedSearch = (e) => {
+  const handleClick = async(e) => {
     e.preventDefault();
-    console.log("Advanced Searching", searchtext);
-    toast.error('Please enter Location to search');
+    if(!searchtext){
+      toast.error('Please enter Location to search');
+      return
+    };
+    await searchForProperties(searchtext);
+    setLocation(searchtext);
   };
+  console.log("Type: ", type)
 
   return (
     <div className="flex w-full pt-4 pb-8 flex-col items-center justify-center bg-cover bg-center">
@@ -55,22 +68,22 @@ const SearchView = () => {
               className=" py-2 pl-4 pr-10 rounded-md border border-gray-300"
             />
             <button type='submit' onClick={handleClick} className="flex flex-row ml-4 bg-green-600 px-2 p-1 rounded-lg">
-              <p className="self-center mr-2">Basic Search</p>
+              <p className="self-center mr-2">Search</p>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6 md:size-8">
                   <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
               </svg>
             </button>
           </form>
-          <button type='submit' onClick={handleAdvancedSearch} className="flex flex-row ml-4 bg-blue-600 px-2 p-1 rounded-lg">
+          {/* <button type='submit' onClick={handleAdvancedSearch} className="flex flex-row ml-4 bg-blue-600 px-2 p-1 rounded-lg">
             <p className="self-center mr-2">Advanced Search</p>
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6 md:size-8">
                 <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
             </svg>
-          </button>
+          </button> */}
         </div>
       </div>
       <AnimatedText text={`Properties Around ${location}`} />
-      <SearchFilters />
+      <SearchFilters setType={setType} />
     </div>
   )
 }
@@ -78,106 +91,61 @@ const SearchView = () => {
 export default SearchView
 
 
-const SearchFilters = () => {
-
-  const onSearchCTAClick = () => {
-    console.log("Search CTA Clicked");
-  };
+const SearchFilters = ({setType}) => {
+  const handleFilters = () => {
+    console.log("Apply Filters");
+  }
   return (
-    <div className="self-stretch flex flex-row flex-wrap items-start justify-center">
-      <div className="flex-1 rounded-lg justify-around bg-gray-white flex flex-col py-8 px-[62px] box-border items-center max-w-[1400px] md:flex-row">
-        <div className="w-[137px] flex flex-col items-start justify-start gap-[16px] text-center">
-          <div className="relative leading-[24px] capitalize font-semibold">
-            Location
-          </div>
-          <Dropdown
-            menu={[
-                  { value: "Minnesota" },
-                  { value: "Minneapolis" },
-                  { value: "Arizona" },
-                  { value: "New York" },
-                  { value: "California" },
-                ].map((option, index) => (
-                  <Menu.Item key={index}>
-                    <a onClick={(e) => e.preventDefault()}>
-                      {option.value || ""}
-                    </a>
-                  </Menu.Item>
-                ))
-            }
-            placement="bottomLeft"
-            trigger={["hover"]}
-          >
-            <a onClick={(e) => e.preventDefault()} className="flex flex-row items-center">
-              {`Select City`}
-              <DownOutlined className="ml-1"/>
-            </a>
-          </Dropdown>
+    <div className="flex-1 p-2">
+      <div className="flex flex-col md:flex-row space-between items-center justify-center">
+        <div className="gap-2">
+          <label htmlFor="type" className='mr-4'>Type:</label>
+          <select name="type" id="type" onChange={(event) => setType(event.target.value)}>
+            <option value="All">All</option>
+            <option value="Subsidized">Subsidized</option>
+          </select>
         </div>
-        <div className="w-[177px] flex flex-col items-start justify-start gap-[16px]">
-          <div className="relative leading-[24px] capitalize font-semibold flex items-end w-[150px]">
-            Property Type
-          </div>
-          <Dropdown
-            className="self-stretch"
-            menu={
-                [
-                  { value: "Apartments" },
-                  { value: "Condos" },
-                  { value: "Houses" },
-                  { value: "TownHouses" },
-                  { value: "Duplexes" },
-                  { value: "Newly Constructed" },
-                ].map((option, index) => (
-                  <Menu.Item key={index}>
-                    <a onClick={(e) => e.preventDefault()}>
-                      {option.value || ""}
-                    </a>
-                  </Menu.Item>
-                ))
-            }
-            placement="bottomLeft"
-            trigger={["hover"]}
-          >
-            <a onClick={(e) => e.preventDefault()}>
-              {`Select property type `}
-              <DownOutlined />
-            </a>
-          </Dropdown>
+        <div className="item">
+          <label htmlFor="property" className='mr-4'>Property:</label>
+          <select name="property" id="property">
+            <option value="">Any</option>
+            <option value="apartment">Apartment</option>
+            <option value="house">House</option>
+            <option value="condo">Condo</option>
+          </select>
         </div>
-        <div className="w-[155px] flex flex-col items-start justify-start gap-[16px]">
-          <div className="relative leading-[24px] capitalize font-semibold flex items-end w-[150px]">
-            Rent Range
-          </div>
-          <Dropdown
-            className="self-stretch"
-            menu={[
-                  { value: "US$ 500-US$ 1000" },
-                  { value: "US$ 1000-US$ 1500" },
-                  { value: "US$ 1500-US$ 2000" },
-                  { value: "US$ 2000-US$ 3000" },
-                  { value: "US$ 3001-US$ 4000" },
-                  { value: "US$ 4000-US$ 5000" },
-                  { value: "US$ 5000-US$ 6000" },
-                  { value: "US$ 6000-US$ 9000" },
-                  { value: "Above US$ 100000" },
-                ].map((option, index) => (
-                  <Menu.Item key={index}>
-                    <a onClick={(e) => e.preventDefault()}>
-                      {option.value || ""}
-                    </a>
-                  </Menu.Item>
-                ))
-            }
-            placement="bottomLeft"
-            trigger={["hover"]}
-          >
-            <a onClick={(e) => e.preventDefault()}>
-              {`Select rent range `}
-              <DownOutlined />
-            </a>
-          </Dropdown>
+        <div className="item">
+          <label htmlFor="minPrice" className='mr-4'>Min Price:</label>
+          <input
+            className='w-24 px-2'
+            type="number"
+            id="minPrice"
+            name="minPrice"
+            placeholder="Any"
+          />
         </div>
+        <div className="item">
+          <label htmlFor="maxPrice" className='mr-4'>Max Price:</label>
+          <input
+            className='w-24 px-2'
+            type="number"
+            id="maxPrice"
+            name="maxPrice"
+            placeholder="Any"
+          />
+        </div>
+        <div className="item">
+          <label htmlFor="bedroom">Bedrooms:</label>
+          <input
+            className='w-20 border-none px-2'
+            type="number"
+            name="bedroom"
+            placeholder="Any"
+          />
+        </div>
+        <Button className='ml-4' onClick={handleFilters}>
+          Apply
+        </Button>
       </div>
     </div>
   )

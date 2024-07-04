@@ -3,6 +3,18 @@ from bs4 import BeautifulSoup
 from django.core.management.base import BaseCommand
 from django.utils.dateparse import parse_datetime
 from core.models import Property
+import re
+
+def convert_to_integer(s):
+    # Use regular expressions to find the first numeric part of the string
+    match = re.search(r'\d+', s)
+    
+    if match:
+        # Convert the matched numeric string to an integer
+        result = int(match.group(0))
+        return result
+    else:
+        return 0
 
 # class Command(BaseCommand):
 #     help = 'Your custom command help message'
@@ -19,7 +31,7 @@ class Command(BaseCommand):
         url = 'https://www.housinglink.org/hlistlogin/services/ListingSearch.asmx/GetSearchResults' 
         # Replace with your actual API endpoint
         
-        for i in range(21, 32):
+        for i in range(1, 32):
             payload = {
                 "searchText": "Minneapolis, MN, USA",
                 "selections": {
@@ -84,7 +96,7 @@ class Command(BaseCommand):
                         'postal_code': item['AddressZipCode'],
                         'application_link': apply_online_html,
                         'street_address': item['ListingAddress'],
-                        'price': item['Rent'].replace('$', ''),
+                        'price': convert_to_integer(item['Rent']), #.replace('$', ''),
                         'bedrooms': item['NumberBedrooms'],
                         'bathrooms': float(item['NumberBathrooms'].replace('+', '')),
                         'advert_type': "FOR RENT",  # Default value, update if actual data is available
