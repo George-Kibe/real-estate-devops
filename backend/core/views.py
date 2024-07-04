@@ -99,12 +99,16 @@ class ClientViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows clients to be viewed or edited.
     """
-
     queryset = Client.objects.all()
     serializer_class = ClientSerializer
 
     def list(self, request):
-        queryset = self.filter_queryset(self.get_queryset())
+        owner_id = request.query_params.get('owner_id')
+        #queryset = self.filter_queryset(self.get_queryset())
+        if owner_id is not None:
+            queryset = Client.objects.filter(owner_id=owner_id)
+        else:
+            queryset = self.filter_queryset(self.get_queryset())
         page = self.paginate_queryset(queryset)
         if page is not None:
             serializer = self.get_serializer(page, many=True)
