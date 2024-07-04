@@ -79,6 +79,9 @@ class Property(TimeStampedUUIDModel):
             random.choices(string.ascii_uppercase + string.digits, k=10)
         )
         super(Property, self).save(*args, **kwargs)
+    
+    def __str__(self):
+        return self.title
 
 class Message(TimeStampedUUIDModel):
     name = models.CharField(max_length=100)
