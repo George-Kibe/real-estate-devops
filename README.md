@@ -13,5 +13,5 @@ Python django for REST APIs and Beautifulsoup for data scrapping
 ```docker run -d -p 4444:4444 -v /dev/shm:/dev/shm selenium/standalone-chrome```
 
 ### Run Django Management Commands
-```python3 manage.py my_command```
+```python3 manage.py housing_link```
 

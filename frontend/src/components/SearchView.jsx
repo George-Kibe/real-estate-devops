@@ -99,14 +99,14 @@ const SearchFilters = ({setType}) => {
     <div className="flex-1 p-2">
       <div className="flex flex-col md:flex-row space-between items-center justify-center">
         <div className="gap-2">
-          <label htmlFor="type" className='mr-4'>Type:</label>
+          <label className='mr-4'>Type:</label>
           <select name="type" id="type" onChange={(event) => setType(event.target.value)}>
             <option value="All">All</option>
             <option value="Subsidized">Subsidized</option>
           </select>
         </div>
         <div className="item">
-          <label htmlFor="property" className='mr-4'>Property:</label>
+          <label className='mr-4'>Property:</label>
           <select name="property" id="property">
             <option value="">Any</option>
             <option value="apartment">Apartment</option>
@@ -115,7 +115,7 @@ const SearchFilters = ({setType}) => {
           </select>
         </div>
         <div className="item">
-          <label htmlFor="minPrice" className='mr-4'>Min Price:</label>
+          <label className='mr-4'>Min Price:</label>
           <input
             className='w-24 px-2'
             type="number"
@@ -125,7 +125,7 @@ const SearchFilters = ({setType}) => {
           />
         </div>
         <div className="item">
-          <label htmlFor="maxPrice" className='mr-4'>Max Price:</label>
+          <label className='mr-4'>Max Price:</label>
           <input
             className='w-24 px-2'
             type="number"
@@ -135,7 +135,7 @@ const SearchFilters = ({setType}) => {
           />
         </div>
         <div className="item">
-          <label htmlFor="bedroom">Bedrooms:</label>
+          <label>Bedrooms:</label>
           <input
             className='w-20 border-none px-2'
             type="number"

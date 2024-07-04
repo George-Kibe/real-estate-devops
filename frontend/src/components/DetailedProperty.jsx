@@ -18,26 +18,25 @@ const PropertyCard = ({ property }) => {
       <div className="flex flex-col justify-around w-4/5">
         <div className="p-4">
           <p className="text-xl font-bold">{property.title}</p>
-          <p className="flex flex-wrap">Description: {property.description}</p>
-          <p className="">Type: {property.advert_type}</p>
-          <p className="">City: {property.city}</p>
-          <p className="">Status: {property.status}</p>
-          <p className="">Property type: {property.property_type}</p>
+          <p className="flex flex-wrap"><p className="font-semibold">Description:</p>{property.description}</p>
+          <p className="flex gap-2 flex-row"><p className="font-semibold">Type:</p>{property.advert_type}</p>
+          <p className="flex gap-2 flex-row"><p className="font-semibold">City:</p>{property.city}</p>
+          <p className="flex gap-2 flex-row"><p className="font-semibold">Status:</p>{property.status}</p>
+          <p className="flex gap-2 flex-row"><p className="font-semibold">Property type:</p>{property.property_type}</p>
           <p className="">
             {property.postal_code}, {property.street_address}
           </p>
-          <p className="flex gap-2 items-center flex-row"><IoMdCall /> {property.phone_number}</p>
-          <p className="flex gap-2 items-center flex-row"><MdOutlineEmail /> {property.email_listing}</p>
+          <p className="flex gap-1 items-center flex-row"><IoMdCall className="w-8 h-8" /> {property.phone_number}</p>
+          <p className="flex gap-1 items-center flex-row"><MdOutlineEmail className="w-8 h-8" /> {property.email_listing}</p>
           
         </div>
-        <div className="flex flex-row items-center gap-2 ">
+        <div className="flex flex-row items-center gap-1 ">
         {property.bedrooms}
-          <FaBed /> | {property.bathrooms} <FaBath /> | {property.area} sqft <BsGridFill />
+          <FaBed /> | {property.bathrooms} <FaBath /> | {property.plot_area} sqft <BsGridFill />
           <div className="bg-black/80 dark:bg-white/80 rounded-md p-4 text-white dark:text-black flex justify-between">
             <p>Price: ${property.price}</p>
           </div>
         </div>
-        
       </div>
     </Card>
   );

@@ -1,28 +1,31 @@
-'use client'
-/* eslint-disable react/react-in-jsx-scope */
-import {createContext, useContext, useState} from 'react';
+'use client';
+import React, { createContext, useContext } from 'react';
+import useLocalStorage from './useLocalStorage';
 
 const MainContext = createContext({});
 
-export function MainProvider({children}) {
-  const [user, setUser] = useState(null);
-  const [location, setLocation] = useState('Minnesota');
-  const [customProperties, setCustomProperties] = useState([]);
-  const [currentUser, setCurrentUser] = useState();
-  const [loading, setLoading] = useState(false);
-  const [organization, setOrganization] = useState({})
-  
+export function MainProvider({ children }) {
+  const [user, setUser] = useLocalStorage('user', null);
+  const [location, setLocation] = useLocalStorage('location', 'Minnesota');
+  const [customProperties, setCustomProperties] = useLocalStorage('customProperties', []);
+  const [favoriteProperties, setFavoriteProperties] = useLocalStorage('favoriteProperties', []);
+  const [currentUser, setCurrentUser] = useLocalStorage('currentUser', null);
+  const [loading, setLoading] = useLocalStorage('loading', false);
+  const [organization, setOrganization] = useLocalStorage('organization', {});
+
   return (
     <MainContext.Provider
       value={{
         user, setUser,
         location, setLocation,
         customProperties, setCustomProperties,
+        favoriteProperties, setFavoriteProperties,
         currentUser, setCurrentUser,
         loading, setLoading,
-        organization, setOrganization
-      }}>
-        {children}
+        organization, setOrganization,
+      }}
+    >
+      {children}
     </MainContext.Provider>
   );
 }

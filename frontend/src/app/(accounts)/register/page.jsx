@@ -5,12 +5,14 @@ import AnimatedText from "@/components/AnimatedText";
 import Link from "next/link";
 import React, { useState } from "react";
 import { toast } from "react-toastify";
+import { set } from 'nprogress';
 
 const RegisterPage = () => {
   const [email, setEmail] = useState('');
-  const [error, setError] = useState(false)
+  const [error, setError] = useState(false);
   const [password, setPassword] = useState('');
-  const [passwordTwo, setpasswordTwo] = useState('')
+  const [passwordTwo, setpasswordTwo] = useState('');
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   const handleSubmit = async(e) => {
@@ -26,6 +28,7 @@ const RegisterPage = () => {
     }
     // send register data and redirect to dashboard
     const body = JSON.stringify({ email, password })
+    setLoading(true)
     try {
       const response = await fetch("/api/auth/users/", {
         method: "POST",
@@ -37,16 +40,20 @@ const RegisterPage = () => {
       if (response.status === 201) {
         router.push("/login?success=Account has been successfully created")
         toast.success("User Created Successfully! You can now login")
-      }   
+      }else{
+        toast.error("Error creating User! Try Again. Probbly Email already exists!")
+      }
+      setLoading(false)
     } catch (error) {
       setError(true)
       toast.error("Error creating User! Try Again")
+      setLoading(false)
     }
   }
 
   return (
     <section className="bg-gray-1 dark:bg-dark ">
-        <AnimatedText text={"Register"} />
+      <AnimatedText text={"Register"} />
       <div className="container mx-auto">
         <div className="-mx-4 flex flex-wrap">
           <div className="w-full px-4">
@@ -72,7 +79,7 @@ const RegisterPage = () => {
                 <div className="mb-10">
                   <input
                     type="submit"
-                    value="Sign Up"
+                    value={loading ? "Loading..." : "Sign Up"}
                     className="w-full cursor-pointer bg-blue-600 text-white rounded-md border border-primary px-5 py-3 text-base font-medium transition hover:bg-opacity-90"
                   />
                 </div>

@@ -16,6 +16,10 @@ import { signOut } from "next-auth/react";
 
 export function UserMenu() {
   const router = useRouter()
+  const handleLogout = async () => {
+    await signOut();
+    localStorage.clear()
+  }
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -30,7 +34,7 @@ export function UserMenu() {
         <DropdownMenuItem onClick={() => console.log("Switching to seller")}>
           Switch To Seller
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => signOut()}>
+        <DropdownMenuItem onClick={() => handleLogout()}>
           Logout
         </DropdownMenuItem>
       </DropdownMenuContent>

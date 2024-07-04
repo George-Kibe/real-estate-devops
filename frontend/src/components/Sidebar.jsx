@@ -17,6 +17,7 @@ import {
     Settings,
     Star,
     User,
+    User2Icon
   } from 'lucide-react';
   import Link from 'next/link';
   
@@ -41,7 +42,12 @@ import {
             </CommandItem>
             <CommandItem>
               <Users className='mr-2 h-4 w-4' />
-              <Link href='/members'>Members</Link>
+              <Link href='/members'>My Members</Link>
+            </CommandItem>
+            <CommandItem>
+              <User2Icon className='h-4 w-4' />
+              <User2Icon className='mr-2 h-4 w-4' />
+              <Link href='/clients'>Clients</Link>
             </CommandItem>
           </CommandGroup>
           <CommandSeparator />

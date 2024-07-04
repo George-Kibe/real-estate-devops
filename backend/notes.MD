@@ -25,3 +25,7 @@
 
 ####
 ```sudo apt update && sudo apt install -y mesa-utils && sudo apt install -y libgl1-mesa-glx libx11-dev```
+
+### Run Django Management Commands
+```python3 manage.py housing_link```
+

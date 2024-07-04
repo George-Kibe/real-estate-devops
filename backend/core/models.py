@@ -23,6 +23,9 @@ class Client(TimeStampedUUIDModel):
     city = models.CharField(max_length=100, blank=True)
     house_type = models.CharField(max_length=50, blank=True)
     additional_info = models.TextField(blank=True, null=True)
+    staff_id = models.CharField(max_length=100, blank=True, null=True)
+    owner_id = models.CharField(max_length=100, blank=True, null=True)
+    staff_email = models.EmailField(blank=True, null=True)
 
     def __str__(self):
         return self.client_name
@@ -37,7 +40,7 @@ class Property(TimeStampedUUIDModel):
     city = models.CharField(verbose_name=_("City"), max_length=180, default="")
     postal_code = models.CharField(verbose_name=_("Postal Code"), max_length=100, default="140", null=True)
     street_address = models.CharField(verbose_name=_("Street Address"), max_length=150, default="")
-    price = models.IntegerField(verbose_name=_("Price"), max_length=150, default=1)
+    price = models.IntegerField(verbose_name=_("Price"), default=1)
     email_listing=models.CharField(verbose_name=_("Listing Email"), max_length=500, default="")
     phone_number=models.CharField(verbose_name=_("Phone Number"), max_length=50, default="")
     details_link=models.CharField(verbose_name=_("Details Link"), max_length=50, default="")

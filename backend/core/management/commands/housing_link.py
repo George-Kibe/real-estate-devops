@@ -15,7 +15,12 @@ def convert_to_integer(s):
         return result
     else:
         return 0
-
+def convert_to_img_string(string):
+    if(string.startswith('http')):
+        img_string = string
+    else:
+        img_string = 'https://www.housinglink.org/photos/' + string
+    return img_string
 # class Command(BaseCommand):
 #     help = 'Your custom command help message'
 
@@ -101,7 +106,7 @@ class Command(BaseCommand):
                         'bathrooms': float(item['NumberBathrooms'].replace('+', '')),
                         'advert_type': "FOR RENT",  # Default value, update if actual data is available
                         'property_type': item['UnitType'],
-                        'images': [item['TopPhoto'], photo_image_html],  # Assuming TopPhoto is the main image
+                        'images': [convert_to_img_string(item['TopPhoto']), convert_to_img_string(photo_image_html)],  # Assuming TopPhoto is the main image
                     }
                 )
             print("Done for page Number: ", i)

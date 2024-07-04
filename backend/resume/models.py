@@ -40,8 +40,8 @@ class Resume(models.Model):
     phone = models.CharField(max_length=100, null=True)
     summary = models.TextField(null=True)
     # skills in key value
-    experience = models.ManyToManyField(Experience, related_name='resumes', null=True)
-    education = models.ManyToManyField(Education, related_name='resumes', null=True)
+    experience = models.ManyToManyField(Experience, related_name='resumes')
+    education = models.ManyToManyField(Education, related_name='resumes')
     skills = models.JSONField(null=True)
     
     
