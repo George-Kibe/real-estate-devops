@@ -49,14 +49,14 @@ const AllProperties = () => {
     }, [page]);
 
     let pages;
-    console.log(count)
+    // console.log(count)
     
     if (count/100 < 12 ){
       pages = createArrayOfNumbers(count/100 + 1);
     } else{
       pages = createArrayOfNumbers(12)
     }
-    console.log("Pages: ", pages)
+    // console.log("Pages: ", pages)
     // console.log("Properties: ", properties.length);
     return (
       <div>

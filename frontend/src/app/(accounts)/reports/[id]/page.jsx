@@ -1,20 +1,24 @@
 "use client"
 
 import AnimatedText from "@/components/AnimatedText";
+import InviteClientModal from "@/components/modals/InviteClientModal";
+import { Button } from "@/components/ui/button";
 import { useMainProvider } from "@/providers/MainProvider";
 import axios from "axios";
 import {Trash2, Pencil} from 'lucide-react';
+import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 // const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
 const BACKEND_URL = "http://localhost:8000"
 
-export default function ReportsPage() {
+export default function MembersPage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [clients, setClients] = useState([]);
   const {currentUser} = useMainProvider();
+  const {id} = useParams()
 
   const fetchClients = async() => {
     try {
@@ -61,7 +65,7 @@ export default function ReportsPage() {
   
   return (
     <div className='flex flex-col justify-between gap-5 mb-5'>
-      <AnimatedText text={"Reports Page"} />
+      <AnimatedText text={`Reports for ${id}`} />
       {
         !clients?.length && <p className="">You do not have any clients yet!</p>
       }
