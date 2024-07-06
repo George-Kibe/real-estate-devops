@@ -150,7 +150,7 @@ class ClientViewSet(viewsets.ModelViewSet):
 
 class ReportViewSet(viewsets.ModelViewSet):
     """
-    API endpoint that allows clients to be viewed or edited.
+    API endpoint that allows reports to be viewed or edited.
     """
     queryset = Report.objects.all()
     serializer_class = ReportSerializer
@@ -174,12 +174,12 @@ class ReportViewSet(viewsets.ModelViewSet):
         try:
             report = self.queryset.get(pk=pk)
         except ObjectDoesNotExist:
-            return Response(data={"error": "Client not found"}, status=status.HTTP_404_NOT_FOUND)
-        serializer = ClientSerializer(report)
+            return Response(data={"error": "Report not found"}, status=status.HTTP_404_NOT_FOUND)
+        serializer = ReportSerializer(report)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
     def create(self, request, *args, **kwargs):
-        serializer = ClientSerializer(data=request.data, context={'request': request})
+        serializer = ReportSerializer(data=request.data, context={'request': request})
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=201)
@@ -187,7 +187,7 @@ class ReportViewSet(viewsets.ModelViewSet):
     
     def update(self, request, pk=None):
         report = self.queryset.get(pk=pk)
-        serializer = ClientSerializer(report, data=request.data)
+        serializer = ReportSerializer(report, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)

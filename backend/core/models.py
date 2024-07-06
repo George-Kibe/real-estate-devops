@@ -33,12 +33,11 @@ class Client(TimeStampedUUIDModel):
 class Report(TimeStampedUUIDModel):
     client_id = models.CharField(max_length=100, null=True, blank=True)
     report_type = models.CharField(max_length=100, null=True, blank=True)
-    report_date = models.DateField()
     report_draft = models.TextField(null=True, blank=True)
     report_final = models.TextField(null=True, blank=True)
 
     def __str__(self):
-        return f"{self.client.client_name} - {self.report_type}"
+        return f"{self.client_id} - {self.report_type}"
 class Property(TimeStampedUUIDModel):
     title = models.CharField(verbose_name=_("Property Title"), max_length=250)
     link =  models.CharField(verbose_name=_("Property Link"), max_length=250)
