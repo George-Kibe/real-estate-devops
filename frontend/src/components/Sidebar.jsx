@@ -9,6 +9,7 @@ import {
     CommandSeparator,
     CommandShortcut,
   } from '@/components/ui/command';
+import { useMainProvider, currentUser } from '@/providers/MainProvider';
   import {
     LayoutDashboard,
     Newspaper,
@@ -22,6 +23,7 @@ import {
   import Link from 'next/link';
   
   const Sidebar = () => {
+    const {orgMode, currentUser} = useMainProvider();
     return (
       <Command className='bg-secondary rounded-none'>
         <CommandInput placeholder='Type a command or search...' />
@@ -42,7 +44,8 @@ import {
             </CommandItem>
             <CommandItem>
               <Users className='mr-2 h-4 w-4' />
-              <Link href='/members'>My Members</Link>
+              <Link href='/members'>{orgMode? `${currentUser?.name} 's Members` : "My members"}
+              </Link>
             </CommandItem>
             <CommandItem>
               <User2Icon className='h-4 w-4' />
@@ -52,14 +55,20 @@ import {
           </CommandGroup>
           <CommandSeparator />
           <CommandGroup heading='Settings'>
-            <CommandItem>
-              <User className='mr-2 h-4 w-4' />
-              <Link href='/my-account'>My Account</Link>
-            </CommandItem>
-            <CommandItem>
-              <CreditCard className='mr-2 h-4 w-4' />
-              <Link href='/billing'>Billing</Link>
-            </CommandItem>
+            {
+              !orgMode && 
+              <>
+              <CommandItem>
+                <User className='mr-2 h-4 w-4' />
+                <Link href='/my-account'>My Account</Link>
+              </CommandItem>
+              <CommandItem>
+                <CreditCard className='mr-2 h-4 w-4' />
+                <Link href='/billing'>Billing</Link>
+              </CommandItem>
+              </>
+            }
+            
             {/* <CommandItem>
               <Settings className='mr-2 h-4 w-4' />
               <Link href='/settings'>Settings</Link>

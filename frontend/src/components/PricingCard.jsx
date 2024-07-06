@@ -49,7 +49,7 @@ const PricingCard = ({
             {type}
           </span>
           <h2 className="mb-5 text-[42px] font-bold text-dark dark:text-white">
-            {price}
+            ${price}
             <span className="text-base font-medium text-body-color dark:text-dark-6">
               / {subscription}
             </span>

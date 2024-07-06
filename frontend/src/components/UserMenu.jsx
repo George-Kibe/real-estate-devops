@@ -33,7 +33,7 @@ export function UserMenu() {
     setTempUser(currentUser)
     setCurrentUser(currentUser?.organization)
     toast.success(`Switched to ${currentUser?.organization?.name}`)
-    router.push("/my-account")
+    router.push("/clients")
   }
   const switchToBackToNormal = () => {
     setOrgMode(false)

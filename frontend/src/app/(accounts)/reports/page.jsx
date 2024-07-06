@@ -1,6 +1,8 @@
 "use client"
 
 import AnimatedText from "@/components/AnimatedText";
+import InviteClientModal from "@/components/modals/InviteClientModal";
+import { Button } from "@/components/ui/button";
 import { useMainProvider } from "@/providers/MainProvider";
 import axios from "axios";
 import {Trash2, Pencil} from 'lucide-react';
@@ -61,9 +63,13 @@ export default function ReportsPage() {
   
   return (
     <div className='flex flex-col justify-between gap-5 mb-5'>
-      <AnimatedText text={"Reports Page"} />
+      <AnimatedText text={"Clients Page"} />
+      <InviteClientModal isOpen={modalOpen} onClose={closeModal} setLoading={setLoading} />
+        <Button className='self-start' onClick={addClient}>
+          {loading? "Loading" : "Add Client"}
+        </Button>
       {
-        !clients?.length && <p className="">You do not have any clients yet!</p>
+        !clients?.length && <p className="">You do not have any clients Reports yet!</p>
       }
       <div className="overflow-hidden rounded-lg border shadow-md m-5">
         <table className="w-full border-collapse text-left text-sm">

@@ -3,6 +3,7 @@ import FAQS from "@/components/FAQs";
 import Features from "@/components/Features";
 import OurOffering from "@/components/OurOffering";
 import PricingCard from "@/components/PricingCard";
+import StripePayment from "@/components/StripePaymentComponent";
 import React from "react";
 
 const FeaturesPage = () => {
@@ -42,7 +43,7 @@ const FeaturesPage = () => {
             </PricingCard>
             <PricingCard
               type="Business"
-              price="$99"
+              price={99}
               subscription="year"
               description="Perfect for small number of clients."
               buttonText="Choose Business"
@@ -59,7 +60,7 @@ const FeaturesPage = () => {
             </PricingCard>
             <PricingCard
               type="Professional"
-              price="$199"
+              price={199}
               subscription="year"
               description="Perfect for commercial users with many clients and need lots of automations."
               buttonText="Choose Professional"
@@ -75,6 +76,7 @@ const FeaturesPage = () => {
             </PricingCard>
           </div>
         </div>
+        <StripePayment />
       </div>
     </section>
   );

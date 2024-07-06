@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { useMainProvider } from "@/providers/MainProvider";
 import axios from "axios";
 import {Trash2, Pencil} from 'lucide-react';
-import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
@@ -18,7 +17,6 @@ export default function MembersPage() {
   const [loading, setLoading] = useState(false);
   const [clients, setClients] = useState([]);
   const {currentUser} = useMainProvider();
-  const {id} = useParams()
 
   const fetchClients = async() => {
     try {
@@ -65,7 +63,11 @@ export default function MembersPage() {
   
   return (
     <div className='flex flex-col justify-between gap-5 mb-5'>
-      <AnimatedText text={`Reports for ${id}`} />
+      <AnimatedText text={"Clients Page"} />
+      <InviteClientModal isOpen={modalOpen} onClose={closeModal} setLoading={setLoading} />
+        <Button className='self-start' onClick={addClient}>
+          {loading? "Loading" : "Add Client"}
+        </Button>
       {
         !clients?.length && <p className="">You do not have any clients yet!</p>
       }

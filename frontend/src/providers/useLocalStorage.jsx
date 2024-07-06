@@ -2,12 +2,10 @@ import { useState, useEffect } from 'react';
 
 const useLocalStorage = (key, initialValue) => {
   const [storedValue, setStoredValue] = useState(() => {
+    if (typeof window === 'undefined') {
+      return initialValue; // Return initial value during server-side rendering
+    }
     try {
-      // Check if we are running on the server
-      if (typeof window === 'undefined') {
-        return initialValue;
-      }
-
       const item = window.localStorage.getItem(key);
       return item ? JSON.parse(item) : initialValue;
     } catch (error) {
@@ -17,13 +15,12 @@ const useLocalStorage = (key, initialValue) => {
   });
 
   useEffect(() => {
-    try {
-      // Check if we are running on the client
-      if (typeof window !== 'undefined') {
+    if (typeof window !== 'undefined') {
+      try {
         window.localStorage.setItem(key, JSON.stringify(storedValue));
+      } catch (error) {
+        console.error(error);
       }
-    } catch (error) {
-      console.error(error);
     }
   }, [key, storedValue]);
 
