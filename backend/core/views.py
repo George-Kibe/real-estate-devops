@@ -1,9 +1,9 @@
-from .models import Property, Message, Client
+from .models import Property, Message, Client, Report
 from rest_framework import permissions, viewsets, status, generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.core.exceptions import ObjectDoesNotExist
-from .serializers import PropertySerializer, MessageSerializer, ScrappedPropertySerializer, ClientSerializer
+from .serializers import PropertySerializer, MessageSerializer, ScrappedPropertySerializer, ClientSerializer, ReportSerializer
 from .apartments import get_apartments
 from django.db.models import Q  # Import Q object for complex queries
 
@@ -147,6 +147,59 @@ class ClientViewSet(viewsets.ModelViewSet):
             return Response(data={"error": "Client not found"}, status=status.HTTP_404_NOT_FOUND)
         client.delete()
         return Response(data={"message": "Client deleted successfully"}, status=status.HTTP_200_OK)
+
+class ReportViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows clients to be viewed or edited.
+    """
+    queryset = Report.objects.all()
+    serializer_class = ReportSerializer
+
+    def list(self, request):
+        client_id = request.query_params.get('client_id')
+        #queryset = self.filter_queryset(self.get_queryset())
+        if client_id is not None:
+            queryset = Report.objects.filter(client_id=client_id)
+        else:
+            queryset = self.filter_queryset(self.get_queryset())
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+    
+    def retrieve(self, request, pk=None):
+        try:
+            report = self.queryset.get(pk=pk)
+        except ObjectDoesNotExist:
+            return Response(data={"error": "Client not found"}, status=status.HTTP_404_NOT_FOUND)
+        serializer = ClientSerializer(report)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def create(self, request, *args, **kwargs):
+        serializer = ClientSerializer(data=request.data, context={'request': request})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=201)
+        return Response(serializer.errors, status=400)
+    
+    def update(self, request, pk=None):
+        report = self.queryset.get(pk=pk)
+        serializer = ClientSerializer(report, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=400)
+    
+    def destroy(self, request, pk=None):
+        try:
+            report = self.queryset.get(pk=pk)
+        except ObjectDoesNotExist:
+            return Response(data={"error": "Report not found"}, status=status.HTTP_404_NOT_FOUND)
+        report.delete()
+        return Response(data={"message": "Report deleted successfully"}, status=status.HTTP_200_OK)
  
 class PropertySearchAPIView(generics.ListAPIView):
     serializer_class = PropertySerializer

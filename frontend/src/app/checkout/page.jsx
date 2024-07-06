@@ -12,6 +12,9 @@ if (process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY === undefined){
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY);
 
 export default function StripePayment({searchParams: { amount=99.99}}) {
+    // TODO: handle successful payments
+    // if amount = 99.99 upgrade user to premium/organization
+    // if amount =199.99 updgrade user to enterprise
     return (
         <div> 
             <main className="max-w-6xl mx-auto p-10 text-center">
