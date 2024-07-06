@@ -46,7 +46,7 @@ const NavBar = () => {
       setLoading(false)
     }
   }
-  console.log("Current User: ", currentUser)
+  //console.log("Current User: ", currentUser)
 
   useEffect(() => {
     

@@ -12,7 +12,7 @@ const AccepInvite = () => {
   const {id} = useParams()
   const router = useRouter()
   const {currentUser, loading} = useMainProvider()
-  console.log("Current User: ", currentUser?._id)
+  //console.log("Current User: ", currentUser?._id)
   
   const acceptInvitation = async() => {
     if (!currentUser) {

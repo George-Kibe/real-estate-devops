@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 
 export default function MyAccountPage() {
   const {currentUser} = useMainProvider();
-  console.log("Current User: ", currentUser?.name)
+  //console.log("Current User: ", currentUser?.name)
   const [name, setName] = useState(currentUser?.name);
   const [userImageBase64, setUserImageBase64] = useState(currentUser?.image);
   const [email, setEmail] = useState(currentUser?.email);

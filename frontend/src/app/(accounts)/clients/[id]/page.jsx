@@ -9,8 +9,8 @@ import {Trash2, Pencil} from 'lucide-react';
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
-// const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
-const BACKEND_URL = "http://localhost:8000"
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
+//const BACKEND_URL = "http://localhost:8000"
 
 export default function MembersPage() {
   const [modalOpen, setModalOpen] = useState(false);

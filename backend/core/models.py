@@ -31,6 +31,9 @@ class Client(TimeStampedUUIDModel):
         return self.client_name
 
 class Report(TimeStampedUUIDModel):
+    title = models.CharField(max_length=255, null=True, blank=True)
+    description = models.TextField(null=True, blank=True)
+    client_name = models.CharField(max_length=100, null=True, blank=True)
     client_id = models.CharField(max_length=100, null=True, blank=True)
     report_type = models.CharField(max_length=100, null=True, blank=True)
     report_draft = models.TextField(null=True, blank=True)

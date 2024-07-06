@@ -5,8 +5,9 @@ import { toast } from 'react-toastify';
 import { Button } from '../ui/button';
 import axios from 'axios';
 import { useMainProvider } from '@/providers/MainProvider';
-// const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
-const BACKEND_URL = "http://localhost:8000"
+
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
+//const BACKEND_URL = "http://localhost:8000"
 
 const InviteClientModal = ({ isOpen, onClose, setLoading }) => {  
   const [name, setName] = useState('');

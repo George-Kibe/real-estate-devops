@@ -7,13 +7,14 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
-// const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
-const BACKEND_URL = "http://localhost:8000"
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
+//const BACKEND_URL = "http://localhost:8000"
 
 export default function ReportsPage() {
   const [loading, setLoading] = useState(false);
   const [currentClient, setCurrentClient] = useState(null);
   const [clients, setClients] = useState([]);
+  const [reports, setReports] = useState([]);
   const {currentUser} = useMainProvider();
   console.log("Current Client: ", currentClient)
 
@@ -27,10 +28,27 @@ export default function ReportsPage() {
       toast.error("Fetching Clients failed. Try Again!")
     }
   }
- 
+  const fetchReports = async() => {
+    try {
+      const response = await axios.get(`${BACKEND_URL}/api/reports/?client_id=${currentClient?.id}`);
+      const data = response.data
+      console.log("Reports Data: ", data)
+      setReports(data.results);
+    } catch (error) {
+      toast.error("Fetching Reports failed. Try Again!")
+    }
+  }
   useEffect(() => {
     fetchClients()
   }, [loading])
+
+  useEffect(() => {
+    if(currentClient){
+      fetchReports();
+    }else{
+      setReports([]);
+    }
+  }, [currentClient?.id])
 
   const selectClient = (client) => {
     setCurrentClient(client)
@@ -93,6 +111,28 @@ export default function ReportsPage() {
             <p className="self-center font-bold">Reports for: {currentClient?.client_name}</p>
             <div className="">
               <Button onClick={generateReport}>Generate Today's Report</Button>
+            </div>
+            {
+              !reports?.length && <p className="">You do not have any reports for this client yet!</p>
+            }
+            <div className="overflow-hidden rounded-lg border shadow-md m-5">
+              <table className="w-full border-collapse text-left text-sm">
+                <tbody className="divide-y ">
+                  {
+                    reports?.map((report, index) => (
+                      <tr className="" key={index}>
+                      <th className="flex gap-3 px-6 py-4 font-normal">
+                        <div className="text-sm flex">
+                          <div className="font-medium text-lime-500">{index+1}.</div>
+                          <div className="">{report?.report_final}</div>
+                        </div>
+                      </th>
+                      <td className="px-6 py-4">{report?.created_at}</td>
+                    </tr>
+                    ))
+                  }
+                </tbody>
+              </table>
             </div>
           </div>
         )
