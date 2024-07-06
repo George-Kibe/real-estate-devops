@@ -1,8 +1,10 @@
+
 "use client"
 
 import AnimatedText from "@/components/AnimatedText";
 import { Button } from "@/components/ui/button";
 import { useMainProvider } from "@/providers/MainProvider";
+import { useRouter } from 'next/navigation';
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
@@ -16,7 +18,8 @@ export default function ReportsPage() {
   const [clients, setClients] = useState([]);
   const [reports, setReports] = useState([]);
   const {currentUser} = useMainProvider();
-  console.log("Current Client: ", currentClient)
+  const router = useRouter();
+  //console.log("Current Client: ", currentClient)
 
   const fetchClients = async() => {
     try {
@@ -64,11 +67,14 @@ export default function ReportsPage() {
       toast.error("Report Generation failed. Try Again!")
     }
   }
+  const viewReport = (id) => {
+    router.push(`/reports/${id}`)
+  }
 
   return (
     <div className='flex flex-col justify-between gap-5 mb-5'>
       {/* <AnimatedText text={"Reports Page"} /> */}
-      <p className="self-center font-bold">View Your Reports Per Client</p>
+      <p className="self-center font-bold">Select Client to View their  Reports</p>
       {
         !clients?.length && <p className="">You do not have any clients Reports yet!</p>
       }
@@ -128,6 +134,9 @@ export default function ReportsPage() {
                         </div>
                       </th>
                       <td className="px-6 py-4">{report?.created_at}</td>
+                      <td className="px-6 py-4">
+                        <Button onClick={()=>viewReport(report?.pkid)}>View Report</Button>
+                      </td>
                     </tr>
                     ))
                   }
