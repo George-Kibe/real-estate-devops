@@ -248,6 +248,7 @@ class ScrapeProperties(APIView):
                 serialized_properties.append(serializer.data)
             else:
                 # Handle validation errors if necessary
+                print(serializer.errors)
                 pass
         
         # Return the serialized data as JSON response

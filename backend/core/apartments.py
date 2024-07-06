@@ -5,13 +5,23 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import time
-
+import re
 # Options for production and compatibility with docker environment
 options = ChromeOptions()
 #options.add_argument("--headless=new")
 # The Docker container running Selenium
 #SELENIUM_CMD_EXECUTOR = "http://selenium:4444/wd/hub"
 
+def convert_to_integer(s):
+    # Use regular expressions to find the first numeric part of the string
+    match = re.search(r'\d+', s)
+    
+    if match:
+        # Convert the matched numeric string to an integer
+        result = int(match.group(0))
+        return result
+    else:
+        return 0
 
 # driver=webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
 #driver = Remote(command_executor=SELENIUM_CMD_EXECUTOR, options=options)
@@ -95,7 +105,7 @@ def get_json_properties(properties):
         json_property = {
             'title': title,
             'street_address': address,
-            'price': pricing,
+            'price': convert_to_integer(pricing),
             'description': beds,
             'amenities': amenities,
             'phone_number': phone,

@@ -15,6 +15,7 @@ def convert_to_integer(s):
         return result
     else:
         return 0
+    
 def convert_to_img_string(string):
     if(string.startswith('http')):
         img_string = string
