@@ -1,10 +1,11 @@
+"use client"
+
 import AnimatedText from "@/components/AnimatedText";
 import FAQS from "@/components/FAQs";
 import Features from "@/components/Features";
 import OurOffering from "@/components/OurOffering";
 import PricingCard from "@/components/PricingCard";
-import StripePayment from "@/components/StripePaymentComponent";
-import React from "react";
+import React, { useState } from "react";
 
 const FeaturesPage = () => {
   return (
@@ -18,7 +19,7 @@ const FeaturesPage = () => {
             <div className="mx-auto mb-[60px] max-w-[510px] text-center">
               <AnimatedText text={'Our Pricing Plan'} />
               <p className="text-base text-body-color dark:text-dark-6">
-                To enjoy our premoum services, subscribe to any of the following plans
+                To enjoy our premium services, subscribe to any of the following plans
               </p>
             </div>
           </div>
@@ -47,7 +48,6 @@ const FeaturesPage = () => {
               subscription="year"
               description="Perfect for small number of clients."
               buttonText="Choose Business"
-              active
               priceId={'price_1POCL0EkdIEftzMHCqQx4dYQ'}
               listItems = {[
                 '5 User',
@@ -76,7 +76,6 @@ const FeaturesPage = () => {
             </PricingCard>
           </div>
         </div>
-        <StripePayment />
       </div>
     </section>
   );

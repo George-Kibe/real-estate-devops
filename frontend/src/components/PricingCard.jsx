@@ -1,13 +1,9 @@
 "use client"
 import { useMainProvider } from "@/providers/MainProvider";
-import { list } from "@chakra-ui/react";
-import axios from "axios";
-import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import React from "react";
-import { toast } from "react-toastify";
 
 const PricingCard = ({
-  children,
   description,
   price,
   type,
@@ -18,28 +14,12 @@ const PricingCard = ({
   listItems
 
 }) => {
-  //const session = useSession();
-  //const email = session?.data?.user?.email;
+  const router = useRouter()
   const {currentUser} = useMainProvider();
-  // POST request 
-  const handleSubscription = async (id) => {
-    // e.preventDefault();
-    if(price === 'Free'){
-      toast.success("You are now subscribed for free");
-      return;
-    }
 
-    const { data } = await axios.post('/api/stripe',
-    {
-      priceId: id
-    },
-    {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }
-    );
-    window.location.assign(data)
+  const handleSubscription = async () => {
+    console.log("Handling checkout")
+    router.push(`/checkout/?amount=${price}`)
   }
   return (
     <>
