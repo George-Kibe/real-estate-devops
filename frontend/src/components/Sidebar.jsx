@@ -68,11 +68,6 @@ import { useMainProvider, currentUser } from '@/providers/MainProvider';
               </CommandItem>
               </>
             }
-            
-            {/* <CommandItem>
-              <Settings className='mr-2 h-4 w-4' />
-              <Link href='/settings'>Settings</Link>
-            </CommandItem> */}
           </CommandGroup>
         </CommandList>
       </Command>
