@@ -12,12 +12,14 @@ const RegisterPage = () => {
   const [error, setError] = useState(false);
   const [password, setPassword] = useState('');
   const [passwordTwo, setpasswordTwo] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   const handleSubmit = async(e) => {
     e.preventDefault();
-    if (!email || !password || !passwordTwo) {
+    if (!email || !password || !passwordTwo || !firstName || !lastName) {
       toast.error('Please fill all fields');
       return;
     }
@@ -26,8 +28,9 @@ const RegisterPage = () => {
       toast.info('Passwords do not match');
       return;
     }
+    const name = firstName + " " + lastName;
     // send register data and redirect to dashboard
-    const body = JSON.stringify({ email, password })
+    const body = JSON.stringify({ email, password, name, firstName, lastName })
     setLoading(true)
     try {
       const response = await fetch("/api/auth/users/", {
@@ -62,6 +65,8 @@ const RegisterPage = () => {
               </div>
               <form onSubmit={handleSubmit}>
                 <InputBox value={email} onChange={(e) => setEmail(e.target.value)} type="email" name="email" placeholder="Email" />
+                <InputBox value={firstName} onChange={(e) => setFirstName(e.target.value)} type="text" name="firstName" placeholder="First Name" />
+                <InputBox value={lastName} onChange={(e) => setLastName(e.target.value)} type="text" name="lastName" placeholder="Last Name" />
                 <InputBox
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}

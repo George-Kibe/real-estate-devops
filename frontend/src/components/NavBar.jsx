@@ -76,8 +76,9 @@ const NavBar = () => {
                     <div className="hidden md:flex items-center space-x-1">
                       <ModeToggle />
                       <CustomLink href={"/#"} name={"Home"} toggle={handleClick}/>
-                      <CustomLink href={"/rent"} name={"For Rent"} toggle={handleClick}/>
-                      <CustomLink href={"/sale"} name={"For Sale"} toggle={handleClick}/>
+                      <CustomLink href={"/rent"} name={"Solutions"} toggle={handleClick}/>
+                      <CustomLink href={"/sale"} name={"Case Studies"} toggle={handleClick}/>
+                      <CustomLink href={"/features"} name={"About Us"} toggle={handleClick}/>
                       <CustomLink href={"/features"} name={"Features"} toggle={handleClick}/>
                       <CustomLink href={"/contact"} name={"Contacts"} toggle={handleClick}/>
                       {
@@ -87,7 +88,7 @@ const NavBar = () => {
                             <UserMenu />
                           </div>
                         ) : (
-                          <CustomLink href={"/login"} name={"Login"} toggle={handleClick}/>
+                          <CustomLink href={"/login"} name={"Sign In"} toggle={handleClick}/>
                         )}
                     </div>
                 </div>
@@ -113,8 +114,9 @@ const NavBar = () => {
             <div className="md:hidden flex flex-col">
                 <ModeToggle />
                 <CustomLink href={"/#"} name={"Home"} toggle={handleClick}/>
-                <CustomLink href={"/rent"} name={"For Rent"} toggle={handleClick}/>
-                <CustomLink href={"/sale"} name={"For Sale"} toggle={handleClick}/>
+                <CustomLink href={"/rent"} name={"Solutions"} toggle={handleClick}/>
+                <CustomLink href={"/sale"} name={"Case Studies"} toggle={handleClick}/>
+                <CustomLink href={"/features"} name={"About Us"} toggle={handleClick}/>
                 <CustomLink href={"/features"} name={"Features"} toggle={handleClick}/>
                 <CustomLink href={"/contact"} name={"Contacts"} toggle={handleClick}/>
                 {
@@ -124,7 +126,7 @@ const NavBar = () => {
                       <UserMenu />
                     </button>
                   ) : (
-                    <CustomLink href={"/login"} name={"Login"} toggle={handleClick}/>
+                    <CustomLink href={"/login"} name={"Sign In"} toggle={handleClick}/>
                 )}
             </div> 
          )

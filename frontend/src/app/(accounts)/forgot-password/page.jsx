@@ -37,7 +37,7 @@ const ForgotPasswordPage = () => {
                   />
                 </div>
               </form>
-              <p className="mb-6 text-base text-secondary-color dark:text-dark-7">
+              {/* <p className="mb-6 text-base text-secondary-color dark:text-dark-7">
                 OR
               </p>
               <div className="flex items-center justify-center gap-2 bg-black dark:bg-white rounded-md py-2">
@@ -45,7 +45,7 @@ const ForgotPasswordPage = () => {
                 <p className="text-white dark:text-black text-secondary-color dark:text-dark-7">
                     SignUp with Google
                 </p>
-              </div>
+              </div> */}
               <p className="text-base mt-4 text-body-color dark:text-dark-6">
                 <span className="pr-0.5">Already a Member?</span>
                 <Link
