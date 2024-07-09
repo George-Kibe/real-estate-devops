@@ -1,11 +1,12 @@
 "use client"
 
 import AnimatedText from "@/components/AnimatedText";
-import InviteClientModal from "@/components/modals/InviteClientModal";
+import InviteClientModal from "@/components/modals/AddClientModal";
 import { Button } from "@/components/ui/button";
 import { useMainProvider } from "@/providers/MainProvider";
 import axios from "axios";
 import {Trash2, Pencil} from 'lucide-react';
+import { set } from "nprogress";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
@@ -16,6 +17,7 @@ export default function MembersPage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [clients, setClients] = useState([]);
+  const [client, setClient] = useState();
   const {currentUser} = useMainProvider();
 
   const fetchClients = async() => {
@@ -46,15 +48,13 @@ export default function MembersPage() {
     }
     setLoading(false)
   }
-  const editClient = async() => {
-    try {
-      
-    } catch (error) {
-      
-    }
+  const editClient = async(client) => {
+    setClient(client)
+    setModalOpen(true)
   }
   
   const addClient= async() => {
+    setClient(null)
     setModalOpen(true)
   }
   const closeModal = () => {
@@ -64,7 +64,7 @@ export default function MembersPage() {
   return (
     <div className='flex flex-col justify-between gap-5 mb-5'>
       <AnimatedText text={"Clients Page"} />
-      <InviteClientModal isOpen={modalOpen} onClose={closeModal} setLoading={setLoading} />
+      <InviteClientModal client={client} isOpen={modalOpen} onClose={closeModal} setLoading={setLoading} />
         <Button className='self-start' onClick={addClient}>
           {loading? "Loading" : "Add Client"}
         </Button>
@@ -108,7 +108,7 @@ export default function MembersPage() {
                     <button className="" onClick={() => deleteClient(client.pkid)}>
                       <Trash2 className="text-red-500" />
                     </button>
-                    <button className="" onClick={editClient}>
+                    <button className="" onClick={() => editClient(client)}>
                       <Pencil className="text-gray-500" />
                     </button>
                   </td>

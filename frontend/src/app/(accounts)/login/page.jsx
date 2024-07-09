@@ -57,7 +57,7 @@ const LoginPage = () => {
               <div className="mb-10 text-center md:mb-16"> 
               </div>
               <form onSubmit={handleSubmit}>
-                <InputBox value={email} onChange={(e) => setEmail(e.target.value)} type="email" name="email" placeholder="Email" />
+                <InputBox value={email} onChange={(e) => setEmail(e.target.value)} type="text" name="text" placeholder="Username or Email" />
                 <InputBox
                   value={password }
                   onChange={(e) => setPassword(e.target.value)}

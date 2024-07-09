@@ -9,7 +9,9 @@ import { useMainProvider } from '@/providers/MainProvider';
 
 const InviteMemberModal = ({ isOpen, onClose, setLoading }) => {
   const [email, setEmail] = useState("");
-  const [name, setName] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [role, setRole] = useState('');
   const {currentUser} = useMainProvider();
   const username = currentUser?.name
 
@@ -20,7 +22,7 @@ const InviteMemberModal = ({ isOpen, onClose, setLoading }) => {
       toast.error("You have missing details!");
       return
     }
-    const data = {username, name, email, _id:currentUser._id};
+    const data = {username, role, name:firstName + " " + lastName, email, _id:currentUser._id};
     toast.info(`Inviting ${email} to your organization`)
     try {
       // invite member logic
@@ -40,13 +42,13 @@ const InviteMemberModal = ({ isOpen, onClose, setLoading }) => {
   return (
     <div 
       onClick={onClose}
-      className={`fixed inset-0 flex justify-center items-center transition-colors
+      className={`fixed w-full inset-0 flex justify-center items-center transition-colors
         ${isOpen? "visible bg-black/80 dark:bg-white/50" : "invisible"}
       `}
     > 
       <div 
         onClick={(e) => e.stopPropagation()}
-        className={`bg-white dark:bg-black rounded-xl shadow p-8 transition-all 
+        className={`bg-white w-full md:w-1/2 dark:bg-black rounded-xl p-2 md:p-16 shadow transition-all 
           ${isOpen ? "scale-100 opacity-100": "sclae-125 opacity-0"}
           `}
       >
@@ -64,14 +66,28 @@ const InviteMemberModal = ({ isOpen, onClose, setLoading }) => {
           className="border-2 border-gray-300 rounded-md p-1 w-full 
           mb-2 focus:border-blue-900" 
         /> 
-        <p className="">Name</p>
-        <input type="text" placeholder='Name' 
-          value={name}
-          onChange={ev => setName(ev.target.value)}
+        <p className="">First Name: </p>
+        <input type="text" placeholder='First Name' 
+          value={firstName}
+          onChange={ev => setFirstName(ev.target.value)}
           className="border-2 border-gray-300 rounded-md p-1 w-full 
           mb-2 focus:border-blue-900" 
         /> 
-        <Button onClick={inviteMember} className="mt-2">Invite</Button>
+        <p className="">Last Name: </p>
+        <input type="text" placeholder='Last Name' 
+          value={lastName}
+          onChange={ev => setLastName(ev.target.value)}
+          className="border-2 border-gray-300 rounded-md p-1 w-full 
+          mb-2 focus:border-blue-900" 
+        /> 
+        <p className="">Role: </p>
+        <input type="text" placeholder='Member Role' 
+          value={role}
+          onChange={ev => setRole(ev.target.value)}
+          className="border-2 border-gray-300 rounded-md p-1 w-full 
+          mb-2 focus:border-blue-900" 
+        /> 
+        <Button onClick={inviteMember} className="mt-2">Invite{firstName && " " +firstName + " " + lastName}</Button>
       </div>
     </div>
   );

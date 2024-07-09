@@ -13,3 +13,21 @@ export const DELETE = async (request, {params}) => {
       return new NextResponse("Internal Server Error", { status:500})
   }
 }
+
+export const PUT = async (request, {params}) => {
+  const body = await request.json();
+  const {id} = params;
+  try {
+    const newUserDoc = await User.findOneAndUpdate({_id:id}, {...body});
+    if (!newUserDoc) return new NextResponse("User not found", {status: 404})
+    const updatedUserDoc = await User.findOne({
+      _id: newUserDoc._id,
+    }).populate('organization');
+
+    const newUser = JSON.stringify(updatedUserDoc);
+    return new NextResponse(newUser, {status: 200});
+  } catch (error) {
+    console.log('User Updating error!');
+    return new NextResponse(error.message, {status: 422});
+  }
+}

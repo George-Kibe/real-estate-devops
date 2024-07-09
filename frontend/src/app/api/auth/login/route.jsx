@@ -8,7 +8,13 @@ async function handler(req, res) {
   if (req.method === 'POST') {
     const { email, password } = await req.json();
 
-    const user = await User.findOne({ email }).populate('organization');
+    //const user = await User.findOne({ email }).populate('organization');
+    const user = await User.findOne({
+      $or: [
+        { email: email }, 
+        { name: email }
+      ]
+    }).populate('organization');
     if (!user) {
       return new NextResponse('User not found', { status: 401 });
     }

@@ -23,6 +23,10 @@ const UserSchema = new Schema({
         unique: true,
         required: true
     },
+    gender: {
+        type: String,
+        required: false
+    },
     phoneNumber: {
         type: String,
         required: false
