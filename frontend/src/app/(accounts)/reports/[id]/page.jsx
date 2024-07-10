@@ -6,7 +6,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { useMainProvider } from "@/providers/MainProvider";
 import axios from "axios";
 import { Brain, LoaderCircle } from 'lucide-react';
-import { useParams } from "next/navigation";
+import moment from "moment/moment";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 
@@ -18,8 +19,9 @@ export default function MembersPage() {
   const [report, setReport] = useState(null);
   const [loading, setLoading] = useState(false);
   const [summary, setSummary] = useState();
-  const {id} = useParams()
+  const {id} = useParams();
   const divRef = useRef();
+  const router = useRouter();
 
   const handlePrint = () => {
     const printContent = divRef.current;
@@ -67,10 +69,22 @@ export default function MembersPage() {
   // const handlePrint = () => {
   //   window.print();
   // };
-  
+
+  const deleteReport = async(reportId) => {
+    try {
+      const response = await axios.delete(`${BACKEND_URL}/api/reports/${reportId}/`);
+      const data = response.data
+      console.log("Delete Report Data: ", data)
+      toast.success("Report Deleted Successfully!")
+      router.push(`/reports`)
+    } catch (error) {
+      toast.error("Report Delete failed. Try Again!")
+    }
+  }
+
   return (
     <div className='flex flex-col justify-between gap-5 mb-5'>
-      <AnimatedText text={`Report ID ${id}`} />
+      <AnimatedText text={`Report for ${report?.client_name}-${moment(report?.created_at).format('MMMM Do YYYY')}`} />
       <div ref={divRef} className='flex flex-col gap-5'>
         <div className='flex flex-row gap-4'>
           <p className=''><p className="font-semibold">Report Title:</p> {report?.title}</p>
@@ -106,7 +120,7 @@ export default function MembersPage() {
         </form>
         <div className='flex gap-2'>
           <Button onClick={updateReport}>Update Report</Button>
-          <Button variant="destructive">Delete Report</Button>
+          <Button onClick={() => deleteReport(id)} variant="destructive">Delete Report</Button>
           <Button onClick={handlePrint}  className="">Export PDF</Button>
           <Button onClick={handlePrint} className="">Share</Button>
         </div>

@@ -23,6 +23,10 @@ const UserSchema = new Schema({
         unique: true,
         required: true
     },
+    subscriptionDate: {
+        type: Date,
+        required: false
+    },
     gender: {
         type: String,
         required: false
@@ -47,6 +51,11 @@ const UserSchema = new Schema({
         default: false,
     },
     isPremium: {
+        type: Boolean,
+        required: true,
+        default: false,
+    },
+    isEnterprise: {
         type: Boolean,
         required: true,
         default: false,

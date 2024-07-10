@@ -18,6 +18,7 @@ export const PUT = async (request, {params}) => {
   const body = await request.json();
   const {id} = params;
   try {
+    await connect();
     const newUserDoc = await User.findOneAndUpdate({_id:id}, {...body});
     if (!newUserDoc) return new NextResponse("User not found", {status: 404})
     const updatedUserDoc = await User.findOne({

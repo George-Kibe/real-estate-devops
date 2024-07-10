@@ -3,6 +3,7 @@
 import AnimatedText from "@/components/AnimatedText";
 import InviteClientModal from "@/components/modals/AddClientModal";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { useMainProvider } from "@/providers/MainProvider";
 import axios from "axios";
 import {Trash2, Pencil} from 'lucide-react';
@@ -15,6 +16,7 @@ const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
 
 export default function MembersPage() {
   const [modalOpen, setModalOpen] = useState(false);
+  const [searchText, setSearchText] = useState('');
   const [loading, setLoading] = useState(false);
   const [clients, setClients] = useState([]);
   const [client, setClient] = useState();
@@ -34,6 +36,16 @@ export default function MembersPage() {
   useEffect(() => {
     fetchClients()
   }, [loading])
+  useEffect(() => {
+    if (searchText) {
+      const filteredClients = clients.filter((client) =>
+        client.client_name.toLowerCase().includes(searchText.toLowerCase())
+      );
+      setClients(filteredClients);
+    } else {
+      fetchClients();
+    }
+  }, [searchText])
 
   const deleteClient = async (client_id) => {
     setLoading(true);
@@ -68,6 +80,13 @@ export default function MembersPage() {
         <Button className='self-start' onClick={addClient}>
           {loading? "Loading" : "Add Client"}
         </Button>
+        <input
+          type="text"
+          placeholder="Search by Name"
+          className="self-start rounded-md bg-background px-3 py-2"
+          value={searchText}
+          onChange={(e) => setSearchText(e.target.value)}
+        />
       {
         !clients?.length && <p className="">You do not have any clients yet!</p>
       }
@@ -93,7 +112,7 @@ export default function MembersPage() {
                     </div>
                   </th>
 
-                  <td className="px-6 py-4">{client.address}</td>
+                  <td className="px-6 py-4 text-sm">{client.address}</td>
                   <td className="px-6 py-4">
                     <div className="flex gap-2">
                       <span

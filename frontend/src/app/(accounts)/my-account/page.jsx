@@ -6,7 +6,7 @@ import {File} from 'lucide-react';
 import { toast } from "react-toastify";
 
 export default function MyAccountPage() {
-  const {currentUser} = useMainProvider();
+  const {currentUser, setCurrentUser} = useMainProvider();
   //console.log("Current User: ", currentUser?.name)
   const [name, setName] = useState(currentUser?.name);
   const [userImageBase64, setUserImageBase64] = useState(currentUser?.image);
@@ -28,7 +28,6 @@ export default function MyAccountPage() {
   }
   const handleUpdate = async() => {
     const body = {
-      _id: currentUser?._id,
       name,
       email,
       phoneNumber,
@@ -38,7 +37,7 @@ export default function MyAccountPage() {
     console.log('Updating: ', body);
     try {
       setLoading(true)
-      const response = await fetch('/api/auth/users', {
+      const response = await fetch(`/api/auth/users/${currentUser._id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
@@ -46,7 +45,9 @@ export default function MyAccountPage() {
         body: JSON.stringify(body)
       })
       if (response.status === 200){
-        console.log('Response data', response.data)
+        const data = await response.json();
+        console.log('Response data', data);
+        setCurrentUser(data);
         toast.success("Updated Successfully")
         setLoading(false)
       }

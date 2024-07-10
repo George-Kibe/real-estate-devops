@@ -58,13 +58,28 @@ export default function ReportsPage() {
     console.log("Selected Client ID: ", id)
   }
   const generateReport = async() => {
+    setLoading(true);
+    const date = new Date().toISOString;
+    console.log("Date: ", date)
+    const data = {
+      client_id: currentClient?.id,
+      title: `Daily report For ${currentClient?.client_name}`,
+      client_name: currentClient?.client_name,
+      description: "Daily report draft",
+      status: "completed",
+      report_type: "Daily",
+    }
     try {
-      const response = await axios.get(`${BACKEND_URL}/api/reports/generate-report/${currentClient?._id}`);
-      const data = response.data
-      console.log("Report Data: ", data)
-      toast.success("Report Generated Successfully!")
+      const response = await axios.post(`${BACKEND_URL}/api/reports/`, data);
+      const report = response.data
+      // console.log("Report Details: ", report)
+      if (response.status === 201) {
+        router.push(`/reports/${report.pkid}`)
+      }
+      setLoading(false);
     } catch (error) {
       toast.error("Report Generation failed. Try Again!")
+      setLoading(false);
     }
   }
   const viewReport = (id) => {
@@ -116,7 +131,9 @@ export default function ReportsPage() {
           <div className="flex flex-col items-center justify-center">
             <p className="self-center font-bold">Reports for: {currentClient?.client_name}</p>
             <div className="">
-              <Button onClick={generateReport}>Generate Today's Report</Button>
+              <Button onClick={generateReport}>
+                {loading? "Generating Report...": `Generate ${currentClient?.client_name}'s Report for Today`}
+              </Button>
             </div>
             {
               !reports?.length && <p className="">You do not have any reports for this client yet!</p>
