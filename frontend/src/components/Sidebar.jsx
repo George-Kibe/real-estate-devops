@@ -48,7 +48,7 @@ import { useMainProvider } from '@/providers/MainProvider';
               !orgMode && !sellerMode &&
               <CommandItem>
                 <Star className='mr-2 h-4 w-4' />
-                <Link href='/favourites'>Favourites</Link>
+                <Link href='/favorites'>Favorites</Link>
               </CommandItem>
             }
             {

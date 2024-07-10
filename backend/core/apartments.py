@@ -8,7 +8,7 @@ import time
 import re
 # Options for production and compatibility with docker environment
 options = ChromeOptions()
-#options.add_argument("--headless=new")
+options.add_argument("--headless=new")
 # The Docker container running Selenium
 #SELENIUM_CMD_EXECUTOR = "http://selenium:4444/wd/hub"
 
@@ -105,7 +105,7 @@ def get_json_properties(properties):
         json_property = {
             'title': title,
             'street_address': address,
-            'price': convert_to_integer(pricing),
+            'price': convert_to_integer(pricing.replace(",", "")),
             'description': beds,
             'amenities': amenities,
             'phone_number': phone,

@@ -5,7 +5,6 @@ import { useMainProvider } from "@/providers/MainProvider";
 import { signIn, useSession } from 'next-auth/react'
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { set } from "nprogress";
 import React, { useState } from "react";
 import { toast } from "react-toastify";
 
@@ -37,8 +36,9 @@ const LoginPage = () => {
         }
       });
       const data = await response.json();
-      console.log("login Response data: ", data);
+      // console.log("login Response data: ", data);
       setCurrentUser(data);
+      toast.success("Sign in Successful!")
       router.push('/');
       setLoading(false);
     } catch (error) {

@@ -20,6 +20,7 @@ export default function MembersPage({params, searchParams}) {
   const [report, setReport] = useState(null);
   const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [propertiesLoading, setPropertiesLoading] = useState(false);
   const [summary, setSummary] = useState();
   const {id} = useParams();
   const divRef = useRef();
@@ -49,16 +50,16 @@ export default function MembersPage({params, searchParams}) {
     }
   }
   const fetchProperties = async() => {
-    setLoading(true);
+    setLoading(true); setPropertiesLoading(true)
     try {
       const response = await axios.get(`${BACKEND_URL}/api/scrapping?search=${location}`);
       const data = response.data
       setProperties(data.slice(0, 10));
       console.log("Properties Data: ", data)
-      setLoading(false);
+      setLoading(false); setPropertiesLoading(false)
     } catch (error) {
       toast.error("Fetching Properties failed. Try Again!")
-      setLoading(false);
+      setLoading(false); setPropertiesLoading(false)
     }
   }
 
@@ -114,17 +115,7 @@ export default function MembersPage({params, searchParams}) {
       setLoading(false);
     }
   }
-  const handleClick = (e) => {
-    console.log("Button clicked!");
-    console.log("Event:", e.target.checked)
-    };
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <LoaderCircle className="animate-spin text-gray-500" size={64} />
-      </div>
-    )
-  }
+
   return (
     <div className='flex flex-col justify-between gap-5 mb-5'>
       <AnimatedText text={`Report for ${report?.client_name}-${moment(report?.created_at).format('MMMM Do YYYY')}`} />
@@ -133,9 +124,10 @@ export default function MembersPage({params, searchParams}) {
             <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                 <tr>
                     <th scope="col" className="p-4">
+                      #
                     </th>
                     <th scope="col" className="px-6 py-3">
-                      Title
+                      Property Details
                     </th>
                     <th scope="col" className="px-6 py-3">
                         Price
@@ -154,17 +146,27 @@ export default function MembersPage({params, searchParams}) {
                     </th>
                 </tr>
             </thead>
+            {
+              propertiesLoading && 
+              <tbody>
+                <tr>
+                  <td colSpan={7} className="text-center flex flex-row"><LoaderCircle className="animate-spin mr-2" />Loading Properties...</td>
+                  </tr>
+              </tbody>
+            }
             <tbody>
                 {
                   properties?.map((property, index) => (
                       <tr key={property.id} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                          <td className="w-4 p-4">
-                              <div className="flex items-center">
+                          <td className="w-4 p-4 ">
+                              {index+1}.
+                              {/* <div className="flex items-center">
                                   <input id="checkbox-table-search-1" type="checkbox" 
+                                  checked={false}
                                   onChange={handleClick}
                                   className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
                                   <label for="checkbox-table-search-1" className="sr-only">checkbox</label>
-                              </div>
+                              </div> */}
                           </td>
                           <th scope="row" className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
                               <img className="w-20 h-20 rounded-md" src={property?.images[0]} alt="Jese image" />
@@ -188,8 +190,9 @@ export default function MembersPage({params, searchParams}) {
                           <td className="px-6 py-4">
                               <p className="">{property.description}</p>
                           </td>
-                          <td className="px-6 py-4">
-                              <p className="">{property.description}</p>
+                          <td className="px-6 py-4 flex gap-2 items-center self-start justify-center">
+                              <Button>Add</Button>
+                              <Button variant='destructive'>Remove</Button>
                           </td>
                       </tr>
                     ))
