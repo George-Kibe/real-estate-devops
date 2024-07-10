@@ -15,7 +15,6 @@ import {
 import { signOut } from "next-auth/react";
 import { useMainProvider } from "@/providers/MainProvider";
 import { toast } from "react-toastify";
-import { set } from "nprogress";
 
 export function UserMenu() {
   const router = useRouter();
@@ -32,8 +31,14 @@ export function UserMenu() {
   }
   const switchToSeller = () => {
     // check if user has subscribed, if not prompt them to subscribe
-    setSellerMode(true)
-    toast.success('Switched to seller Mode')
+    if (currentUser?.isPremium){
+      setSellerMode(true)
+      toast.success('Switched to seller Mode')
+      router.push("/my-account")
+    }else{
+      toast.error('Please subscribe to become a seller')
+      router.push("/features#subscription")
+    }
   }
   const switchToOrganization = () => {
     setOrgMode(true)

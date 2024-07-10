@@ -38,6 +38,13 @@ import { useMainProvider } from '@/providers/MainProvider';
               </CommandItem>
             }
             {
+                orgMode || sellerMode && 
+                <CommandItem>
+                  <Users className='mr-2 h-4 w-4' />
+                  <Link href='/users'>Users</Link>
+                </CommandItem>
+              }
+            {
               !orgMode && !sellerMode &&
               <CommandItem>
                 <Star className='mr-2 h-4 w-4' />

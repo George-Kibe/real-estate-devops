@@ -37,12 +37,17 @@ export const GET = async (request) => {
     await connect();
     try {
         // check if user already exists using email to avoid duplicates
-        const user = await User.findOne({email}).populate('members').populate('organization');
-        if (!user) {
-            return new NextResponse("User not found", {status: 404})
+        if (email){
+            const user = await User.findOne({email}).populate('members').populate('organization');
+            if (!user) {
+                return new NextResponse("User not found", {status: 404})
+            }
+            const userObject = JSON.stringify(user)
+            return new NextResponse(userObject, {status: 200}, )
         }
-        const userObject = JSON.stringify(user)
-        return new NextResponse(userObject, {status: 200}, )
+        const users = await User.find();
+        const usersObject = JSON.stringify(users)
+        return new NextResponse(usersObject, {status: 200},)
     } catch (error) {
         return new NextResponse(error.message, {status: 500,})
     }

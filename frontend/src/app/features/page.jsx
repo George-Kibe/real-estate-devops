@@ -25,7 +25,7 @@ const FeaturesPage = () => {
           </div>
         </div>
 
-        <div className="-mx-4 flex flex-wrap justify-center">
+        <div id='subscription' className="-mx-4 flex flex-wrap justify-center">
           <div className="-mx-4 flex flex-wrap">
             <PricingCard
               type="Personal"

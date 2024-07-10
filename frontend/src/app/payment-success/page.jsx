@@ -11,7 +11,7 @@ const PaymentSuccess = ({searchParams: {amount}}) => {
   const handleUpdate = async() => {
     const body = {
       isPremium: true,
-      isEnterprise: amount === 199 ? true : false,
+      isEnterprise: amount >= 199 ? true : false,
       subscriptionDate: new Date().toISOString()
     }
     console.log('Updating: ', body);
