@@ -1,48 +1,75 @@
 'use client'
 import AnimatedText from "@/components/AnimatedText";
+import LoadingPage from "@/components/Loading";
 import { TableMenu } from "@/components/TableMenu";
-import { Button } from "@/components/ui/button";
 import axios from "axios";
+import moment from "moment";
+import { set } from "nprogress";
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 export default function UsersPage() {
   const [searchText, setSearchText] = useState('');
   const [loading, setLoading] = useState(false);
   const [users, setUsers] = useState([]);
-  console.log("searchText:", searchText);
+  const [allUsers, setAllUsers] = useState([]);
 
+  //console.log("All users: ", allUsers)
   const handleClick = (e) => {
     console.log("Button clicked!");
     console.log("Event:", e.target.checked)
     };
   const fetchUsers = async() => {
-    // fetch users from api
     try {
         const response = await axios.get('/api/auth/users')
         console.log("response: ", response.data)
         if (response.status === 200) {
           setUsers(response.data)
+          setAllUsers(response.data)
         }
-        
     } catch (error) {
-        
+        toast.error("Error fetching users")
     }
   }
+  const searchUsers = () => {
+    // filter users by search term if it matches their names
+    const filteredUsers = users.filter(user => user.name.toLowerCase().includes(searchText.toLowerCase()))
+    if (filteredUsers.length > 0) {
+        setUsers(filteredUsers)
+    }else{
+        //toast.info("No users found. Showing all Users");
+        setUsers(allUsers)
+        return;
+    }
+  }
+ 
+  useEffect(() => {
+    if (searchText.length > 0) {
+        searchUsers();
+    }else{
+        setUsers(allUsers);
+    }
+  }, [searchText])
+  
 
   useEffect(() => {
     fetchUsers()
   }, [])
+
+  if (loading) {
+    return <LoadingPage />
+  }
   
   return (
     <div className='flex flex-col justify-between gap-5 mb-5'>
-      <AnimatedText text={"Billing Page: Under Construction"} />
+      <AnimatedText text={"Users"} />
       <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
         <div className="flex items-center justify-between flex-column flex-wrap md:flex-row space-y-4 md:space-y-0 pb-4 bg-white dark:bg-gray-900">
-            <div>
+            {/* <div>
                 <div className="border border-black dark:border-light rounded-lg p-1 px-2 mb-1">
                   <p className="flex items-center justify-center">Action<TableMenu/></p>
                 </div>
-            </div>
+            </div> */}
             <label for="table-search" className="sr-only">Search</label>
             <div className="relative">
                 <div className="absolute inset-y-0 rtl:inset-r-0 start-0 flex items-center ps-3 pointer-events-none">
@@ -62,71 +89,49 @@ export default function UsersPage() {
                         Name
                     </th>
                     <th scope="col" className="px-6 py-3">
-                        Position
+                        Premium
                     </th>
                     <th scope="col" className="px-6 py-3">
-                        Status
+                        Phone Number
                     </th>
                     <th scope="col" className="px-6 py-3">
-                        Action
+                        Joining Date
                     </th>
                 </tr>
             </thead>
             <tbody>
-                <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                    <td className="w-4 p-4">
-                        <div className="flex items-center">
-                            <input id="checkbox-table-search-1" type="checkbox" 
-                            onChange={handleClick}
-                            className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
-                            <label for="checkbox-table-search-1" className="sr-only">checkbox</label>
-                        </div>
-                    </td>
-                    <th scope="row" className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
-                        <img className="w-10 h-10 rounded-full" src="/docs/images/people/profile-picture-1.jpg" alt="Jese image" />
-                        <div className="ps-3">
-                            <div className="text-base font-semibold">Neil Sims</div>
-                            <div className="font-normal text-gray-500">neil.sims@flowbite.com</div>
-                        </div>  
-                    </th>
-                    <td className="px-6 py-4">
-                        React Developer
-                    </td>
-                    <td className="px-6 py-4">
-                        <div className="flex items-center">
-                            <div className="h-2.5 w-2.5 rounded-full bg-green-500 me-2"></div> Online
-                        </div>
-                    </td>
-                    <td className="px-6 py-4">
-                        <Button>Edit User</Button>
-                    </td>
-                </tr>
-                <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                    <td className="w-4 p-4">
-                        <div className="flex items-center">
-                            <input id="checkbox-table-search-2" type="checkbox" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
-                            <label for="checkbox-table-search-2" className="sr-only">checkbox</label>
-                        </div>
-                    </td>
-                    <th scope="row" className="flex items-center px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                        <img className="w-10 h-10 rounded-full" src="/docs/images/people/profile-picture-3.jpg" alt="Jese image" />
-                        <div className="ps-3">
-                            <div className="text-base font-semibold">Bonnie Green</div>
-                            <div className="font-normal text-gray-500">bonnie@flowbite.com</div>
-                        </div>
-                    </th>
-                    <td className="px-6 py-4">
-                        Designer
-                    </td>
-                    <td className="px-6 py-4">
-                        <div className="flex items-center">
-                            <div className="h-2.5 w-2.5 rounded-full bg-green-500 me-2"></div> Online
-                        </div>
-                    </td>
-                    <td className="px-6 py-4">
-                        <Button>Edit User</Button>
-                    </td>
-                </tr>
+                {
+                    users?.map((user, index) => (
+                        <tr key={user._id} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                            <td className="w-4 p-4">
+                                <div className="flex items-center">
+                                    <input id="checkbox-table-search-1" type="checkbox" 
+                                    onChange={handleClick}
+                                    className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
+                                    <label for="checkbox-table-search-1" className="sr-only">checkbox</label>
+                                </div>
+                            </td>
+                            <th scope="row" className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
+                                <img className="w-10 h-10 rounded-full" src={user.image} alt="Jese image" />
+                                <div className="ps-3">
+                                    <div className="text-base font-semibold">{user.name}</div>
+                                    <div className="font-normal text-gray-500">{user.email}</div>
+                                </div>  
+                            </th>
+                            <td className="px-6 py-4">
+                              {user.isPremium? 'Yes': 'No'}
+                            </td>
+                            <td className="px-6 py-4">
+                                <div className="flex items-center">
+                                    {user.phoneNumber}
+                                </div>
+                            </td>
+                            <td className="px-6 py-4">
+                                <p className="">{moment(user?.createdAt).format('MMMM Do YYYY')}</p>
+                            </td>
+                        </tr>
+                    ))
+                }
             </tbody>
         </table>
       </div>

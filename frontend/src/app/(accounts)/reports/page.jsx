@@ -35,7 +35,7 @@ export default function ReportsPage() {
     try {
       const response = await axios.get(`${BACKEND_URL}/api/reports/?client_id=${currentClient?.id}`);
       const data = response.data
-      console.log("Reports Data: ", data)
+      //console.log("Reports Data: ", data)
       setReports(data.results);
     } catch (error) {
       toast.error("Fetching Reports failed. Try Again!")
@@ -55,12 +55,12 @@ export default function ReportsPage() {
 
   const selectClient = (client) => {
     setCurrentClient(client)
-    console.log("Selected Client ID: ", selectClient?.id)
+    //console.log("Selected Client ID: ", selectClient?.id)
   }
   const generateReport = async() => {
     setLoading(true);
-    const date = new Date().toISOString;
-    console.log("Date: ", date)
+    //const date = new Date().toISOString;
+    //console.log("Date: ", date)
     const data = {
       client_id: currentClient?.id,
       title: `Daily report For ${currentClient?.client_name}`,
@@ -74,7 +74,7 @@ export default function ReportsPage() {
       const report = response.data
       // console.log("Report Details: ", report)
       if (response.status === 201) {
-        router.push(`/reports/${report.pkid}`)
+        router.push(`/reports/${report.pkid}/?searchTerm=${currentClient?.city}`)
       }
       setLoading(false);
     } catch (error) {

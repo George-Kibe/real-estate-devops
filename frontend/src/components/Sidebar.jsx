@@ -25,7 +25,7 @@ import { useMainProvider } from '@/providers/MainProvider';
   const Sidebar = () => {
     const {orgMode, currentUser, sellerMode} = useMainProvider();
     return (
-      <Command className='bg-secondary rounded-none'>
+      <Command className='b rounded-none'>
         <CommandInput placeholder='Type a command or search...' />
         <CommandList>
           <CommandEmpty>No results found.</CommandEmpty>
