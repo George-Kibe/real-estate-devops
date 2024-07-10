@@ -87,9 +87,9 @@ export default function MyAccountPage() {
           </label>
         </div>
       </div>
-      <div className="flex flex-1 w-full justify-around flex-col md:flex-row">
+      <div className="px-4 md:px-8 flex-1 justify-between flex-col md:flex-row">
         <div className="">
-          <label className='mb-[10px]  text-base font-medium text-dark dark:text-white'>
+          <label className='mb-[10px] text-base font-medium text-dark dark:text-white'>
             Name:
           </label>
           <input
@@ -112,7 +112,7 @@ export default function MyAccountPage() {
           />
         </div>
       </div>
-      <div className="flex flex-1 w-full justify-around flex-col md:flex-row">
+      <div className="px-4 md:px-8 flex-1 justify-between flex-col md:flex-row">
         <div className="">
           <label className='mb-[10px]  text-base font-medium text-dark dark:text-white'>
             Phone Number:

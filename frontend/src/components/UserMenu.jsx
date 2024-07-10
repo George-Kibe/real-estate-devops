@@ -15,18 +15,25 @@ import {
 import { signOut } from "next-auth/react";
 import { useMainProvider } from "@/providers/MainProvider";
 import { toast } from "react-toastify";
+import { set } from "nprogress";
 
 export function UserMenu() {
   const router = useRouter();
-  const {currentUser,setCurrentUser, tempUser, setTempUser, orgMode, setOrgMode} = useMainProvider();
-  console.log("Current User Organization: ", currentUser?.organization);
+  const {currentUser,setCurrentUser, tempUser, setTempUser, setSellerMode, sellerMode, orgMode, setOrgMode} = useMainProvider();
+  // console.log("Current User Organization: ", currentUser?.organization);
   
   const handleLogout = async () => {
     await signOut();
     localStorage.clear()
   }
+  const switchToNormal = () => {
+    setSellerMode(false)
+    toast.success('Switched back to normal')
+  }
   const switchToSeller = () => {
-    console.log("Switching to seller")
+    // check if user has subscribed, if not prompt them to subscribe
+    setSellerMode(true)
+    toast.success('Switched to seller Mode')
   }
   const switchToOrganization = () => {
     setOrgMode(true)
@@ -52,9 +59,16 @@ export function UserMenu() {
         <DropdownMenuItem onClick={() => router.push("/my-account")}>
           My Account
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={switchToSeller}>
-          Switch To Seller
-        </DropdownMenuItem>
+        {
+          sellerMode?
+          <DropdownMenuItem onClick={switchToNormal}>
+            Switch to Normal
+          </DropdownMenuItem>
+          :
+          <DropdownMenuItem onClick={switchToSeller}>
+            Switch to Seller
+          </DropdownMenuItem>          
+        }
         {
           currentUser?.organization && 
           <DropdownMenuItem onClick={switchToOrganization}>

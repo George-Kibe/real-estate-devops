@@ -7,6 +7,8 @@ const MainContext = createContext({});
 export function MainProvider({ children }) {
   const [user, setUser] = useLocalStorage('user', null);
   const [orgMode, setOrgMode] = useLocalStorage('orgMode', false);
+  const [sellerMode, setSellerMode] = useLocalStorage('sellerMode', false);
+  const [adminMode, setAdminMode] = useLocalStorage('adminMode', false);
   const [location, setLocation] = useLocalStorage('location', 'Minnesota');
   const [customProperties, setCustomProperties] = useLocalStorage('customProperties', []);
   const [favoriteProperties, setFavoriteProperties] = useLocalStorage('favoriteProperties', []);
@@ -25,6 +27,8 @@ export function MainProvider({ children }) {
         currentUser, setCurrentUser,
         loading, setLoading,
         tempUser, setTempUser,
+        sellerMode, setSellerMode,
+        adminMode, setAdminMode,
       }}
     >
       {children}

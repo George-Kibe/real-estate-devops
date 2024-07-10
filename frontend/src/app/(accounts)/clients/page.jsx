@@ -94,6 +94,7 @@ export default function MembersPage() {
         <table className="w-full border-collapse text-left text-sm">
           <thead className="">
             <tr>
+              <th scope="col" className="px-6 py-4 font-medium">#</th>
               <th scope="col" className="px-6 py-4 font-medium">Name</th>
               <th scope="col" className="px-6 py-4 font-medium">Address</th>
               <th scope="col" className="px-6 py-4 font-medium">Phone Number</th>
@@ -105,6 +106,7 @@ export default function MembersPage() {
             {
               clients?.map((client, index) => (
                 <tr className="" key={index}>
+                  <td className="px-6 py-4 text-sm">{index + 1}</td>
                   <th className="flex gap-3 px-6 py-4 font-normal">
                     <div className="text-sm">
                       <div className="font-medium ">{client.client_name}</div>

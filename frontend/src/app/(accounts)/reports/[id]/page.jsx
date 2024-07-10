@@ -34,30 +34,39 @@ export default function MembersPage() {
   };
 
   const fetchReport = async() => {
+    setLoading(true);
     try {
       const response = await axios.get(`${BACKEND_URL}/api/reports/${id}`);
       const data = response.data
       // console.log("Report Data: ", data)
       setReport(data);
+      setLoading(false);
     } catch (error) {
       toast.error("Fetching Clients failed. Try Again!")
+      setLoading(false);
     }
   }
+
   useEffect(() => {
     fetchReport();
   }, [])
 
   const updateReport = async() => {
+    setLoading(true)
+    const data = {report_final: summary, report_draft: summary}
     try {
-      const response = await axios.put(`${BACKEND_URL}/api/reports/${id}`, formData);
-      const data = response.data
-      console.log("Update Report Data: ", data)
+      const response = await axios.put(`${BACKEND_URL}/api/reports/${id}/`, data);
+      const reportData = response.data
+      // console.log("Update Report Data: ", reportData)
       toast.success("Report Updated Successfully!")
+      fetchReport();
+      setLoading(false);
     } catch (error) {
       toast.error("Report Update failed. Try Again!")
+      setLoading(false)
     }
   }
-  console.log("Current Report: ", report)
+  // console.log("Current Report: ", report)
   const GenerateSummaryFromAI = async() => {
     console.log("Generate Summary from AI")
   }
@@ -71,14 +80,17 @@ export default function MembersPage() {
   // };
 
   const deleteReport = async(reportId) => {
+    setLoading(true);
     try {
       const response = await axios.delete(`${BACKEND_URL}/api/reports/${reportId}/`);
       const data = response.data
       console.log("Delete Report Data: ", data)
       toast.success("Report Deleted Successfully!")
       router.push(`/reports`)
+      setLoading(false);
     } catch (error) {
       toast.error("Report Delete failed. Try Again!")
+      setLoading(false);
     }
   }
 
@@ -112,15 +124,15 @@ export default function MembersPage() {
                 onChange={(e)=>setSummary(e.target.value)}
             />
             <div className='mt-2 flex justify-end'>
-            <Button type="submit"
+              <Button type="submit"
                 disabled={loading}>
-                    {loading?<LoaderCircle className='animate-spin' />:'Save'}
-                    </Button>
+                {loading?<LoaderCircle className='animate-spin' />:'Save'}
+              </Button>
             </div>
         </form>
         <div className='flex gap-2'>
-          <Button onClick={updateReport}>Update Report</Button>
-          <Button onClick={() => deleteReport(id)} variant="destructive">Delete Report</Button>
+          <Button onClick={updateReport}>{loading? 'Loading...': 'Update Report'}</Button>
+          <Button onClick={() => deleteReport(id)} variant="destructive">{loading? 'Loading...': 'Delete Report'}</Button>
           <Button onClick={handlePrint}  className="">Export PDF</Button>
           <Button onClick={handlePrint} className="">Share</Button>
         </div>
