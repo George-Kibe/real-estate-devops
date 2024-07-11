@@ -34,7 +34,7 @@ export default function MyAccountPage() {
       favouriteLocation,
       image: userImageBase64
     }
-    console.log('Updating: ', body);
+    //console.log('Updating: ', body);
     try {
       setLoading(true)
       const response = await fetch(`/api/auth/users/${currentUser._id}`, {
@@ -46,7 +46,7 @@ export default function MyAccountPage() {
       })
       if (response.status === 200){
         const data = await response.json();
-        console.log('Response data', data);
+        //console.log('Response data', data);
         setCurrentUser(data);
         toast.success("Updated Successfully")
         setLoading(false)

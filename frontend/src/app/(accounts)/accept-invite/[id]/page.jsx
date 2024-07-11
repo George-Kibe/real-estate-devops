@@ -8,11 +8,36 @@ import { useParams, useRouter } from 'next/navigation'
 import React from 'react'
 import { toast } from 'react-toastify'
 
-const AccepInvite = () => {
+const AccepInvite = ({searchParams}) => {
   const {id} = useParams()
+  const role = searchParams?.role
   const router = useRouter()
-  const {currentUser, loading} = useMainProvider()
-  //console.log("Current User: ", currentUser?._id)
+  const {currentUser, setLoading, setCurrentUser,loading} = useMainProvider()
+
+  const updateUserDetails = async() => {
+    const body = {
+      role,
+    }
+    try {
+      setLoading(true)
+      const response = await fetch(`/api/auth/users/${currentUser._id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(body)
+      })
+      if (response.status === 200){
+        const data = await response.json();
+        setCurrentUser(data);
+        // toast.success("Updated Successfully")
+        setLoading(false)
+      }
+    } catch (error) {
+      console.log("Error Updating, Try Again")
+      setLoading(false)
+    }
+  }
   
   const acceptInvitation = async() => {
     if (!currentUser) {
@@ -32,10 +57,11 @@ const AccepInvite = () => {
         }
       })
       if (res.status === 200) {
+        toast.success("Invitation accepted")
+        await updateUserDetails()
         router.push('/')
       }else {
         toast.error("Error accepting invitation")
-        console.log("Error accepting invitation")
       }
     } catch (error) {
       console.log(error)

@@ -12,7 +12,7 @@ export default function MembersPage() {
   const [loading, setLoading] = useState(false);
  const {currentUser} = useMainProvider()
   const members = currentUser?.members
-  console.log("Members: ", currentUser?.members)
+  //console.log("Members: ", currentUser?.members)
   
   const addMember= async() => {
     setModalOpen(true)
@@ -35,16 +35,17 @@ export default function MembersPage() {
         <table className="w-full border-collapse text-left text-sm">
           <thead className="">
             <tr>
+              <th scope="col" className="px-6 py-4 font-medium">#</th>
               <th scope="col" className="px-6 py-4 font-medium">Name</th>
               <th scope="col" className="px-6 py-4 font-medium">Role</th>
-              <th scope="col" className="px-6 py-4 font-medium">Team</th>
-              <th scope="col" className="px-6 py-4 font-medium">Action</th>
+              {/* <th scope="col" className="px-6 py-4 font-medium">Action</th> */}
             </tr>
           </thead>
           <tbody className="divide-y ">
             {
               members?.map((member, index) => (
                 <tr className="" key={index}>
+                  <td className="px-6 py-4">{index +1}.</td>
                   <th className="flex gap-3 px-6 py-4 font-normal">
                     <div className="relative h-10 w-10">
                       <img
@@ -60,26 +61,12 @@ export default function MembersPage() {
                     </div>
                   </th>
           
-                  <td className="px-6 py-4">Product Designer</td>
-                  <td className="px-6 py-4">
-                    <div className="flex gap-2">
-                      <span
-                        className="inline-flex items-center gap-1 rounded-full bg-blue-50 px-2 py-1 text-xs font-semibold text-blue-600"
-                      >
-                        Design
-                      </span>
-                      <span
-                        className="inline-flex items-center gap-1 rounded-full bg-violet-50 px-2 py-1 text-xs font-semibold text-violet-600"
-                      >
-                        Develop
-                      </span>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4">
+                  <td className="px-6 py-4">{member.role}</td>
+                  {/* <td className="px-6 py-4">
                     <div className="flex justify-end gap-4">
                       <Trash2 className="text-red-500" />
                     </div>
-                  </td>
+                  </td> */}
                 </tr>
               ))
             }

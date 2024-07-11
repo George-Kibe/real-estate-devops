@@ -23,7 +23,7 @@ import { useMainProvider } from '@/providers/MainProvider';
   import Link from 'next/link';
   
   const Sidebar = () => {
-    const {orgMode, currentUser, sellerMode} = useMainProvider();
+    const {adminMode, orgMode, currentUser, sellerMode} = useMainProvider();
     return (
       <Command className='b rounded-none'>
         <CommandInput placeholder='Type a command or search...' />
@@ -31,14 +31,14 @@ import { useMainProvider } from '@/providers/MainProvider';
           <CommandEmpty>No results found.</CommandEmpty>
           <CommandGroup heading='Suggestions'>
             {
-              orgMode || sellerMode &&
+              orgMode | sellerMode &&
               <CommandItem>
                 <LayoutDashboard className='mr-2 h-4 w-4' />
                 <Link href='/dashboard'>Dashboard</Link>
               </CommandItem>
             }
             {
-                orgMode || sellerMode && 
+                orgMode | sellerMode && 
                 <CommandItem>
                   <Users className='mr-2 h-4 w-4' />
                   <Link href='/users'>Users</Link>
@@ -52,7 +52,7 @@ import { useMainProvider } from '@/providers/MainProvider';
               </CommandItem>
             }
             {
-              orgMode || sellerMode && 
+              orgMode | sellerMode && 
               <>
               <CommandItem>
                 <Newspaper className='mr-2 h-4 w-4' />
@@ -81,7 +81,7 @@ import { useMainProvider } from '@/providers/MainProvider';
                 <Link href='/my-account'>My Account</Link>
               </CommandItem>
               {
-                orgMode || sellerMode && 
+               sellerMode && 
                 <CommandItem>
                   <CreditCard className='mr-2 h-4 w-4' />
                   <Link href='/billing'>Billing</Link>

@@ -18,22 +18,20 @@ const InviteMemberModal = ({ isOpen, onClose, setLoading }) => {
   const inviteMember = async(e) => {
     e.preventDefault()
     setLoading(true);
-    if(!email |!username |!name){
+    if(!email |!username |!firstName){
       toast.error("You have missing details!");
       return
     }
     const data = {username, role, name:firstName + " " + lastName, email, _id:currentUser._id};
     toast.info(`Inviting ${email} to your organization`)
     try {
-      // invite member logic
       const response = await axios.post('/api/invite-member', data);
-      onClose()
       if (response.status === 200){
         toast.success("Invitation sent successfully!")
       }
-      setLoading(false);
-      setEmail('');
-      setName('')
+      onClose()
+      setLoading(false); setEmail('');
+      setFirstName(''); setLastName('');
     } catch (error) {
       toast.error("Sending Invitation failed! Try Again!")
     }

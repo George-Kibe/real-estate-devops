@@ -40,10 +40,13 @@ const UserSchema = new Schema({
         required: false,
         default: false,
     },
+    role: {
+        type: String,
+        required: false,
+    },
     password: {
         type: String,
         required: false,
-
     },
     isAdmin: {
         type: Boolean,
