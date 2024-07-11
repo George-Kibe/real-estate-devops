@@ -10,6 +10,8 @@ import moment from "moment/moment";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
+import {properties as props} from '../../../../../data/properties';
+import AddCommentModal from "@/components/modals/AddCommentModal";
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
 //const BACKEND_URL = "http://localhost:8000"
@@ -17,11 +19,19 @@ const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
 export default function MembersPage({params, searchParams}) {
   const location = searchParams?.searchTerm;
   const {currentUser} = useMainProvider();
+
+  const [modalOpen, setModalOpen] = useState(false);
+  const [editMode, setEditMode] = useState(false);
   const [report, setReport] = useState(null);
   const [properties, setProperties] = useState([]);
+  const [userProperties, setUserProperties] = useState([]);
+  const [comments, setComments] = useState('');
+  const [currentProperty, setCurrentProperty] = useState({});
+  const [currentIndex, setCurrentIndex] = useState();
   const [loading, setLoading] = useState(false);
   const [propertiesLoading, setPropertiesLoading] = useState(false);
   const [summary, setSummary] = useState();
+  
   const {id} = useParams();
   const divRef = useRef();
   const router = useRouter();
@@ -45,7 +55,7 @@ export default function MembersPage({params, searchParams}) {
       setReport(data);
       setLoading(false);
     } catch (error) {
-      toast.error("Fetching Clients failed. Try Again!")
+      toast.error("Fetching report failed. Try Again!")
       setLoading(false);
     }
   }
@@ -72,10 +82,15 @@ export default function MembersPage({params, searchParams}) {
   useEffect(() => {
     fetchReport();
   }, [])
+  useEffect(() => {
+    if (currentProperty?.comments) {
+      setComments(currentProperty.comments);
+    }
+  }, [currentProperty]);
 
   const updateReport = async() => {
     setLoading(true)
-    const data = {report_final: summary, report_draft: summary}
+    const data = {report_final: summary, report_draft: summary, properties: userProperties}
     try {
       const response = await axios.put(`${BACKEND_URL}/api/reports/${id}/`, data);
       const reportData = response.data
@@ -115,10 +130,58 @@ export default function MembersPage({params, searchParams}) {
       setLoading(false);
     }
   }
+  const closeModal = () => {
+    setModalOpen(false)
+  }
+
+  const addToUserProperties = () => {
+    if(!comments){
+      toast.error("Please add comments before adding property!")
+      return;
+    }
+    currentProperty.comments = comments
+    if (editMode) {
+      const updatedProperties = userProperties.map((p, i) => {
+        if (i === currentIndex) {
+          return currentProperty;
+        }
+        return p;
+      });
+      setUserProperties(updatedProperties);
+      setComments('');
+      setModalOpen(false);
+      setCurrentProperty(null);
+      setEditMode(false);
+      return;
+    }
+    setUserProperties([...userProperties, currentProperty]);
+    setComments('');
+    setModalOpen(false);
+    setCurrentProperty(null);
+    setProperties(properties.filter((p, i) => i !== currentIndex));
+    setCurrentIndex(null);
+    setEditMode(false);
+  }
+  const handleAdd = (property, index) => {
+    setModalOpen(true);
+    setCurrentProperty(property);
+    setCurrentIndex(index);
+  }
+  const handleEdit = (property, index) => {
+    setModalOpen(true);
+    setCurrentIndex(index);
+    setCurrentProperty(property);
+    setEditMode(true)
+  }
+  const handleRemove = (index) => {
+    setProperties(properties.filter((p, i) => i !== index));
+  }
 
   return (
     <div className='flex flex-col justify-between gap-5 mb-5'>
       <AnimatedText text={`Report for ${report?.client_name}-${moment(report?.created_at).format('MMMM Do YYYY')}`} />
+      <AddCommentModal comments={comments} isOpen={modalOpen} onClose={closeModal} setComments={setComments} currentProperty={currentProperty} addToUserProperties={addToUserProperties} editMode={editMode}/>
+
       <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
         <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
             <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -154,19 +217,20 @@ export default function MembersPage({params, searchParams}) {
                   </tr>
               </tbody>
             }
+            {
+              !propertiesLoading && !properties?.length &&
+              <tbody>
+                <tr className="mt-2 md:mt-4">
+                    <td colSpan={7} className="text-center mt-2 md:mt-4">No Properties Found</td>
+                  </tr>
+              </tbody>
+            }
             <tbody>
                 {
-                  properties?.map((property, index) => (
+                  userProperties?.map((property, index) => (
                       <tr key={property.id} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                           <td className="w-4 p-4 ">
                               {index+1}.
-                              {/* <div className="flex items-center">
-                                  <input id="checkbox-table-search-1" type="checkbox" 
-                                  checked={false}
-                                  onChange={handleClick}
-                                  className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
-                                  <label for="checkbox-table-search-1" className="sr-only">checkbox</label>
-                              </div> */}
                           </td>
                           <th scope="row" className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
                               <img className="w-20 h-20 rounded-md" src={property?.images[0]} alt="Jese image" />
@@ -188,11 +252,47 @@ export default function MembersPage({params, searchParams}) {
                               <p className="">{property.description}</p>
                           </td>
                           <td className="px-6 py-4">
-                              <p className="">{property.description}</p>
+                              <p className="">{property.comments}</p>
                           </td>
                           <td className="px-6 py-4 flex gap-2 items-center self-start justify-center">
-                              <Button>Add</Button>
-                              <Button variant='destructive'>Remove</Button>
+                              <Button onClick={() => handleEdit(property, index)}>Edit</Button>
+                          </td>
+                      </tr>
+                    ))
+                }
+            </tbody>
+            <tbody>
+                {
+                  properties?.map((property, index) => (
+                      <tr key={property.id} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                          <td className="w-4 p-4 ">
+                              {userProperties.length + index+1}.
+                          </td>
+                          <th scope="row" className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
+                              <img className="w-20 h-20 rounded-md" src={property?.images[0]} alt="Jese image" />
+                              <div className="ps-3">
+                                  <div className="text-base font-semibold">{property.street_address}</div>
+                                  <div className="font-normal text-gray-500 flex flex-row flex-wrap">
+                                    <p className="font-bold mr-2">Amenities:</p> {property.amenities.map((a, index) => <p className="ml-1" key={index}>{a +", "}</p>)}</div>
+                              </div>  
+                          </th>
+                          <td className="px-6 py-4">
+                            {property.price}
+                          </td>
+                          <td className="px-6 py-4">
+                              <div className="flex items-center">
+                                  {property.phone_number}
+                              </div>
+                          </td>
+                          <td className="px-6 py-4">
+                              <p className="">{property.description}</p>
+                          </td>
+                          <td className="px-6 py-4">
+                              <p className=""></p>
+                          </td>
+                          <td className="px-6 py-4 flex gap-2 items-center self-start justify-center">
+                              <Button onClick={() => handleAdd(property, index)}>Add</Button>
+                              <Button onClick={() => handleRemove(index)} variant='destructive'>Remove</Button>
                           </td>
                       </tr>
                     ))

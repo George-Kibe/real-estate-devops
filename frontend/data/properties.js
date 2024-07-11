@@ -1,4 +1,4 @@
-const properties = [
+export const properties = [
     {
 		title : "Bristol Heights",
 		street_address : "12041 Dessau Rd, Austin, TX 78754",
