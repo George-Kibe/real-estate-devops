@@ -26,7 +26,7 @@ export default function MembersPage() {
     try {
       const response = await axios.get(`${BACKEND_URL}/api/clients/?owner_id=${currentUser?._id}`);
       const data = response.data
-      console.log("Clients Data: ", data)
+      // console.log("Clients Data: ", data)
       setClients(data.results);
     } catch (error) {
       toast.error("Fetching Clients failed. Try Again!")

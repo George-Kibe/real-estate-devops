@@ -5,6 +5,7 @@ import { toast } from 'react-toastify';
 import { Button } from '../ui/button';
 import axios from 'axios';
 import { useMainProvider } from '@/providers/MainProvider';
+import { set } from 'nprogress';
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
 //const BACKEND_URL = "http://localhost:8000"
@@ -17,9 +18,12 @@ const AddClientModal = ({ isOpen, onClose, setLoading, client=null }) => {
   const [phone_number, setPhoneNumber] = useState('');
   const [house_type, setHouse_type] = useState('');
   const [additional_info, setAdditional_info] = useState('');
+  const [staff_id, setStaff_id] = useState('');
   const [city, setCity] = useState('');
   const {currentUser} = useMainProvider();
-  const owner_id = currentUser?._id
+  const owner_id = currentUser?._id;
+  const members = currentUser?.members;
+  // console.log("Staff ID: ", staff_id)
 
   useEffect(() => {
     if (client?.client_name) {
@@ -30,9 +34,15 @@ const AddClientModal = ({ isOpen, onClose, setLoading, client=null }) => {
       setHouse_type(client.house_type);
       setAdditional_info(client.additional_info);
       setCity(client.city);
+      setStaff_id(client.staff_id);
       return;
     }
   }, [client]);
+  
+  const handleSelectChange = (event) => {
+    //console.log("Selected ID: ",event.target.value);
+    setStaff_id(event.target.value)
+  };
 
   const saveClient = async(e) => {
     e.preventDefault()
@@ -41,7 +51,8 @@ const AddClientModal = ({ isOpen, onClose, setLoading, client=null }) => {
       toast.error("You have missing details!");
       return
     }
-    const data = {client_name:name, email, address,phone_number,house_type, city, additional_info, owner_id};
+    const data = {client_name:name, email, address,phone_number,house_type, city, staff_id, additional_info, owner_id};
+
     if (client){
       toast.info(`Editing ${email}'s Details`)
     }else{
@@ -53,7 +64,8 @@ const AddClientModal = ({ isOpen, onClose, setLoading, client=null }) => {
         if (res.status === 200){
           toast.success("Client Edited Successfully")
           setLoading(false); setEmail(''); setName(''); setAddress('');
-          setPhoneNumber(''); setHouse_type(''); setAdditional_info(''); setCity('')
+          setPhoneNumber(''); setHouse_type(''); setAdditional_info(''); setCity('');
+          setStaff_id('');
           onClose()
         }
       } catch (error) {
@@ -69,7 +81,8 @@ const AddClientModal = ({ isOpen, onClose, setLoading, client=null }) => {
           toast.success("Client Created Successfully!")
         }
         setLoading(false); setEmail(''); setName(''); setAddress('');
-        setPhoneNumber(''); setHouse_type(''); setAdditional_info(''); setCity('')
+        setPhoneNumber(''); setHouse_type(''); setAdditional_info(''); setCity('');
+        setStaff_id('');
       } catch (error) {
         toast.error("Adding your client failed. Try Again!")
       }
@@ -79,7 +92,7 @@ const AddClientModal = ({ isOpen, onClose, setLoading, client=null }) => {
   return (
     <div 
       onClick={onClose}
-      className={`fixed w-full inset-0 flex justify-center items-center transition-colors
+      className={`z-10 fixed w-full inset-0 flex justify-center items-center transition-colors
         ${isOpen? "visible bg-black/80 dark:bg-white/50" : "invisible"}
       `}
     > 
@@ -95,7 +108,7 @@ const AddClientModal = ({ isOpen, onClose, setLoading, client=null }) => {
         >
           <p className="">X</p>
         </button>
-        <p className="font-semibold pr-2">{client? `Edit ${client.client_name}'s Details` : "Add New Client"}</p>
+        <p className="font-semibold pr-2 text-2xl">{client? `Edit ${client.client_name}'s Details` : "Add New Client"}</p>
 
         <div className="flex flex-col md:flex-wrap">
         <div className="">
@@ -161,6 +174,29 @@ const AddClientModal = ({ isOpen, onClose, setLoading, client=null }) => {
               mb-2 focus:border-blue-900" 
             /> 
           </div>
+          {
+            members && (
+              <div className="mb-4">
+                <label htmlFor="dropdown" className="block text-sm font-medium text-gray-700 mb-1">
+                  Assign to Staff
+                </label>
+                <p className="">Current Staff: 
+                  {members?.find((member) => member._id === staff_id)?.name || "None"}
+                </p>
+                  <select
+                    id="dropdown"
+                    //value={members?.find((member) => member._id === staff_id)?.name || ""}
+                    onChange={handleSelectChange}
+                    className="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                  >
+                    <option value="" disabled>Select Staff...</option>
+                      {members.map((member, index) => (
+                        <option key={index} value={member._id}>{member.name}</option>
+                      ))}
+                  </select>
+                </div>
+            )
+          }
         </div>
         <Button onClick={saveClient} className="mt-2">{client? "Edit": "Add"} Client</Button>
       </div>

@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { Button } from '../ui/button';
 
 const AddCommentModal = ({ currentProperty, comments, isOpen, onClose, setComments, addToUserProperties, editMode }) => {
-  console.log("Current Property: ", currentProperty?.comments)
+  //console.log("Current Property: ", currentProperty?.comments)
   return (
     <div 
       onClick={onClose}

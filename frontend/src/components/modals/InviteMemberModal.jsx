@@ -40,13 +40,13 @@ const InviteMemberModal = ({ isOpen, onClose, setLoading }) => {
   return (
     <div 
       onClick={onClose}
-      className={`fixed w-full inset-0 flex justify-center items-center transition-colors
+      className={`z-10 fixed w-full inset-0 flex justify-center items-center transition-colors
         ${isOpen? "visible bg-black/80 dark:bg-white/50" : "invisible"}
       `}
     > 
       <div 
         onClick={(e) => e.stopPropagation()}
-        className={`bg-white w-full md:w-1/2 dark:bg-black rounded-xl p-2 md:p-16 shadow transition-all 
+        className={`bg-white  w-full md:w-1/2 dark:bg-black rounded-xl p-2 md:p-16 shadow transition-all 
           ${isOpen ? "scale-100 opacity-100": "sclae-125 opacity-0"}
           `}
       >
