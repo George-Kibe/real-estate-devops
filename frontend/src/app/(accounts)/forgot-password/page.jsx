@@ -1,21 +1,37 @@
 'use client'
 
 import AnimatedText from "@/components/AnimatedText";
+import axios from "axios";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { set } from "nprogress";
 import React, { useState } from "react";
 import { toast } from "react-toastify";
 
 const ForgotPasswordPage = () => {
   const [email, setEmail] = useState('');
-
-  const handleSubmit = (e) => {
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+  const handleSubmit = async(e) => {
     e.preventDefault();
     if(!email){
       toast.error('Please enter your email');
       return;
     }
-    // send reset code and redirect to reset page
-    toast.info('Resetting password for..', email )
+    setLoading(true);
+    try {
+      const data = {email};
+      const response = await axios.post('/api/auth/users/forgot-password', data)
+      if (response.status === 200) {
+        toast.success('Password reset link sent to your email');
+        router.push('/login');
+        setLoading(false)
+      }
+      setEmail('');
+    } catch (error) {
+      toast.error("Error Sending your request!");
+      setLoading(false)
+    }
   }
 
   return (
@@ -32,7 +48,7 @@ const ForgotPasswordPage = () => {
                 <div className="mb-10">
                   <input
                     type="submit"
-                    value="Reset Password"
+                    value={loading ? 'Loading...' : 'Reset Password'}
                     className="w-full cursor-pointer bg-blue-600 text-white rounded-md border border-primary px-5 py-3 text-base font-medium transition hover:bg-opacity-90"
                   />
                 </div>

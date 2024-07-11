@@ -31,7 +31,7 @@ export async function POST(req) {
         <h2>Invitation to ${username}'s UnlimitedRent Organization</h2>
         <p><strong>Greetings </strong> ${name}</p>
         <p>You have been invited by ${username} to join their UnlimitedRent Organization to be their ${role}. Please click the link below to accept the invitation:</p>
-        <a href=${process.env.NEXT_PUBLIC_FRONTEND_URL}/accept-invite/${_id}/?role=${role}>Accept Invitation</a>
+        <a href=${process.env.NEXT_PUBLIC_FRONTEND_URL}/accept-invite/${_id}/?role=${role}>ACCEPT INVITATION</a>
         <p>PS: If the above button does not work, copy paste this link in your browser ${process.env.NEXT_PUBLIC_FRONTEND_URL}/accept-invite/${_id}/?role=${role}</p>
         <p>Thanks and have a good time.</p>
       `,

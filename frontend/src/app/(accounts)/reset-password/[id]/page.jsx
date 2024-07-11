@@ -1,28 +1,42 @@
 'use client'
 import AnimatedText from "@/components/AnimatedText";
+import axios from "axios";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { toast } from "react-toastify";
 
-const ResetPasswordPage = () => {
-  const [code, setCode] = useState('');
+const ResetPasswordPage = ({params}) => {
+  const id = params?.id;
+  // const [code, setCode] = useState('');
   const [password, setPassword] = useState('');
   const [passwordTwo, setPasswordTwo] = useState('');
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
-    // validate code
-    if (!code || !password) {
+    if (!password) {
       toast.error("Missing details!");
       return;
     }
-    // validate password and passwordTwo match
+    setLoading(true);
     if (password !== passwordTwo) {
       toast.error('Passwords do not match');
       return;
     }
-    // send reset code and redirect to reset page
-    toast.info('Resetting password for..', code)
+    const data = { _id:id, password };
+    try {
+      const response = await axios.put('/api/auth/users/reset-password', data);
+      if (response.status === 200) {
+        toast.success('Password reset successful');
+        router.push('/login');
+        setLoading(false)
+      }
+    } catch (error) {
+      toast.error("Error Updating your Password!");
+      setLoading(false);
+    }
   }
   return (
     <section className="bg-gray-1 dark:bg-dark ">
@@ -34,7 +48,7 @@ const ResetPasswordPage = () => {
               <div className="mb-10 text-center md:mb-16"> 
               </div>
               <form onSubmit={handleSubmit}>
-                <InputBox value={code} onChange={(e) => setCode(e.target.value)} type="text" name="text" placeholder="Code" />
+                {/* <InputBox value={code} onChange={(e) => setCode(e.target.value)} type="text" name="text" placeholder="Code" /> */}
                 <InputBox
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -43,7 +57,7 @@ const ResetPasswordPage = () => {
                   placeholder="Password"
                 />
                 <InputBox
-                  value={password}
+                  value={passwordTwo}
                   onChange={(e) => setPasswordTwo(e.target.value)}
                   type="password"
                   name="password"
@@ -52,20 +66,11 @@ const ResetPasswordPage = () => {
                 <div className="mb-10">
                   <input
                     type="submit"
-                    value="Reset Password"
+                    value={loading ? 'Loading...' : 'Reset Password'}
                     className="w-full cursor-pointer bg-blue-600 text-white rounded-md border border-primary px-5 py-3 text-base font-medium transition hover:bg-opacity-90"
                   />
                 </div>
               </form>
-              <p className="mb-6 text-base text-secondary-color dark:text-dark-7">
-                OR
-              </p>
-              <div className="flex items-center justify-center gap-2 bg-black dark:bg-white rounded-md py-2">
-                <img src="/svgs/google.svg" alt="" className="w-[25px]" />
-                <p className="text-white dark:text-black text-secondary-color dark:text-dark-7">
-                    SignUp with Google
-                </p>
-              </div>
               <p className="text-base mt-4 text-body-color dark:text-dark-6">
                 <span className="pr-0.5">Already a Member?</span>
                 <Link
