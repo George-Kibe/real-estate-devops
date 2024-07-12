@@ -146,36 +146,36 @@ const Footer = () => {
               <h4 className="mb-9 text-lg font-semibold ">Features</h4>
               <ul>
                 <li>
-                  <a
-                    href="/"
+                  <Link
+                    href="/features"
                     className="mb-3 inline-block text-base text-gray-7 hover:text-primary"
                   >
                     How it works
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a
-                    href="/"
+                  <Link
+                    href="/terms-and-conditions"
                     className="mb-3 inline-block text-base text-gray-7 hover:text-primary"
                   >
                     Privacy policy
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a
-                    href="/"
+                  <Link
+                    href="/terms-and-conditions"
                     className="mb-3 inline-block text-base text-gray-7 hover:text-primary"
                   >
-                    Terms of Service
-                  </a>
+                    Terms and Conditions
+                  </Link>
                 </li>
                 <li>
-                  <a
-                    href="/"
+                  <Link
+                    href="/terms-and-conditions"
                     className="mb-3 inline-block text-base text-gray-7 hover:text-primary"
                   >
                     Refund policy
-                  </a>
+                  </Link>
                 </li>
               </ul>
             </div>
@@ -220,15 +220,15 @@ const Footer = () => {
                 >
                   <a
                     href="/privacy-policy"
-                    className="px-3 text-base text-gray-7 hover:text-white hover:underline"
+                    className="px-3 text-base text-gray-7 hover:underline"
                   >
                     Privacy policy
                   </a>
                   <a
-                    href="/tos"
-                    className="px-3 text-base text-gray-7 hover:text-white hover:underline"
+                    href="/terms-and-conditions"
+                    className="px-3 text-base text-gray-7 hover:underline"
                   >
-                    Terms of service
+                    Terms and Conditions
                   </a>
                 </div>
               </div>
