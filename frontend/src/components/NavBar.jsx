@@ -77,7 +77,7 @@ const NavBar = () => {
                       <ModeToggle />
                       <CustomLink href={"/#"} name={"Home"} toggle={handleClick}/>
                       <CustomLink href={"/solutions"} name={"Solutions"} toggle={handleClick}/>
-                      <CustomLink href={"/sale"} name={"Case Studies"} toggle={handleClick}/>
+                      <CustomLink href={"/case-studies"} name={"Case Studies"} toggle={handleClick}/>
                       <CustomLink href={"/about-us"} name={"About Us"} toggle={handleClick}/>
                       <CustomLink href={"/features"} name={"Features"} toggle={handleClick}/>
                       <CustomLink href={"/contact"} name={"Contacts"} toggle={handleClick}/>
@@ -115,7 +115,7 @@ const NavBar = () => {
                 <ModeToggle />
                 <CustomLink href={"/#"} name={"Home"} toggle={handleClick}/>
                 <CustomLink href={"/solutions"} name={"Solutions"} toggle={handleClick}/>
-                <CustomLink href={"/sale"} name={"Case Studies"} toggle={handleClick}/>
+                <CustomLink href={"/case-studies"} name={"Case Studies"} toggle={handleClick}/>
                 <CustomLink href={"/about-us"} name={"About Us"} toggle={handleClick}/>
                 <CustomLink href={"/features"} name={"Features"} toggle={handleClick}/>
                 <CustomLink href={"/contact"} name={"Contacts"} toggle={handleClick}/>

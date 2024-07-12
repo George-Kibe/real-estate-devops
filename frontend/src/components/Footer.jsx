@@ -22,10 +22,10 @@ const Footer = () => {
                 />
               </Link>
               <p className="mb-8 max-w-[270px] text-base text-gray-7">
-                We help you find your dream home by leveraging technology.
+                AptTrack is dedicated to revolutionizing Housing Stabilization Services (HSS) through innovative technology solutions.
               </p>
               <div className="-mx-3 flex items-center">
-                <a
+                <Link
                   href="/"
                   className="px-3 text-gray-7 hover:text-white"
                 >
@@ -41,7 +41,7 @@ const Footer = () => {
                       d="M16.294 8.86875H14.369H13.6815V8.18125V6.05V5.3625H14.369H15.8128C16.1909 5.3625 16.5003 5.0875 16.5003 4.675V1.03125C16.5003 0.653125 16.2253 0.34375 15.8128 0.34375H13.3034C10.5878 0.34375 8.69714 2.26875 8.69714 5.12187V8.1125V8.8H8.00964H5.67214C5.19089 8.8 4.74402 9.17812 4.74402 9.72812V12.2031C4.74402 12.6844 5.12214 13.1313 5.67214 13.1313H7.94089H8.62839V13.8188V20.7281C8.62839 21.2094 9.00652 21.6562 9.55652 21.6562H12.7878C12.994 21.6562 13.1659 21.5531 13.3034 21.4156C13.4409 21.2781 13.544 21.0375 13.544 20.8312V13.8531V13.1656H14.2659H15.8128C16.2596 13.1656 16.6034 12.8906 16.6721 12.4781V12.4438V12.4094L17.1534 10.0375C17.1878 9.79688 17.1534 9.52187 16.9471 9.24687C16.8784 9.075 16.569 8.90312 16.294 8.86875Z"
                     />
                   </svg>
-                </a>
+                </Link>
                 <a
                   href="/"
                   className="px-3 text-gray-7 hover:text-white"
@@ -59,7 +59,7 @@ const Footer = () => {
                     />
                   </svg>
                 </a>
-                <a
+                <Link
                   href="/"
                   className="px-3 text-gray-7 hover:text-white"
                 >
@@ -81,7 +81,7 @@ const Footer = () => {
                       d="M16.0276 4.96777C15.6432 4.96777 15.318 5.29304 15.318 5.67745C15.318 6.06186 15.6432 6.38713 16.0276 6.38713C16.412 6.38713 16.7373 6.06186 16.7373 5.67745C16.7373 5.29304 16.4416 4.96777 16.0276 4.96777Z"
                     />
                   </svg>
-                </a>
+                </Link>
                 <a
                   href="/"
                   className="px-3 text-gray-7 hover:text-white"
@@ -107,12 +107,12 @@ const Footer = () => {
               <h4 className="mb-9 text-lg font-semibold">About Us</h4>
               <ul>
                 <li>
-                  <a
+                  <Link
                     href="/"
                     className="mb-3 inline-block text-base text-gray-7 hover:text-primary"
                   >
                     Home
-                  </a>
+                  </Link>
                 </li>
                 <li>
                   <a
@@ -123,20 +123,20 @@ const Footer = () => {
                   </a>
                 </li>
                 <li>
-                  <a
+                  <Link
                     href="/"
                     className="mb-3 inline-block text-base text-gray-7 hover:text-primary"
                   >
                     About
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a
+                  <Link
                     href="/"
                     className="mb-3 inline-block text-base text-gray-7 hover:text-primary"
                   >
                     Testimonial
-                  </a>
+                  </Link>
                 </li>
               </ul>
             </div>
@@ -222,7 +222,7 @@ const Footer = () => {
                     href="/privacy-policy"
                     className="px-3 text-base text-gray-7 hover:underline"
                   >
-                    Privacy policy
+                    Privacy Policy
                   </a>
                   <a
                     href="/terms-and-conditions"
