@@ -76,7 +76,7 @@ const NavBar = () => {
                     <div className="hidden md:flex items-center space-x-1">
                       <ModeToggle />
                       <CustomLink href={"/#"} name={"Home"} toggle={handleClick}/>
-                      <CustomLink href={"/rent"} name={"Solutions"} toggle={handleClick}/>
+                      <CustomLink href={"/solutions"} name={"Solutions"} toggle={handleClick}/>
                       <CustomLink href={"/sale"} name={"Case Studies"} toggle={handleClick}/>
                       <CustomLink href={"/about-us"} name={"About Us"} toggle={handleClick}/>
                       <CustomLink href={"/features"} name={"Features"} toggle={handleClick}/>
@@ -114,7 +114,7 @@ const NavBar = () => {
             <div className="md:hidden flex flex-col">
                 <ModeToggle />
                 <CustomLink href={"/#"} name={"Home"} toggle={handleClick}/>
-                <CustomLink href={"/rent"} name={"Solutions"} toggle={handleClick}/>
+                <CustomLink href={"/solutions"} name={"Solutions"} toggle={handleClick}/>
                 <CustomLink href={"/sale"} name={"Case Studies"} toggle={handleClick}/>
                 <CustomLink href={"/about-us"} name={"About Us"} toggle={handleClick}/>
                 <CustomLink href={"/features"} name={"Features"} toggle={handleClick}/>

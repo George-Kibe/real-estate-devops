@@ -31,14 +31,14 @@ import { useMainProvider } from '@/providers/MainProvider';
           <CommandEmpty>No results found.</CommandEmpty>
           <CommandGroup heading='Suggestions'>
             {
-              orgMode | sellerMode &&
+              orgMode || sellerMode &&
               <CommandItem>
                 <LayoutDashboard className='mr-2 h-4 w-4' />
                 <Link href='/dashboard'>Dashboard</Link>
               </CommandItem>
             }
             {
-                orgMode | sellerMode && 
+                orgMode || sellerMode && 
                 <CommandItem>
                   <Users className='mr-2 h-4 w-4' />
                   <Link href='/users'>Users</Link>
@@ -52,7 +52,7 @@ import { useMainProvider } from '@/providers/MainProvider';
               </CommandItem>
             }
             {
-              orgMode | sellerMode && 
+              orgMode || sellerMode && 
               <>
               <CommandItem>
                 <Newspaper className='mr-2 h-4 w-4' />

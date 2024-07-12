@@ -1,7 +1,7 @@
 "use client"
 
 import AnimatedText from "@/components/AnimatedText";
-import InviteClientModal from "@/components/modals/InviteClientModal";
+import AddClientModal from "@/components/modals/AddClientModal";
 import { Button } from "@/components/ui/button";
 import { useMainProvider } from "@/providers/MainProvider";
 import axios from "axios";
@@ -64,7 +64,7 @@ export default function MembersPage() {
   return (
     <div className='flex flex-col justify-between gap-5 mb-5'>
       <AnimatedText text={"Clients Page"} />
-      <InviteClientModal isOpen={modalOpen} onClose={closeModal} setLoading={setLoading} />
+      <AddClientModal isOpen={modalOpen} onClose={closeModal} setLoading={setLoading} />
         <Button className='self-start' onClick={addClient}>
           {loading? "Loading" : "Add Client"}
         </Button>
