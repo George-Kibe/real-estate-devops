@@ -17,7 +17,8 @@ export default function ReportsPage() {
   const [currentClient, setCurrentClient] = useState(null);
   const [clients, setClients] = useState([]);
   const [reports, setReports] = useState([]);
-  const {currentUser} = useMainProvider();
+  const {orgMode, tempUser, currentUser} = useMainProvider();
+  console.log("tempUser: ", tempUser?._id)
   const router = useRouter();
   //console.log("Current Client: ", currentClient)
 
@@ -69,6 +70,7 @@ export default function ReportsPage() {
       description: "Daily report draft",
       status: "completed",
       report_type: "Daily",
+      staff_id: orgMode? tempUser?._id : currentUser._id
     }
     try {
       const response = await axios.post(`${BACKEND_URL}/api/reports/`, data);
@@ -145,7 +147,7 @@ export default function ReportsPage() {
               <th scope="col" className="px-6 py-4 font-medium">Name</th>
               <th scope="col" className="px-6 py-4 font-medium">Address</th>
               <th scope="col" className="px-6 py-4 font-medium">Phone Number</th>
-              <th scope="col" className="px-6 py-4 font-medium">City</th>
+              <th scope="col" className="px-6 py-4 font-medium">Preferred City</th>
             </tr>
           </thead>
           <tbody className="divide-y ">

@@ -157,9 +157,12 @@ class ReportViewSet(viewsets.ModelViewSet):
 
     def list(self, request):
         client_id = request.query_params.get('client_id')
+        staff_id = request.query_params.get('staff_id')
         #queryset = self.filter_queryset(self.get_queryset())
         if client_id is not None:
             queryset = Report.objects.filter(client_id=client_id)
+        elif staff_id is not None:
+            queryset = Report.objects.filter(staff_id=staff_id)
         else:
             queryset = self.filter_queryset(self.get_queryset())
         page = self.paginate_queryset(queryset)
