@@ -36,7 +36,8 @@ export default function MembersPage() {
           <thead className="">
             <tr>
               <th scope="col" className="px-6 py-4 font-medium">#</th>
-              <th scope="col" className="px-6 py-4 font-medium">Name</th>
+              <th scope="col" className="px-6 py-4 font-medium">FirstName</th>
+              <th scope="col" className="px-6 py-4 font-medium">LastName</th>
               <th scope="col" className="px-6 py-4 font-medium">Role</th>
               <th scope="col" className="px-6 py-4 font-medium">Status</th>
             </tr>
@@ -46,21 +47,8 @@ export default function MembersPage() {
               members?.map((member, index) => (
                 <tr className="" key={index}>
                   <td className="px-6 py-4">{index +1}.</td>
-                  <th className="flex gap-3 px-6 py-4 font-normal">
-                    <div className="relative h-10 w-10">
-                      <img
-                        className="h-full w-full rounded-full object-cover object-center"
-                        src={member.image}
-                        alt="Profile Image"
-                      />
-                      {/* <span className="absolute right-0 bottom-0 h-2 w-2 rounded-full bg-green-400 ring ring-white"></span> */}
-                    </div>
-                    <div className="text-sm">
-                      <div className="font-medium ">{member.name}</div>
-                      <div className="">{member.email}</div>
-                    </div>
-                  </th>
-          
+                  <td className="px-6 py-4">{member.firstName || member.name}</td> 
+                  <td className="px-6 py-4">{member.lastName}</td>        
                   <td className="px-6 py-4">{member.role}</td>
                   <td className="px-6 py-4">{member.status || 'Active'}</td>
                   {/* <td className="px-6 py-4">

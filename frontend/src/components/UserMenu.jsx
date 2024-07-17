@@ -22,8 +22,9 @@ export function UserMenu() {
   // console.log("Current User Organization: ", currentUser?.organization);
   
   const handleLogout = async () => {
-    await signOut();
+    // await signOut();
     localStorage.clear()
+    router.push("/")
   }
   const switchToNormal = () => {
     setSellerMode(false)

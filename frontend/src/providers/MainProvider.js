@@ -15,6 +15,7 @@ export function MainProvider({ children }) {
   const [currentUser, setCurrentUser] = useLocalStorage('currentUser', null);
   const [loading, setLoading] = useLocalStorage('loading', false);
   const [tempUser, setTempUser] = useLocalStorage('tempUser', {});
+  const [tempProperty, setTempProperty] = useLocalStorage('tempProperty', {});
 
   return (
     <MainContext.Provider
@@ -29,6 +30,7 @@ export function MainProvider({ children }) {
         tempUser, setTempUser,
         sellerMode, setSellerMode,
         adminMode, setAdminMode,
+        tempProperty, setTempProperty,
       }}
     >
       {children}

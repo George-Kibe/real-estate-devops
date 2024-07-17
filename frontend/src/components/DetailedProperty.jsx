@@ -47,6 +47,9 @@ const PropertyCard = ({ property }) => {
           <p className="flex gap-1 items-center flex-row"><MdOutlineEmail className="w-8 h-8" /> {property.email_listing}</p>
           
         </div>
+        <div className="font-normal flex flex-row flex-wrap">
+          <p className="font-bold mr-2">Amenities:</p> {property.amenities?.map((a, index) => <p className="ml-1" key={index}>{a +", "}</p>)}
+        </div>
         <div className="flex flex-row items-center gap-1 ">
         {property.bedrooms}
           <FaBed /> | {property.bathrooms} <FaBath /> | {property.plot_area} sqft <BsGridFill />

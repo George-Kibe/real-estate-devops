@@ -19,7 +19,7 @@ const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
 
 export default function MembersPage({params, searchParams}) {
   const location = searchParams?.searchTerm;
-  const {currentUser} = useMainProvider();
+  const {currentUser, setTempProperty} = useMainProvider();
 
   const [modalOpen, setModalOpen] = useState(false);
   const [editMode, setEditMode] = useState(false);
@@ -62,6 +62,10 @@ export default function MembersPage({params, searchParams}) {
       toast.error("Fetching report failed. Try Again!")
       setLoading(false);
     }
+  }
+  const viewProperty = (property) => {
+    setTempProperty(property);
+    router.push(`/properties`)
   }
   const fetchProperties = async() => {
     setLoading(true); setPropertiesLoading(true)
@@ -260,8 +264,9 @@ export default function MembersPage({params, searchParams}) {
                             <td className="px-6 py-4">
                                 <p className="">{property.comments}</p>
                             </td>
-                            <td className="px-6 py-4 flex gap-2 items-center self-start justify-center">
-                                <Button onClick={() => handleEdit(property, index)}>Edit</Button>
+                            <td className="px-6 py-4  self-center justify-center flex-col gap-2">
+                              <Button className='mb-2' onClick={() => handleEdit(property, index)}>Edit Details</Button>
+                              <Button onClick={() => viewProperty(property)}>View Property</Button>
                             </td>
                         </tr>
                       ))
