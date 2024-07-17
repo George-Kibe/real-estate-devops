@@ -5,7 +5,6 @@ import { toast } from 'react-toastify';
 import { Button } from '../ui/button';
 import axios from 'axios';
 import { useMainProvider } from '@/providers/MainProvider';
-import { set } from 'nprogress';
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
 //const BACKEND_URL = "http://localhost:8000"
@@ -24,6 +23,13 @@ const AddClientModal = ({ isOpen, onClose, setLoading, client=null }) => {
   const owner_id = currentUser?._id;
   const members = currentUser?.members;
   // console.log("Staff ID: ", staff_id)
+
+  const handleClose = () => {
+    onClose();
+    setLoading(false); setEmail(''); setName(''); setAddress('');
+    setPhoneNumber(''); setHouse_type(''); setAdditional_info(''); setCity('');
+    setStaff_id('');
+  }
 
   useEffect(() => {
     if (client?.client_name) {
@@ -91,7 +97,7 @@ const AddClientModal = ({ isOpen, onClose, setLoading, client=null }) => {
 
   return (
     <div 
-      onClick={onClose}
+      onClick={handleClose}
       className={`z-10 fixed w-full inset-0 flex justify-center items-center transition-colors
         ${isOpen? "visible bg-black/80 dark:bg-white/50" : "invisible"}
       `}
@@ -102,13 +108,13 @@ const AddClientModal = ({ isOpen, onClose, setLoading, client=null }) => {
           ${isOpen ? "scale-100 opacity-100": "sclae-125 opacity-0"}
           `}
       >
-        <button onClick={onClose}
+        <button onClick={handleClose}
           className='absolute top-2 right-2 p-1 px-2 rounded-lg text-red-700 bg-white hover:bg-gray-50
           hover:text-gray-600'
         >
           <p className="">X</p>
         </button>
-        <p className="font-semibold pr-2 text-2xl">{client? `Edit ${client.client_name}'s Details` : "Add New Client"}</p>
+        <p className="font-semibold pr-2 text-2xl">{client? `Update ${client.client_name}'s Details` : "Add New Client"}</p>
 
         <div className="flex flex-col md:flex-wrap">
         <div className="">
@@ -130,7 +136,7 @@ const AddClientModal = ({ isOpen, onClose, setLoading, client=null }) => {
             /> 
           </div>
           <div className="">
-            <p className="">Address</p>
+            <p className="">Current Address: </p>
             <input type="text" placeholder='Address' 
               value={address}
               onChange={ev => setAddress(ev.target.value)}
@@ -148,7 +154,7 @@ const AddClientModal = ({ isOpen, onClose, setLoading, client=null }) => {
             /> 
           </div>
           <div className="">
-            <p className="">House Type </p>
+            <p className="">Preferred House Type </p>
             <input type="text" placeholder='House Type' 
               value={house_type}
               onChange={ev => setHouse_type(ev.target.value)}
@@ -157,7 +163,7 @@ const AddClientModal = ({ isOpen, onClose, setLoading, client=null }) => {
             /> 
           </div>
           <div className="">
-            <p className="">City</p>
+            <p className="">Preferred City</p>
             <input type="text" placeholder='City' 
               value={city}
               onChange={ev => setCity(ev.target.value)}
@@ -198,7 +204,7 @@ const AddClientModal = ({ isOpen, onClose, setLoading, client=null }) => {
             )
           }
         </div>
-        <Button onClick={saveClient} className="mt-2">{client? "Edit": "Add"} Client</Button>
+        <Button onClick={saveClient} className="mt-2">{client? "Update": "Add"} Client Details</Button>
       </div>
     </div>
   );

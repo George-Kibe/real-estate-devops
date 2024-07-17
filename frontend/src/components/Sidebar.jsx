@@ -31,18 +31,18 @@ import { useMainProvider } from '@/providers/MainProvider';
           <CommandEmpty>No results found.</CommandEmpty>
           <CommandGroup heading='Suggestions'>
             {
-              orgMode || sellerMode &&
+              (orgMode || sellerMode) &&
               <CommandItem>
                 <LayoutDashboard className='mr-2 h-4 w-4' />
                 <Link href='/dashboard'>Dashboard</Link>
               </CommandItem>
             }
             {
-                orgMode || sellerMode && 
-                <CommandItem>
-                  <Users className='mr-2 h-4 w-4' />
-                  <Link href='/users'>Users</Link>
-                </CommandItem>
+              (orgMode || sellerMode) && 
+              <CommandItem>
+                <Users className='mr-2 h-4 w-4' />
+                <Link href='/users'>Users</Link>
+              </CommandItem>
               }
             {
               !orgMode && !sellerMode &&
@@ -52,7 +52,7 @@ import { useMainProvider } from '@/providers/MainProvider';
               </CommandItem>
             }
             {
-              orgMode || sellerMode && 
+              (orgMode || sellerMode) && 
               <>
               <CommandItem>
                 <Newspaper className='mr-2 h-4 w-4' />
@@ -68,6 +68,15 @@ import { useMainProvider } from '@/providers/MainProvider';
                 <User2Icon className='mr-2 h-4 w-4' />
                 <Link href='/clients'>Clients</Link>
               </CommandItem>
+              {
+                orgMode && (
+                  <CommandItem>
+                    <User2Icon className='h-4 w-4' />
+                    <User2Icon className='mr-2 h-4 w-4' />
+                    <Link href='/my-clients'>Allocated Clients</Link>
+                  </CommandItem>
+                )
+              }
             </>
             }
           </CommandGroup>

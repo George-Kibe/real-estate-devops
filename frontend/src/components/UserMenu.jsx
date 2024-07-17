@@ -23,7 +23,8 @@ export function UserMenu() {
   
   const handleLogout = async () => {
     // await signOut();
-    localStorage.clear()
+    localStorage.clear();
+    setCurrentUser(null);
     router.push("/")
   }
   const switchToNormal = () => {
