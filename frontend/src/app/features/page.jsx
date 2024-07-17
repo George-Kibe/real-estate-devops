@@ -9,9 +9,9 @@ import React, { useState } from "react";
 
 const FeaturesPage = () => {
   return (
-    <section className="relative z-10 overflow-hidden pb-12 pt-20 dark:bg-dark lg:pb-[90px] lg:pt-[120px]">
+    <section className="relative z-10 overflow-hidden pt-4 dark:bg-dark lg:pb-[10px] lg:pt-[10px]">
       <OurOffering />
-      <Features />
+      {/* <Features /> */}
       <FAQS />
       <div className="container mx-auto">
         <div className="-mx-4 flex flex-wrap">

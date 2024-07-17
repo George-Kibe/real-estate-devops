@@ -2,11 +2,11 @@ import React from "react";
 
 const OurOffering = () => {
   return (
-    <section className="pb-12 pt-20 lg:pb-[90px] lg:pt-[120px]">
+    <section className="pb-4 lg:pb-[10px] lg:pt-[10px]">
       <div className="container mx-auto">
         <div className="-mx-4 flex flex-wrap">
           <div className="w-full px-4">
-            <div className="mx-auto mb-12 max-w-[510px] text-center lg:mb-20">
+            <div className="mx-auto mb-4 max-w-[510px] text-center lg:mb-8">
               <span className="mb-2 block text-lg font-semibold text-primary">
                 Our Services
               </span>

@@ -70,7 +70,7 @@ const NavBar = () => {
                 <div className="flex space-x-2 justify-between flex-1">
                     <div>
                         <Link href="#" className="flex items-center border- py-4 px-2">
-                            <span className="font-semibold text-black dark:text-white text-2xl">UnLimitedRent</span>
+                            <span className="font-semibold text-black dark:text-white text-2xl">AptTracking</span>
                         </Link>
                     </div>                  
                     <div className="hidden md:flex items-center space-x-1">
