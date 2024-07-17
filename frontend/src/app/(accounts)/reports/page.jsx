@@ -113,7 +113,11 @@ export default function ReportsPage() {
                     <td className="px-6 py-4 text-sm">{index + 1}</td>
                     <th className="flex gap-3 px-6 py-4 font-normal">
                       <div className="text-sm">
-                        <div className="font-medium ">{client.client_name}</div>
+                        <div className="font-medium ">
+                          <Button>
+                          {client.client_name}
+                          </Button>
+                        </div>
                         <div className="">{client.email}</div>
                       </div>
                     </th>

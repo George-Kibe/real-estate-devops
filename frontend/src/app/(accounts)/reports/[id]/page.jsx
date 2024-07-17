@@ -32,7 +32,7 @@ export default function MembersPage({params, searchParams}) {
   const [loading, setLoading] = useState(false);
   const [propertiesLoading, setPropertiesLoading] = useState(false);
   const [summary, setSummary] = useState();
-  
+  // console.log("Report: ", report)
   const {id} = useParams();
   const divRef = useRef();
   const router = useRouter();
@@ -111,14 +111,9 @@ export default function MembersPage({params, searchParams}) {
   const GenerateSummaryFromAI = async() => {
     console.log("Generate Summary from AI")
   }
-  const onSave = async(e) => {
-    e.preventDefault();
-    console.log("On Save: ", summary)
-    // updateReport(formData)
+  const handleExit = () => {
+    router.push(`/reports`);
   }
-  // const handlePrint = () => {
-  //   window.print();
-  // };
 
   const deleteReport = async(reportId) => {
     setLoading(true);
@@ -224,7 +219,7 @@ export default function MembersPage({params, searchParams}) {
                 </tbody>
               }
               {
-                !propertiesLoading && !properties?.length &&
+                !propertiesLoading && !userProperties.length && !properties?.length &&
                 <tbody>
                   <tr className="mt-2 md:mt-4">
                       <td colSpan={7} className="text-center mt-2 md:mt-4">No Properties Found</td>
@@ -241,16 +236,21 @@ export default function MembersPage({params, searchParams}) {
                             <th scope="row" className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
                                 <img className="w-20 h-20 rounded-md" src={property?.images[0]} alt="Jese image" />
                                 <div className="ps-3">
-                                    <div className="text-base font-semibold">{property.street_address}</div>
+                                    <div className="text-base text-wrap ">{property.title}</div>
+                                    <div className="text-base font-semibold text-wrap">Address: {property.street_address}</div>
                                     <div className="font-normal text-gray-500 flex flex-row flex-wrap">
-                                      <p className="font-bold mr-2">Amenities:</p> {property.amenities.map((a, index) => <p className="ml-1" key={index}>{a +", "}</p>)}</div>
+                                      <p className="font-bold mr-2">Amenities:</p> {property.amenities.map((a, index) => <p className="ml-1" key={index}>{a +", "}</p>)}
+                                    </div>
+                                    <div className="font-normal text-gray-500 flex flex-row flex-wrap">
+                                      <p className="font-bold mr-2">Bathrooms:</p>{property.bathrooms}  
+                                    </div>
                                 </div>  
                             </th>
                             <td className="px-6 py-4">
                               {property.price}
                             </td>
                             <td className="px-6 py-4">
-                                <div className="flex items-center">
+                                <div className="flex items-center w-28">
                                     {property.phone_number}
                                 </div>
                             </td>
@@ -277,16 +277,22 @@ export default function MembersPage({params, searchParams}) {
                             <th scope="row" className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
                                 <img className="w-20 h-20 rounded-md" src={property?.images[0]} alt="Jese image" />
                                 <div className="ps-3">
-                                    <div className="text-base font-semibold">{property.street_address}</div>
+                                    <div className="text-base text-wrap ">{property.title}</div>
+                                    <div className="text-base font-semibold text-wrap">Address: {property.street_address}</div>
                                     <div className="font-normal text-gray-500 flex flex-row flex-wrap">
-                                      <p className="font-bold mr-2">Amenities:</p> {property.amenities.map((a, index) => <p className="ml-1" key={index}>{a +", "}</p>)}</div>
+                                      <p className="font-bold mr-2">Amenities:</p> {property.amenities.map((a, index) => <p className="ml-1" key={index}>{a +", "}</p>)}
+                                    Bathrooms: {property.bathrooms}  
+                                    </div>
+                                    <div className="font-normal text-gray-500 flex flex-row flex-wrap">
+                                      <p className="font-bold mr-2">Bathrooms:</p>{property.bathrooms}  
+                                    </div>
                                 </div>  
                             </th>
                             <td className="px-6 py-4">
                               {property.price}
                             </td>
                             <td className="px-6 py-4">
-                                <div className="flex items-center">
+                                <div className="flex w-28 items-center">
                                     {property.phone_number}
                                 </div>
                             </td>
@@ -321,7 +327,7 @@ export default function MembersPage({params, searchParams}) {
           <div className='flex flex-row gap-2'>
             <p className=''><p className="font-semibold">Report Final:</p> {report?.report_final}</p>
           </div>
-          <form className='mt-7' onSubmit={onSave}>
+          <form className='mt-7'>
               <div className='flex justify-between items-end'>
                   <label>Add Summary</label>
                   <Button variant="outline" onClick={()=>GenerateSummaryFromAI()} 
@@ -333,18 +339,13 @@ export default function MembersPage({params, searchParams}) {
                   defaultValue={summary?summary:report?.report_draft}
                   onChange={(e)=>setSummary(e.target.value)}
               />
-              <div className='mt-2 flex justify-end'>
-                <Button type="submit"
-                  disabled={loading}>
-                  {loading?<LoaderCircle className='animate-spin' />:'Save'}
-                </Button>
-              </div>
           </form>
           <div className='flex gap-2'>
             <Button onClick={updateReport}>{loading? 'Loading...': 'Update Report'}</Button>
             <Button onClick={() => deleteReport(id)} variant="destructive">{loading? 'Loading...': 'Delete Report'}</Button>
             <Button onClick={handlePrint}  className="">Export PDF</Button>
-            <Button onClick={handlePrint} className="">Share</Button>
+            {/* <Button onClick={handlePrint} className="">Share</Button> */}
+            <Button onClick={handleExit} className="">Exit</Button>
           </div>
         </div>
       </div>
