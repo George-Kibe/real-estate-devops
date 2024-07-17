@@ -27,6 +27,7 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "cmdk": "^1.0.0",
+    "file-saver": "^2.0.5",
     "framer-motion": "^11.2.9",
     "lucide-react": "^0.381.0",
     "millify": "^6.1.0",
@@ -47,7 +48,8 @@
     "sharp": "^0.33.4",
     "stripe": "^15.12.0",
     "tailwind-merge": "^2.3.0",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "eslint": "^8",

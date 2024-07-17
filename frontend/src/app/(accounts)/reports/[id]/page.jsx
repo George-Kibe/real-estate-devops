@@ -10,9 +10,9 @@ import moment from "moment/moment";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
-import {properties as props} from '../../../../../data/properties';
 import AddCommentModal from "@/components/modals/AddCommentModal";
-import { set } from "nprogress";
+import { saveAs } from 'file-saver';
+import * as XLSX from 'xlsx';
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
 //const BACKEND_URL = "http://localhost:8000"
@@ -46,6 +46,50 @@ export default function MembersPage({params, searchParams}) {
     document.body.innerHTML = originalContents;
     window.location.reload(); // Refresh the page to restore original content
   };
+  
+  const exportToExcel = () => {
+    const workbook = XLSX.utils.book_new();
+    // Main report data
+    const mainData = [
+      {
+        pkid: report?.pkid,
+        id: report?.id,
+        created_at: report?.created_at,
+        updated_at: report?.updated_at,
+        title: report?.title,
+        description: report?.description,
+        client_name: report?.client_name,
+        client_id: report?.client_id,
+        report_type: report?.report_type,
+        status: report?.status,
+        report_draft: report?.report_draft,
+        report_final: report?.report_final
+      }
+    ];
+    const mainSheet = XLSX.utils.json_to_sheet(mainData);
+    XLSX.utils.book_append_sheet(workbook, mainSheet, 'Main Report');
+
+    // Properties data
+    const propertiesData = report.properties.map(property => ({
+      title: property.title,
+      street_address: property.street_address,
+      price: property.price,
+      description: property.description,
+      bathrooms: property.bathrooms,
+      phone_number: property.phone_number,
+      amenities: property.amenities.join(', '),
+      images: property.images.join(', '),
+      comments: property.comments
+    }));
+    const propertiesSheet = XLSX.utils.json_to_sheet(propertiesData);
+    XLSX.utils.book_append_sheet(workbook, propertiesSheet, 'Properties');
+
+    // Generate the Excel file and trigger download
+    const excelBuffer = XLSX.write(workbook, { bookType: 'xls', type: 'array' });
+    const blob = new Blob([excelBuffer], { type: 'application/vnd.ms-excel' });
+    saveAs(blob, `${report?.client_name}-${report?.created_at}-report.xls`);
+  };
+
 
   const fetchReport = async() => {
     setLoading(true);
@@ -186,6 +230,23 @@ export default function MembersPage({params, searchParams}) {
       
       <AnimatedText text={`Report for ${report?.client_name}-${moment(report?.created_at).format('MMMM Do YYYY')}`} />
       <AddCommentModal comments={comments} isOpen={modalOpen} onClose={closeModal} setComments={setComments} currentProperty={currentProperty} addToUserProperties={addToUserProperties} editMode={editMode}/>
+        <div className="p-4 md:p-8">
+            <div className='flex flex-row gap-2'>
+              <p className='flex flex-row gap-4'><p className="font-semibold">Report Title:</p> {report?.title}</p>
+            </div>
+            <div className='flex flex-row gap-2'>
+              <p className='flex flex-row gap-4'><p className="font-semibold">Report Type:</p> {report?.report_type}</p>
+            </div>
+            <div className='flex flex-row gap-2'>
+              <p className='flex flex-row gap-4'><p className="font-semibold">Report Description:</p> {report?.description}</p>
+            </div>
+            <div className='flex flex-row gap-2'>
+              <p className=''><p className="font-semibold">Report Draft:</p> {report?.report_draft}</p>
+            </div>
+            <div className='flex flex-row gap-2'>
+              <p className=''><p className="font-semibold">Report Final:</p> {report?.report_final}</p>
+            </div>
+        </div>
       
         <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
           <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
@@ -319,19 +380,6 @@ export default function MembersPage({params, searchParams}) {
         </div>
         
         <div className='flex p-4 flex-col gap-4'>
-          <div className='flex flex-row '>
-            <p className='mr-4 md:mr-8'><p className="font-semibold">Report Title:</p> {report?.title}</p>
-            <p className=''><p className="font-semibold">Report Type:</p> {report?.report_type}</p>
-          </div>
-          <div className='flex flex-row gap-2'>
-            <p className=''><p className="font-semibold">Report Description:</p> {report?.description}</p>
-          </div>
-          <div className='flex flex-row gap-2'>
-            <p className=''><p className="font-semibold">Report Draft:</p> {report?.report_draft}</p>
-          </div>
-          <div className='flex flex-row gap-2'>
-            <p className=''><p className="font-semibold">Report Final:</p> {report?.report_final}</p>
-          </div>
           <form className='mt-7'>
               <div className='flex justify-between items-end'>
                   <label>Add Summary</label>
@@ -350,6 +398,7 @@ export default function MembersPage({params, searchParams}) {
             <Button onClick={() => deleteReport(id)} variant="destructive">{loading? 'Loading...': 'Delete Report'}</Button>
             <Button onClick={handlePrint}  className="">Export PDF</Button>
             {/* <Button onClick={handlePrint} className="">Share</Button> */}
+            <Button onClick={exportToExcel} className="">Export Excel</Button>
             <Button onClick={handleExit} className="">Exit</Button>
           </div>
         </div>

@@ -15,16 +15,21 @@ import {
 import { signOut } from "next-auth/react";
 import { useMainProvider } from "@/providers/MainProvider";
 import { toast } from "react-toastify";
+import { set } from "nprogress";
 
 export function UserMenu() {
   const router = useRouter();
-  const {currentUser,setCurrentUser, tempUser, setTempUser, setSellerMode, sellerMode, orgMode, setOrgMode} = useMainProvider();
+  const {currentUser,setCurrentUser, tempUser, setTempUser, setSellerMode, setCustomProperties,sellerMode, orgMode, setOrgMode} = useMainProvider();
   // console.log("Current User Organization: ", currentUser?.organization);
   
   const handleLogout = async () => {
     // await signOut();
-    localStorage.clear();
+    // localStorage.clear();
     setCurrentUser(null);
+    setTempUser(null);
+    setSellerMode(false);
+    setOrgMode(false);
+    setCustomProperties(null);
     router.push("/")
   }
   const switchToNormal = () => {

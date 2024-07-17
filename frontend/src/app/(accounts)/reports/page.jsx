@@ -1,13 +1,13 @@
-
 "use client"
-
-import AnimatedText from "@/components/AnimatedText";
 import { Button } from "@/components/ui/button";
 import { useMainProvider } from "@/providers/MainProvider";
 import { useRouter } from 'next/navigation';
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import { saveAs } from 'file-saver';
+import * as XLSX from 'xlsx';
+import moment from "moment";
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
 //const BACKEND_URL = "http://localhost:8000"
@@ -35,6 +35,7 @@ export default function ReportsPage() {
     try {
       const response = await axios.get(`${BACKEND_URL}/api/reports/?client_id=${currentClient?.id}`);
       const data = response.data
+      //console.log("client ID: ", currentClient?.id)
       //console.log("Reports Data: ", data)
       setReports(data.results);
     } catch (error) {
@@ -85,6 +86,49 @@ export default function ReportsPage() {
   const viewReport = (id) => {
     router.push(`/reports/${id}`)
   }
+
+  const exportToExcel = () => {
+    const workbook = XLSX.utils.book_new();
+
+    reports.forEach((report, index) => {
+      const mainData = [
+        {
+          pkid: report?.pkid,
+          id: report?.id,
+          created_at: report?.created_at,
+          updated_at: report?.updated_at,
+          title: report?.title,
+          description: report?.description,
+          client_name: report?.client_name,
+          client_id: report?.client_id,
+          report_type: report?.report_type,
+          status: report?.status,
+          report_draft: report?.report_draft,
+          report_final: report?.report_final
+        }
+      ];
+      const mainSheet = XLSX.utils.json_to_sheet(mainData);
+      XLSX.utils.book_append_sheet(workbook, mainSheet, `Main Report-${moment(report?.created_at).format('MMMM Do YYYY')}`);
+
+      const propertiesData = report.properties.map(property => ({
+        title: property.title,
+        street_address: property.street_address,
+        price: property.price,
+        description: property.description,
+        bathrooms: property.bathrooms,
+        phone_number: property.phone_number,
+        amenities: property.amenities.join(', '),
+        images: property.images.join(', '),
+        comments: property.comments
+      }));
+      const propertiesSheet = XLSX.utils.json_to_sheet(propertiesData);
+      XLSX.utils.book_append_sheet(workbook, propertiesSheet, `Properties-${moment(report?.created_at).format('MMMM Do YYYY')}`);
+    });
+
+    const excelBuffer = XLSX.write(workbook, { bookType: 'xls', type: 'array' });
+    const blob = new Blob([excelBuffer], { type: 'application/vnd.ms-excel' });
+    saveAs(blob, `${currentClient?.client_name}-reports.xls`);
+  };
 
   return (
     <div className='flex flex-col justify-between gap-5 mb-5'>
@@ -141,10 +185,13 @@ export default function ReportsPage() {
       {
         currentClient && (
           <div className="flex flex-col items-center justify-center">
-            <p className="self-center font-bold">Reports for: {currentClient?.client_name}</p>
-            <div className="">
+            <p className="self-center font-bold text-2xl mb-4 md:mb-8">Reports for: {currentClient?.client_name}</p>
+            <div className="flex-1 w-full flex flex-col md:flex-row justify-around">
               <Button onClick={generateReport}>
                 {loading? "Generating Report...": `Generate ${currentClient?.client_name}'s Report for Today`}
+              </Button>
+              <Button onClick={exportToExcel}>
+                {loading? "Generating Report...": `Export ${currentClient?.client_name}'s Reports to Excel`}
               </Button>
             </div>
             {
