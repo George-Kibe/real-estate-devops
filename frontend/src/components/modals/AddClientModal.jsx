@@ -112,7 +112,7 @@ const AddClientModal = ({ isOpen, onClose, setLoading, client=null }) => {
           className='absolute top-2 right-2 p-1 px-2 rounded-lg text-red-700 bg-white hover:bg-gray-50
           hover:text-gray-600'
         >
-          <p className="">X</p>
+          <p className="font-bold text-2xl p-4">X</p>
         </button>
         <p className="font-semibold pr-2 text-2xl">{client? `Update ${client.client_name}'s Details` : "Add New Client"}</p>
 
@@ -176,7 +176,7 @@ const AddClientModal = ({ isOpen, onClose, setLoading, client=null }) => {
             <textarea type="text" placeholder='Additional Information' 
               value={additional_info} 
               onChange={ev => setAdditional_info(ev.target.value)}
-              className="border-2 border-gray-300 rounded-md p-1 w-full 
+              className="h-32 border-2 border-gray-300 rounded-md p-1 w-full 
               mb-2 focus:border-blue-900" 
             /> 
           </div>

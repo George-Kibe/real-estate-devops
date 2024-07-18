@@ -13,6 +13,7 @@ import { toast } from "react-toastify";
 import AddCommentModal from "@/components/modals/AddCommentModal";
 import { saveAs } from 'file-saver';
 import * as XLSX from 'xlsx';
+import AddPropertyModal from "@/components/modals/AddPropertyModal";
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
 //const BACKEND_URL = "http://localhost:8000"
@@ -22,6 +23,7 @@ export default function MembersPage({params, searchParams}) {
   const {currentUser, setTempProperty} = useMainProvider();
 
   const [modalOpen, setModalOpen] = useState(false);
+  const [propertyModalOpen, setPropertyModalOpen] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [report, setReport] = useState(null);
   const [properties, setProperties] = useState([]);
@@ -33,6 +35,7 @@ export default function MembersPage({params, searchParams}) {
   const [propertiesLoading, setPropertiesLoading] = useState(false);
   const [summary, setSummary] = useState();
   // console.log("Report: ", report)
+  // console.log("User Properties: ", userProperties);
   const {id} = useParams();
   const divRef = useRef();
   const router = useRouter();
@@ -44,11 +47,12 @@ export default function MembersPage({params, searchParams}) {
     document.body.innerHTML = printContent.innerHTML;
     window.print();
     document.body.innerHTML = originalContents;
-    // window.location.reload(); // Refresh the page to restore original content
+    window.location.reload(); // Refresh the page to restore original content
   };
   
   const exportToExcel = () => {
     const workbook = XLSX.utils.book_new();
+    // console.log("Exporting to excel: ", report)
     // Main report data
     const mainData = [
       {
@@ -96,7 +100,7 @@ export default function MembersPage({params, searchParams}) {
     try {
       const response = await axios.get(`${BACKEND_URL}/api/reports/${id}`);
       const data = response.data
-      console.log("Report Data: ", data.properties.length)
+      // console.log("Report Data: ", data.properties.length)
       setReport(data);
       if (data?.properties.length > 0){
         setUserProperties(data.properties)
@@ -180,6 +184,9 @@ export default function MembersPage({params, searchParams}) {
   const closeModal = () => {
     setModalOpen(false)
   }
+  const closePropertyModal = () => {
+    setPropertyModalOpen(false)
+  }
 
   const addToUserProperties = () => {
     if(!comments){
@@ -230,6 +237,7 @@ export default function MembersPage({params, searchParams}) {
       
       <AnimatedText text={`Report for ${report?.client_name}-${moment(report?.created_at).format('MMMM Do YYYY')}`} />
       <AddCommentModal comments={comments} isOpen={modalOpen} onClose={closeModal} setComments={setComments} currentProperty={currentProperty} addToUserProperties={addToUserProperties} editMode={editMode}/>
+      <AddPropertyModal isOpen={propertyModalOpen} onClose={closePropertyModal} setUserProperties={setUserProperties}/>
         <div className="p-4 md:p-8">
             <div className='flex flex-row gap-2'>
               <p className='flex flex-row gap-4'><p className="font-semibold">Report Title:</p> {report?.title}</p>
@@ -247,6 +255,10 @@ export default function MembersPage({params, searchParams}) {
               <p className=''><p className="font-semibold">Report Final:</p> {report?.report_final}</p>
             </div>
         </div>
+
+        <Button onClick={() => setPropertyModalOpen(true)} className='m-4 '>
+          Add Custom Property
+        </Button>
       
         <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
           <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">

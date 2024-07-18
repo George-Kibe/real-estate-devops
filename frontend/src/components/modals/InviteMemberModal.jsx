@@ -54,7 +54,7 @@ const InviteMemberModal = ({ isOpen, onClose, setLoading }) => {
           className='absolute top-2 right-2 p-1 px-2 rounded-lg text-red-700 bg-white hover:bg-gray-50
           hover:text-gray-600'
         >
-          <p className="">X</p>
+          <p className="font-bold text-2xl p-4">X</p>
         </button>
         <p className="font-semibold pr-2">Invite A member</p>
         <p className="">Add Email</p>

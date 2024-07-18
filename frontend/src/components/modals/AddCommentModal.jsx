@@ -22,7 +22,7 @@ const AddCommentModal = ({ currentProperty, comments, isOpen, onClose, setCommen
           className='absolute top-2 right-2 p-1 px-2 rounded-lg text-red-700 bg-white hover:bg-gray-50
           hover:text-gray-600'
         >
-          <p className="">X</p>
+          <p className="font-bold text-2xl p-4">X</p>
         </button>
         <p className="font-semibold pr-2">Property: {currentProperty?.title} Address: {currentProperty?.street_address}</p>
         <p className="font-semibold pr-2">Phone: {currentProperty?.phone_number}</p>
