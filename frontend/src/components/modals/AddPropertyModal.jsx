@@ -29,9 +29,9 @@ const AddPropertyModal = ({ isOpen, onClose, setUserProperties }) => {
   }
 
   const handleAddProperty = () => {
-    //convert amenities to list
     if (!imageBase64 || !title || !street_address || !phone_number || !description || !amenities || !price || !comments){
       toast.error("Please fill in all fields");
+      return
     }
     const amenitiesList = amenities.split(',').map(item => item.trim());
     const newProperty = {
@@ -54,7 +54,7 @@ const AddPropertyModal = ({ isOpen, onClose, setUserProperties }) => {
 
   return (
     <div 
-      onClick={onClose}
+      //onClick={onClose}
       className={`z-10 fixed w-full inset-0 flex justify-center items-center transition-colors
         ${isOpen? "visible bg-black/80 dark:bg-white/50" : "invisible"}
       `}

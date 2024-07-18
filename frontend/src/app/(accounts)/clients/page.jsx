@@ -2,6 +2,7 @@
 
 import AnimatedText from "@/components/AnimatedText";
 import InviteClientModal from "@/components/modals/AddClientModal";
+import ConfirmDeleteModal from "@/components/modals/ConfirmDeleteModal";
 import { Button } from "@/components/ui/button";
 import { useMainProvider } from "@/providers/MainProvider";
 import axios from "axios";
@@ -14,10 +15,14 @@ const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
 
 export default function MembersPage() {
   const [modalOpen, setModalOpen] = useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [searchText, setSearchText] = useState('');
   const [loading, setLoading] = useState(false);
   const [clients, setClients] = useState([]);
   const [client, setClient] = useState();
+  const [clientId, setClientId] = useState('');
+  const [deleteTitle, setDeleteTitle] = useState('');
+
   const {currentUser} = useMainProvider();
 
   const fetchClients = async() => {
@@ -45,10 +50,14 @@ export default function MembersPage() {
     }
   }, [searchText])
 
-  const deleteClient = async (client_id) => {
+  const deleteClient = async () => {
+    if (!clientId){
+      toast.error("No client to delete!");
+      return;
+    }
     setLoading(true);
     try {
-      const response = await axios.delete(`${BACKEND_URL}/api/clients/${client_id}`);
+      const response = await axios.delete(`${BACKEND_URL}/api/clients/${clientId}`);
       if (response.status === 200){
         toast.success("Client deleted successfully!")
       }
@@ -62,6 +71,11 @@ export default function MembersPage() {
     setClient(client)
     setModalOpen(true)
   }
+  const handleDelete = (client_id, title) => {
+    setClientId(client_id);
+    setDeleteTitle(title)
+    setDeleteModalOpen(true)
+  }
   
   const addClient= async() => {
     setClient(null)
@@ -70,11 +84,17 @@ export default function MembersPage() {
   const closeModal = () => {
     setModalOpen(false)
   }
+  const closeDeleteModal = () => {
+    setDeleteModalOpen(false)
+  }
   
   return (
     <div className='flex flex-col justify-between gap-5 mb-5'>
       <AnimatedText text={"Clients Page"} />
-      <InviteClientModal client={client} isOpen={modalOpen} onClose={closeModal} setLoading={setLoading} />
+      <InviteClientModal client={client} isOpen={modalOpen} onClose={closeModal} 
+      setLoading={setLoading} />
+      <ConfirmDeleteModal deleteAction={deleteClient} title={deleteTitle} isOpen={deleteModalOpen} onClose={closeDeleteModal} 
+      setLoading={setLoading} />
         <Button className='self-start' onClick={addClient}>
           {loading? "Loading" : <p className="flex items-center gap-1"><CirclePlus />Add Client</p>}
         </Button>
@@ -124,7 +144,7 @@ export default function MembersPage() {
                   </td>
                   <td className="px-6 py-4">{client.city}</td>
                   <td className="px-6 py-4 flex gap-2">
-                    <button className="" onClick={() => deleteClient(client.pkid)}>
+                    <button className="" onClick={() => handleDelete(client.pkid, client?.client_name)}>
                       <Trash2 className="text-red-500" />
                     </button>
                     <button className="" onClick={() => editClient(client)}>

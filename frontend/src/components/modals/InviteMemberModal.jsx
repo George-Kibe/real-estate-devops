@@ -39,7 +39,7 @@ const InviteMemberModal = ({ isOpen, onClose, setLoading }) => {
 
   return (
     <div 
-      onClick={onClose}
+      // onClick={onClose}
       className={`z-10 fixed w-full inset-0 flex justify-center items-center transition-colors
         ${isOpen? "visible bg-black/80 dark:bg-white/50" : "invisible"}
       `}
