@@ -3,11 +3,9 @@
 import AnimatedText from "@/components/AnimatedText";
 import InviteClientModal from "@/components/modals/AddClientModal";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { useMainProvider } from "@/providers/MainProvider";
 import axios from "axios";
-import {Trash2, Pencil} from 'lucide-react';
-import { set } from "nprogress";
+import {Trash2, Pencil, CirclePlus} from 'lucide-react';
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
@@ -78,7 +76,7 @@ export default function MembersPage() {
       <AnimatedText text={"Clients Page"} />
       <InviteClientModal client={client} isOpen={modalOpen} onClose={closeModal} setLoading={setLoading} />
         <Button className='self-start' onClick={addClient}>
-          {loading? "Loading" : "Add Client"}
+          {loading? "Loading" : <p className="flex items-center gap-1"><CirclePlus />Add Client</p>}
         </Button>
         <input
           type="text"

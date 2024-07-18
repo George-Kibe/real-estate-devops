@@ -89,42 +89,55 @@ export default function ReportsPage() {
   }
 
   const exportToExcel = () => {
+    if (reports.length === 0) {
+      toast.error("No reports to export.");
+      return;
+    }
+
+    // Create a new workbook
     const workbook = XLSX.utils.book_new();
 
-    reports.forEach((report, index) => {
-      const mainData = [
-        {
-          pkid: report?.pkid,
-          id: report?.id,
-          created_at: report?.created_at,
-          updated_at: report?.updated_at,
-          title: report?.title,
-          description: report?.description,
-          client_name: report?.client_name,
-          client_id: report?.client_id,
-          report_type: report?.report_type,
-          status: report?.status,
-          report_draft: report?.report_draft,
-          report_final: report?.report_final
-        }
-      ];
-      const mainSheet = XLSX.utils.json_to_sheet(mainData);
-      XLSX.utils.book_append_sheet(workbook, mainSheet, `Main Report-${moment(report?.created_at).format('MMMM Do YYYY')}`);
+    const mainReportData = [];
+    const propertiesData = [];
 
-      const propertiesData = report.properties.map(property => ({
-        title: property.title,
-        street_address: property.street_address,
-        price: property.price,
-        description: property.description,
-        bathrooms: property.bathrooms,
-        phone_number: property.phone_number,
-        amenities: property.amenities.join(', '),
-        images: property.images.join(', '),
-        comments: property.comments
-      }));
-      const propertiesSheet = XLSX.utils.json_to_sheet(propertiesData);
-      XLSX.utils.book_append_sheet(workbook, propertiesSheet, `Properties-${moment(report?.created_at).format('MMMM Do YYYY')}`);
+    reports.forEach(report => {
+      const mainData = {
+        date: moment(report?.created_at).format('MMMM Do YYYY'),
+        title: report?.title,
+        description: report?.description,
+        client_name: report?.client_name,
+        client_id: report?.client_id,
+        report_type: report?.report_type,
+        status: report?.status,
+        report_draft: report?.report_draft,
+        report_final: report?.report_final,
+        created_at: moment(report?.created_at).format('MMMM Do YYYY'),
+        updated_at: moment(report?.updated_at).format('MMMM Do YYYY'),
+      };
+      mainReportData.push(mainData);
+
+      report.properties.forEach(property => {
+        const propertyData = {
+          date: moment(report?.created_at).format('MMMM Do YYYY'),
+          property_title: property?.title,
+          street_address: property?.street_address,
+          price: property?.price,
+          description: property?.description,
+          bathrooms: property?.bathrooms,
+          phone_number: property?.phone_number,
+          amenities: property?.amenities.join(', '),
+          images: property?.images.join(', '),
+          comments: property?.comments
+        };
+        propertiesData.push(propertyData);
+      });
     });
+
+    const mainSheet = XLSX.utils.json_to_sheet(mainReportData);
+    const propertiesSheet = XLSX.utils.json_to_sheet(propertiesData);
+
+    XLSX.utils.book_append_sheet(workbook, mainSheet, 'Summary Reports');
+    XLSX.utils.book_append_sheet(workbook, propertiesSheet, 'Properties Details Report');
 
     const excelBuffer = XLSX.write(workbook, { bookType: 'xls', type: 'array' });
     const blob = new Blob([excelBuffer], { type: 'application/vnd.ms-excel' });
@@ -134,7 +147,7 @@ export default function ReportsPage() {
   return (
     <div className='flex flex-col justify-between gap-5 mb-5'>
       {/* <AnimatedText text={"Reports Page"} /> */}
-      <p className="self-center font-bold">Select Client to View their  Reports</p>
+      <p className="self-center font-bold text-2xl mb-4 md:mb-8">Select Client to View their  Reports</p>
       {
         !clients?.length && <p className="">You do not have any clients Reports yet!</p>
       }
@@ -153,7 +166,7 @@ export default function ReportsPage() {
             {
               clients?.map((client, index) => (
                 <tr onClick={() => selectClient(client)} key={index}
-                  className={client.id === currentClient?.id ? "bg-lime-500 w-full": "w-full"}
+                  className={client.id === currentClient?.id ? "bg-lime-500 w-full cursor-pointer": "w-full cursor-pointer"}
                 >
                     <td className="px-6 py-4 text-sm">{index + 1}</td>
                     <th className="flex gap-3 px-6 py-4 font-normal">

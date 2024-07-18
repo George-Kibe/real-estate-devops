@@ -18,7 +18,7 @@ const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
 //const BACKEND_URL = "http://localhost:8000"
 
 export default function MembersPage({params, searchParams}) {
-  const location = searchParams?.searchTerm;
+  const location = searchParams?.searchTerm || '';
   const {currentUser, setTempProperty} = useMainProvider();
 
   const [modalOpen, setModalOpen] = useState(false);
@@ -44,7 +44,7 @@ export default function MembersPage({params, searchParams}) {
     document.body.innerHTML = printContent.innerHTML;
     window.print();
     document.body.innerHTML = originalContents;
-    window.location.reload(); // Refresh the page to restore original content
+    // window.location.reload(); // Refresh the page to restore original content
   };
   
   const exportToExcel = () => {

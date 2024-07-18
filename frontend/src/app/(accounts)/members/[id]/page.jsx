@@ -81,8 +81,8 @@ const SingleMemberPage = () => {
     const mainSheet = XLSX.utils.json_to_sheet(mainReportData);
     const propertiesSheet = XLSX.utils.json_to_sheet(propertiesData);
 
-    XLSX.utils.book_append_sheet(workbook, mainSheet, 'Main Reports');
-    XLSX.utils.book_append_sheet(workbook, propertiesSheet, 'Properties Details');
+    XLSX.utils.book_append_sheet(workbook, mainSheet, 'Summary Reports');
+    XLSX.utils.book_append_sheet(workbook, propertiesSheet, 'Properties Details Report');
 
     const excelBuffer = XLSX.write(workbook, { bookType: 'xls', type: 'array' });
     const blob = new Blob([excelBuffer], { type: 'application/vnd.ms-excel' });
@@ -96,7 +96,7 @@ const SingleMemberPage = () => {
       const reports = response?.data?.results
       //console.log("Reports: ", reports)
       if (reports.length === 0) {
-        toast.error("No reports found for this member");
+        toast.error("No reports found for this staff member");
         setExcelLoading(false);
         return;
       }
@@ -131,12 +131,16 @@ const SingleMemberPage = () => {
                 <p className="">Role: </p>
                 <h1 className="px-2 text-sm">{member?.role}</h1>
             </div>
+            <div className="flex items-center mt-4 text-gray-700 dark:text-gray-200">
+                <p className="">Status: </p>
+                <h1 className="px-2 text-sm">{member?.status || 'Active'}</h1>
+            </div>
         </div>
       </div>
       <Button className="m-4" onClick={exportToExcel}>
         {
           excelLoading? "Exporting to Excel..." :
-          `Export ${member?.firstName || member?.name}'s Reports to Excel`
+          `Export Reports Done by ${member?.firstName || member?.name} to Excel`
         }
       </Button>
     </div>

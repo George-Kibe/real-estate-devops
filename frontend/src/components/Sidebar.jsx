@@ -60,7 +60,7 @@ import { useMainProvider } from '@/providers/MainProvider';
               </CommandItem>
               <CommandItem>
                 <Users className='mr-2 h-4 w-4' />
-                <Link href='/members'>{orgMode? `${currentUser?.name} 's Members` : "My members"}
+                <Link href='/members'>{orgMode? `${currentUser?.name} 's Members` : "My Staff Members"}
                 </Link>
               </CommandItem>
               <CommandItem>

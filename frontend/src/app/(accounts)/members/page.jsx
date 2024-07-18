@@ -4,7 +4,7 @@ import AnimatedText from "@/components/AnimatedText";
 import InviteMemberModal from "@/components/modals/InviteMemberModal";
 import { Button } from "@/components/ui/button";
 import { useMainProvider } from "@/providers/MainProvider";
-import {Trash2, Pencil} from 'lucide-react';
+import {Trash2, Pencil, CirclePlus, Eye} from 'lucide-react';
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -28,10 +28,10 @@ export default function MembersPage() {
   
   return (
     <div className='flex flex-col justify-between gap-5 mb-5'>
-      <AnimatedText text={"Members Page"} />
+      <AnimatedText text={"Staff Members Page"} />
       <InviteMemberModal isOpen={modalOpen} onClose={closeModal} setLoading={setLoading} />
         <Button className='self-start' onClick={addMember}>
-          {loading? "Loading" : "Add Member"}
+          {loading? "Loading" : <p className="flex items-center gap-1"><CirclePlus />Add Member</p>}
         </Button>
       {
         !members?.length && <p className="">You do not have any Staff/Members yet!</p>
@@ -58,7 +58,8 @@ export default function MembersPage() {
                   <td className="px-6 py-4">{member.role}</td>
                   <td className="px-6 py-4">{member.status || 'Active'}</td>
                   <td className="px-6 py-4">
-                    <Button onClick={() => viewMember(member._id)}>
+                    <Button className="flex items-center gap-1" onClick={() => viewMember(member._id)}>
+                      <Eye />
                       View
                     </Button>
                   </td>
