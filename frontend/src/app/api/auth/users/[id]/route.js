@@ -14,6 +14,21 @@ export const DELETE = async (request, {params}) => {
   }
 }
 
+export const GET = async (request, {params}) => {
+  const {id} = params;
+  try {
+      await connect();
+      const user = await User.findById(id);
+      if (!user) {
+        return new NextResponse("User not found", {status: 404})
+      }
+      const userDoc = JSON.stringify(user);
+      return new NextResponse(userDoc, {status: 200});
+  } catch (error) {
+      return new NextResponse("Internal Server Error", { status:500})
+  }
+}
+
 export const PUT = async (request, {params}) => {
   const body = await request.json();
   const {id} = params;

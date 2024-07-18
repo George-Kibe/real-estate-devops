@@ -68,9 +68,18 @@ export function UserMenu() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={() => router.push("/my-account")}>
-          My Account
-        </DropdownMenuItem>
+        {
+          !orgMode && 
+          <DropdownMenuItem onClick={() => router.push("/my-account")}>
+            {"My account"}
+          </DropdownMenuItem>
+        }
+        {
+          orgMode && 
+          <DropdownMenuItem onClick={() => router.push("/reports")}>
+            {currentUser?.name}'s Organization
+          </DropdownMenuItem>
+        }
         {
           sellerMode?
           <DropdownMenuItem onClick={switchToNormal}>

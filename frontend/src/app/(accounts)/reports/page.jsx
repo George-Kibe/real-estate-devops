@@ -18,7 +18,6 @@ export default function ReportsPage() {
   const [clients, setClients] = useState([]);
   const [reports, setReports] = useState([]);
   const {orgMode, tempUser, currentUser} = useMainProvider();
-  console.log("tempUser: ", tempUser?._id)
   const router = useRouter();
   //console.log("Current Client: ", currentClient)
 

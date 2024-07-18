@@ -5,6 +5,7 @@ import InviteMemberModal from "@/components/modals/InviteMemberModal";
 import { Button } from "@/components/ui/button";
 import { useMainProvider } from "@/providers/MainProvider";
 import {Trash2, Pencil} from 'lucide-react';
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function MembersPage() {
@@ -12,6 +13,7 @@ export default function MembersPage() {
   const [loading, setLoading] = useState(false);
  const {currentUser} = useMainProvider()
   const members = currentUser?.members
+  const router = useRouter();
   //console.log("Members: ", currentUser?.members)
   
   const addMember= async() => {
@@ -19,6 +21,9 @@ export default function MembersPage() {
   }
   const closeModal = () => {
     setModalOpen(false)
+  }
+  const viewMember = (id) => {
+    router.push(`/members/${id}`)
   }
   
   return (
@@ -40,6 +45,7 @@ export default function MembersPage() {
               <th scope="col" className="px-6 py-4 font-medium">LastName</th>
               <th scope="col" className="px-6 py-4 font-medium">Role</th>
               <th scope="col" className="px-6 py-4 font-medium">Status</th>
+              <th scope="col" className="px-6 py-4 font-medium">Action</th>
             </tr>
           </thead>
           <tbody className="divide-y ">
@@ -51,6 +57,11 @@ export default function MembersPage() {
                   <td className="px-6 py-4">{member.lastName}</td>        
                   <td className="px-6 py-4">{member.role}</td>
                   <td className="px-6 py-4">{member.status || 'Active'}</td>
+                  <td className="px-6 py-4">
+                    <Button onClick={() => viewMember(member._id)}>
+                      View
+                    </Button>
+                  </td>
                   {/* <td className="px-6 py-4">
                     <div className="flex justify-end gap-4">
                       <Trash2 className="text-red-500" />

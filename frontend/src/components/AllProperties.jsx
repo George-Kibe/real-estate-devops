@@ -68,7 +68,7 @@ const AllProperties = () => {
             </Flex>
           </div>
         }
-        {!customProperties.length &&
+        {!customProperties?.length &&
           <div className="container items-center justify-around">
             <Flex flexWrap='wrap' className='flex flex-wrap justify-center gap-6'>
             {properties.map((property) => <Property property={property} key={property.id} />)}
