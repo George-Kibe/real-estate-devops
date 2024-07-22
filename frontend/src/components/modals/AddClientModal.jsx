@@ -11,7 +11,8 @@ const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
 
 const AddClientModal = ({ isOpen, onClose, setLoading, client=null }) => {  
   // console.log("Client: ", client.client_name)
-  const [name, setName] = useState('');
+  const [first_name, setFirst_name] = useState('');
+  const [last_name, setLast_name] = useState('');
   const [email, setEmail] = useState("");
   const [address, setAddress] = useState('');
   const [phone_number, setPhoneNumber] = useState('');
@@ -26,14 +27,15 @@ const AddClientModal = ({ isOpen, onClose, setLoading, client=null }) => {
 
   const handleClose = () => {
     onClose();
-    setLoading(false); setEmail(''); setName(''); setAddress('');
+    setLoading(false); setEmail(''); setFirst_name(''); setLast_name(''); setAddress('');
     setPhoneNumber(''); setHouse_type(''); setAdditional_info(''); setCity('');
-    setStaff_id('');
+    setStaff_id(''); setFirst_name(''); setLast_name('');
   }
 
   useEffect(() => {
     if (client?.client_name) {
-      setName(client.client_name);
+      setFirst_name(client.first_name);
+      setLast_name(client.last_name);
       setEmail(client.email);
       setAddress(client.address);
       setPhoneNumber(client.phone_number);
@@ -52,12 +54,12 @@ const AddClientModal = ({ isOpen, onClose, setLoading, client=null }) => {
 
   const saveClient = async(e) => {
     e.preventDefault()
-    setLoading(true);
-    if(!email |!name |!address |!city){
+    if(!email |!first_name |!last_name |!address |!city){
       toast.error("You have missing details!");
       return
     }
-    const data = {client_name:name, email, address,phone_number,house_type, city, staff_id, additional_info, owner_id};
+    setLoading(true);
+    const data = {first_name, last_name, client_name:first_name + " " + last_name, email, address,phone_number,house_type, city, staff_id, additional_info, owner_id};
 
     if (client){
       toast.info(`Editing ${email}'s Details`)
@@ -69,7 +71,7 @@ const AddClientModal = ({ isOpen, onClose, setLoading, client=null }) => {
         const res = await axios.put(`${BACKEND_URL}/api/clients/${client.pkid}/`, data)
         if (res.status === 200){
           toast.success("Client Edited Successfully")
-          setLoading(false); setEmail(''); setName(''); setAddress('');
+          setLoading(false); setEmail(''); setFirst_name(''); setLast_name(''); setAddress('');
           setPhoneNumber(''); setHouse_type(''); setAdditional_info(''); setCity('');
           setStaff_id('');
           onClose()
@@ -86,7 +88,7 @@ const AddClientModal = ({ isOpen, onClose, setLoading, client=null }) => {
         if (response.status === 201){
           toast.success("Client Created Successfully!")
         }
-        setLoading(false); setEmail(''); setName(''); setAddress('');
+        setLoading(false); setEmail(''); setFirst_name(''); setLast_name(''); setAddress('');
         setPhoneNumber(''); setHouse_type(''); setAdditional_info(''); setCity('');
         setStaff_id('');
       } catch (error) {
@@ -104,7 +106,8 @@ const AddClientModal = ({ isOpen, onClose, setLoading, client=null }) => {
     > 
       <div 
         onClick={(e) => e.stopPropagation()}
-        className={`bg-white w-full md:w-1/2 dark:bg-black rounded-xl p-2 md:p-16 shadow transition-all 
+        className={` h-[90vh] w-full overflow-auto bg-white p-4 rounded-md
+          md:w-1/2 dark:bg-black md:p-16 shadow transition-all 
           ${isOpen ? "scale-100 opacity-100": "sclae-125 opacity-0"}
           `}
       >
@@ -117,11 +120,20 @@ const AddClientModal = ({ isOpen, onClose, setLoading, client=null }) => {
         <p className="font-semibold pr-2 text-2xl">{client? `Update ${client.client_name}'s Details` : "Add New Client"}</p>
 
         <div className="flex flex-col md:flex-wrap">
-        <div className="">
-            <p className="">Name</p>
-            <input type="text" placeholder='Name' 
-              value={name}
-              onChange={ev => setName(ev.target.value)}
+          <div className="">
+            <p className="">First Name</p>
+            <input type="text" placeholder='First Name' 
+              value={first_name}
+              onChange={ev => setFirst_name(ev.target.value)}
+              className="border-2 border-gray-300 rounded-md p-1 w-full 
+              mb-2 focus:border-blue-900" 
+            /> 
+          </div>
+          <div className="">
+            <p className="">Last Name</p>
+            <input type="text" placeholder='Last Name' 
+              value={last_name}
+              onChange={ev => setLast_name(ev.target.value)}
               className="border-2 border-gray-300 rounded-md p-1 w-full 
               mb-2 focus:border-blue-900" 
             /> 

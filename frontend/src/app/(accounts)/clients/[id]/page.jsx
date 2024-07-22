@@ -4,42 +4,41 @@ import axios from 'axios';
 import { useParams } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
 import { toast } from 'react-toastify';
-import { Mail} from "lucide-react"
+import { Mail, Phone} from "lucide-react"
 import { Button } from '@/components/ui/button';
 import { saveAs } from 'file-saver';
 import * as XLSX from 'xlsx';
 import moment from "moment";
-import { useMainProvider } from '@/providers/MainProvider';
+import AddClientModal from '@/components/modals/AddClientModal';
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
 
-const SingleMemberPage = () => {
-  const [member, setMember] = useState();
+const SingleClientPage = () => {
+  const {id} = useParams();
+  const [modalOpen, setModalOpen] = useState(false);
+  const [client, setClient] = useState();
   const [loading, setLoading] = useState(false);
   const [excelLoading, setExcelLoading] = useState(false);
-  const {orgMode} = useMainProvider();
 
-  const {id} = useParams();
-
-  const fetchMemberDetails = async () => {
+  const fetchClientDetails = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`/api/auth/users/${id}`);
-      // console.log("response: ", response.data)
-      setMember(response.data)
+      const response = await axios.get(`${BACKEND_URL}/api/clients/${id}`);
+      const data = response.data
+      //console.log("Clients Data: ", data)
+      setClient(data);
       setLoading(false);
     } catch (error) {
-      console.log("Error: ", error)
-      toast.error("Error fetching member details")
+      toast.error("Fetching Clients failed. Try Again!")
       setLoading(false);
     }
   }
 
   useEffect(() => {
-    if(id) {
-      fetchMemberDetails()
+    if(id && !modalOpen) {
+      fetchClientDetails()
     }
-  }, [id])
+  }, [id, modalOpen])
 
   const exportDataToExcel = (reports) => {
     const workbook = XLSX.utils.book_new();
@@ -88,17 +87,18 @@ const SingleMemberPage = () => {
 
     const excelBuffer = XLSX.write(workbook, { bookType: 'xls', type: 'array' });
     const blob = new Blob([excelBuffer], { type: 'application/vnd.ms-excel' });
-    saveAs(blob, `${member?.name}-reports.xls`);
+    saveAs(blob, `${client?.client_name}-reports.xls`);
   };
 
   const exportToExcel = async() => {
     setExcelLoading(true);
     try {
-      const response = await axios.get(`${BACKEND_URL}/api/reports/?staff_id=${id}`);
+      const response = await axios.get(`${BACKEND_URL}/api/reports/?client_id=${client?.id}`);
+      //console.log(client.id)
       const reports = response?.data?.results
       //console.log("Reports: ", reports)
       if (reports.length === 0) {
-        toast.error("No reports found for this staff member");
+        toast.error("No reports found for this client");
         setExcelLoading(false);
         return;
       }
@@ -107,16 +107,16 @@ const SingleMemberPage = () => {
       }
     } catch (error) {
       console.log("Error: ", error)
-      toast.error("Error fetching member reports")
+      toast.error("Error fetching client reports")
     }
     setExcelLoading(false);
   }
-
-  const removeFromOrganization = () => {
-    console.log("Remove from organization")
+  const editClient = async(client) => {
+    setClient(client)
+    setModalOpen(true)
   }
-  const editRole = async() => {
-    console.log("Edit role")
+  const closeModal = () => {
+    setModalOpen(false)
   }
   
   if (loading) {
@@ -127,45 +127,57 @@ const SingleMemberPage = () => {
   return (
     <div className="">
       <div className="w-full p-4 md:p-8 flex-col md:flex-row flex-1 flex items-center overflow-hidden bg-white rounded-lg shadow-lg dark:bg-gray-800">
-        <img className="rounded-full object-center object-contain h-24 md:h-48" src={member?.image} alt="user avatar" />
+        {/* <img className="rounded-full object-center object-contain h-24 md:h-48" src={client?.image} alt="user avatar" /> */}
+        <AddClientModal client={client} isOpen={modalOpen} onClose={closeModal} 
+      setLoading={setLoading} />
 
         <div className="px-6 py-4">
-            <h1 className="text-xl font-semibold text-gray-800 dark:text-white">First Name: {member?.firstName || member?.name}</h1>
-            <h1 className="text-xl font-semibold text-gray-800 dark:text-white">Last Name: {member?.lastName}</h1>
-            <div className="flex items-center mt-4 text-gray-700 dark:text-gray-200">
-                <Mail />
-                <h1 className="px-2 text-sm">{member?.email}</h1>
-            </div>
-            <div className="flex items-center mt-4 text-gray-700 dark:text-gray-200">
-                <p className="">Role: </p>
-                <h1 className="px-2 text-sm">{member?.role}</h1>
-            </div>
-            <div className="flex items-center mt-4 text-gray-700 dark:text-gray-200">
-                <p className="">Status: </p>
-                <h1 className="px-2 text-sm">{member?.status || 'Active'}</h1>
-            </div>
-            {
-              orgMode && (
-                <div className="mt-4 flex flex-col md:flex-row gap-4 mx-2">
-                  <Button onClick={editRole}>
-                    Edit Role
-                  </Button>
-                  <Button onClick={removeFromOrganization} className="">
-                    Remove from Organization
-                  </Button>
-                </div>
-              )
-            }
+          <h1 className="text-xl font-semibold text-gray-800 dark:text-white">
+            First Name:     {client?.first_name || client?.client_name}
+          </h1>
+          <h1 className="text-xl font-semibold text-gray-800 dark:text-white">
+            Last Name: {client?.last_name}
+          </h1>
+          <div className="flex items-center mt-4 text-gray-700 dark:text-gray-200">
+            <Mail />
+            <h1 className="px-2 text-sm">{client?.email}</h1>
+          </div>
+          <div className="flex items-center mt-4 text-gray-700 dark:text-gray-200">
+            {/* <p className="">Phone Number: </p> */}
+            <Phone />
+            <h1 className="px-2 text-sm">{client?.phone_number}</h1>
+          </div>
+          <div className="flex items-center mt-4 text-gray-700 dark:text-gray-200">
+            <p className="">Preferred city: </p>
+            <h1 className="px-2 text-sm">{client?.city}</h1>
+          </div>
+          <div className="flex items-center mt-4 text-gray-700 dark:text-gray-200">
+            <p className="">Status: </p>
+            <h1 className="px-2 text-sm">{client?.status || 'Active'}</h1>
+          </div>
+          <div className="flex items-center mt-4 text-gray-700 dark:text-gray-200">
+            <p className="">House Type: </p>
+            <h1 className="px-2 text-sm">{client?.house_type || ''}</h1>
+          </div>
+          <div className="flex items-center mt-4 text-gray-700 dark:text-gray-200">
+            <p className="">Additional Information: </p>
+            <h1 className="px-2 text-sm">{client?.additional_info}</h1>
+          </div>
+
+          <Button className="mt-4 px-4 md:px-8" onClick={() => editClient(client)}>
+            Edit
+          </Button>
         </div>
       </div>
+
       <Button className="m-4" onClick={exportToExcel}>
         {
           excelLoading? "Exporting to Excel..." :
-          `Export Reports Done by ${member?.firstName || member?.name} to Excel`
+          `Export ${client?.client_name || client?.name}'s Reports to Excel`
         }
       </Button>
     </div>
   )
 }
 
-export default SingleMemberPage
+export default SingleClientPage

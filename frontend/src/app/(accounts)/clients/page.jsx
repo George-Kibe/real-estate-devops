@@ -6,7 +6,8 @@ import ConfirmDeleteModal from "@/components/modals/ConfirmDeleteModal";
 import { Button } from "@/components/ui/button";
 import { useMainProvider } from "@/providers/MainProvider";
 import axios from "axios";
-import {Trash2, Pencil, CirclePlus} from 'lucide-react';
+import {Trash2, Pencil, CirclePlus, Eye} from 'lucide-react';
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
@@ -15,15 +16,16 @@ const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
 
 export default function MembersPage() {
   const [modalOpen, setModalOpen] = useState(false);
+  const [client, setClient] = useState();
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [searchText, setSearchText] = useState('');
   const [loading, setLoading] = useState(false);
   const [clients, setClients] = useState([]);
-  const [client, setClient] = useState();
   const [clientId, setClientId] = useState('');
   const [deleteTitle, setDeleteTitle] = useState('');
 
   const {currentUser} = useMainProvider();
+  const router = useRouter();
 
   const fetchClients = async() => {
     try {
@@ -71,18 +73,21 @@ export default function MembersPage() {
     setClient(client)
     setModalOpen(true)
   }
+  const closeModal = () => {
+    setModalOpen(false)
+  }
   const handleDelete = (client_id, title) => {
     setClientId(client_id);
     setDeleteTitle(title)
     setDeleteModalOpen(true)
   }
+  const viewClient = (client_id) => {
+    router.push(`/clients/${client_id}`)
+  }
   
   const addClient= async() => {
     setClient(null)
     setModalOpen(true)
-  }
-  const closeModal = () => {
-    setModalOpen(false)
   }
   const closeDeleteModal = () => {
     setDeleteModalOpen(false)
@@ -90,13 +95,14 @@ export default function MembersPage() {
   
   return (
     <div className='flex flex-col justify-between gap-5 mb-5'>
-      <AnimatedText text={"Clients Page"} />
+      <AnimatedText text={"All Clients"} />
       <InviteClientModal client={client} isOpen={modalOpen} onClose={closeModal} 
       setLoading={setLoading} />
       <ConfirmDeleteModal deleteAction={deleteClient} title={deleteTitle} isOpen={deleteModalOpen} onClose={closeDeleteModal} 
       setLoading={setLoading} />
         <Button className='self-start' onClick={addClient}>
-          {loading? "Loading" : <p className="flex items-center gap-1"><CirclePlus />Add Client</p>}
+          {loading? "Loading" : <p className="flex items-center gap-1">
+            <CirclePlus />Add Client</p>}
         </Button>
         <input
           type="text"
@@ -113,10 +119,10 @@ export default function MembersPage() {
           <thead className="">
             <tr>
               <th scope="col" className="px-6 py-4 font-medium">#</th>
-              <th scope="col" className="px-6 py-4 font-medium">Name</th>
-              <th scope="col" className="px-6 py-4 font-medium">Address</th>
-              <th scope="col" className="px-6 py-4 font-medium">Phone Number</th>
-              <th scope="col" className="px-6 py-4 font-medium">City</th>
+              <th scope="col" className="px-6 py-4 font-medium">First Name</th>
+              <th scope="col" className="px-6 py-4 font-medium">Last Name</th>
+              <th scope="col" className="px-6 py-4 font-medium">HouseType</th>
+              <th scope="col" className="px-6 py-4 font-medium">Status</th>
               <th scope="col" className="px-6 py-4 font-medium">Action</th>
             </tr>
           </thead>
@@ -128,22 +134,25 @@ export default function MembersPage() {
                   <th className="flex gap-3 px-6 py-4 font-normal">
                     <div className="text-sm">
                       <div className="font-medium ">{client.client_name}</div>
-                      <div className="">{client.email}</div>
+                      {/* <div className="">{client.email}</div> */}
                     </div>
                   </th>
 
-                  <td className="px-6 py-4 text-sm">{client.address}</td>
+                  <td className="px-6 py-4 text-sm">{client.last_name}</td>
                   <td className="px-6 py-4">
                     <div className="flex gap-2">
                       <span
                         className="inline-flex items-center gap-1 rounded-full bg-blue-50 px-2 py-1 text-xs font-semibold text-blue-600"
                       >
-                        {client.phone_number}
+                        {client.house_type}
                       </span>
                     </div>
                   </td>
-                  <td className="px-6 py-4">{client.city}</td>
+                  <td className="px-6 py-4">{client.status || "Active"}</td>
                   <td className="px-6 py-4 flex gap-2">
+                    <button className="" onClick={() => viewClient(client.pkid)}>
+                     <Eye className="text-green-500" />
+                    </button>
                     <button className="" onClick={() => handleDelete(client.pkid, client?.client_name)}>
                       <Trash2 className="text-red-500" />
                     </button>

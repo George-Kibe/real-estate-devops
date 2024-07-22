@@ -46,7 +46,8 @@ const InviteMemberModal = ({ isOpen, onClose, setLoading }) => {
     > 
       <div 
         onClick={(e) => e.stopPropagation()}
-        className={`bg-white  w-full md:w-1/2 dark:bg-black rounded-xl p-2 md:p-16 shadow transition-all 
+        className={` h-[90vh] w-full overflow-auto bg-white p-4 rounded-md
+          md:w-1/2 dark:bg-black md:p-16 shadow transition-all 
           ${isOpen ? "scale-100 opacity-100": "sclae-125 opacity-0"}
           `}
       >
