@@ -18,7 +18,7 @@ export default function MembersPage() {
   const [loading, setLoading] = useState(false);
   const [clients, setClients] = useState([]);
   const [client, setClient] = useState();
-  const {currentUser, tempUser} = useMainProvider();
+  const {currentUser, tempUser, orgMode} = useMainProvider();
 
   const fetchClients = async() => {
     try {
@@ -74,20 +74,20 @@ export default function MembersPage() {
   
   return (
     <div className='flex flex-col justify-between gap-5 mb-5'>
-      <AnimatedText text={"Clients Page"} />
+      <AnimatedText text={"Clients Allocated to Me"} />
       <InviteClientModal client={client} isOpen={modalOpen} onClose={closeModal} setLoading={setLoading} />
-        <Button className='self-start' onClick={addClient}>
+        {/* <Button className='self-start mx-4' onClick={addClient}>
           {loading? "Loading" : "Add Client"}
-        </Button>
+        </Button> */}
         <input
           type="text"
           placeholder="Search by Name"
-          className="self-start rounded-md bg-background px-3 py-2"
+          className="self-start mx-4 rounded-md bg-background px-3 py-2"
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
         />
       {
-        !clients?.length && <p className="">You do not have any clients yet!</p>
+        !clients?.length && <p className="">No client(s) have been allocated to you yet!</p>
       }
       <div className="overflow-hidden rounded-lg border shadow-md m-5">
         <table className="w-full border-collapse text-left text-sm">
@@ -125,9 +125,9 @@ export default function MembersPage() {
                   </td>
                   <td className="px-6 py-4">{client.city}</td>
                   <td className="px-6 py-4 flex gap-2">
-                    <button className="" onClick={() => deleteClient(client.pkid)}>
+                    {/* <button className="" onClick={() => deleteClient(client.pkid)}>
                       <Trash2 className="text-red-500" />
-                    </button>
+                    </button> */}
                     <button className="" onClick={() => editClient(client)}>
                       <Pencil className="text-gray-500" />
                     </button>

@@ -11,7 +11,7 @@ import { useState } from "react";
 export default function MembersPage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
- const {currentUser} = useMainProvider()
+ const {currentUser, orgMode} = useMainProvider()
   const members = currentUser?.members
   const router = useRouter();
   //console.log("Members: ", currentUser?.members)
@@ -30,9 +30,14 @@ export default function MembersPage() {
     <div className='flex flex-col justify-between gap-5 mb-5'>
       <AnimatedText text={"Staff Members Page"} />
       <InviteMemberModal isOpen={modalOpen} onClose={closeModal} setLoading={setLoading} />
-        <Button className='self-start' onClick={addMember}>
-          {loading? "Loading" : <p className="flex items-center gap-1"><CirclePlus />Add Member</p>}
-        </Button>
+        {
+          !orgMode && (
+            <Button className='self-start mx-4' onClick={addMember}>
+              {loading? "Loading" : <p className="flex items-center gap-1">
+                <CirclePlus />Add Member</p>}
+            </Button>
+          )
+        }
       {
         !members?.length && <p className="">You do not have any Staff/Members yet!</p>
       }

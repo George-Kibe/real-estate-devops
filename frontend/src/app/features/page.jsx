@@ -29,7 +29,7 @@ const FeaturesPage = () => {
           <div className="-mx-4 flex flex-wrap">
             <PricingCard
               type="Personal"
-              price="Free"
+              price={99}
               subscription="year"
               description="Perfect for personal search of properties."
               buttonText="Choose Personal"
@@ -44,7 +44,7 @@ const FeaturesPage = () => {
             </PricingCard>
             <PricingCard
               type="Business"
-              price={99}
+              price={199}
               subscription="year"
               description="Perfect for small number of clients."
               buttonText="Choose Business"
@@ -60,7 +60,7 @@ const FeaturesPage = () => {
             </PricingCard>
             <PricingCard
               type="Professional"
-              price={199}
+              price={299}
               subscription="year"
               description="Perfect for commercial users with many clients and need lots of automations."
               buttonText="Choose Professional"

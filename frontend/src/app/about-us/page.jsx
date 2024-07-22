@@ -4,7 +4,7 @@ import React from 'react'
 const AboutUsPage = () => {
   return (
     <div>
-      <AnimatedText text={"About AptTracking"} />
+      <AnimatedText text={"About AptTrack"} />
       <p className='p-4 md:px-16 text-justify'>
         AptTrack is dedicated to revolutionizing Housing Stabilization Services (HSS) through innovative technology solutions. Our platform is designed to support agencies and individuals involved in managing housing assistance programs by offering comprehensive tools for efficient task management, client interaction, and resource tracking. At AptTrack, we understand the complexities of the housing sector and aim to streamline operations through real-time communication portals, personalized apartment searches, and robust compliance features.
         </p>

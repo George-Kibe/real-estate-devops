@@ -11,13 +11,13 @@ const PaymentSuccess = ({searchParams: {amount}}) => {
   const handleUpdate = async() => {
     const body = {
       isPremium: true,
-      isEnterprise: amount >= 199 ? true : false,
+      isEnterprise: amount >= 299 ? true : false,
       subscriptionDate: new Date().toISOString()
     }
     console.log('Updating: ', body);
     try {
       setLoading(true)
-      const response = await fetch(`/api/auth/users/${currentUser._id}`, {
+      const response = await fetch(`/api/auth/users/${currentUser?._id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
