@@ -2,7 +2,6 @@
 
 import React, { useState } from 'react';
 import { Button } from '../ui/button';
-import { set } from 'nprogress';
 import { File } from 'lucide-react';
 import { toast } from 'react-toastify';
 

@@ -5,7 +5,6 @@ import AnimatedText from "@/components/AnimatedText";
 import Link from "next/link";
 import React, { useState } from "react";
 import { toast } from "react-toastify";
-import { set } from 'nprogress';
 
 const RegisterPage = () => {
   const [email, setEmail] = useState('');

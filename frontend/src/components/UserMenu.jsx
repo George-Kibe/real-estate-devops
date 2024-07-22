@@ -15,7 +15,6 @@ import {
 import { signOut } from "next-auth/react";
 import { useMainProvider } from "@/providers/MainProvider";
 import { toast } from "react-toastify";
-import { set } from "nprogress";
 
 export function UserMenu() {
   const router = useRouter();

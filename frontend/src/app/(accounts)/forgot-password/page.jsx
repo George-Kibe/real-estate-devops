@@ -4,7 +4,6 @@ import AnimatedText from "@/components/AnimatedText";
 import axios from "axios";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { set } from "nprogress";
 import React, { useState } from "react";
 import { toast } from "react-toastify";
 

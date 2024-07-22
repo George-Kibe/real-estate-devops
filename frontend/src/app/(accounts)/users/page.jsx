@@ -4,7 +4,6 @@ import LoadingPage from "@/components/Loading";
 import { TableMenu } from "@/components/TableMenu";
 import axios from "axios";
 import moment from "moment";
-import { set } from "nprogress";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 

@@ -1,21 +1,23 @@
-from twilio.rest import Client
+import plivo
 from dotenv import load_dotenv
 import os
 
-PLIVO_AUTH_ID = os.environ.get("PLIVO_AUTH_ID", default="")
-print("PLIVO_AUTH_ID: ", PLIVO_AUTH_ID)
-PLIVO_AUTH_TOKEN = os.environ.get("PLIVO_AUTH_TOKEN", default="")
-print("PLIVO_AUTH_TOKEN: ", PLIVO_AUTH_TOKEN)
+#client = plivo.RestClient(auth_id='your_auth_id', auth_token='your_auth_token')
 
-# Your Account SID and Auth Token from console.twilio.com
-account_sid = ""
-auth_token  = ""
-
-client = Client(account_sid, auth_token)
-
-message = client.messages.create(
-    to="+15558675309",
-    from_="+254704817466",
-    body="Hello from Python!")
-
-print(message.sid)
+def send_sms(): #(phone_number, message):
+    PLIVO_AUTH_ID = os.environ.get("PLIVO_AUTH_ID", default="")
+    print("PLIVO_AUTH_ID: ", PLIVO_AUTH_ID)
+    PLIVO_AUTH_TOKEN = os.environ.get("PLIVO_AUTH_TOKEN", default="")
+    print("PLIVO_AUTH_TOKEN: ", PLIVO_AUTH_TOKEN)
+    
+    try:
+        client = plivo.RestClient(auth_id=PLIVO_AUTH_ID, auth_token=PLIVO_AUTH_TOKEN)
+        message_created = client.messages.create(
+            src='+254704817466',
+            dst='+254795288155',
+            text="This is just a test message"
+        )
+        print(message_created)
+        
+    except Exception as e:
+        print("Error sending SMS: ", e)

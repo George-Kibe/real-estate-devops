@@ -6,16 +6,17 @@ from django.core.exceptions import ObjectDoesNotExist
 from .serializers import PropertySerializer, MessageSerializer, ScrappedPropertySerializer, ClientSerializer, ReportSerializer
 from .apartments import get_apartments
 from django.db.models import Q  # Import Q object for complex queries
-
+from .send_sms import send_sms
 class MessageViewSet(viewsets.ModelViewSet):
     """
-    API endpoint that allows brands to be viewed or edited.
+    API endpoint that allows messages to be created, viewed and edited
     """
 
     queryset = Message.objects.all()
     serializer_class = MessageSerializer
 
     def list(self, request):
+        
         serializer = MessageSerializer(self.queryset, many=True)
         return Response(serializer.data)
 
@@ -46,7 +47,7 @@ class MessageViewSet(viewsets.ModelViewSet):
 
 class PropertyViewSet(viewsets.ModelViewSet):
     """
-    API endpoint that allows brands to be viewed or edited.
+    API endpoint that allows proprties to be created, viewed and edited
     """
 
     queryset = Property.objects.all()
@@ -97,13 +98,14 @@ class PropertyViewSet(viewsets.ModelViewSet):
 
 class ClientViewSet(viewsets.ModelViewSet):
     """
-    API endpoint that allows clients to be viewed or edited.
+    API endpoint that allows clients to be created, viewed and edited
     """
     queryset = Client.objects.all()
     serializer_class = ClientSerializer
 
     def list(self, request):
         owner_id = request.query_params.get('owner_id')
+        send_sms()
         #queryset = self.filter_queryset(self.get_queryset())
         if owner_id is not None:
             queryset = Client.objects.filter(owner_id=owner_id)
@@ -150,7 +152,7 @@ class ClientViewSet(viewsets.ModelViewSet):
 
 class ReportViewSet(viewsets.ModelViewSet):
     """
-    API endpoint that allows reports to be viewed or edited.
+    API endpoint that allows reports to be created, viewed and edited.
     """
     queryset = Report.objects.all()
     serializer_class = ReportSerializer
