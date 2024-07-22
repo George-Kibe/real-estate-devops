@@ -113,7 +113,8 @@ export default function MembersPage({params, searchParams}) {
   }
   const viewProperty = (property) => {
     setTempProperty(property);
-    router.push(`/properties`)
+    // router.push(`/properties`)
+    window.open(`/properties`, '_blank');
   }
   const fetchProperties = async() => {
     setLoading(true); setPropertiesLoading(true)

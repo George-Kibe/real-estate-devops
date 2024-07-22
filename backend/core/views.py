@@ -162,9 +162,9 @@ class ReportViewSet(viewsets.ModelViewSet):
         staff_id = request.query_params.get('staff_id')
         #queryset = self.filter_queryset(self.get_queryset())
         if client_id is not None:
-            queryset = Report.objects.filter(client_id=client_id)
+            queryset = Report.objects.filter(client_id=client_id).order_by('-created_at')
         elif staff_id is not None:
-            queryset = Report.objects.filter(staff_id=staff_id)
+            queryset = Report.objects.filter(staff_id=staff_id).order_by('-created_at')
         else:
             queryset = self.filter_queryset(self.get_queryset())
         page = self.paginate_queryset(queryset)

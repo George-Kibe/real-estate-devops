@@ -37,7 +37,8 @@ export default function ReportsPage() {
       const data = response.data
       //console.log("client ID: ", currentClient?.id)
       //console.log("Reports Data: ", data)
-      setReports(data.results);
+      const refinedReports = data.results.filter(report => report.properties.length > 0)
+      setReports(refinedReports);
     } catch (error) {
       toast.error("Fetching Reports failed. Try Again!")
     }
@@ -218,17 +219,19 @@ export default function ReportsPage() {
                   {
                     reports?.map((report, index) => (
                       <tr className="" key={index}>
-                      <th className="flex gap-3 px-6 py-4 font-normal">
-                        <div className="text-sm flex">
-                          <div className="font-medium text-lime-500">{index+1}.</div>
-                          <div className="">{report?.report_final}</div>
-                        </div>
-                      </th>
-                      <td className="px-6 py-4">{report?.created_at}</td>
-                      <td className="px-6 py-4">
-                        <Button onClick={()=>viewReport(report?.pkid)}>View Report</Button>
-                      </td>
-                    </tr>
+                        <th className="flex gap-3 px-6 py-4 font-normal">
+                          <div className="text-sm flex">
+                            <div className="font-medium text-lime-500">{index+1}.</div>
+                            <div className="">{report?.report_final}</div>
+                          </div>
+                        </th>
+                        <td className="px-6 py-4">
+                          {moment(report?.created_at).format('MMMM Do YYYY')}
+                        </td>
+                        <td className="px-6 py-4">
+                          <Button onClick={()=>viewReport(report?.pkid)}>View Report</Button>
+                        </td>
+                      </tr>
                     ))
                   }
                 </tbody>

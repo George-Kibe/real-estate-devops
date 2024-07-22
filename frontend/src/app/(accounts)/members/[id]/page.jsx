@@ -10,12 +10,15 @@ import { saveAs } from 'file-saver';
 import * as XLSX from 'xlsx';
 import moment from "moment";
 import { useMainProvider } from '@/providers/MainProvider';
+import EditRoleModal from '@/components/modals/EditRoleModal';
+import { set } from 'mongoose';
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
 
 const SingleMemberPage = () => {
   const [member, setMember] = useState();
   const [loading, setLoading] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
   const [excelLoading, setExcelLoading] = useState(false);
   const {orgMode} = useMainProvider();
 
@@ -116,7 +119,10 @@ const SingleMemberPage = () => {
     console.log("Remove from organization")
   }
   const editRole = async() => {
-    console.log("Edit role")
+    setModalOpen(true);
+  }
+  const handleClose = () => {
+    setModalOpen(false);
   }
   
   if (loading) {
@@ -128,6 +134,8 @@ const SingleMemberPage = () => {
     <div className="">
       <div className="w-full p-4 md:p-8 flex-col md:flex-row flex-1 flex items-center overflow-hidden bg-white rounded-lg shadow-lg dark:bg-gray-800">
         <img className="rounded-full object-center object-contain h-24 md:h-48" src={member?.image} alt="user avatar" />
+
+        <EditRoleModal isOpen={modalOpen} onClose={handleClose} member={member} />
 
         <div className="px-6 py-4">
             <h1 className="text-xl font-semibold text-gray-800 dark:text-white">First Name: {member?.firstName || member?.name}</h1>

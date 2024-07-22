@@ -9,6 +9,9 @@ export default function MyAccountPage() {
   const {currentUser, setCurrentUser} = useMainProvider();
   //console.log("Current User: ", currentUser?.name)
   const [name, setName] = useState(currentUser?.name);
+  const [firstName, setFirstName] = useState(currentUser?.firstName || currentUser?.name);
+  const [lastName, setLastName] = useState(currentUser?.lastName);
+  const [orgName, setOrgName] = useState(currentUser?.orgName);
   const [userImageBase64, setUserImageBase64] = useState(currentUser?.image);
   const [email, setEmail] = useState(currentUser?.email);
   const [phoneNumber, setPhoneNumber] = useState(currentUser?.phoneNumber);
@@ -28,10 +31,13 @@ export default function MyAccountPage() {
   }
   const handleUpdate = async() => {
     const body = {
-      name,
+      name: firstName + " " + lastName,
+      firstName,
+      lastName,
+      orgName,
       email,
       phoneNumber,
-      favouriteLocation,
+      //favouriteLocation,
       image: userImageBase64
     }
     //console.log('Updating: ', body);
@@ -90,19 +96,47 @@ export default function MyAccountPage() {
       <div className="px-4 md:px-8 flex-1 justify-between flex-col md:flex-row">
         <div className="">
           <label className='mb-[10px] text-base font-medium text-dark dark:text-white'>
-            Name:
+            First Name:
           </label>
           <input
             type='text'
             placeholder='Name'
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
             className='w-full bg-transparent rounded-md border border-stroke dark:border-dark-3 py-[10px] px-5 text-dark-6 outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-gray-2 disabled:border-gray-2'
           />
         </div>
         <div className="">
+          <label className='mb-[10px] text-base font-medium text-dark dark:text-white'>
+            Last Name:
+          </label>
+          <input
+            type='text'
+            placeholder='Last Name'
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value)}
+            className='w-full bg-transparent rounded-md border border-stroke dark:border-dark-3 py-[10px] px-5 text-dark-6 outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-gray-2 disabled:border-gray-2'
+          />
+        </div>
+        {
+          currentUser?.isPremium && (
+            <div className="">
+              <label className='mb-[10px] text-base font-medium text-dark dark:text-white'>
+                Organization Name:
+              </label>
+              <input
+                type='text'
+                placeholder='Organization Name'
+                value={orgName}
+                onChange={(e) => setOrgName(e.target.value)}
+                className='w-full bg-transparent rounded-md border border-stroke dark:border-dark-3 py-[10px] px-5 text-dark-6 outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-gray-2 disabled:border-gray-2'
+              />
+            </div>
+          )
+        }
+        <div className="">
           <label className='mb-[10px]  text-base font-medium text-dark dark:text-white'>
-            Email:
+            Email(Read Only):
           </label>
           <input
             type='email'
@@ -125,7 +159,7 @@ export default function MyAccountPage() {
             className='w-full bg-transparent rounded-md border border-stroke dark:border-dark-3 py-[10px] px-5 text-dark-6 outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-gray-2 disabled:border-gray-2'
           />
         </div>
-        <div className="">
+        {/* <div className="">
           <label className='mb-[10px]  text-base font-medium text-dark dark:text-white'>
             Favorite location:
           </label>
@@ -136,10 +170,10 @@ export default function MyAccountPage() {
             onChange={(e) => setFavouriteLocation(e.target.value)}
             className='w-full bg-transparent rounded-md border border-stroke dark:border-dark-3 py-[10px] px-5 text-dark-6 outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-gray-2 disabled:border-gray-2'
           />
-        </div>
+        </div> */}
       </div>
         <button onClick={handleUpdate} className='border-primary border self-start rounded-md inline-flex items-center justify-center py-3 px-7 text-center text-base font-medium hover:bg-[#1B44C8] hover:border-[#1B44C8] disabled:bg-gray-3 disabled:border-gray-3 disabled:text-dark-5 active:bg-[#1B44C8] active:border-[#1B44C8]'>
-          {loading? "Loading" : "Update"}
+          {loading? "Loading" : "Update Details"}
         </button>
     </div>
   );

@@ -18,6 +18,11 @@ const UserSchema = new Schema({
         unique: false,
         required: false
     },
+    orgName: {
+        type: String,
+        unique: false,
+        required: false
+    },
     email: {
         type: String,
         unique: true,

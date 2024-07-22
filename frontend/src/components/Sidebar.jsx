@@ -31,17 +31,24 @@ import { useMainProvider } from '@/providers/MainProvider';
           <CommandEmpty>No results found.</CommandEmpty>
           <CommandGroup heading='Suggestions'>
             {
-              (orgMode || sellerMode) &&
+              adminMode &&
               <CommandItem>
                 <LayoutDashboard className='mr-2 h-4 w-4' />
                 <Link href='/dashboard'>Dashboard</Link>
               </CommandItem>
             }
             {
-              (orgMode || sellerMode) && 
+              adminMode && 
               <CommandItem>
                 <Users className='mr-2 h-4 w-4' />
                 <Link href='/users'>Users</Link>
+              </CommandItem>
+              }
+              {
+              adminMode && 
+              <CommandItem>
+                <Users className='mr-2 h-4 w-4' />
+                <Link href='/admin'>Admin Functions</Link>
               </CommandItem>
               }
             {
