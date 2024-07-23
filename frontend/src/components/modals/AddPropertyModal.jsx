@@ -28,7 +28,7 @@ const AddPropertyModal = ({ isOpen, onClose, setUserProperties }) => {
   }
 
   const handleAddProperty = () => {
-    if (!imageBase64 || !title || !street_address || !phone_number || !description || !amenities || !price || !comments){
+    if (!title || !street_address || !phone_number || !description || !amenities || !price || !comments){
       toast.error("Please fill in all fields");
       return
     }

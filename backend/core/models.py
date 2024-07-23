@@ -98,3 +98,17 @@ class Message(TimeStampedUUIDModel):
         verbose_name_plural = "Messages"
     def __str__(self):
         return self.name
+
+class Enquiry(TimeStampedUUIDModel):
+    name = models.CharField(max_length=100, blank=True)
+    email = models.EmailField(null=True, blank=True)
+    phone_number = models.CharField(max_length=15, blank=True)
+    message = models.TextField()
+    status = models.CharField(max_length=100, default="Pending")
+    class Meta:
+        verbose_name = "Enquiry"
+        verbose_name_plural = "Enquiries"
+        ordering = ["-created_at"]
+        
+    def __str__(self):
+        return self.name

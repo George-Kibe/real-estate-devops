@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Property, Message, Client, Report
+from .models import Property, Message, Client, Report,Enquiry
 
 class PropertySerializer(serializers.ModelSerializer):
     class Meta:
@@ -14,6 +14,11 @@ class ReportSerializer(serializers.ModelSerializer):
 class MessageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Message
+        fields = "__all__"
+
+class EnquirySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Enquiry
         fields = "__all__"
 
 class ClientSerializer(serializers.ModelSerializer):

@@ -22,7 +22,7 @@ const SearchView = () => {
       if (response.data.count > 0){
         setCustomProperties(response.data.results)
       }else{
-        toast.error('No properties found for the given location. Try Another Location or Advanced Search');
+        toast.error('No properties found for the given location. Try Another Location');
       } 
       setSearchtext('')
     } catch (error) {
@@ -51,7 +51,7 @@ const SearchView = () => {
     await searchForProperties(searchtext);
     setLocation(searchtext);
   };
-  console.log("Type: ", type)
+  // console.log("Type: ", type)
 
   return (
     <div className="flex w-full pt-4 pb-8 flex-col items-center justify-center bg-cover bg-center">

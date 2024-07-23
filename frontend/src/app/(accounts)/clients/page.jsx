@@ -133,7 +133,7 @@ export default function MembersPage() {
                   <td className="px-6 py-4 text-sm">{index + 1}</td>
                   <th className="flex gap-3 px-6 py-4 font-normal">
                     <div className="text-sm">
-                      <div className="font-medium ">{client.client_name}</div>
+                      <div className="font-medium ">{client.first_name||client.client_name}</div>
                       {/* <div className="">{client.email}</div> */}
                     </div>
                   </th>

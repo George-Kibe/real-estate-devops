@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useMainProvider } from "@/providers/MainProvider";
 import axios from "axios";
-import { Brain, LoaderCircle } from 'lucide-react';
+import { Brain, LoaderCircle, Eye, Pencil, Trash, DiamondPlus } from 'lucide-react';
 import moment from "moment/moment";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -14,6 +14,7 @@ import AddCommentModal from "@/components/modals/AddCommentModal";
 import { saveAs } from 'file-saver';
 import * as XLSX from 'xlsx';
 import AddPropertyModal from "@/components/modals/AddPropertyModal";
+import EditLocationModal from "@/components/modals/EditLocationModal";
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
 //const BACKEND_URL = "http://localhost:8000"
@@ -23,17 +24,23 @@ export default function MembersPage({params, searchParams}) {
   const {currentUser, setTempProperty} = useMainProvider();
 
   const [modalOpen, setModalOpen] = useState(false);
+  const [searchLocation, setSearchLocation] = useState(location);
+  //console.log("Search Location: ", searchLocation)
   const [propertyModalOpen, setPropertyModalOpen] = useState(false);
+  const [locationModalOpen, setLocationModalOpen] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [report, setReport] = useState(null);
   const [properties, setProperties] = useState([]);
+  const [currentProperties, setCurrentProperties] = useState([]);
   const [userProperties, setUserProperties] = useState([]);
   const [comments, setComments] = useState('');
   const [currentProperty, setCurrentProperty] = useState({});
   const [currentIndex, setCurrentIndex] = useState();
   const [loading, setLoading] = useState(false);
+  const [localLoading, setLocalLoading] = useState(false);
   const [propertiesLoading, setPropertiesLoading] = useState(false);
   const [summary, setSummary] = useState();
+  const [currentPropertiesIndex, setcurrentPropertiesIndex] = useState(5);
   // console.log("Report: ", report)
   // console.log("User Properties: ", userProperties);
   const {id} = useParams();
@@ -119,9 +126,10 @@ export default function MembersPage({params, searchParams}) {
   const fetchProperties = async() => {
     setLoading(true); setPropertiesLoading(true)
     try {
-      const response = await axios.get(`${BACKEND_URL}/api/scrapping?search=${location}`);
+      const response = await axios.get(`${BACKEND_URL}/api/scrapping?search=${searchLocation}`);
       const data = response.data
-      setProperties(data.slice(0, 10));
+      setProperties(data);
+      setCurrentProperties(data.slice(0, currentPropertiesIndex));
       console.log("Properties Data: ", data)
       setLoading(false); setPropertiesLoading(false)
     } catch (error) {
@@ -129,9 +137,40 @@ export default function MembersPage({params, searchParams}) {
       setLoading(false); setPropertiesLoading(false)
     }
   }
+  const loadMore = () => {
+    if (currentPropertiesIndex >= properties.length) {
+      toast.info("No more properties to load!");
+      return;
+    }
+    setCurrentProperties(properties.slice(currentPropertiesIndex, currentPropertiesIndex+5));
+    setcurrentPropertiesIndex(currentPropertiesIndex + 5);
+  }
+  const addLocalProperties = async() => {
+    if (!searchLocation){
+      toast.error("Please add or edit search Location!");
+      return;
+    }
+    try {
+      setLocalLoading(true);
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/search-properties/?search=${searchLocation}`)
+      if (response.data.count > 0){
+        setProperties(response.data.results.slice(0, 40))
+        setCurrentProperties(response.data.results.slice(0, 5))
+        toast.success('Local propertie added at the bottom of your other properties');
+        setLocalLoading(false);
+      }else{
+        toast.error('No properties found for the given location. Try Another Location');
+        setLoading(false);
+      } 
+    } catch (error) {
+      toast.error("Error searching. Please try again");
+      console.log(error)
+      setLocalLoading(false);
+    }
+  }
 
   useEffect(() => {
-    if (location){
+    if (searchLocation){
       fetchProperties();
     }
   }, [location])
@@ -188,6 +227,9 @@ export default function MembersPage({params, searchParams}) {
   const closePropertyModal = () => {
     setPropertyModalOpen(false)
   }
+  const closeLocationModal = () => {
+    setLocationModalOpen(false)
+  }
 
   const addToUserProperties = () => {
     if(!comments){
@@ -229,7 +271,8 @@ export default function MembersPage({params, searchParams}) {
     setEditMode(true)
   }
   const handleRemove = (index) => {
-    setProperties(properties.filter((p, i) => i !== index));
+    //setProperties(properties.filter((p, i) => i !== index));
+    setCurrentProperties(currentProperties.filter((p, i) => i !== index));
   }
 
   return (
@@ -239,6 +282,7 @@ export default function MembersPage({params, searchParams}) {
       <AnimatedText text={`Report for ${report?.client_name}-${moment(report?.created_at).format('MMMM Do YYYY')}`} />
       <AddCommentModal comments={comments} isOpen={modalOpen} onClose={closeModal} setComments={setComments} currentProperty={currentProperty} addToUserProperties={addToUserProperties} editMode={editMode}/>
       <AddPropertyModal isOpen={propertyModalOpen} onClose={closePropertyModal} setUserProperties={setUserProperties}/>
+      <EditLocationModal isOpen={locationModalOpen} onClose={closeLocationModal} searchLocation={searchLocation} fetchProperties={fetchProperties} setSearchLocation={setSearchLocation} />
         <div className="p-4 md:p-8">
             <div className='flex flex-row gap-2'>
               <p className='flex flex-row gap-4'><p className="font-semibold">Report Title:</p> {report?.title}</p>
@@ -257,33 +301,43 @@ export default function MembersPage({params, searchParams}) {
             </div>
         </div>
 
-        <Button onClick={() => setPropertyModalOpen(true)} className='m-4 '>
-          Add Custom Property
-        </Button>
+        <div className="flex flex-col md:flex-row w-full justify-between">
+          <Button onClick={() => setPropertyModalOpen(true)} className='m-4 '>
+            Add Custom Property
+          </Button>
+          <Button onClick={addLocalProperties} className='m-4 '>
+            {
+              localLoading? "Loading Local Properties" : "Import Local Properties"
+            }
+          </Button>
+          <Button onClick={() => setLocationModalOpen(true)} className='m-4'>
+            Change Search Location
+          </Button>
+        </div>
       
         <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
           <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
               <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                   <tr>
-                      <th scope="col" className="p-4">
+                      <th scope="col" className="p-2">
                         #
                       </th>
-                      <th scope="col" className="px-6 py-3">
+                      <th scope="col" className="px-2 py-1">
                         Property Details
                       </th>
-                      <th scope="col" className="px-6 py-3">
+                      <th scope="col" className="px-2 py-1">
                           Price
                       </th>
-                      <th scope="col" className="px-6 py-3">
+                      <th scope="col" className="px-2 py-1">
                           Phone Number
                       </th>
-                      <th scope="col" className="px-6 py-3">
+                      <th scope="col" className="px-2 py-1">
                           Description
                       </th>
-                      <th scope="col" className="px-6 py-3">
+                      <th scope="col" className="px-2 py-1">
                           Comments
                       </th>
-                      <th scope="col" className="px-6 py-3">
+                      <th scope="col" className="px-2 py-1">
                           Action
                       </th>
                   </tr>
@@ -308,39 +362,45 @@ export default function MembersPage({params, searchParams}) {
                   {
                     userProperties?.map((property, index) => (
                         <tr key={property.id} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                            <td className="w-4 p-4 ">
+                            <td className="w-4 p-2">
                                 {index+1}.
                             </td>
-                            <th scope="row" className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
-                                <img className="w-20 h-20 rounded-md" src={property?.images[0]} alt="Jese image" />
+                            <th scope="row" className="flex items-center py-1 text-gray-900 whitespace-nowrap dark:text-white">
+                                <img className="w-20 h-20 rounded-md" src={property?.images[0]} alt="Property Image" />
                                 <div className="ps-3">
-                                    <div className="text-base text-wrap ">{property.title}</div>
-                                    <div className="text-base font-semibold text-wrap">Address: {property.street_address}</div>
-                                    <div className="font-normal text-gray-500 flex flex-row flex-wrap">
-                                      <p className="font-bold mr-2">Amenities:</p> {property.amenities.map((a, index) => <p className="ml-1" key={index}>{a +", "}</p>)}
-                                    </div>
-                                    <div className="font-normal text-gray-500 flex flex-row flex-wrap">
-                                      <p className="font-bold mr-2">Bathrooms:</p>{property.bathrooms}  
-                                    </div>
+                                  <div className="text-base text-wrap ">{property.title}</div>
+                                  <div className="text-base font-semibold text-wrap">Address: {property.street_address}</div>
+                                  <div className="font-normal text-gray-500 flex flex-row flex-wrap">
+                                    <p className="font-bold mr-2">Amenities:</p> {property.amenities.map((a, index) => <p className="ml-1" key={index}>{a +", "}</p>)}
+                                  </div>
+                                  <div className="font-normal text-gray-500 flex flex-row flex-wrap">
+                                    <p className="font-bold mr-2">Bathrooms:</p>{property.bathrooms}  
+                                  </div>
                                 </div>  
                             </th>
-                            <td className="px-6 py-4">
+                            <td className="px-2 py-1">
                               {property.price}
                             </td>
-                            <td className="px-6 py-4">
+                            <td className="px-2 py-1">
                                 <div className="flex items-center w-28">
                                     {property.phone_number}
                                 </div>
                             </td>
-                            <td className="px-6 py-4">
+                            <td className="px-2 py-1">
                                 <p className="">{property.description}</p>
                             </td>
-                            <td className="px-6 py-4">
+                            <td className="px-2 py-1">
                                 <p className="">{property.comments}</p>
                             </td>
-                            <td className="px-6 py-4  self-center justify-center flex-col gap-2">
-                              <Button className='mb-2' onClick={() => handleEdit(property, index)}>Edit Details</Button>
-                              <Button onClick={() => viewProperty(property)}>View Property</Button>
+                            <td className="px-2 py-1  self-center justify-center flex-col gap-2">
+                              <Button className='mb-2' onClick={() => handleEdit(property, index)}>
+                              <Pencil className="h-5 w-5 mr-2" />
+                                Edit Details
+                                </Button>
+                              <Button onClick={() => viewProperty(property)}>
+                                <Eye className="h-5 w-5 mr-2" />
+                                View Property
+                              </Button>
                             </td>
                         </tr>
                       ))
@@ -348,12 +408,12 @@ export default function MembersPage({params, searchParams}) {
               </tbody>
               <tbody>
                   {
-                    properties?.map((property, index) => (
+                    currentProperties?.map((property, index) => (
                         <tr key={property.id} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                            <td className="w-4 p-4 ">
+                            <td className="w-4 p-2 ">
                                 {userProperties.length + index+1}.
                             </td>
-                            <th scope="row" className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
+                            <th scope="row" className="flex justify-center items-center py-4 text-gray-900 whitespace-nowrap dark:text-white">
                                 <img className="w-20 h-20 rounded-md" src={property?.images[0]} alt="Jese image" />
                                 <div className="ps-3">
                                     <div className="text-base text-wrap ">{property.title}</div>
@@ -367,28 +427,47 @@ export default function MembersPage({params, searchParams}) {
                                     </div>
                                 </div>  
                             </th>
-                            <td className="px-6 py-4">
+                            <td className="px-2 py-1">
                               {property.price}
                             </td>
-                            <td className="px-6 py-4">
+                            <td className="px-2 py-1">
                                 <div className="flex w-28 items-center">
                                     {property.phone_number}
                                 </div>
                             </td>
-                            <td className="px-6 py-4">
-                                <p className="">{property.description}</p>
+                            <td className="px-2 py-1">
+                                <p className="text-justify">{property.description}</p>
                             </td>
-                            <td className="px-6 py-4">
+                            <td className="px-2 py-1">
                                 <p className=""></p>
                             </td>
-                            <td className="px-6 py-4 flex gap-2 items-center self-start justify-center">
-                                <Button onClick={() => handleAdd(property, index)}>Add</Button>
-                                <Button onClick={() => handleRemove(index)} variant='destructive'>Remove</Button>
+                            <td className="px-2 py-1  self-center justify-center flex-col gap-2">
+                                <Button className='mb-2' onClick={() => handleAdd(property, index)}>
+                                  <DiamondPlus className="h-5 w-5 mr-2" />
+                                  Add
+                                </Button>
+                                <Button className='mb-2' onClick={() => viewProperty(property)}>
+                                  <Eye className="h-5 w-5 mr-2" />
+                                  View Property
+                                </Button>
+                                <Button className='mb-2' onClick={() => handleRemove(index)}variant='destructive'>
+                                  <Trash className="h-5 w-5 mr-2" />
+                                  Remove
+                                  </Button>
                             </td>
                         </tr>
                       ))
                   }
               </tbody>
+              {
+                properties?.length > currentPropertiesIndex && (
+                  <div className="flex w-full m-4 items-center justify-center">
+                    <Button className='flex self-center' onClick={loadMore}>
+                      Load More...
+                    </Button>
+                  </div>
+                )
+              }
           </table>
         </div>
         
@@ -407,7 +486,7 @@ export default function MembersPage({params, searchParams}) {
               />
           </form>
           <div className='flex gap-2'>
-            <Button onClick={updateReport}>{loading? 'Loading...': 'Update Report'}</Button>
+            <Button onClick={updateReport}>{loading? 'Loading...': 'Save Report'}</Button>
             <Button onClick={() => deleteReport(id)} variant="destructive">{loading? 'Loading...': 'Delete Report'}</Button>
             <Button onClick={handlePrint}  className="">Export PDF</Button>
             {/* <Button onClick={handlePrint} className="">Share</Button> */}

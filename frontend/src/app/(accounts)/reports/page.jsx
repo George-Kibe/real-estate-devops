@@ -157,11 +157,11 @@ export default function ReportsPage() {
         <table className="w-full border-collapse text-left text-sm">
           <thead className="">
             <tr>
-              <th scope="col" className="px-6 py-4 font-medium">#</th>
-              <th scope="col" className="px-6 py-4 font-medium">Name</th>
-              <th scope="col" className="px-6 py-4 font-medium">Address</th>
-              <th scope="col" className="px-6 py-4 font-medium">Phone Number</th>
-              <th scope="col" className="px-6 py-4 font-medium">Preferred City</th>
+              <th scope="col" className="px-2 py-1 font-medium">#</th>
+              <th scope="col" className="px-2 py-1 font-medium">First Name</th>
+              <th scope="col" className="px-2 py-1 font-medium">Last Name</th>
+              <th scope="col" className="px-2 py-1 font-medium">House Type</th>
+              <th scope="col" className="px-2 py-1 font-medium">Preferred City</th>
             </tr>
           </thead>
           <tbody className="divide-y ">
@@ -170,28 +170,28 @@ export default function ReportsPage() {
                 <tr onClick={() => selectClient(client)} key={index}
                   className={client.id === currentClient?.id ? "bg-lime-500 w-full cursor-pointer": "w-full cursor-pointer"}
                 >
-                    <td className="px-6 py-4 text-sm">{index + 1}</td>
-                    <th className="flex gap-3 px-6 py-4 font-normal">
+                    <td className="px-2 py-1 text-sm">{index + 1}</td>
+                    <th className="flex gap-3 px-2 py-1 font-normal">
                       <div className="text-sm">
                         <div className="font-medium ">
                           <Button>
-                          {client.client_name}
+                          {client.first_name || client.client_name}
                           </Button>
                         </div>
-                        <div className="">{client.email}</div>
+                        {/* <div className="">{client.email}</div> */}
                       </div>
                     </th>
-                    <td className="px-6 py-4">{client.address}</td>
-                    <td className="px-6 py-4">
+                    <td className="px-2 py-1">{client.last_name || client.client_name}</td>
+                    <td className="px-2 py-1">
                       <div className="flex gap-2">
                         <span
                           className="inline-flex items-center gap-1 rounded-full bg-blue-50 px-2 py-1 text-xs font-semibold text-blue-600"
                         >
-                          {client.phone_number}
+                          {client.house_type}
                         </span>
                       </div>
                     </td>
-                    <td className="px-6 py-4">{client.city}</td>
+                    <td className="px-2 py-1">{client.city}</td>
                   </tr>
               ))
             }
@@ -219,16 +219,16 @@ export default function ReportsPage() {
                   {
                     reports?.map((report, index) => (
                       <tr className="" key={index}>
-                        <th className="flex gap-3 px-6 py-4 font-normal">
+                        <th className="flex gap-3 px-2 py-1 font-normal">
                           <div className="text-sm flex">
                             <div className="font-medium text-lime-500">{index+1}.</div>
                             <div className="">{report?.report_final}</div>
                           </div>
                         </th>
-                        <td className="px-6 py-4">
-                          {moment(report?.created_at).format('MMMM Do YYYY')}
+                        <td className="px-2 py-1">
+                          {moment(report?.created_at).format('MM/DD/YYYY')}
                         </td>
-                        <td className="px-6 py-4">
+                        <td className="px-2 py-1">
                           <Button onClick={()=>viewReport(report?.pkid)}>View Report</Button>
                         </td>
                       </tr>
