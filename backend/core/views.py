@@ -54,7 +54,13 @@ class EnquiryViewSet(viewsets.ModelViewSet):
     serializer_class = EnquirySerializer
 
     def list(self, request):
-        serializer = EnquirySerializer(self.queryset, many=True)
+        queryset = self.filter_queryset(self.get_queryset())
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
     def retrieve(self, request, pk=None):
@@ -153,7 +159,7 @@ class ClientViewSet(viewsets.ModelViewSet):
 
     def list(self, request):
         owner_id = request.query_params.get('owner_id')
-        send_sms()
+        #send_sms()
         #queryset = self.filter_queryset(self.get_queryset())
         if owner_id is not None:
             queryset = Client.objects.filter(owner_id=owner_id)

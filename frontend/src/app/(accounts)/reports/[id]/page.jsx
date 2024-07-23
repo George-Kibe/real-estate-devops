@@ -254,8 +254,8 @@ export default function MembersPage({params, searchParams}) {
     setUserProperties([...userProperties, currentProperty]);
     setComments('');
     setModalOpen(false);
+    setCurrentProperties(currentProperties.filter((p, i) => i !== currentIndex));
     setCurrentProperty(null);
-    setProperties(properties.filter((p, i) => i !== currentIndex));
     setCurrentIndex(null);
     setEditMode(false);
   }
