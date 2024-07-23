@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { ChevronDownCircleIcon, Ellipsis } from "lucide-react"
+import { Ellipsis } from "lucide-react"
 import { useRouter } from 'next/navigation';
 import axios  from 'axios';
 import { Button } from "@/components/ui/button"
@@ -17,11 +17,10 @@ import { toast } from "react-toastify";
 export function EnquiryActions({enquiry}) {
 
   const markComplete = async () => {
-    console.log("Enquiry: ", enquiry);
+    // console.log("Enquiry: ", enquiry);
     try {
-      const response = await axios.put(`${BACKEND_URL}/api/enquiries/${enquiry.pkid}/`, {
-        status: "Completed"
-      });
+      const data = { status: "Completed", message: enquiry?.message };
+      const response = await axios.put(`${BACKEND_URL}/api/enquiries/${enquiry.pkid}/`, data);
       toast.success("Enquiry marked as completed");
       window.location.reload();
     } catch (error) {

@@ -19,8 +19,8 @@ const AdminPage = () => {
     setLoading(true);
     try {
       const response = await axios.get(`${BACKEND_URL}/api/enquiries/`)
-      console.log("Response Data:", response.data)
-      setEnquiries(response.data);
+      //console.log("Response Data:", response.data)
+      setEnquiries(response.data.results);
       setLoading(false);
     } catch (error) {
       console.log("Error Fetching Enquiries:", error)

@@ -10,7 +10,7 @@ import React, { useState } from "react";
 const FeaturesPage = () => {
   return (
     <section className="relative z-10 overflow-hidden pt-4 dark:bg-dark lg:pb-[10px] lg:pt-[10px]">
-      <OurOffering />
+      {/* <OurOffering /> */}
       {/* <Features /> */}
       <FAQS />
       <div className="container mx-auto">
@@ -28,33 +28,32 @@ const FeaturesPage = () => {
         <div id='subscription' className="-mx-4 flex flex-wrap justify-center">
           <div className="-mx-4 flex flex-wrap">
             <PricingCard
-              type="Personal"
+              type="Basic"
               price={99}
               subscription="year"
               description="Perfect for personal search of properties."
-              buttonText="Choose Personal"
+              buttonText="Choose Basic"
               listItems= {[
-                '1 User',
-                'All UI components',
-                'Lifetime access',
-                'Free updates',
-                'Limited support',
+                'DHS Compliance Note Taking Assistance',
+                'Secure Cloud-Based Storage',
+                'Basic Client Management',
+                'Basic reporting',
               ]}
             >
             </PricingCard>
             <PricingCard
-              type="Business"
+              type="Standard"
               price={199}
               subscription="year"
               description="Perfect for small number of clients."
-              buttonText="Choose Business"
+              buttonText="Choose Standard"
               priceId={'price_1POCL0EkdIEftzMHCqQx4dYQ'}
               listItems = {[
-                '5 User',
-                'All UI components',
-                'Lifetime access',
-                'Free updates',
-                '4 Months support',
+                'All Basic Plan Features',
+                'Real-Time Client Communication Portal',
+                'Comprehensive Staff Management',
+                'Advanced Reporting',
+                'Automated Apartment Feeds',
               ]}
             >
             </PricingCard>
@@ -66,11 +65,11 @@ const FeaturesPage = () => {
               buttonText="Choose Professional"
               priceId={'price_1POCL0EkdIEftzMHCqQx4dYQ'}
               listItems = {[
-                'Unlimited Users',
-                'All UI components',
-                'Lifetime access',
-                'Free updates',
-                '12 Months support',
+                'All Standard Plan Features',
+                'Personalized Housing Solutions',
+                'Streamlined Assessment Pathways',
+                'Prompt Housing Consultation Services',
+                'Priority Support',
               ]}
             >
             </PricingCard>

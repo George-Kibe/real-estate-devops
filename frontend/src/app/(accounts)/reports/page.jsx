@@ -8,12 +8,15 @@ import { toast } from "react-toastify";
 import { saveAs } from 'file-saver';
 import * as XLSX from 'xlsx';
 import moment from "moment";
+import { set } from "mongoose";
+import { Loader } from "lucide-react";
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
 //const BACKEND_URL = "http://localhost:8000"
 
 export default function ReportsPage() {
   const [loading, setLoading] = useState(false);
+  const [reportsLoading, setReportsLoading] = useState(false);
   const [currentClient, setCurrentClient] = useState(null);
   const [clients, setClients] = useState([]);
   const [reports, setReports] = useState([]);
@@ -71,7 +74,8 @@ export default function ReportsPage() {
       status: "completed",
       report_type: "Daily",
       client_phone_number:currentClient?.phone_number,
-      staff_id: orgMode? tempUser?._id : currentUser._id
+      staff_id: orgMode? tempUser?._id : currentUser._id,
+      owner_id: currentUser?.id
     }
     try {
       const response = await axios.post(`${BACKEND_URL}/api/reports/`, data);
@@ -90,7 +94,7 @@ export default function ReportsPage() {
     router.push(`/reports/${id}`)
   }
 
-  const exportToExcel = () => {
+  const exportToExcel = (reports, name) => {
     if (reports.length === 0) {
       toast.error("No reports to export.");
       return;
@@ -143,13 +147,35 @@ export default function ReportsPage() {
 
     const excelBuffer = XLSX.write(workbook, { bookType: 'xls', type: 'array' });
     const blob = new Blob([excelBuffer], { type: 'application/vnd.ms-excel' });
-    saveAs(blob, `${currentClient?.client_name}-reports.xls`);
+    saveAs(blob, `${name}-reports.xls`);
   };
+
+  const exportAllClientReportsToExcel = async( ) => {
+    try {
+      setReportsLoading(true);
+      const response = await axios.get(`${BACKEND_URL}/api/reports/?owner_id=${currentUser?._id}`);
+      const data = response.data
+      const refinedReports = data.results.filter(report => report.properties.length > 0)
+      exportToExcel(refinedReports, currentUser?.name);
+      setReportsLoading(false);
+    } catch (error) {
+      toast.error("Fetching Reports failed. Try Again!")
+      setReportsLoading(false);
+    }
+  }
 
   return (
     <div className='flex flex-col justify-between gap-5 mb-5'>
       {/* <AnimatedText text={"Reports Page"} /> */}
       <p className="self-center font-bold text-2xl mb-4 md:mb-8">Select Client to View their  Reports</p>
+
+      <div className="flex w-full">
+        <Button onClick={exportAllClientReportsToExcel} className="ml-auto">
+          {
+            reportsLoading? <Loader className="animate-spin mr-2" />: "Export All Clients Reports to Excel"
+          }
+        </Button>
+      </div>
       {
         !clients?.length && <p className="">You do not have any clients Reports yet!</p>
       }
@@ -206,7 +232,7 @@ export default function ReportsPage() {
               <Button onClick={generateReport}>
                 {loading? "Generating Report...": `Generate ${currentClient?.client_name}'s Report for Today`}
               </Button>
-              <Button onClick={exportToExcel}>
+              <Button onClick={() => exportToExcel(reports, currentClient?.client_name)}>
                 {loading? "Generating Report...": `Export ${currentClient?.client_name}'s Reports to Excel`}
               </Button>
             </div>
