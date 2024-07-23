@@ -1,15 +1,37 @@
 "use client"
 import AnimatedText from '@/components/AnimatedText'
+import { EnquiryActions } from '@/components/EnquiryActions'
 import { Button } from '@/components/ui/button'
-import { CirclePlus, Loader } from 'lucide-react'
-import React, { useState } from 'react'
+import axios from 'axios'
+import { CirclePlus, Loader, GripVertical, Ellipsis } from 'lucide-react'
+import React, { useState, useEffect } from 'react'
 import { toast } from 'react-toastify'
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
 
 const AdminPage = () => {
   const [loading, setLoading] = useState(false);
   const [loadingHousing, setLoadingHousing] = useState(false);
   const [loadingResources, setLoadingResources] = useState(false);
-  const [loadingCommonBond, setLoadingCommonBond] = useState(false)
+  const [loadingCommonBond, setLoadingCommonBond] = useState(false);
+  const [enquiries, setEnquiries] = useState([]);
+
+  const fetchEnquiries = async() => {
+    setLoading(true);
+    try {
+      const response = await axios.get(`${BACKEND_URL}/api/enquiries/`)
+      console.log("Response Data:", response.data)
+      setEnquiries(response.data);
+      setLoading(false);
+    } catch (error) {
+      console.log("Error Fetching Enquiries:", error)
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    fetchEnquiries();
+  }, [])
+  
 
   function delay(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms));
@@ -83,6 +105,52 @@ const AdminPage = () => {
               </p>
           }
         </Button>
+      </div>
+
+      <AnimatedText text={"All Enquiries"} />
+
+      <div className="overflow-hidden rounded-lg border shadow-md m-5">
+        <table className="w-full border-collapse text-left text-sm">
+          <thead className="">
+            <tr>
+              <th scope="col" className="px-2 py-1 font-medium">#</th>
+              <th scope="col" className="px-2 py-1 font-medium">Name</th>
+              <th scope="col" className="px-2 py-1 font-medium">Email</th>
+              <th scope="col" className="px-2 py-1 font-medium">Status</th>
+              <th scope="col" className="px-2 py-1 font-medium">Message</th>
+              <th scope="col" className="px-2 py-1 font-medium">Action</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y ">
+            {
+              enquiries?.map((enquiry, index) => (
+                <tr key={index}
+                  className='w-full'                >
+                    <td className="px-2 py-1 text-sm">{index + 1}.</td>
+                    <td className="flex gap-3 px-2 py-1 font-normal">
+                    {enquiry.name}
+                    </td>
+                    <td className="px-2 py-1">{enquiry.email}</td>
+                    <td className="px-2 py-1">
+                      <div className="flex gap-2">
+                        <span
+                          className="inline-flex items-center gap-1 rounded-full bg-blue-50 px-2 py-1 text-xs font-semibold text-blue-600"
+                        >
+                          {enquiry.status}
+                        </span>
+                      </div>
+                    </td>
+                    <td className="px-2 py-1">{enquiry.message}</td>
+                    <td className="px-2 py-1">
+                      <button>
+                        <EnquiryActions enquiry={enquiry} />
+                      </button>
+                    </td>
+                  </tr>
+              ))
+            }
+          </tbody>
+        </table>
       </div>
     </div>
   )

@@ -1,7 +1,42 @@
-import React from "react";
+"use client"
+import React, { useState } from "react";
 import {HomeIcon, Mail, PhoneCallIcon} from 'lucide-react'
+import { Button } from "@/components/ui/button";
+import { toast } from "react-toastify";
+import axios from "axios";
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
+
 const ContactPage = () => {
   // handle API to save query to database and inform admin
+  const [loading, setLoading] = useState(false);
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [message, setMessage] = useState('');
+  const [phone_number, setPhone_number] = useState('');
+
+  const handleSubmit = async() => {
+    if (!name || !email || !message ) {
+      toast.error("Please fill in all fields");
+      return;
+    }
+    try {
+      setLoading(true);
+      const body = { name, email, message, phone_number}
+      const response  = await axios.post(`${BACKEND_URL}/api/enquiries/`, body);
+      console.log(response.data);
+      if (response.status === 201) {
+        toast.success("Your message has submitted successfully. One of us will get back to you");
+        setName('');
+        setEmail('');
+        setMessage('');
+        setPhone_number('');
+      }
+      setLoading(false);
+    } catch (error) {
+      toast.error("Error submitting your message. Please Try Again");
+      setLoading(false);
+    }
+  }
 
   return (
     <>
@@ -68,37 +103,52 @@ const ContactPage = () => {
 
             <div className="w-full px-4 lg:w-1/2 xl:w-5/12">
               <div className="relative rounded-lg p-8 shadow-lg dark:bg-dark-2 sm:p-12">
-                <form>
-                  <ContactInputBox
-                    type="text"
-                    name="name"
-                    placeholder="Your Name"
-                  />
-                  <ContactInputBox
-                    type="text"
-                    name="email"
-                    placeholder="Your Email"
-                  />
-                  <ContactInputBox
-                    type="text"
-                    name="phone"
-                    placeholder="Your Phone"
-                  />
-                  <ContactTextArea
-                    row="6"
-                    placeholder="Your Message"
-                    name="details"
-                    defaultValue=""
-                  />
+                <div>
+                  <div className="">
+                    <p className="">Name:</p>
+                    <input type="text" placeholder='Name' 
+                      value={name}
+                      onChange={ev => setName(ev.target.value)}
+                      className="border-2 border-gray-300 rounded-md p-1 w-full 
+                      mb-2 focus:border-blue-900" 
+                    /> 
+                  </div>
+                  <div className="">
+                    <p className="">Email:</p>
+                    <input type="email" placeholder='Name' 
+                      value={email}
+                      onChange={ev => setEmail(ev.target.value)}
+                      className="border-2 border-gray-300 rounded-md p-1 w-full 
+                      mb-2 focus:border-blue-900" 
+                    /> 
+                  </div>
+                  <div className="">
+                    <p className="">Phone Number:</p>
+                    <input type="text" placeholder='Phone Number' 
+                      value={phone_number}
+                      onChange={ev => setPhone_number(ev.target.value)}
+                      className="border-2 border-gray-300 rounded-md p-1 w-full 
+                      mb-2 focus:border-blue-900" 
+                    /> 
+                  </div>
+                  <p className="font-semibold pr-2">Your Message</p>
+                    <textarea type="text" placeholder='Enter Your Message here...' 
+                      value={message} 
+                      onChange={ev => setMessage(ev.target.value)}
+                      className="border-2 h-24 border-gray-300 rounded-md p-1 w-full 
+                      mb-2 focus:border-blue-900" 
+                    /> 
                   <div>
-                    <button
-                      type="submit"
+                    <Button
+                      onClick={handleSubmit}
                       className="w-full rounded border border-primary text-white dark:text-black bg-primary p-3 transition hover:bg-opacity-90"
                     >
-                      Send Message
-                    </button>
+                      {
+                        loading? "Loading..." : "Send Message"
+                      }
+                    </Button>
                   </div>
-                </form>
+                </div>
               </div>
             </div>
           </div>
