@@ -10,7 +10,7 @@ const Property = ({ property }) => {
       <img
         radius="none"
         src={
-          property.images.length > 0 ? property.images[0]
+          property?.images?.length > 0 ? property.images[0]
             : `/images/${Math.floor(Math.random() * 9 + 1)}.jpg`
         }
         className="object-fill w-96 h-48"
