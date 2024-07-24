@@ -29,7 +29,7 @@ const ConfirmDeleteModal = ({ deleteAction, title, isOpen, onClose }) => {
         >
           <p className="font-bold text-2xl p-4">X</p>
         </button>
-        <p className="font-semibold pr-2">Are you sure you want to delete {title}? </p>
+        <p className="font-semibold pr-2">Are you sure you want to remove {title}? </p>
         <div className="flex flex-col md:flex-row gap-4">
           <Button className='bg-green-600 hover:bg-lime-500 mt-2' onClick={handleDelete}>
             Yes

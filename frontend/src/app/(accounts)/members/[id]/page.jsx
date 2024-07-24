@@ -12,6 +12,7 @@ import moment from "moment";
 import { useMainProvider } from '@/providers/MainProvider';
 import EditRoleModal from '@/components/modals/EditRoleModal';
 import { set } from 'mongoose';
+import ConfirmDeleteModal from '@/components/modals/ConfirmDeleteModal';
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
 
@@ -19,8 +20,10 @@ const SingleMemberPage = () => {
   const [member, setMember] = useState();
   const [loading, setLoading] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [excelLoading, setExcelLoading] = useState(false);
-  const {orgMode} = useMainProvider();
+  const [removeLoading, setRemoveLoading] = useState(false);
+  const {orgMode, currentUser} = useMainProvider();
 
   const {id} = useParams();
 
@@ -115,14 +118,31 @@ const SingleMemberPage = () => {
     setExcelLoading(false);
   }
 
-  const removeFromOrganization = () => {
-    console.log("Remove from organization")
+  const removeFromOrganization = async() => {
+    const body={ownerId: currentUser?._id, staffId: member?._id}
+    try {
+      setRemoveLoading(true);
+      console.log("Body: ", body)
+      const response = await axios.post(`/api/remove-staff`, body);
+      console.log("Response: ", response)
+      if (response.status === 200){
+        toast.success("Member removed from organization successfully!")
+        window.location.reload();
+      }
+      setRemoveLoading(false);
+    } catch (error) {
+      toast.error("Error removing member from organization. Try again!")
+      setRemoveLoading(false);
+    }
   }
   const editRole = async() => {
     setModalOpen(true);
   }
   const handleClose = () => {
     setModalOpen(false);
+  }
+  const closeDeleteModal = () => {
+    setDeleteModalOpen(false);
   }
   
   if (loading) {
@@ -136,6 +156,7 @@ const SingleMemberPage = () => {
         <img className="rounded-full object-center object-contain h-24 md:h-48" src={member?.image} alt="user avatar" />
 
         <EditRoleModal isOpen={modalOpen} onClose={handleClose} member={member} />
+        <ConfirmDeleteModal isOpen={deleteModalOpen} onClose={closeDeleteModal} deleteAction={removeFromOrganization} title={member?.name} />
 
         <div className="px-6 py-4">
             <h1 className="text-xl font-semibold text-gray-800 dark:text-white">First Name: {member?.firstName || member?.name}</h1>
@@ -153,13 +174,15 @@ const SingleMemberPage = () => {
                 <h1 className="px-2 text-sm">{member?.status || 'Active'}</h1>
             </div>
             {
-              orgMode && (
+              !orgMode && (
                 <div className="mt-4 flex flex-col md:flex-row gap-4 mx-2">
                   <Button onClick={editRole}>
                     Edit Role
                   </Button>
-                  <Button onClick={removeFromOrganization} className="">
-                    Remove from Organization
+                  <Button onClick={() => (setDeleteModalOpen(true))} className="">
+                    {
+                      removeLoading? "Removing..." : "Remove from Organization"
+                    }
                   </Button>
                 </div>
               )

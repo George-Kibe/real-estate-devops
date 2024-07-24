@@ -20,6 +20,7 @@ const AddClientModal = ({ isOpen, onClose, setLoading, client=null }) => {
   const [additional_info, setAdditional_info] = useState('');
   const [staff_id, setStaff_id] = useState('');
   const [city, setCity] = useState('');
+  const [status, setStatus] = useState('');
   const {currentUser} = useMainProvider();
   const owner_id = currentUser?._id;
   const members = currentUser?.members;
@@ -59,10 +60,10 @@ const AddClientModal = ({ isOpen, onClose, setLoading, client=null }) => {
       return
     }
     setLoading(true);
-    const data = {first_name, last_name, client_name:first_name + " " + last_name, email, address,phone_number,house_type, city, staff_id, additional_info, owner_id};
+    const data = {first_name, last_name, client_name:first_name + " " + last_name, email, address,phone_number,house_type, city, staff_id, additional_info, status, owner_id};
 
     if (client){
-      toast.info(`Editing ${email}'s Details`)
+      toast.info(`Updating ${email}'s Details`)
     }else{
       toast.info(`Adding ${email} to your organization`)
     }
@@ -73,7 +74,7 @@ const AddClientModal = ({ isOpen, onClose, setLoading, client=null }) => {
           toast.success("Client Edited Successfully")
           setLoading(false); setEmail(''); setFirst_name(''); setLast_name(''); setAddress('');
           setPhoneNumber(''); setHouse_type(''); setAdditional_info(''); setCity('');
-          setStaff_id('');
+          setStaff_id(''); setStatus('');
           onClose()
         }
       } catch (error) {
@@ -90,7 +91,7 @@ const AddClientModal = ({ isOpen, onClose, setLoading, client=null }) => {
         }
         setLoading(false); setEmail(''); setFirst_name(''); setLast_name(''); setAddress('');
         setPhoneNumber(''); setHouse_type(''); setAdditional_info(''); setCity('');
-        setStaff_id('');
+        setStaff_id(''); setStatus('');
       } catch (error) {
         toast.error("Adding your client failed. Try Again!")
       }
@@ -183,6 +184,20 @@ const AddClientModal = ({ isOpen, onClose, setLoading, client=null }) => {
               mb-2 focus:border-blue-900" 
             /> 
           </div>
+          <div className="mb-4">
+            <label htmlFor="dropdown" className="block text-sm font-medium text-gray-700 mb-1">
+              Status
+            </label>
+            <select
+              id="dropdown"
+              onChange={(e) => setStatus(event.target.value)}
+              className="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+            >
+              <option value="" disabled>Select Status...</option>
+              <option value={"Active"}>{"Active"}</option>
+              <option value={"Completed"}>{"Completed"}</option>
+            </select>
+          </div>
           <div className="">
             <p className="">Additional Information</p>
             <textarea type="text" placeholder='Additional Information' 
@@ -198,7 +213,7 @@ const AddClientModal = ({ isOpen, onClose, setLoading, client=null }) => {
                 <label htmlFor="dropdown" className="block text-sm font-medium text-gray-700 mb-1">
                   Assign to Staff
                 </label>
-                <p className="">Current Staff: 
+                <p className="mb-2">Current Staff: 
                   {members?.find((member) => member._id === staff_id)?.name || "None"}
                 </p>
                   <select
@@ -212,7 +227,7 @@ const AddClientModal = ({ isOpen, onClose, setLoading, client=null }) => {
                         <option key={index} value={member._id}>{member.name}</option>
                       ))}
                   </select>
-                </div>
+              </div>
             )
           }
         </div>

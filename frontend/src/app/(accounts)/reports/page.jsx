@@ -75,7 +75,7 @@ export default function ReportsPage() {
       report_type: "Daily",
       client_phone_number:currentClient?.phone_number,
       staff_id: orgMode? tempUser?._id : currentUser._id,
-      owner_id: currentUser?.id
+      owner_id: currentUser?._id
     }
     try {
       const response = await axios.post(`${BACKEND_URL}/api/reports/`, data);
@@ -247,8 +247,8 @@ export default function ReportsPage() {
                       <tr className="" key={index}>
                         <th className="flex gap-3 px-2 py-1 font-normal">
                           <div className="text-sm flex">
-                            <div className="font-medium text-lime-500">{index+1}.</div>
-                            <div className="">{report?.report_final}</div>
+                            <div className="font-medium text-lime-500">{index+1+ "." + " "} </div>
+                            <div className="">{report?.title}</div>
                           </div>
                         </th>
                         <td className="px-2 py-1">
