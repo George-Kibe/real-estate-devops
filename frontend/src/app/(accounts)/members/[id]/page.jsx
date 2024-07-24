@@ -1,7 +1,7 @@
 "use client"
 import LoadingPage from '@/components/Loading';
 import axios from 'axios';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
 import { toast } from 'react-toastify';
 import { Mail} from "lucide-react"
@@ -11,7 +11,6 @@ import * as XLSX from 'xlsx';
 import moment from "moment";
 import { useMainProvider } from '@/providers/MainProvider';
 import EditRoleModal from '@/components/modals/EditRoleModal';
-import { set } from 'mongoose';
 import ConfirmDeleteModal from '@/components/modals/ConfirmDeleteModal';
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
@@ -23,7 +22,8 @@ const SingleMemberPage = () => {
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [excelLoading, setExcelLoading] = useState(false);
   const [removeLoading, setRemoveLoading] = useState(false);
-  const {orgMode, currentUser} = useMainProvider();
+  const {orgMode, currentUser, setCurrentUser} = useMainProvider();
+  const router = useRouter();
 
   const {id} = useParams();
 
@@ -122,12 +122,15 @@ const SingleMemberPage = () => {
     const body={ownerId: currentUser?._id, staffId: member?._id}
     try {
       setRemoveLoading(true);
-      console.log("Body: ", body)
+      //console.log("Body: ", body)
       const response = await axios.post(`/api/remove-staff`, body);
-      console.log("Response: ", response)
+      // console.log("Response: ", response)
       if (response.status === 200){
         toast.success("Member removed from organization successfully!")
-        window.location.reload();
+        // remove this member form currentUser members
+        const newMembers = currentUser?.members?.filter(m => m?._id !== member?._id)
+        setCurrentUser({...currentUser, members: newMembers})
+        router.push('/members')
       }
       setRemoveLoading(false);
     } catch (error) {

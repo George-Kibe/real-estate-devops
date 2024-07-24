@@ -19,6 +19,7 @@ export default function ReportsPage() {
   const [reportsLoading, setReportsLoading] = useState(false);
   const [currentClient, setCurrentClient] = useState(null);
   const [clients, setClients] = useState([]);
+  const [allClients, setAllClients] = useState([]);
   const [reports, setReports] = useState([]);
   const {orgMode, tempUser, currentUser} = useMainProvider();
   const router = useRouter();
@@ -29,11 +30,21 @@ export default function ReportsPage() {
       const response = await axios.get(`${BACKEND_URL}/api/clients/?owner_id=${currentUser?._id}`);
       const data = response.data
       // console.log("Clients Data: ", data)
+      setAllClients(data.results);
       setClients(data.results);
     } catch (error) {
       toast.error("Fetching Clients failed. Try Again!")
     }
   }
+  const viewMyClients = () => {
+    setCurrentClient(null);
+    setClients(allClients.filter((client) => client.staff_id === tempUser?._id));
+  }
+  const viewAllClients = () => {
+    setCurrentClient(null);
+    setClients(allClients);
+  }
+
   const fetchReports = async() => {
     try {
       const response = await axios.get(`${BACKEND_URL}/api/reports/?client_id=${currentClient?.id}`);
@@ -169,17 +180,32 @@ export default function ReportsPage() {
       {/* <AnimatedText text={"Reports Page"} /> */}
       <p className="self-center font-bold text-2xl mb-4 md:mb-8">Select Client to View their  Reports</p>
 
-      <div className="flex w-full">
-        <Button onClick={exportAllClientReportsToExcel} className="ml-auto">
-          {
-            reportsLoading? <Loader className="animate-spin mr-2" />: "Export All Clients Reports to Excel"
-          }
-        </Button>
-      </div>
+      {
+        !orgMode && (
+          <div className="flex w-full">
+            <Button onClick={exportAllClientReportsToExcel} className="ml-auto">
+              {
+                reportsLoading? <Loader className="animate-spin mr-2" />
+                : "Export All Clients Reports to Excel"
+              }
+            </Button>
+          </div>
+        )
+      }
+      {
+        orgMode && (
+          <div className="flex flex-col gap-2 md:flex-row">
+            <Button onClick={viewAllClients}>View All Clients</Button>
+            <Button onClick={viewMyClients}>View Only Allocated Clients</Button>
+          </div>
+        )
+      }
+
       {
         !clients?.length && <p className="">You do not have any clients Reports yet!</p>
       }
-      <div className="overflow-hidden rounded-lg border shadow-md m-5">
+      
+      <div className="overflow-hidden rounded-lg border shadow-md ">
         <table className="w-full border-collapse text-left text-sm">
           <thead className="">
             <tr>
@@ -239,18 +265,22 @@ export default function ReportsPage() {
             {
               !reports?.length && <p className="">You do not have any reports for this client yet!</p>
             }
-            <div className="overflow-hidden rounded-lg border shadow-md m-5">
+            <div className="w-full overflow-hidden rounded-lg border shadow-md m-5">
               <table className="w-full border-collapse text-left text-sm">
+                <thead className="">
+                  <tr>
+                    <th scope="col" className="px-2 py-1 font-medium">#</th>
+                    <th scope="col" className="px-2 py-1 font-medium">Report Title</th>
+                    <th scope="col" className="px-2 py-1 font-medium">Report Date</th>
+                    <th scope="col" className="px-2 py-1 font-medium">Action</th>
+                  </tr>
+                </thead>
                 <tbody className="divide-y ">
                   {
                     reports?.map((report, index) => (
-                      <tr className="" key={index}>
-                        <th className="flex gap-3 px-2 py-1 font-normal">
-                          <div className="text-sm flex">
-                            <div className="font-medium text-lime-500">{index+1+ "." + " "} </div>
-                            <div className="">{report?.title}</div>
-                          </div>
-                        </th>
+                      <tr className="w-full flex-1" key={index}>
+                        <td className="">{index+1}.</td>
+                        <td className="">{report?.title}</td>
                         <td className="px-2 py-1">
                           {moment(report?.created_at).format('MM/DD/YYYY')}
                         </td>

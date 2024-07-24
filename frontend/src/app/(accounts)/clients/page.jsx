@@ -24,7 +24,7 @@ export default function MembersPage() {
   const [clientId, setClientId] = useState('');
   const [deleteTitle, setDeleteTitle] = useState('');
 
-  const {currentUser} = useMainProvider();
+  const {currentUser, tempUser} = useMainProvider();
   const router = useRouter();
 
   const fetchClients = async() => {

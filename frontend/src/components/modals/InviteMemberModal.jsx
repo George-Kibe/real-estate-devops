@@ -46,7 +46,7 @@ const InviteMemberModal = ({ isOpen, onClose, setLoading }) => {
     > 
       <div 
         onClick={(e) => e.stopPropagation()}
-        className={` h-[90vh] w-full overflow-auto bg-white p-4 rounded-md
+        className={` h-[60vh] w-full overflow-auto bg-white p-4 rounded-md
           md:w-1/2 dark:bg-black md:p-16 shadow transition-all 
           ${isOpen ? "scale-100 opacity-100": "sclae-125 opacity-0"}
           `}
@@ -57,7 +57,7 @@ const InviteMemberModal = ({ isOpen, onClose, setLoading }) => {
         >
           <p className="font-bold text-2xl p-4">X</p>
         </button>
-        <p className="font-semibold pr-2">Invite A member</p>
+        <p className="font-semibold pr-2">Invite A Staff Member</p>
         <p className="">Add Email</p>
         <input type="email" placeholder='Email' 
           value={email}

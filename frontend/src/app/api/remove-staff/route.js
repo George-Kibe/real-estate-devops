@@ -7,37 +7,34 @@ export async function POST(req) {
   if (req.method === 'POST') {
     const {
       ownerId,
-      inviteeId,
+      staffId,
     } = await req.json();
-    if (ownerId === inviteeId) {
-      return new NextResponse("You cannot invite yourself", {status: 422})
+    if (ownerId === staffId) {
+      return new NextResponse("You cannot Remove yourself", {status: 422})
     }
     
     try {
-      // find organization owner then add the new member
-      let member = await User.findOne({_id: inviteeId});
+      // find organization owner then add remove the staff member
+      let staff = await User.findOne({_id: staffId});
       let user = await User.findOne({_id: ownerId});
       if (!user) {
-        return new NextResponse("User not found", {status: 404})
+        return new NextResponse("User Organization not found", {status: 404})
       }
-      if (!member) {
-        return new NextResponse("Member not found", { status: 404 });
+      if (!staff) {
+        return new NextResponse("Staff Member not found", { status: 404 });
       }
-      // add new member to organization invited
-      // avoid duplicate members
-      if (user.members.includes(member._id)) {
-        return new NextResponse("User already a member", {status: 400})
-      }
-      user.members.push(member);
-      member.organization = user;
-      console.log("Member: ",member);
-      console.log("User: ",user);
+      // Remove staff member from organization
+      user.members = user.members.filter(m => m._id.toString() !== staffId);
+      staff.organization = null;
+      staff.role = '';
+      // console.log("Staff Member: ", staff);
+      // console.log("User: ",user);
       await user.save();
-      await member.save();
-      return new NextResponse('User Added successfully', {status: 200});
+      await staff.save();
+      return new NextResponse('Staff Removed from organization successfully', {status: 200});
     } catch (error) {
       console.error(error.message);
-      return NextResponse.json({message: 'Adding user failed!'});
+      return NextResponse.json({message: 'Removing Staff Member failed!'});
     }
   } else {
     return NextResponse.json({message: 'Method not allowed'});

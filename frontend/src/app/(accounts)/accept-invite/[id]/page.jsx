@@ -1,17 +1,16 @@
 "use client"
-
-import AnimatedText from '@/components/AnimatedText'
 import LoadingPage from '@/components/Loading'
 import { useMainProvider } from '@/providers/MainProvider'
 import { useParams, useRouter } from 'next/navigation'
 
-import React from 'react'
+import React, { useState } from 'react'
 import { toast } from 'react-toastify'
 
 const AccepInvite = ({searchParams}) => {
   const {id} = useParams()
   const role = searchParams?.role
   const router = useRouter()
+  const [acceptLoading, setAcceptLoading] = useState(false);
   const {currentUser, setLoading, setCurrentUser,loading} = useMainProvider()
 
   const updateUserDetails = async() => {
@@ -48,6 +47,7 @@ const AccepInvite = ({searchParams}) => {
       ownerId: id,
       inviteeId: currentUser?._id
     }
+    setAcceptLoading(true);
     try {
       const res = await fetch('/api/accept-invite', {
         method: "POST",
@@ -63,8 +63,10 @@ const AccepInvite = ({searchParams}) => {
       }else {
         toast.error("Error accepting invitation")
       }
+      setAcceptLoading(false);
     } catch (error) {
       console.log(error)
+      setAcceptLoading(false);
     }
   }
   if (loading) {
@@ -73,11 +75,11 @@ const AccepInvite = ({searchParams}) => {
 
   return (
     <div className='flex flex-col items-center py-4 md:py-8'>
-      {/* <AnimatedText text={"Accept Invite"} /> */}
       <button onClick={acceptInvitation} className='border-primary border rounded-md inline-flex items-center justify-center py-3   px-7 text-center text-base font-medium  hover:bg-[#1B44C8] hover:border-[#1B44C8] disabled:bg-gray-3 disabled:border-gray-3 disabled:text-dark-5 active:bg-[#1B44C8] active:border-[#1B44C8]'>
-        {"Accept Invite"}
+        {
+          acceptLoading ? "Accepting..." : "Accept Invite"
+        }
       </button>
-      {/* <p className="">{id}</p> */}
     </div>
   )
 }
