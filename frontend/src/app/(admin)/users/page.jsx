@@ -1,8 +1,7 @@
 'use client'
 import AnimatedText from "@/components/AnimatedText";
-import LoadingPage from "@/components/Loading";
-import { TableMenu } from "@/components/TableMenu";
 import axios from "axios";
+import { Loader } from "lucide-react";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
@@ -19,15 +18,18 @@ export default function UsersPage() {
     console.log("Event:", e.target.checked)
     };
   const fetchUsers = async() => {
+    setLoading(true)
     try {
         const response = await axios.get('/api/auth/users')
-        console.log("response: ", response.data)
+        // console.log("response: ", response.data)
         if (response.status === 200) {
           setUsers(response.data)
           setAllUsers(response.data)
         }
+        setLoading(false)
     } catch (error) {
         toast.error("Error fetching users")
+        setLoading(false)
     }
   }
   const searchUsers = () => {
@@ -55,9 +57,9 @@ export default function UsersPage() {
     fetchUsers()
   }, [])
 
-  if (loading) {
-    return <LoadingPage />
-  }
+//   if (loading) {
+//     return <LoadingPage />
+//   }
   
   return (
     <div className='flex flex-col justify-between gap-5 mb-5'>
@@ -99,6 +101,11 @@ export default function UsersPage() {
                 </tr>
             </thead>
             <tbody>
+                { loading &&
+                    <tr className="">
+                         <p className="flex text-2xl mx-4 items-center justify-center"> <Loader className="animate-spin text-4xl h-8 w-8 mx-8" /> Loading...</p>
+                    </tr>
+                }
                 {
                     users?.map((user, index) => (
                         <tr key={user._id} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
@@ -110,22 +117,22 @@ export default function UsersPage() {
                                     <label for="checkbox-table-search-1" className="sr-only">checkbox</label>
                                 </div>
                             </td>
-                            <th scope="row" className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
+                            <th scope="row" className="flex items-center px-2 py-1 text-gray-900 whitespace-nowrap dark:text-white">
                                 <img className="w-10 h-10 rounded-full" src={user.image} alt="Jese image" />
                                 <div className="ps-3">
                                     <div className="text-base font-semibold">{user.name}</div>
                                     <div className="font-normal text-gray-500">{user.email}</div>
                                 </div>  
                             </th>
-                            <td className="px-6 py-4">
+                            <td className="px-2 py-1">
                               {user.isPremium? 'Yes': 'No'}
                             </td>
-                            <td className="px-6 py-4">
+                            <td className="px-2 py-1">
                                 <div className="flex items-center">
                                     {user.phoneNumber}
                                 </div>
                             </td>
-                            <td className="px-6 py-4">
+                            <td className="px-2 py-1">
                                 <p className="">{moment(user?.createdAt).format('MMMM Do YYYY')}</p>
                             </td>
                         </tr>

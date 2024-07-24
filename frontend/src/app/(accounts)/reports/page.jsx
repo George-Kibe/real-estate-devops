@@ -17,11 +17,10 @@ const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
 export default function ReportsPage() {
   const [loading, setLoading] = useState(false);
   const [reportsLoading, setReportsLoading] = useState(false);
-  const [currentClient, setCurrentClient] = useState(null);
   const [clients, setClients] = useState([]);
   const [allClients, setAllClients] = useState([]);
   const [reports, setReports] = useState([]);
-  const {orgMode, tempUser, currentUser} = useMainProvider();
+  const {orgMode, tempUser, currentUser, currentClient, setCurrentClient} = useMainProvider();
   const router = useRouter();
   //console.log("Current Client: ", currentClient)
 

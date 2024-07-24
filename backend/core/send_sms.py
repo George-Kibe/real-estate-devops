@@ -13,8 +13,11 @@ def send_sms(): #(phone_number, message):
     try:
         client = plivo.RestClient(auth_id=PLIVO_AUTH_ID, auth_token=PLIVO_AUTH_TOKEN)
         message_created = client.messages.create(
-            src='+254704817466',
-            dst='+254795288155',
+            src='+18884184991',
+            #src='AptTrack',
+            #dst='+254795288155',
+            #dst='+254704817466',
+            dst='+16234440615',
             text="This is just a test message"
         )
         print(message_created)

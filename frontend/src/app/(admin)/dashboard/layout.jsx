@@ -1,6 +1,6 @@
 "use client"
 
-import Sidebar from '@/components/Sidebar';
+import AdminSidebar from '@/components/AdminSidebar';
 import { useMainProvider } from '@/providers/MainProvider';
 import { useRouter } from 'next/navigation';
 
@@ -14,7 +14,7 @@ const MainLayout = ({ children }) => {
     <>
       <div className='flex'>
         <div className='hidden md:block h-[100vh] w-[300px]'>
-          <Sidebar />
+          <AdminSidebar />
         </div>
         <div className='p-5 w-full md:max-w-[1140px]'>{children}</div>
       </div>

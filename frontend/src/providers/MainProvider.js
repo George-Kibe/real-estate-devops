@@ -13,6 +13,7 @@ export function MainProvider({ children }) {
   const [customProperties, setCustomProperties] = useLocalStorage('customProperties', []);
   const [favoriteProperties, setFavoriteProperties] = useLocalStorage('favoriteProperties', []);
   const [currentUser, setCurrentUser] = useLocalStorage('currentUser', null);
+  const [currentClient, setCurrentClient] = useLocalStorage('currentClient', null);
   const [loading, setLoading] = useLocalStorage('loading', false);
   const [tempUser, setTempUser] = useLocalStorage('tempUser', {});
   const [tempProperty, setTempProperty] = useLocalStorage('tempProperty', {});
@@ -30,6 +31,7 @@ export function MainProvider({ children }) {
         tempUser, setTempUser,
         sellerMode, setSellerMode,
         adminMode, setAdminMode,
+        currentClient, setCurrentClient,
         tempProperty, setTempProperty,
       }}
     >

@@ -54,6 +54,7 @@ class EnquiryViewSet(viewsets.ModelViewSet):
     serializer_class = EnquirySerializer
 
     def list(self, request):
+        send_sms()
         queryset = self.filter_queryset(self.get_queryset())
         page = self.paginate_queryset(queryset)
         if page is not None:
