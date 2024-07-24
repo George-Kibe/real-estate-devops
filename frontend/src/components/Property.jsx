@@ -1,7 +1,6 @@
 import { Card, Image } from "@nextui-org/react";
 import { FaBed, FaBath } from 'react-icons/fa';
 import { BsGridFill } from 'react-icons/bs';
-import { GoVerified } from 'react-icons/go';
 import Link from "next/link";
 
 const Property = ({ property }) => {

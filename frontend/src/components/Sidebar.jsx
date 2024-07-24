@@ -18,7 +18,8 @@ import { useMainProvider } from '@/providers/MainProvider';
     Settings,
     Star,
     User,
-    User2Icon
+    User2Icon,
+    Notebook
   } from 'lucide-react';
   import Link from 'next/link';
   
@@ -56,6 +57,13 @@ import { useMainProvider } from '@/providers/MainProvider';
               <CommandItem>
                 <Star className='mr-2 h-4 w-4' />
                 <Link href='/favorites'>Favorites</Link>
+              </CommandItem>
+            }
+            {
+              !orgMode && !sellerMode &&
+              <CommandItem>
+                <Notebook className='mr-2 h-4 w-4' />
+                <Link href='/services'>Services</Link>
               </CommandItem>
             }
             {

@@ -8,7 +8,7 @@ import { Flex } from "@chakra-ui/react";
 
 export default function FavoritesPage() {
   const {favoriteProperties, setFavoriteProperties} = useMainProvider();
-  // console.log("Favorite Properties: ", favoriteProperties);
+  console.log("Favorite Properties: ", favoriteProperties);
   return (
     <div className='flex flex-col justify-between gap-5 mb-5'>
       <AnimatedText text={"Favorite Properties"} />
