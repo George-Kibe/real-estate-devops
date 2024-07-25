@@ -18,7 +18,7 @@ const SendClientAlertModal = ({ property, client, isOpen, onClose }) => {
   const [loading, setLoading] = useState(false);
   const createProperty = async() => {
     // Implement property creation logic here
-    const body = {...property, price: parseInt(property.price), link: "Not Available"}
+    const body = {...property, price: parseInt(property?.price), link: "Not Available"}
     console.log("Body: ", body)
     try {
       const response = await axios.post(`${BACKEND_URL}/api/properties/`, body);
@@ -93,7 +93,7 @@ const SendClientAlertModal = ({ property, client, isOpen, onClose }) => {
 
         <Card className="w-72 flex flex-col hover:scale-105 rounded-md" shadow="md">
           <p className="font-semibold mb-4">Share With: {client?.client_name}</p>
-          <p className="font-semibold">Property Title: {property.title}</p>
+          <p className="font-semibold">Property Title: {property?.title}</p>
           <img
             radius="none"
             src={
@@ -105,14 +105,14 @@ const SendClientAlertModal = ({ property, client, isOpen, onClose }) => {
           <div className="flex flex-col mt-auto">
             <div className="py-4">
               <p className="">
-                Property Address: {property.postal_code}, {property.street_address}
+                Property Address: {property?.postal_code}, {property?.street_address}
               </p>
             </div>
             <div className="flex flex-row items-center gap-2 ">
-            {property.bedrooms}
-              <FaBed /> | {property.bathrooms} <FaBath /> | {property.area} sqft <BsGridFill />
+            {property?.bedrooms}
+              <FaBed /> | {property?.bathrooms} <FaBath /> | {property?.area} sqft <BsGridFill />
             </div>
-            <p>Price: ${property.price}</p>
+            <p>Price: ${property?.price}</p>
           </div>
         </Card>
         <div className="mt-2 gap-4">

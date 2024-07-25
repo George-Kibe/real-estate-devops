@@ -477,7 +477,7 @@ export default function MembersPage({params, searchParams}) {
                             </td>
                             <td className="px-2 py-1  self-center justify-center flex-col gap-2">
                                 <Button className='mb-2' onClick={() => handleAdd(property, index)}>
-                                  <DiamondPlus className="h-5 w-5 mr-2" />
+                                  <DiamondPlus className="h-5 w-5 mr-4" />
                                   Add
                                 </Button>
                                 <Button className='mb-2' onClick={() => viewProperty(property)}>

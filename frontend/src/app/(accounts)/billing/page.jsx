@@ -5,7 +5,6 @@ import { useMainProvider } from "@/providers/MainProvider";
 import { Mail, Phone } from "lucide-react";
 import moment from "moment";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 
 export default function BillingPage() {
   const {currentUser} = useMainProvider()
