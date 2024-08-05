@@ -18,14 +18,24 @@ import { toast } from "react-toastify";
 
 export function UserMenu() {
   const router = useRouter();
-  const {currentUser,setCurrentUser, tempUser, setTempUser, setSellerMode, setCustomProperties,sellerMode, orgMode, setOrgMode} = useMainProvider();
-  // console.log("Current User Organization: ", currentUser?.organization);
-  
+  const {setUser,setOrgMode, currentUser,setAdminMode, setCurrentClient, setCurrentUser, tempUser, setTempUser, setSellerMode, setCustomProperties, orgMode} = useMainProvider();
+  // console.log("Temp User: ", tempUser);
+  if(currentUser?.role){
+    setOrgMode(true)
+    setTempUser(currentUser)
+    setCurrentUser(currentUser?.organization)
+  }
+
+  if (currentUser?.isPremium) {
+    setSellerMode(true);
+  }
+
   const handleLogout = async () => {
     // await signOut();
     // localStorage.clear();
-    setCurrentUser(null);
-    setTempUser(null);
+    setUser(null); setOrgMode(false); setSellerMode(false); setAdminMode(false);
+    setCurrentUser(null); setCustomProperties([]);
+    setCurrentClient(null); setTempUser(null);
     setSellerMode(false);
     setOrgMode(false);
     setCustomProperties(null);
@@ -34,6 +44,7 @@ export function UserMenu() {
   const switchToNormal = () => {
     setSellerMode(false)
     toast.success('Switched back to normal')
+    router.push("/")
   }
   const switchToSeller = () => {
     // check if user has subscribed, if not prompt them to subscribe
@@ -56,6 +67,7 @@ export function UserMenu() {
   const switchToBackToNormal = () => {
     setOrgMode(false)
     setCurrentUser(tempUser)
+    setTempUser(null)
     toast.success(`Switched back to ${tempUser?.name}`)
     router.push("/my-account")
   }
@@ -79,17 +91,19 @@ export function UserMenu() {
             {currentUser?.name}'s Organization
           </DropdownMenuItem>
         }
-        {
-          sellerMode?
+        {/* {
+          sellerMode &&
           <DropdownMenuItem onClick={switchToNormal}>
             Switch to Normal
-          </DropdownMenuItem>
-          :
-          <DropdownMenuItem onClick={switchToSeller}>
-            Switch to Seller
-          </DropdownMenuItem>          
-        }
+          </DropdownMenuItem>        
+        } */}
         {
+          !orgMode && !currentUser?.isPremium &&
+          <DropdownMenuItem onClick={switchToSeller}>
+            Upgrade to Seller
+          </DropdownMenuItem>
+        }
+        {/* {
           currentUser?.organization && 
           <DropdownMenuItem onClick={switchToOrganization}>
             Switch to {currentUser?.organization?.name}
@@ -98,9 +112,9 @@ export function UserMenu() {
         {
           orgMode && 
           <DropdownMenuItem onClick={switchToBackToNormal}>
-            Switch back to {tempUser?.name}
+            Switch back to {tempUser?.name || tempUser?.firstName}
           </DropdownMenuItem> 
-        }
+        } */}
         <DropdownMenuItem onClick={() => handleLogout()}>
           Logout
         </DropdownMenuItem>

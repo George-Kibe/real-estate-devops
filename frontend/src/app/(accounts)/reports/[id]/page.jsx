@@ -337,7 +337,7 @@ export default function MembersPage({params, searchParams}) {
           </Button>
           <Button onClick={addLocalProperties} className='m-4 '>
             {
-              localLoading? "Loading Local Properties" : "Import Local Properties"
+              localLoading? "Loading Affordable Properties" : "Import Affordable Properties"
             }
           </Button>
           <Button onClick={() => setLocationModalOpen(true)} className='m-4'>

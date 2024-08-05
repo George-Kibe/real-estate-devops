@@ -29,6 +29,9 @@ const InviteMemberModal = ({ isOpen, onClose, setLoading }) => {
       if (response.status === 200){
         toast.success("Invitation sent successfully!")
       }
+      if (response.status === 422){
+        toast.error("user with this email already Exists or is a staff in another organization!")
+      }
       onClose()
       setLoading(false); setEmail('');
       setFirstName(''); setLastName('');

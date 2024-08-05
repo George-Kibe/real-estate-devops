@@ -1,9 +1,14 @@
+import connect from '@/lib/db';
+import generatePassword from '@/lib/generatePassword';
+import User from '@/models/User';
 import {NextResponse} from 'next/server';
 import nodemailer from 'nodemailer';
 
 export async function POST(req) {
   if (req.method === 'POST') {
     const {
+      firstName,
+      lastName,
       username,
       name,
       email,
@@ -12,6 +17,27 @@ export async function POST(req) {
     } = await req.json();
 
     try {
+      await connect()
+      // create a user
+      const existingUser = await User.findOne({email});
+        if (existingUser) {
+            return new NextResponse("User with this Email already exists!", {status: 422})
+        }
+      const password = generatePassword(8)
+      const newUser = new User({ email, name: firstName + " " + lastName, firstName, lastName, role, password})
+      let newStaff = await newUser.save();
+      // console.log("Newly created Staff: ", newStaff);
+      let owner = await User.findOne({_id});
+      if (!owner) {
+        return new NextResponse("No organization found. You may need to try again!", {status: 404})
+      }
+      owner.members.push(newStaff);
+      newStaff.organization = owner;
+      // console.log("Staff Member: ",newStaff);
+      // console.log("User: ",owner);
+      await owner.save();
+      await newStaff.save();
+      
       // Create a Nodemailer transport object (configure with your email provider)
       const transporter = nodemailer.createTransport({
         host: 'smtp.gmail.com',
@@ -45,13 +71,13 @@ export async function POST(req) {
                   <tr>
                       <td style="padding: 20px;">
                           <p><strong>Greetings </strong> ${name},</p>
-                          <p>You have been invited by ${username} to join their AptTrack Organization as their ${role}. Please click the link below to accept the invitation:</p>
+                          <p>You have been invited by ${username} to join their AptTrack Organization as their ${role}. Please use these provided credentials to login and access their organization email:${email} password: ${password} </p>
                           <p style="text-align: center; margin: 20px 0;">
-                              <a href="${process.env.NEXT_PUBLIC_FRONTEND_URL}/accept-invite/${_id}/?role=${role}" style="display: inline-block; padding: 12px 20px; background-color: #0044cc; color: #ffffff; text-decoration: none; border-radius: 4px; font-weight: bold;">ACCEPT INVITATION</a>
+                              <a href="${process.env.NEXT_PUBLIC_FRONTEND_URL}/login" style="display: inline-block; padding: 12px 20px; background-color: #0044cc; color: #ffffff; text-decoration: none; border-radius: 4px; font-weight: bold;">ACCEPT INVITATION</a>
                           </p>
                           <p>PS: If the above button does not work, copy and paste this link in your browser:</p>
                           <p style="word-break: break-all;">
-                              <a href="${process.env.NEXT_PUBLIC_FRONTEND_URL}/accept-invite/${_id}/?role=${role}" style="color: #0044cc; text-decoration: none;">${process.env.NEXT_PUBLIC_FRONTEND_URL}/accept-invite/${_id}/?role=${role}</a>
+                              <a href="${process.env.NEXT_PUBLIC_FRONTEND_URL}" style="color: #0044cc; text-decoration: none;">${process.env.NEXT_PUBLIC_FRONTEND_URL}/login</a>
                           </p>
                           <p>Thanks and have a good time.</p>
                       </td>

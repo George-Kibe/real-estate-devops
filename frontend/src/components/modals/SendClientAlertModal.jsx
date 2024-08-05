@@ -14,16 +14,16 @@ const FRONTEND_URL = process.env.NEXT_PUBLIC_FRONTEND_URL;
 
 const SendClientAlertModal = ({ property, client, isOpen, onClose }) => {
   // console.log("Current Property: ", property)
-  // console.log("Current Client: ", client)
+  console.log("Current Client: ", client)
   const [loading, setLoading] = useState(false);
   const createProperty = async() => {
     // Implement property creation logic here
     const body = {...property, price: parseInt(property?.price), link: "Not Available"}
-    console.log("Body: ", body)
+    // console.log("Body: ", body)
     try {
       const response = await axios.post(`${BACKEND_URL}/api/properties/`, body);
       if (response.status === 201) {
-        console.log("Response Data: ", response.data)
+        // console.log("Response Data: ", response.data)
         return response.data.pkid;
       } else {
         console.log("Error creating property")
@@ -36,8 +36,7 @@ const SendClientAlertModal = ({ property, client, isOpen, onClose }) => {
     try {
       setLoading(true)
       if(property?.pkid){
-        //console.log("so far so good", property.pkid)
-        const body = {name: client?.name, email: client?.email, link: `${FRONTEND_URL}/properties/${property?.pkid}`}
+        const body = {name: client?.client_name, email: client?.email, link: `${FRONTEND_URL}/properties/${property?.pkid}`}
         const response = await axios.post('/api/send-client-email', body);
         if (response.status === 200) {
           toast.success("Email sent successfully")
@@ -49,9 +48,8 @@ const SendClientAlertModal = ({ property, client, isOpen, onClose }) => {
       }
       
       const pkid = await createProperty();
-      console.log("PKID: ", pkid)
       if (pkid) {
-        const body = {name: client?.name, email: client?.email, link: `${FRONTEND_URL}/properties/${pkid}`}
+        const body = {name: client?.client_name, email: client?.email, link: `${FRONTEND_URL}/properties/${pkid}`}
         const response = await axios.post('/api/send-client-email', body);
         if (response.status === 200) {
           toast.success("Email sent successfully")
@@ -85,8 +83,7 @@ const SendClientAlertModal = ({ property, client, isOpen, onClose }) => {
           `}
       >
         <button onClick={onClose}
-          className='absolute top-2 right-2 p-1 px-2 rounded-lg text-red-700 bg-white hover:bg-gray-50
-          hover:text-gray-600'
+          className='absolute top-1 right-1 px-2 rounded-lg text-red-700 cursor-pointer'
         >
           <p className="font-bold text-2xl p-4">X</p>
         </button>

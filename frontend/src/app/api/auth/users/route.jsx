@@ -8,13 +8,13 @@ export const POST = async (request) => {
     // console.log(email, password, name, firstName, lastName)
 
     await connect();
-    const hashedPassword = await bcrypt.hash(password, 5)
+    // const hashedPassword = await bcrypt.hash(password, 5)
     const newUser = new User({
         email,
         name: name || email.split("@")[0], 
         firstName: firstName || email.split("@")[0],
         lastName: lastName || "",
-        password:hashedPassword
+        password:password
     })
     
     try {

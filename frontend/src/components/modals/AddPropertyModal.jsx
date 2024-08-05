@@ -38,6 +38,7 @@ const AddPropertyModal = ({ isOpen, onClose, setUserProperties }) => {
       comments,
       street_address,
       phone_number,
+      price,
       images: [imageBase64], // Assuming image is a URL or file path
       description,
       amenities: amenitiesList,
