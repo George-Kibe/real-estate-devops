@@ -82,7 +82,10 @@ const SearchView = () => {
           </button> */}
         </div>
       </div>
-      <AnimatedText text={`Properties Around ${location}`} />
+      {
+        location && 
+        <AnimatedText text={`Properties Around ${location}`} />
+      }
       <SearchFilters setType={setType} />
     </div>
   )

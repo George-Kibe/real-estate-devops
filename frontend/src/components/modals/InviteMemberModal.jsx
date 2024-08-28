@@ -22,21 +22,24 @@ const InviteMemberModal = ({ isOpen, onClose, setLoading }) => {
       toast.error("You have missing details!");
       return
     }
-    const data = {username, role, name:firstName + " " + lastName, email, _id:currentUser._id};
+    const data = {username, role, name:firstName + " " + lastName, firstName, lastName, email, _id:currentUser._id};
     toast.info(`Inviting ${email} to your organization`)
     try {
       const response = await axios.post('/api/invite-member', data);
+      console.log("Response: ", response);
       if (response.status === 200){
         toast.success("Invitation sent successfully!")
-      }
-      if (response.status === 422){
-        toast.error("user with this email already Exists or is a staff in another organization!")
       }
       onClose()
       setLoading(false); setEmail('');
       setFirstName(''); setLastName('');
     } catch (error) {
-      toast.error("Sending Invitation failed! Try Again!")
+      setLoading(false)
+      if (error.response && error.response.status === 422) {
+        toast.error("user with this email already Exists or is a staff in another organization!")
+      } else {
+        toast.error(`Invitation failed! ${error.message}`);
+      }
     }
   }
 
