@@ -16,7 +16,6 @@ import * as XLSX from 'xlsx';
 import AddPropertyModal from "@/components/modals/AddPropertyModal";
 import EditLocationModal from "@/components/modals/EditLocationModal";
 import ConfirmDeleteModal from "@/components/modals/ConfirmDeleteModal";
-import { set } from "mongoose";
 import SendClientAlertModal from "@/components/modals/SendClientAlertModal";
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
@@ -33,11 +32,16 @@ export default function MembersPage({params, searchParams}) {
   const [sendModalOpen, setSendModalOpen] = useState(false);
   const [locationModalOpen, setLocationModalOpen] = useState(false);
   const [editMode, setEditMode] = useState(false);
+  
   const [report, setReport] = useState(null);
   const [properties, setProperties] = useState([]);
   const [currentProperties, setCurrentProperties] = useState([]);
   const [userProperties, setUserProperties] = useState([]);
   const [comments, setComments] = useState('');
+  const [startTime, setStartTime] = useState();
+  const [endTime, setEndTime] = useState();
+  console.log("Start time", startTime);
+  console.log("End time", endTime);
   const [currentProperty, setCurrentProperty] = useState({});
   const [currentIndex, setCurrentIndex] = useState();
   const [loading, setLoading] = useState(false);
@@ -192,7 +196,7 @@ export default function MembersPage({params, searchParams}) {
 
   const updateReport = async() => {
     setLoading(true)
-    const data = {report_final: summaryFinal, report_draft: summary, properties: userProperties}
+    const data = {report_final: summaryFinal, start_time: startTime, end_time: endTime, report_draft: summary, properties: userProperties}
     try {
       const response = await axios.put(`${BACKEND_URL}/api/reports/${id}/`, data);
       const reportData = response.data
@@ -329,8 +333,19 @@ export default function MembersPage({params, searchParams}) {
             <div className='flex flex-row gap-2'>
               <p className=''><p className="font-semibold">Report Final:</p> {report?.report_final}</p>
             </div>
-        </div>
 
+            <div className="mt-4 relative md:mt-6 cursor-pointer flex flex-row items-center gap-2">
+              <p className="">Set Start Time:</p>
+              <input 
+                  type="time" 
+                  id="startTimeInput"
+                  value={startTime} 
+                  //className="opacity-0 absolute t-0 l-0"
+                  onChange={e => setStartTime(e.target.value)} 
+              />
+            </div>
+        </div>
+        
         <div className="flex flex-col md:flex-row w-full justify-between">
           <Button onClick={() => setPropertyModalOpen(true)} className='m-4 '>
             Add Custom Property
@@ -528,6 +543,16 @@ export default function MembersPage({params, searchParams}) {
                   onChange={(e)=>setSummary(e.target.value)}
               />
           </form>
+          <div className="mt-4 relative md:mt-6 cursor-pointer flex flex-row items-center gap-2">
+              <p className="">Set End Time:</p>
+              <input 
+                  type="time" 
+                  id="startTimeInput"
+                  value={endTime} 
+                  //className="opacity-0 absolute t-0 l-0"
+                  onChange={e => setEndTime(e.target.value)} 
+              />
+            </div>
           <div className='flex gap-2'>
             <Button onClick={updateReport}>{loading? 'Loading...': 'Save Report'}</Button>
             <Button onClick={() => setDeleteModalOpen(true)} variant="destructive">{loading? 'Loading...': 'Delete Report'}</Button>

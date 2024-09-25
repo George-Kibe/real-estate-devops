@@ -1,12 +1,19 @@
-from .models import Property, Message, Client, Report, Enquiry
-from rest_framework import permissions, viewsets, status, generics
+"""Views
+"""
+# Import Q object for complex queries
+from django.db.models import Q
+from django.core.exceptions import ObjectDoesNotExist
+from rest_framework import viewsets, status, generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from django.core.exceptions import ObjectDoesNotExist
-from .serializers import PropertySerializer, MessageSerializer, ScrappedPropertySerializer, ClientSerializer, ReportSerializer, EnquirySerializer
+from .serializers import PropertySerializer, MessageSerializer, ScrappedPropertySerializer
+from .serializers import ClientSerializer, ReportSerializer, EnquirySerializer
 from .apartments import get_apartments
-from django.db.models import Q  # Import Q object for complex queries
+from .models import Property, Message, Client, Report, Enquiry
+
 from .send_sms import send_sms
+
+
 class MessageViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows messages to be created, viewed and edited
@@ -16,7 +23,7 @@ class MessageViewSet(viewsets.ModelViewSet):
     serializer_class = MessageSerializer
 
     def list(self, request):
-        
+
         serializer = MessageSerializer(self.queryset, many=True)
         return Response(serializer.data)
 
@@ -26,7 +33,8 @@ class MessageViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
     def create(self, request, *args, **kwargs):
-        serializer = MessageSerializer(data=request.data, context={'request': request})
+        serializer = MessageSerializer(
+            data=request.data, context={'request': request})
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=201)
@@ -39,11 +47,12 @@ class MessageViewSet(viewsets.ModelViewSet):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=400)
-    
+
     def destroy(self, request, pk=None):
         message = self.queryset.get(pk=pk)
         message.delete()
         return Response(status=204)
+
 
 class EnquiryViewSet(viewsets.ModelViewSet):
     """
@@ -71,14 +80,15 @@ class EnquiryViewSet(viewsets.ModelViewSet):
             return Response(data={"error": "Enquiry not found"}, status=status.HTTP_404_NOT_FOUND)
         serializer = EnquirySerializer(enquiry)
         return Response(serializer.data, status=status.HTTP_200_OK)
-    
+
     def create(self, request, *args, **kwargs):
-        serializer = EnquirySerializer(data=request.data, context={'request': request})
+        serializer = EnquirySerializer(
+            data=request.data, context={'request': request})
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=201)
         return Response(serializer.errors, status=400)
-    
+
     def update(self, request, pk=None):
         try:
             enquiry = self.queryset.get(pk=pk)
@@ -89,7 +99,7 @@ class EnquiryViewSet(viewsets.ModelViewSet):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=400)
-    
+
     def destroy(self, request, pk=None):
         try:
             enquiry = self.queryset.get(pk=pk)
@@ -97,6 +107,8 @@ class EnquiryViewSet(viewsets.ModelViewSet):
             return Response(data={"error": "Enquiry not found"}, status=status.HTTP_404_NOT_FOUND)
         enquiry.delete()
         return Response(data={"message": "Enquiry deleted successfully"}, status=status.HTTP_200_OK)
+
+
 class PropertyViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows properties to be created, viewed and edited
@@ -116,7 +128,7 @@ class PropertyViewSet(viewsets.ModelViewSet):
 
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
-    
+
     def retrieve(self, request, pk=None):
         try:
             property = self.queryset.get(pk=pk)
@@ -124,14 +136,15 @@ class PropertyViewSet(viewsets.ModelViewSet):
             return Response(data={"error": "Property not found"}, status=status.HTTP_404_NOT_FOUND)
         serializer = PropertySerializer(property)
         return Response(serializer.data, status=status.HTTP_200_OK)
-    
+
     def create(self, request, *args, **kwargs):
-        serializer = PropertySerializer(data=request.data, context={'request': request})
+        serializer = PropertySerializer(
+            data=request.data, context={'request': request})
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=201)
         return Response(serializer.errors, status=400)
-    
+
     def update(self, request, pk=None):
         try:
             property = self.queryset.get(pk=pk)
@@ -142,7 +155,7 @@ class PropertyViewSet(viewsets.ModelViewSet):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=400)
-    
+
     def destroy(self, request, pk=None):
         try:
             property = self.queryset.get(pk=pk)
@@ -150,6 +163,7 @@ class PropertyViewSet(viewsets.ModelViewSet):
             return Response(data={"error": "Property not found"}, status=status.HTTP_404_NOT_FOUND)
         property.delete()
         return Response(data={"message": "Property deleted successfully"}, status=status.HTTP_200_OK)
+
 
 class ClientViewSet(viewsets.ModelViewSet):
     """
@@ -161,8 +175,8 @@ class ClientViewSet(viewsets.ModelViewSet):
     def list(self, request):
         owner_id = request.query_params.get('owner_id')
         email = request.query_params.get('email')
-        #send_sms()
-        #queryset = self.filter_queryset(self.get_queryset())
+        # send_sms()
+        # queryset = self.filter_queryset(self.get_queryset())
         if owner_id is not None:
             queryset = Client.objects.filter(owner_id=owner_id)
         elif email is not None:
@@ -176,7 +190,7 @@ class ClientViewSet(viewsets.ModelViewSet):
 
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
-    
+
     def retrieve(self, request, pk=None):
         try:
             client = self.queryset.get(pk=pk)
@@ -184,14 +198,15 @@ class ClientViewSet(viewsets.ModelViewSet):
             return Response(data={"error": "Client not found"}, status=status.HTTP_404_NOT_FOUND)
         serializer = ClientSerializer(client)
         return Response(serializer.data, status=status.HTTP_200_OK)
-    
+
     def create(self, request, *args, **kwargs):
-        serializer = ClientSerializer(data=request.data, context={'request': request})
+        serializer = ClientSerializer(
+            data=request.data, context={'request': request})
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=201)
         return Response(serializer.errors, status=400)
-    
+
     def update(self, request, pk=None):
         try:
             client = self.queryset.get(pk=pk)
@@ -202,7 +217,7 @@ class ClientViewSet(viewsets.ModelViewSet):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=400)
-    
+
     def destroy(self, request, pk=None):
         try:
             client = self.queryset.get(pk=pk)
@@ -210,6 +225,7 @@ class ClientViewSet(viewsets.ModelViewSet):
             return Response(data={"error": "Client not found"}, status=status.HTTP_404_NOT_FOUND)
         client.delete()
         return Response(data={"message": "Client deleted successfully"}, status=status.HTTP_200_OK)
+
 
 class ReportViewSet(viewsets.ModelViewSet):
     """
@@ -222,13 +238,16 @@ class ReportViewSet(viewsets.ModelViewSet):
         client_id = request.query_params.get('client_id')
         staff_id = request.query_params.get('staff_id')
         owner_id = request.query_params.get('owner_id')
-        #queryset = self.filter_queryset(self.get_queryset())
+        # queryset = self.filter_queryset(self.get_queryset())
         if client_id is not None:
-            queryset = Report.objects.filter(client_id=client_id).order_by('-created_at')
+            queryset = Report.objects.filter(
+                client_id=client_id).order_by('-created_at')
         elif staff_id is not None:
-            queryset = Report.objects.filter(staff_id=staff_id).order_by('-created_at')
+            queryset = Report.objects.filter(
+                staff_id=staff_id).order_by('-created_at')
         elif owner_id is not None:
-            queryset = Report.objects.filter(owner_id=owner_id).order_by('-created_at')
+            queryset = Report.objects.filter(
+                owner_id=owner_id).order_by('-created_at')
         else:
             queryset = self.filter_queryset(self.get_queryset())
         page = self.paginate_queryset(queryset)
@@ -238,7 +257,7 @@ class ReportViewSet(viewsets.ModelViewSet):
 
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
-    
+
     def retrieve(self, request, pk=None):
         try:
             report = self.queryset.get(pk=pk)
@@ -246,14 +265,15 @@ class ReportViewSet(viewsets.ModelViewSet):
             return Response(data={"error": "Report not found"}, status=status.HTTP_404_NOT_FOUND)
         serializer = ReportSerializer(report)
         return Response(serializer.data, status=status.HTTP_200_OK)
-    
+
     def create(self, request, *args, **kwargs):
-        serializer = ReportSerializer(data=request.data, context={'request': request})
+        serializer = ReportSerializer(
+            data=request.data, context={'request': request})
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=201)
         return Response(serializer.errors, status=400)
-    
+
     def update(self, request, pk=None):
         try:
             report = self.queryset.get(pk=pk)
@@ -264,7 +284,7 @@ class ReportViewSet(viewsets.ModelViewSet):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=400)
-    
+
     def destroy(self, request, pk=None):
         try:
             report = self.queryset.get(pk=pk)
@@ -272,7 +292,8 @@ class ReportViewSet(viewsets.ModelViewSet):
             return Response(data={"error": "Report not found"}, status=status.HTTP_404_NOT_FOUND)
         report.delete()
         return Response(data={"message": "Report deleted successfully"}, status=status.HTTP_200_OK)
- 
+
+
 class PropertySearchAPIView(generics.ListAPIView):
     serializer_class = PropertySerializer
 
@@ -294,23 +315,25 @@ class PropertySearchAPIView(generics.ListAPIView):
             )
             return queryset
         else:
-            return Property.objects.none()  # Return an empty queryset if no search term provided
+            # Return an empty queryset if no search term provided
+            return Property.objects.none()
 
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()
         page = self.paginate_queryset(queryset)  # Paginate the queryset
         serializer = self.get_serializer(page, many=True)
         return self.get_paginated_response(serializer.data)
+
+
 class ScrapeProperties(APIView):
     def get(self, request):
         # print("Search term: ", request.query_params.get('search'))
         search_term = request.query_params.get('search')
         # Perform scraping based on search term
-        properties = []
         apartments = get_apartments(search_term)
         serialized_properties = []
         for apartment in apartments:
-            print(apartment)
+            #print(apartment)
             # Assuming 'item' represents each scraped property data
             serializer = ScrappedPropertySerializer(data=apartment)
             if serializer.is_valid():
@@ -321,7 +344,6 @@ class ScrapeProperties(APIView):
             else:
                 # Handle validation errors if necessary
                 print(serializer.errors)
-                pass
-        
+
         # Return the serialized data as JSON response
         return Response(serialized_properties)
