@@ -5,7 +5,7 @@ import React from 'react'
 const SolutionsPage = () => {
   return (
     <div className='p-2 md:p-16'>
-      <AnimatedText text="AptTrack Solutions" className="" />
+      <AnimatedText text="AptTracking Solutions" className="" />
       <Solutions />
     </div>
   )

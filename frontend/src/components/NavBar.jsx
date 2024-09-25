@@ -71,7 +71,7 @@ const NavBar = () => {
                     <div>
                         <Link href="#" className="flex items-center border- py-4 px-2">
                           <span className="font-semibold text-black dark:text-white text-2xl">
-                          AptTrack
+                          AptTracking
                             {
                               currentUser?.orgName? " || " +currentUser?.orgName :""
                             }

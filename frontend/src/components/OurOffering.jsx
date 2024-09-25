@@ -14,7 +14,7 @@ const OurOffering = () => {
                 What We Offer
               </h2>
               <p className="text-base text-body-color ">
-              Choose AptTrack for a compliant, efficient, and client-focused solution to manage Housing Stabilization Services effectively for just $299/month.
+              Choose AptTracking for a compliant, efficient, and client-focused solution to manage Housing Stabilization Services effectively for just $299/month.
               </p>
             </div>
           </div>

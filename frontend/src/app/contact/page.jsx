@@ -52,7 +52,7 @@ const ContactPage = () => {
                   GET IN TOUCH WITH US
                 </h2>
                 <p className="mb-9 text-base leading-relaxed text-body-color dark:text-dark-6">
-                  Minimize audit risks and ensure compliance with AptTrack's HSS-focused solutions. Streamline DHS-compliant note-taking and track HSS staff activities seamlessly, storing all daily apartment searches, activities, and billable work on Google Sheet cloud storage for thorough record-keeping.
+                  Minimize audit risks and ensure compliance with AptTracking's HSS-focused solutions. Streamline DHS-compliant note-taking and track HSS staff activities seamlessly, storing all daily apartment searches, activities, and billable work on Google Sheet cloud storage for thorough record-keeping.
                 </p>
                 <div className="mb-8 flex w-full max-w-[370px]">
                   <div className="mr-6 flex h-[60px] w-full max-w-[60px] items-center justify-center overflow-hidden rounded bg-primary/5 text-primary sm:h-[70px] sm:max-w-[70px]">
@@ -94,7 +94,7 @@ const ContactPage = () => {
                       Email Address
                     </h4>
                     <p className="text-base text-body-color dark:text-dark-6">
-                      info@AptTrack.com
+                      info@AptTracking.com
                     </p>
                   </div>
                 </div>

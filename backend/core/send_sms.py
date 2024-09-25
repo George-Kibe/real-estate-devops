@@ -14,7 +14,7 @@ def send_sms(): #(phone_number, message):
         client = plivo.RestClient(auth_id=PLIVO_AUTH_ID, auth_token=PLIVO_AUTH_TOKEN)
         message_created = client.messages.create(
             src='+18884184991',
-            #src='AptTrack',
+            #src='AptTracking',
             #dst='+254795288155',
             #dst='+254704817466',
             dst='+16234440615',

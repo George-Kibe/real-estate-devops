@@ -11,7 +11,7 @@ import AuthProvider  from "@/providers/AuthProvider";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "AptTrack",
+  title: "AptTracking",
   description: "Search for Properties in Top Us cities ",
   icons: {icon: '/images/house.png'}
 };

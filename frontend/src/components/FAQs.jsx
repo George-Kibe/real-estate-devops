@@ -14,7 +14,7 @@ const FAQS = () => {
                 SUMMARY OF ALL FEATURES
               </span>
               <h2 className="mb-4 text-3xl font-bold text-dark sm:text-[40px]/[48px]">
-                What you can get from AptTrack
+                What you can get from AptTracking
               </h2>
               <p className="text-base text-body-color ">
                 Some of the features and details of our services
