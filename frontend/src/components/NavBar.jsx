@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { ModeToggle } from './ModeToggle';
 import { useSession, signOut } from 'next-auth/react';
 import { toast } from 'react-toastify';
@@ -34,28 +34,25 @@ const NavBar = () => {
   //const email = session.data?.user?.email
   const email = currentUser?.email
   
-  const fetchUser = async() => {
-    setLoading(true)
+  // Memoize the fetchUser function to prevent it from being re-created on every render
+  const fetchUser = useCallback(async () => {
+    setLoading(true);
     try {
-      const res = await fetch(`/api/auth/users?email=${email}`)
-      const data = await res.json()
-      setCurrentUser(data)
-      setLoading(false)
+      const res = await fetch(`/api/auth/users?email=${email}`);
+      const data = await res.json();
+      setCurrentUser(data);
     } catch (error) {
-      toast.error("Error Fetching user")
-      setLoading(false)
+      toast.error("Error Fetching user");
+    } finally {
+      setLoading(false);
     }
-  }
-  //console.log("Current User: ", currentUser)
+  }, [email]); // Only change when `email` changes
 
   useEffect(() => {
-    
-    if (!currentUser){
-      //console.log("No session, No Logged in user")
-      return
+    if (!currentUser && email) {
+      fetchUser();
     }
-    fetchUser()
-  }, [currentUser?._id])
+  }, [fetchUser, currentUser]); 
 
   const pathname = usePathname()
 

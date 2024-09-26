@@ -23,7 +23,8 @@ export default function ReportsPage() {
   const {orgMode, tempUser, currentUser, currentClient, setCurrentClient} = useMainProvider();
   const router = useRouter();
   //console.log("Current Client: ", currentClient)
-
+  console.log("All Clients:", allClients)
+  console.log("Tempuser: ", tempUser?._id)
   const fetchClients = async() => {
     try {
       const response = await axios.get(`${BACKEND_URL}/api/clients/?owner_id=${currentUser?._id}`);

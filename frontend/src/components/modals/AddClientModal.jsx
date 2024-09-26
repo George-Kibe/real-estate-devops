@@ -11,6 +11,10 @@ const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
 
 const AddClientModal = ({ isOpen, onClose, setLoading, client=null }) => {  
   // console.log("Client: ", client.client_name)
+  const {currentUser} = useMainProvider();
+  const owner_id = currentUser?._id;
+  const members = currentUser?.members;
+
   const [first_name, setFirst_name] = useState('');
   const [last_name, setLast_name] = useState('');
   const [email, setEmail] = useState("");
@@ -21,10 +25,7 @@ const AddClientModal = ({ isOpen, onClose, setLoading, client=null }) => {
   const [staff_id, setStaff_id] = useState('');
   const [city, setCity] = useState('');
   const [status, setStatus] = useState('');
-  const {currentUser} = useMainProvider();
-  const owner_id = currentUser?._id;
-  const members = currentUser?.members;
-  // console.log("Staff ID: ", staff_id)
+ 
 
   const handleClose = () => {
     onClose();
@@ -47,7 +48,7 @@ const AddClientModal = ({ isOpen, onClose, setLoading, client=null }) => {
       return;
     }
   }, [client]);
-  
+  console.log("Staff ID: ", staff_id)
   const handleSelectChange = (event) => {
     //console.log("Selected ID: ",event.target.value);
     setStaff_id(event.target.value)
@@ -60,7 +61,8 @@ const AddClientModal = ({ isOpen, onClose, setLoading, client=null }) => {
       return
     }
     setLoading(true);
-    const data = {first_name, last_name, client_name:first_name + " " + last_name, email, address,phone_number,house_type, city, staff_id, additional_info, status, owner_id};
+    const data = {first_name, last_name, client_name:first_name + " " + last_name, email, address,phone_number,house_type, city, staff_id:staff_id || members[0]?._id, additional_info, status, owner_id};
+    console.log(data)
 
     if (client){
       toast.info(`Updating ${email}'s Details`)

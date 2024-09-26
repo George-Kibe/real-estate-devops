@@ -4,7 +4,6 @@ import axios from 'axios';
 import { useParams, useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
 import { toast } from 'react-toastify';
-import { Mail} from "lucide-react"
 import { Button } from '@/components/ui/button';
 import { saveAs } from 'file-saver';
 import * as XLSX from 'xlsx';
@@ -12,6 +11,9 @@ import moment from "moment";
 import { useMainProvider } from '@/providers/MainProvider';
 import EditRoleModal from '@/components/modals/EditRoleModal';
 import ConfirmDeleteModal from '@/components/modals/ConfirmDeleteModal';
+import Performance from '@/components/Performance';
+import Image from 'next/image';
+import BarGraph from '@/components/BarGraph';
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
 
@@ -24,6 +26,7 @@ const SingleMemberPage = () => {
   const [removeLoading, setRemoveLoading] = useState(false);
   const {orgMode, currentUser, setCurrentUser} = useMainProvider();
   const router = useRouter();
+  // console.log("Member: ", member?.createdAt)
 
   const {id} = useParams();
 
@@ -155,27 +158,121 @@ const SingleMemberPage = () => {
   }
   return (
     <div className="">
-      <div className="w-full p-4 md:p-8 flex-col md:flex-row flex-1 flex items-center overflow-hidden bg-white rounded-lg shadow-lg dark:bg-gray-800">
-        <img className="rounded-full object-center object-contain h-24 md:h-48" src={member?.image} alt="user avatar" />
-
-        <EditRoleModal isOpen={modalOpen} onClose={handleClose} member={member} />
-        <ConfirmDeleteModal isOpen={deleteModalOpen} onClose={closeDeleteModal} deleteAction={removeFromOrganization} title={member?.name} />
-
-        <div className="px-6 py-4">
-            <h1 className="text-xl font-semibold text-gray-800 dark:text-white">First Name: {member?.firstName || member?.name}</h1>
-            <h1 className="text-xl font-semibold text-gray-800 dark:text-white">Last Name: {member?.lastName}</h1>
-            <div className="flex items-center mt-4 text-gray-700 dark:text-gray-200">
-                <Mail />
-                <h1 className="px-2 text-sm">{member?.email}</h1>
+      <EditRoleModal isOpen={modalOpen} onClose={handleClose} member={member} />
+      <ConfirmDeleteModal isOpen={deleteModalOpen} onClose={closeDeleteModal} deleteAction={removeFromOrganization} title={member?.name} />
+      
+      <div className="flex-1 p-4 flex flex-col gap-4 xl:flex-row">
+        {/* LEFT */}
+        <div className="w-full xl:w-2/3">
+          {/* TOP */}
+          <div className="flex flex-col lg:flex-row gap-4  shadow-lg ">
+            {/* USER INFO CARD */}
+            <div className="bg-lamaSky py-6 px-4 rounded-md flex-1 flex gap-4">
+              <div className="w-1/3">
+                <Image
+                  src={member?.image || "/images/noAvatar.png"}
+                  alt=""
+                  width={144}
+                  height={144}
+                  className="rounded-full object-cover"
+                />
+              </div>
+              <div className="w-2/3 flex flex-col justify-between gap-4">
+                <div className="flex items-center gap-4">
+                  <h1 className="text-xl font-semibold">Name: {member?.name}</h1>
+                </div>
+                <p className="text-sm text-gray-500">
+                  {member?.bio || "No User Bio"}
+                </p>
+                <div className="flex items-center justify-between gap-2 flex-wrap text-xs font-medium">
+                  <div className="w-full md:w-1/3 lg:w-full 2xl:w-1/3 flex items-center gap-2">
+                    <Image src="/images/date.png" alt="" width={14} height={14} />
+                    <span>A+</span>
+                  </div>
+                  <div className="w-full md:w-1/3 lg:w-full 2xl:w-1/3 flex items-center gap-2">
+                    <Image src="/images/date.png" alt="" width={14} height={14} />
+                    <span>Joined:{moment(member?.createdAt).format('MMMM Do YYYY')}</span>
+                  </div>
+                  <div className="w-full md:w-1/3 lg:w-full 2xl:w-1/3 flex items-center gap-2">
+                    <Image src="/images/mail.png" alt="" width={14} height={14} />
+                    <span>{member?.email}</span>
+                  </div>
+                  <div className="w-full md:w-1/3 lg:w-full 2xl:w-1/3 flex items-center gap-2">
+                    <Image src="/images/phone.png" alt="" width={14} height={14} />
+                    <span>{member?.phoneNumber}</span>
+                  </div>
+                  <div className="w-full md:w-1/3 lg:w-full 2xl:w-1/3 flex items-center gap-2">
+                    <div className="w-4 h-4 rounded-full bg-lime-600"></div>
+                    <span>{member?.status || 'Active'}</span>
+                  </div>
+                  <div className="w-full md:w-1/3 lg:w-full 2xl:w-1/3 flex items-center gap-2">
+                    <p className="">Role:</p>
+                    <span>{member?.role || 'No Role'}</span>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div className="flex items-center mt-4 text-gray-700 dark:text-gray-200">
-                <p className="">Role: </p>
-                <h1 className="px-2 text-sm">{member?.role}</h1>
+            {/* SMALL CARDS */}
+            <div className="flex-1 flex gap-4 justify-between flex-wrap">
+              {/* CARD */}
+              <div className="bg-white p-4 rounded-md flex gap-4 w-full md:w-[48%] xl:w-[45%] 2xl:w-[48%]">
+                <Image
+                  src="/images/plus.png"
+                  alt=""
+                  width={24}
+                  height={24}
+                  className="w-6 h-6"
+                />
+                <div className="">
+                  <h1 className="text-xl font-semibold">90%</h1>
+                  <span className="text-sm text-gray-400">Attendance</span>
+                </div>
+              </div>
+              {/* CARD */}
+              <div className="bg-white p-4 rounded-md flex gap-4 w-full md:w-[48%] xl:w-[45%] 2xl:w-[48%]">
+                <Image
+                  src="/images/date.png"
+                  alt=""
+                  width={24}
+                  height={24}
+                  className="w-6 h-6"
+                />
+                <div className="">
+                  <h1 className="text-xl font-semibold">2</h1>
+                  <span className="text-sm text-gray-400">Branches</span>
+                </div>
+              </div>
+              {/* CARD */}
+              <div className="bg-white p-4 rounded-md flex gap-4 w-full md:w-[48%] xl:w-[45%] 2xl:w-[48%]">
+                <Image
+                  src="/images/plus.png"
+                  alt=""
+                  width={24}
+                  height={24}
+                  className="w-6 h-6"
+                />
+                <div className="">
+                  <h1 className="text-xl font-semibold">6</h1>
+                  <span className="text-sm text-gray-400">Lessons</span>
+                </div>
+              </div>
+              {/* CARD */}
+              <div className="bg-white p-4 rounded-md flex gap-4 w-full md:w-[48%] xl:w-[45%] 2xl:w-[48%]">
+                <Image
+                  src="/images/date.png"
+                  alt=""
+                  width={24}
+                  height={24}
+                  className="w-6 h-6"
+                />
+                <div className="">
+                  <h1 className="text-xl font-semibold">6</h1>
+                  <span className="text-sm text-gray-400">Classes</span>
+                </div>
+              </div>
             </div>
-            <div className="flex items-center mt-4 text-gray-700 dark:text-gray-200">
-                <p className="">Status: </p>
-                <h1 className="px-2 text-sm">{member?.status || 'Active'}</h1>
-            </div>
+          </div>
+          <div className="py-4">
             {
               !orgMode && (
                 <div className="mt-4 flex flex-col md:flex-row gap-4 mx-2">
@@ -191,13 +288,23 @@ const SingleMemberPage = () => {
               )
             }
         </div>
+          <Button className="my-4" onClick={exportToExcel}>
+            {
+              excelLoading? "Exporting to Excel..." :
+              `Export Reports Done by ${member?.firstName || member?.name} to Excel`
+            }
+          </Button>
+          {/* BOTTOM */}
+          <div className="mt-4 bg-white rounded-md p-4 h-[800px]">
+            <h1>{member?.name}&apos;s Performance</h1>
+            <BarGraph />
+          </div>
+        </div>
+        {/* RIGHT */}
+        <div className="w-full xl:w-1/3 flex flex-col gap-4">
+          <Performance />
+        </div>
       </div>
-      <Button className="m-4" onClick={exportToExcel}>
-        {
-          excelLoading? "Exporting to Excel..." :
-          `Export Reports Done by ${member?.firstName || member?.name} to Excel`
-        }
-      </Button>
     </div>
   )
 }

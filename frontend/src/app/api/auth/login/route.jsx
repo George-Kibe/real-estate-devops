@@ -1,6 +1,5 @@
 import connect from '@/lib/db';
 import User from '../../../../models/User';
-import { compare } from 'bcryptjs';
 import { NextResponse } from 'next/server';
 
 async function handler(req, res) {
@@ -14,7 +13,7 @@ async function handler(req, res) {
         { email: email }, 
         { name: email }
       ]
-    }).populate('organization');
+    }).populate('members').populate('organization');
     if (!user) {
       return new NextResponse('User not found', { status: 401 });
     }
