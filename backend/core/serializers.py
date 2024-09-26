@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Property, Message, Client, Report,Enquiry
+from .models import Property, Message, Client, Report,Enquiry, Billing
 
 class PropertySerializer(serializers.ModelSerializer):
     class Meta:
@@ -26,6 +26,10 @@ class ClientSerializer(serializers.ModelSerializer):
         model = Client
         fields = "__all__"
 
+class BillingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Billing
+        fields = "__all__"
 class ScrappedPropertySerializer(serializers.ModelSerializer):
     class Meta:
         model = Property

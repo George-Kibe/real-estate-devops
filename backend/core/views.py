@@ -7,9 +7,9 @@ from rest_framework import viewsets, status, generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .serializers import PropertySerializer, MessageSerializer, ScrappedPropertySerializer
-from .serializers import ClientSerializer, ReportSerializer, EnquirySerializer
+from .serializers import ClientSerializer, ReportSerializer, EnquirySerializer, BillingSerializer
 from .apartments import get_apartments
-from .models import Property, Message, Client, Report, Enquiry
+from .models import Property, Message, Client, Report, Enquiry, Billing
 
 from .send_sms import send_sms
 
@@ -164,6 +164,58 @@ class PropertyViewSet(viewsets.ModelViewSet):
         property.delete()
         return Response(data={"message": "Property deleted successfully"}, status=status.HTTP_200_OK)
 
+class BillingViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows billings to be created, viewed and edited
+    """
+
+    queryset = Billing.objects.all()
+    serializer_class = BillingSerializer
+
+    def list(self, request):
+        queryset = self.filter_queryset(self.get_queryset())
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request, pk=None):
+        try:
+            billing = self.queryset.get(pk=pk)
+        except ObjectDoesNotExist:
+            return Response(data={"error": "Billing not found"}, status=status.HTTP_404_NOT_FOUND)
+        serializer = BillingSerializer(billing)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def create(self, request, *args, **kwargs):
+        serializer = BillingSerializer(
+            data=request.data, context={'request': request})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=201)
+        return Response(serializer.errors, status=400)
+
+    def update(self, request, pk=None):
+        try:
+            billing = self.queryset.get(pk=pk)
+        except ObjectDoesNotExist:
+            return Response(data={"error": "Billing not found"}, status=status.HTTP_404_NOT_FOUND)
+        serializer = BillingSerializer(billing, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=400)
+
+    def destroy(self, request, pk=None):
+        try:
+            billing = self.queryset.get(pk=pk)
+        except ObjectDoesNotExist:
+            return Response(data={"error": "Billing not found"}, status=status.HTTP_404_NOT_FOUND)
+        billing.delete()
+        return Response(data={"message": "Billing deleted successfully"}, status=status.HTTP_200_OK)
 
 class ClientViewSet(viewsets.ModelViewSet):
     """

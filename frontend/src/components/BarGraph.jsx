@@ -1,5 +1,5 @@
 "use client";
-import Image from "next/image";
+import { PlusCircle } from "lucide-react"
 import {
   BarChart,
   Bar,
@@ -10,49 +10,30 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
+import moment from "moment";
 
-const data = [
-  {
-    name: "Mon",
-    present: 60,
-    absent: 40,
-  },
-  {
-    name: "Tue",
-    present: 70,
-    absent: 60,
-  },
-  {
-    name: "Wed",
-    present: 90,
-    absent: 75,
-  },
-  {
-    name: "Thu",
-    present: 90,
-    absent: 75,
-  },
-  {
-    name: "Fri",
-    present: 65,
-    absent: 55,
-  },
-];
+const BarGraph = ({staffReports}) => {
+  const staffData = staffReports?.slice(0, 10).map((report) => {
+    return {
+      name: report.client_name.substring(0, 5) + moment(report.created_at).format('YY-MM-DD'),
+      draft: report.report_draft?.length,
+      final: report.report_final?.length,
+    }
+  })
 
-const BarGraph = () => {
   return (
-    <div className="bg-white rounded-lg p-4 h-full">
+    <div className="bg-white rounded-lg h-[50vh]">
       <div className="flex justify-between items-center">
-        <h1 className="text-lg text-black font-semibold">Attendance</h1>
-        <Image src="/images/plus.png" alt="" width={20} height={20} />
+        <h1 className="text-lg text-black font-semibold">Reports Wording</h1>
+        <PlusCircle/>
       </div>
       <ResponsiveContainer width="100%" height="90%">
-        <BarChart width={500} height={300} data={data} barSize={20}>
+        <BarChart width={500} height={300} data={staffData} barSize={20}>
           <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#8a6e6e" />
           <XAxis
             dataKey="name"
             axisLine={false}
-            tick={{ fill: "#1c71f1" }}
+            tick={{ fill: "#1c71f1", fontSize: 10 }}
             tickLine={false}
           />
           <YAxis axisLine={false} tick={{ fill: "#d1d5db" }} tickLine={false} />
@@ -65,13 +46,13 @@ const BarGraph = () => {
             wrapperStyle={{ paddingTop: "20px", paddingBottom: "40px" }}
           />
           <Bar
-            dataKey="present"
+            dataKey="draft"
             fill="#15ab3b"
             legendType="circle"
             radius={[10, 10, 0, 0]}
           />
           <Bar
-            dataKey="absent"
+            dataKey="final"
             fill="#000000"
             legendType="circle"
             radius={[10, 10, 0, 0]}

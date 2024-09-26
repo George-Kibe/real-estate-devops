@@ -4,6 +4,7 @@ import axios from 'axios';
 import { useParams, useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
 import { toast } from 'react-toastify';
+import {BookAIcon, CalendarDays, Mail, PhoneCall, Users2, ScrollText} from "lucide-react"
 import { Button } from '@/components/ui/button';
 import { saveAs } from 'file-saver';
 import * as XLSX from 'xlsx';
@@ -11,9 +12,10 @@ import moment from "moment";
 import { useMainProvider } from '@/providers/MainProvider';
 import EditRoleModal from '@/components/modals/EditRoleModal';
 import ConfirmDeleteModal from '@/components/modals/ConfirmDeleteModal';
-import Performance from '@/components/Performance';
+import PieChartGraph from '@/components/PieChartGraph';
 import Image from 'next/image';
 import BarGraph from '@/components/BarGraph';
+import LineGraph from '@/components/LineGraph';
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
 
@@ -25,10 +27,39 @@ const SingleMemberPage = () => {
   const [excelLoading, setExcelLoading] = useState(false);
   const [removeLoading, setRemoveLoading] = useState(false);
   const {orgMode, currentUser, setCurrentUser} = useMainProvider();
-  const router = useRouter();
-  // console.log("Member: ", member?.createdAt)
+  const [staffClients, setStaffClients] = useState([]);
+  const [staffReports, setStaffReports] = useState([]);
 
+  const router = useRouter();
   const {id} = useParams();
+
+  const fetchStaffClients = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get(`${BACKEND_URL}/api/clients/?staff_id=${id}`);
+      const clients = response?.data?.results
+      if (clients.length === 0) {
+        toast.error("No clients found for this staff member");
+        setExcelLoading(false);
+        return;
+      }
+      setStaffClients(clients)
+    } catch (error) {
+      console.log("Error: ", error)
+      toast.error("Error fetching staff clients")
+      setLoading(false);
+    }
+  }
+  const fetchStaffReports = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get(`${BACKEND_URL}/api/reports/?staff_id=${id}`);
+      const reports = response?.data?.results
+      setStaffReports(reports);
+    } catch (error) {
+      console.log("Error: ", error.message)
+    }
+  }
 
   const fetchMemberDetails = async () => {
     setLoading(true);
@@ -46,7 +77,9 @@ const SingleMemberPage = () => {
 
   useEffect(() => {
     if(id) {
-      fetchMemberDetails()
+      fetchMemberDetails();
+      fetchStaffClients();
+      fetchStaffReports();
     }
   }, [id])
 
@@ -103,17 +136,12 @@ const SingleMemberPage = () => {
   const exportToExcel = async() => {
     setExcelLoading(true);
     try {
-      const response = await axios.get(`${BACKEND_URL}/api/reports/?staff_id=${id}`);
-      const reports = response?.data?.results
-      //console.log("Reports: ", reports)
-      if (reports.length === 0) {
+      if (staffReports.length === 0) {
         toast.error("No reports found for this staff member");
         setExcelLoading(false);
         return;
       }
-      if (response.status === 200){
-        exportDataToExcel(reports);
-      }
+      exportDataToExcel(staffReports);
     } catch (error) {
       console.log("Error: ", error)
       toast.error("Error fetching member reports")
@@ -150,6 +178,10 @@ const SingleMemberPage = () => {
   const closeDeleteModal = () => {
     setDeleteModalOpen(false);
   }
+  const averageDraftLength = staffReports?.reduce((total, report) => {
+    return total + (report.report_draft?.length || 0); // Add the length or 0 if undefined
+  }, 0) / (staffReports?.length || 1); // Divide by the number of reports
+  
   
   if (loading) {
     return (
@@ -186,19 +218,19 @@ const SingleMemberPage = () => {
                 </p>
                 <div className="flex items-center justify-between gap-2 flex-wrap text-xs font-medium">
                   <div className="w-full md:w-1/3 lg:w-full 2xl:w-1/3 flex items-center gap-2">
-                    <Image src="/images/date.png" alt="" width={14} height={14} />
+                    <BookAIcon />
                     <span>A+</span>
                   </div>
                   <div className="w-full md:w-1/3 lg:w-full 2xl:w-1/3 flex items-center gap-2">
-                    <Image src="/images/date.png" alt="" width={14} height={14} />
+                    <CalendarDays/>
                     <span>Joined:{moment(member?.createdAt).format('MMMM Do YYYY')}</span>
                   </div>
                   <div className="w-full md:w-1/3 lg:w-full 2xl:w-1/3 flex items-center gap-2">
-                    <Image src="/images/mail.png" alt="" width={14} height={14} />
+                    <Mail/>
                     <span>{member?.email}</span>
                   </div>
                   <div className="w-full md:w-1/3 lg:w-full 2xl:w-1/3 flex items-center gap-2">
-                    <Image src="/images/phone.png" alt="" width={14} height={14} />
+                    <PhoneCall />
                     <span>{member?.phoneNumber}</span>
                   </div>
                   <div className="w-full md:w-1/3 lg:w-full 2xl:w-1/3 flex items-center gap-2">
@@ -215,42 +247,24 @@ const SingleMemberPage = () => {
             {/* SMALL CARDS */}
             <div className="flex-1 flex gap-4 justify-between flex-wrap">
               {/* CARD */}
-              <div className="bg-white p-4 rounded-md flex gap-4 w-full md:w-[48%] xl:w-[45%] 2xl:w-[48%]">
-                <Image
-                  src="/images/plus.png"
-                  alt=""
-                  width={24}
-                  height={24}
-                  className="w-6 h-6"
-                />
+              <div className=" p-4 rounded-md flex gap-4 w-full md:w-[48%] xl:w-[45%] 2xl:w-[48%]">
+                <ScrollText />
                 <div className="">
-                  <h1 className="text-xl font-semibold">90%</h1>
-                  <span className="text-sm text-gray-400">Attendance</span>
+                  <h1 className="text-xl font-semibold">{staffReports.length}</h1>
+                  <span className="text-sm text-gray-400">Reports Done</span>
                 </div>
               </div>
               {/* CARD */}
-              <div className="bg-white p-4 rounded-md flex gap-4 w-full md:w-[48%] xl:w-[45%] 2xl:w-[48%]">
-                <Image
-                  src="/images/date.png"
-                  alt=""
-                  width={24}
-                  height={24}
-                  className="w-6 h-6"
-                />
+              <div className="p-4 rounded-md flex gap-4 w-full md:w-[48%] xl:w-[45%] 2xl:w-[48%]">
+                <Users2/>
                 <div className="">
-                  <h1 className="text-xl font-semibold">2</h1>
-                  <span className="text-sm text-gray-400">Branches</span>
+                  <h1 className="text-xl font-semibold">{staffClients.length}</h1>
+                  <span className="text-sm text-gray-400">Allocated clients</span>
                 </div>
               </div>
               {/* CARD */}
-              <div className="bg-white p-4 rounded-md flex gap-4 w-full md:w-[48%] xl:w-[45%] 2xl:w-[48%]">
-                <Image
-                  src="/images/plus.png"
-                  alt=""
-                  width={24}
-                  height={24}
-                  className="w-6 h-6"
-                />
+              <div className="p-4 rounded-md flex gap-4 w-full md:w-[48%] xl:w-[45%] 2xl:w-[48%]">
+              <ScrollText />
                 <div className="">
                   <h1 className="text-xl font-semibold">6</h1>
                   <span className="text-sm text-gray-400">Lessons</span>
@@ -258,13 +272,7 @@ const SingleMemberPage = () => {
               </div>
               {/* CARD */}
               <div className="bg-white p-4 rounded-md flex gap-4 w-full md:w-[48%] xl:w-[45%] 2xl:w-[48%]">
-                <Image
-                  src="/images/date.png"
-                  alt=""
-                  width={24}
-                  height={24}
-                  className="w-6 h-6"
-                />
+              <CalendarDays />
                 <div className="">
                   <h1 className="text-xl font-semibold">6</h1>
                   <span className="text-sm text-gray-400">Classes</span>
@@ -288,21 +296,23 @@ const SingleMemberPage = () => {
               )
             }
         </div>
-          <Button className="my-4" onClick={exportToExcel}>
+          
+          {/* BOTTOM */}
+          <div className="mt-4 rounded-md">
+            <h1 className='font-semibold text-xl'>{member?.name}&apos;s Performance</h1>
+            <BarGraph staffReports={staffReports}/>
+            <LineGraph staffReports={staffReports}/>
+            <Button className="" onClick={exportToExcel}>
             {
               excelLoading? "Exporting to Excel..." :
               `Export Reports Done by ${member?.firstName || member?.name} to Excel`
             }
           </Button>
-          {/* BOTTOM */}
-          <div className="mt-4 bg-white rounded-md p-4 h-[800px]">
-            <h1>{member?.name}&apos;s Performance</h1>
-            <BarGraph />
           </div>
         </div>
         {/* RIGHT */}
         <div className="w-full xl:w-1/3 flex flex-col gap-4">
-          <Performance />
+          <PieChartGraph averageDraftLength={averageDraftLength} />
         </div>
       </div>
     </div>

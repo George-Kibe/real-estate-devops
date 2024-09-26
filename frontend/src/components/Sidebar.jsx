@@ -87,7 +87,7 @@ import { useMainProvider } from '@/providers/MainProvider';
                sellerMode && 
                 <CommandItem>
                   <CreditCard className='mr-2 h-4 w-4' />
-                  <Link href='/billing'>Billing</Link>
+                  <Link href='/billing'>My Billing</Link>
                 </CommandItem>
               }
               </>

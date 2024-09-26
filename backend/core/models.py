@@ -7,6 +7,7 @@ from this class
 4.Property: Property Model
 5. Message: Message Model
 6. Enquiry: Enquiry Model
+7. Billing: Billing Model
 """
 import uuid
 import random
@@ -145,3 +146,47 @@ class Enquiry(TimeStampedUUIDModel):
 
     def __str__(self):
         return str(self.name)
+
+
+class Billing(TimeStampedUUIDModel):
+    service_date_start = models.DateField(null=True, blank=True)
+    service_date_end = models.DateField(null=True, blank=True)
+    client_name = models.CharField(max_length=100, null=True, blank=True)
+    client_id = models.CharField(max_length=100, null=True, blank=True)
+    housing_coordinator_name = models.CharField(
+        max_length=100, null=True, blank=True)
+    housing_coordinator_id = models.CharField(
+        max_length=100, null=True, blank=True)
+    claim_amount = models.DecimalField(
+        max_digits=10, decimal_places=2, null=True, blank=True)
+    bill_status = models.CharField(max_length=50, choices=[
+        ('Ready', 'Ready'),
+        ('Scheduled', 'Scheduled'),
+        ('Submitted', 'Submitted'),
+        ('Processing', 'Processing'),
+        ('Unable to Bill', 'Unable to Bill')
+    ], null=True, default="Scheduled", blank=True)
+    scheduled_hours = models.DecimalField(
+        max_digits=5, decimal_places=2, help_text="Scheduled hours", null=True, blank=True)
+    worked_hours = models.DecimalField(
+        max_digits=5, decimal_places=2, help_text="Hours worked", null=True, blank=True)
+    billed_hours = models.DecimalField(
+        max_digits=5, decimal_places=2, help_text="Hours billed", null=True, blank=True)
+    log_status = models.CharField(max_length=50, choices=[
+        ('Confirmed', 'Confirmed'),
+        ('Not Confirmed', 'Not Confirmed'),
+        ('Pending', 'Pending')
+    ], default="Not Confirmed")
+    pro_code = models.CharField(max_length=10, null=True, choices=[
+                                ("H2015", "H2015"), ("H0043", "H0043"), ("T1017", "T1017"), ("T2024", "T2024"), ("T2038", "T2038")],default="H2015",  blank=True)
+    modifier = models.CharField(
+        max_length=10, null=True, blank=True, default="U8")
+    payor = models.CharField(max_length=5, null=True, blank=True, default="UCARE")
+
+    class Meta:
+        verbose_name = "Billing"
+        verbose_name_plural = "Billings"
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"{self.client_name} ({self.service_date_start} - {self.service_date_end})"

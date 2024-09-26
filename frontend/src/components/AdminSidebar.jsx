@@ -36,6 +36,10 @@ import {
                 <Users className='mr-2 h-4 w-4' />
                 <Link href='/users'>Users</Link>
               </CommandItem>
+              <CommandItem>
+                <Notebook className='mr-2 h-4 w-4' />
+                <Link href='/clients-billing'>Clients Billing</Link>
+              </CommandItem>
           </CommandGroup>
         </CommandList>
       </Command>

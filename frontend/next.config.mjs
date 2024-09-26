@@ -10,6 +10,7 @@ const nextConfig = {
             "housinglink.org",
             "cdn.rentcafe.com",
             "s3.amazonaws.com",
+            "images.pexels.com",
             "apartments.com",
         ]
     }
