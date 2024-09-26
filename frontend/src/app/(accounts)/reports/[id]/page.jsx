@@ -41,8 +41,6 @@ export default function MembersPage({params, searchParams}) {
   const [comments, setComments] = useState('');
   const [startTime, setStartTime] = useState();
   const [endTime, setEndTime] = useState();
-  console.log("Start time", startTime);
-  console.log("End time", endTime);
   const [currentProperty, setCurrentProperty] = useState({});
   const [currentIndex, setCurrentIndex] = useState();
   const [loading, setLoading] = useState(false);

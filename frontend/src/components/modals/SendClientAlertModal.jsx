@@ -13,8 +13,7 @@ const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
 const FRONTEND_URL = process.env.NEXT_PUBLIC_FRONTEND_URL;
 
 const SendClientAlertModal = ({ property, client, isOpen, onClose }) => {
-  // console.log("Current Property: ", property)
-  console.log("Current Client: ", client)
+  // console.log("Current Client: ", client)
   const [loading, setLoading] = useState(false);
   const createProperty = async() => {
     // Implement property creation logic here
