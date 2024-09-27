@@ -12,6 +12,7 @@ export function MainProvider({ children }) {
   const [location, setLocation] = useLocalStorage('location', 'Minnesota');
   const [customProperties, setCustomProperties] = useLocalStorage('customProperties', []);
   const [favoriteProperties, setFavoriteProperties] = useLocalStorage('favoriteProperties', []);
+  const [selectedBillings, setSelectedBillings] = useLocalStorage('selectedBillings', []);
   const [currentUser, setCurrentUser] = useLocalStorage('currentUser', null);
   const [currentClient, setCurrentClient] = useLocalStorage('currentClient', null);
   const [loading, setLoading] = useLocalStorage('loading', false);
@@ -33,6 +34,7 @@ export function MainProvider({ children }) {
         adminMode, setAdminMode,
         currentClient, setCurrentClient,
         tempProperty, setTempProperty,
+        selectedBillings, setSelectedBillings,
       }}
     >
       {children}

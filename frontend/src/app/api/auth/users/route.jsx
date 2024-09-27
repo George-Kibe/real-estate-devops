@@ -4,23 +4,26 @@ import bcrypt from "bcryptjs"
 import User from "@/models/User";
 
 export const POST = async (request) => {
-    const {email, password, name, firstName, lastName} = await request.json();
-    // console.log(email, password, name, firstName, lastName)
+    const {email, password, name, firstName, lastName, isProfessional, profession} = await request.json();
+    
+    // console.log(email, password, name, firstName, lastName, isProfessional, profession)
 
     await connect();
-    // const hashedPassword = await bcrypt.hash(password, 5)
     const newUser = new User({
         email,
         name: name || email.split("@")[0], 
         firstName: firstName || email.split("@")[0],
         lastName: lastName || "",
-        password:password
+        isProfessional: isProfessional || false,
+        profession: profession || "",
+        password: password
     })
     
     try {
         // check if user already exists using email to avoid duplicates
         const existingUser = await User.findOne({email});
         if (existingUser) {
+            console.log("Existing user", existingUser)
             return new NextResponse("User already exists", {status: 422})
         }
         await newUser.save();

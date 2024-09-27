@@ -1,6 +1,5 @@
 "use client"
 
-import { useRouter } from 'next/navigation';
 import { PlusCircle} from 'lucide-react'
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
@@ -77,19 +76,12 @@ const columns = [
   },
 ];
 
-const BillingPage = ({searchParams}) => {
-    
-  const [billings, setBillings] = useState([]);
-  const router = useRouter();
+const SelectedBillingPage = ({searchParams}) => {
   const [loading, setLoading] = useState(false);
   const {selectedBillings, setSelectedBillings} = useMainProvider();
-  const [count, setCount] = useState(1);
-  console.log("selected billings: ", selectedBillings)
-  
   const handleClick = (item) => {
     // add item to selected billings if it doesnt exist already
-    const existingBilling = selectedBillings.find(billing => billing.id === item.id);
-    if (!existingBilling) {
+    if (!selectedBillings?.includes(item)) {
       setSelectedBillings([...selectedBillings, item]);
     }else{
         // remove item from selected billings
@@ -97,36 +89,9 @@ const BillingPage = ({searchParams}) => {
     }
   }
   // reduce the selected billings to get the total price
-  const totalPrice = parseFloat(
-    billings?.reduce((acc, curr) => acc + parseFloat(curr.claim_amount), 0).toFixed(2)
-  );
   const totalSelected = parseFloat(
     selectedBillings?.reduce((acc, curr) => acc + parseFloat(curr.claim_amount), 0).toFixed(2)
   );
-
-  const fetchBillings = async () => {
-    const page = searchParams?.page || 1;
-    setLoading(true);
-    try {
-      const response = await axios.get(`${BACKEND_URL}/api/billings?page=${page}`);
-      const billings = response.data.results;
-      setBillings(billings);
-      // setBillings([...billings, ...billings, ...billings, ...billings])
-      setCount(response.data.count);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchBillings();
-  }, [])
-  const handleSelected = () => {
-    router.push("selected-billings")
-    //console.log("selected billings: ", selectedBillings);
-  }
   
   const renderRow = (item) => (
     <tr
@@ -136,10 +101,9 @@ const BillingPage = ({searchParams}) => {
         <td className="w-4 items-center justify-center pl-2">
             <div className="flex items-center">
                 <input id="checkbox-table-search-1" type="checkbox" 
-                    onChange={() =>handleClick(item)}
-                    className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                    checked={selectedBillings.map(b => b.id).includes(item.id)}
-                />
+                onChange={() =>handleClick(item)}
+                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                checked={selectedBillings.map(b => b.id).includes(item.id)} />
                 <label for="checkbox-table-search-1" className="sr-only">checkbox</label>
             </div>
         </td>
@@ -185,26 +149,29 @@ const BillingPage = ({searchParams}) => {
         </div>
       </div>
       {/* LIST */}
-      <Table columns={columns} renderRow={renderRow} data={billings} />
+      <Table columns={columns} renderRow={renderRow} data={selectedBillings} />
       {/* PAGINATION */}
       <div className="flex items-center justify-between border-t border-gray-200 px-4 py-3 sm:px-6">
-        <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
-            <h2 className='font-bold'>
-                ALL TOTAL:{totalPrice}
-            </h2>
-        </div>
         <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
             <h2 className='font-bold'>
                 SELECTED TOTAL:{totalSelected}
             </h2>
         </div>
       </div>
-      {
-        selectedBillings.length > 0 && <Button onClick={handleSelected}>SELECT</Button>
-      }
-      <Pagination page={1} count={count}/>
+      {/* <Pagination page={1} count={count}/> */}
+      <div className="flex gap-4 flex-wrap items-center">
+        <Button className="bg-[#1e753f] rounded-none">APPROVE BILLING</Button>
+        <Button className="bg-[#3a76e7] rounded-none">ADD TO BATCH</Button>
+        <Button className="bg-[#0b204c] rounded-none">VOID</Button>
+        <Button className="bg-[#9b932c] rounded-none">REPLACE</Button>
+        <Button className="bg-[#f81505] rounded-none">DELETE</Button>
+        <Button className="bg-[#94420b] rounded-none">UPDATE TS</Button>
+        <Button className="bg-[#e4b124] rounded-none">UPDATE BILLING STATUS</Button>
+        <Button className="bg-[#1e753f] rounded-none">UPDATE CL TYPE</Button>
+        <Button className="bg-[#bec2c0] rounded-none">UPDATE NOTES</Button>
+      </div>
     </div>
   );
 };
 
-export default BillingPage;
+export default SelectedBillingPage;

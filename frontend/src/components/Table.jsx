@@ -4,7 +4,7 @@ const Table = ({
     data,
   }) => {
     return (
-      <table className="w-full mt-4">
+      <table className="w-full h-96 mt-4">
         <thead>
           <tr className="text-left text-gray-500 text-sm">
             {columns.map((col) => (

@@ -15,6 +15,7 @@ export default function MyAccountPage() {
   const [userImageBase64, setUserImageBase64] = useState(currentUser?.image);
   const [email, setEmail] = useState(currentUser?.email);
   const [phoneNumber, setPhoneNumber] = useState(currentUser?.phoneNumber);
+  const [isAvailable, setIsAvailable] = useState(currentUser?.isAvailable);
   const [favouriteLocation, setFavouriteLocation] = useState(currentUser?.favouriteLocation);
   const [loading, setLoading] = useState(false);
 
@@ -37,7 +38,7 @@ export default function MyAccountPage() {
       orgName,
       email,
       phoneNumber,
-      //favouriteLocation,
+      isAvailable,
       image: userImageBase64
     }
     //console.log('Updating: ', body);
@@ -171,6 +172,47 @@ export default function MyAccountPage() {
             className='w-full bg-transparent rounded-md border border-stroke dark:border-dark-3 py-[10px] px-5 text-dark-6 outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-gray-2 disabled:border-gray-2'
           />
         </div> */}
+        {
+          currentUser?.isProfessional && (
+            <div className="flex flex-col justify-center mt-4">
+              <h2 className="text-xl font-semibold mb-4 text-gray-700">Set Your Availability</h2>
+              <div className="flex space-x-6">
+                <label className="inline-flex items-center">
+                  <input
+                    type="radio"
+                    className="form-radio h-5 w-5 text-green-600 focus:ring-green-500"
+                    name="availability"
+                    value="available"
+                    checked={isAvailable === true}
+                    onChange={() => setIsAvailable(true)}
+                  />
+                  <span className="ml-2 text-gray-700">Available</span>
+                </label>
+
+                <label className="inline-flex items-center">
+                  <input
+                    type="radio"
+                    className="form-radio h-5 w-5 text-red-600 focus:ring-red-500"
+                    name="availability"
+                    value="unavailable"
+                    checked={isAvailable === false}
+                    onChange={() => setIsAvailable(false)}
+                  />
+                  <span className="ml-2 text-gray-700">Unavailable</span>
+                </label>
+              </div>
+
+              <div className="mt-4 p-4 bg-gray-100 rounded-lg shadow">
+                <p className="text-gray-700 text-lg">
+                  You are currently:{" "}
+                  <span className={`font-bold capitalize ${isAvailable ? "text-green-600" : "text-red-600"}`}>
+                    {isAvailable ? "Available" : "Unavailable"}
+                  </span>
+                </p>
+              </div>
+            </div>
+          )
+        }
       </div>
         <button onClick={handleUpdate} className='border-primary border self-start rounded-md inline-flex items-center justify-center py-3 px-7 text-center text-base font-medium hover:bg-[#1B44C8] hover:border-[#1B44C8] disabled:bg-gray-3 disabled:border-gray-3 disabled:text-dark-5 active:bg-[#1B44C8] active:border-[#1B44C8]'>
           {loading? "Loading" : "Update Details"}

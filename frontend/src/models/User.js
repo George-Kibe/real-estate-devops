@@ -50,6 +50,20 @@ const UserSchema = new Schema({
         required: false,
         default: false,
     },
+    isProfessional: {
+        type: Boolean,
+        required: false,
+        default: false,
+    },
+    isAvailable: {
+        type: Boolean,
+        required: false,
+        default: false,
+    },
+    profession: {
+        type: String,
+        required: false,
+    },
     role: {
         type: String,
         required: false,
