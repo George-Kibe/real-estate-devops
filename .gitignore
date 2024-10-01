@@ -2,11 +2,19 @@
 
 # dependencies
 /node_modules
+*.cpython-312.pyc
 /.pnp
 .pnp.js
 .yarn/install-state.gz
+backend/project/__pycache__/
+backend/project/__pycache__
 node_modules/
 .next/
+
+# Ignore Python cache files
+__pycache__/
+*.pyc
+
 # testing
 /coverage
 venv/
