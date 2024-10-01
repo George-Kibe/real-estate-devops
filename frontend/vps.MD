@@ -9,7 +9,8 @@
 ### Create a new Nginx configuration file for your Next.js application:
 ```sudo nano /etc/nginx/sites-available/nextjs.conf```
 
-File Contents
+
+File Contents for linux sample
 ```
 server {
 listen 80;
@@ -22,6 +23,31 @@ proxy_set_header Connection 'upgrade';
 proxy_set_header Host $host;
 proxy_cache_bypass $http_upgrade;
 }
+}
+```
+File Sample for windows server
+```
+events {
+    worker_connections 1024;
+}
+
+http {
+    include       mime.types;
+    default_type  application/octet-stream;
+
+    server {
+        listen       80;  # Ensure this line is included
+        server_name  144.126.159.44 api.apttracking.com www.api.apttracking.com;
+
+        location / {
+            proxy_pass http://localhost:8000;
+            proxy_http_version 1.1;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection 'upgrade';
+            proxy_set_header Host $host;
+            proxy_cache_bypass $http_upgrade;
+        }
+    }
 }
 ```
 
@@ -71,3 +97,27 @@ proxy_cache_bypass $http_upgrade;
 6. Optionally Check the status of the system service. ```sudo systemctl status snap.certbot.renew.service```
 7. Optionally simulate certificate renewal process ```sudo certbot renew --dry-run```
 8. Ensure port 443(https) is open ```sudo apt install net-tools```
+   
+## Certbot on windows installation
+prerequisite: Python
+1. Install Python from the command line. ```python -m pip install certbot```
+2. Install plugins. ```python -m pip install certbot-dns-desec```
+3. Follow SSL commands from step 5 above without using sudo definitely.
+4. Optionally if you are using a subdomain use webroot. ```certbot certonly --webroot -w C:\Users\Administrator\Downloads\project\backend -d api.apttracking.com -d www.api.apttracking.com```
+5. For webroot to work, ensure you adjust django url settings as necessary:
+   example: 
+   ```
+    from django.views.static import serve
+    from django.urls import re_path
+    from django.contrib import admin
+    from django.urls import path, include
+
+    urlpatterns = [
+        path("admin/", admin.site.urls),
+        path("api/", include('core.urls')),
+        path("api/", include('resume.urls')),
+        # Other urls above
+        re_path(r'^.well-known/acme-challenge/(.*)$', serve,
+                {'document_root': r'C:\Users\Administrator\Downloads\project\backend\.well-known\acme-challenge'}),
+]
+   ```
