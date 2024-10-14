@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useMainProvider } from "@/providers/MainProvider";
 import axios from "axios";
-import { Brain, LoaderCircle, Eye, Pencil, Trash, DiamondPlus, Loader, Share2 } from 'lucide-react';
+import { Brain, LoaderCircle, Eye, Trash, DiamondPlus, Loader, Share2 } from 'lucide-react';
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
@@ -18,6 +18,9 @@ import EditLocationModal from "@/components/modals/EditLocationModal";
 import ConfirmDeleteModal from "@/components/modals/ConfirmDeleteModal";
 import SendClientAlertModal from "@/components/modals/SendClientAlertModal";
 import { getTimeDifference } from "@/lib/getTimeDifference";
+import ConfirmExportModal from "@/components/modals/ConfirmExportModal";
+import { PropertyActions } from "@/components/PropertyActions";
+import { user } from "@nextui-org/react";
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
 //const BACKEND_URL = "http://localhost:8000"
@@ -32,6 +35,7 @@ export default function MembersPage({params, searchParams}) {
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [sendModalOpen, setSendModalOpen] = useState(false);
   const [locationModalOpen, setLocationModalOpen] = useState(false);
+  const [exportModalOpen, setExportModalOpen] = useState(false);
   const [editMode, setEditMode] = useState(false);
   
   const [report, setReport] = useState(null);
@@ -50,8 +54,8 @@ export default function MembersPage({params, searchParams}) {
   const [summary, setSummary] = useState();
   const [summaryFinal, setSummaryFinal] = useState('');
   const [currentPropertiesIndex, setcurrentPropertiesIndex] = useState(5);
-  // console.log("Report: ", report)
-  // console.log("User Properties: ", userProperties);
+  //console.log("Report: ", report)
+  console.log("User Properties: ", userProperties);
   const {id} = useParams();
   const divRef = useRef();
   const router = useRouter();
@@ -325,8 +329,11 @@ export default function MembersPage({params, searchParams}) {
     setEditMode(true)
   }
   const handleRemove = (index) => {
-    //setProperties(properties.filter((p, i) => i !== index));
     setCurrentProperties(currentProperties.filter((p, i) => i !== index));
+  }
+  const handleRemoveUserProperty = (title) => {
+    console.log("Removing property with id: ", id)
+    setUserProperties(userProperties.filter(p => p.title !== title))
   }
   const handleShareProperty = (prop) => {
     setSendModalOpen(true);
@@ -337,10 +344,12 @@ export default function MembersPage({params, searchParams}) {
     <div className='flex flex-col justify-between gap-5 mb-5'>
       <div ref={divRef} className="">
       
-      <AnimatedText text={`Report for ${report?.client_name}-${moment(report?.created_at).format('MMMM Do YYYY')}`} />
+      <AnimatedText text={`Report for ${report?.client_name}-${moment(
+        report?.report_date ? report?.report_date : report?.created_at).format('MMMM Do YYYY')} `} />
       <AddCommentModal comments={comments} isOpen={modalOpen} onClose={closeModal} setComments={setComments} currentProperty={currentProperty} addToUserProperties={addToUserProperties} editMode={editMode}/>
       <AddPropertyModal isOpen={propertyModalOpen} onClose={closePropertyModal} setUserProperties={setUserProperties}
       />
+      <ConfirmExportModal exportAction={exportToExcel} isOpen={exportModalOpen} onClose={() => setExportModalOpen(false)} />
       <EditLocationModal isOpen={locationModalOpen} onClose={closeLocationModal} searchLocation={searchLocation} fetchProperties={fetchProperties} setSearchLocation={setSearchLocation} 
       />
       <ConfirmDeleteModal deleteAction={deleteReport} isOpen={deleteModalOpen} onClose={closeDeleteModal} title={report?.title}
@@ -472,18 +481,11 @@ export default function MembersPage({params, searchParams}) {
                                 <p className="">{property.comments}</p>
                             </td>
                             <td className="px-2 py-1  self-center justify-center flex-col gap-2">
-                              <Button className='mb-2' onClick={() => handleEdit(property, index)}>
-                              <Pencil className="h-5 w-5 mr-2" />
-                                Edit Details
-                                </Button>
-                              <Button onClick={() => viewProperty(property)}>
-                                <Eye className="h-5 w-5 mr-2" />
-                                View Property
-                              </Button>
-                              <Button className='mt-2' onClick={() => handleShareProperty(property)}>
-                                <Share2 className="h-5 w-5 mr-2" />
-                                Share With Client
-                              </Button>
+                             <PropertyActions 
+                              handleEdit={() => handleEdit(property, index)}
+                              viewProperty={() => viewProperty(property)} 
+                              handleShareProperty={() => handleShareProperty(property)} handleRemoveProperty={() =>handleRemoveUserProperty(property.title)} 
+                            />
                             </td>
                         </tr>
                       ))
@@ -525,23 +527,12 @@ export default function MembersPage({params, searchParams}) {
                                 <p className=""></p>
                             </td>
                             <td className="px-2 py-1  self-center justify-center flex-col gap-2">
-                                <Button className='mb-2' onClick={() => handleAdd(property, index)}>
-                                  <DiamondPlus className="h-5 w-5 mr-4" />
-                                  Add
-                                </Button>
-                                <Button className='mb-2' onClick={() => viewProperty(property)}>
-                                  <Eye className="h-5 w-5 mr-2" />
-                                  View Property
-                                </Button>
-                                <Button className='mb-2' onClick={() => handleRemove(index)}  variant='destructive'>
-                                  <Trash className="h-5 w-5 mr-2" />
-                                  Remove
-                                </Button>
-                                <Button className='mt-2' onClick={() => handleShareProperty(property)}>
-                                  <Share2 className="h-5 w-5 mr-2" />
-                                  Share With Client
-                              </Button>
-                            </td>
+                            <PropertyActions 
+                              handleAddProperty={() => handleAdd(property, index)} 
+                              isNew={true} 
+                              viewProperty={() => viewProperty(property)} handleShareProperty={() => handleShareProperty(property)} handleRemoveProperty={() => handleRemove(index)}
+                           />
+                          </td>
                         </tr>
                       ))
                   }
@@ -593,7 +584,7 @@ export default function MembersPage({params, searchParams}) {
             <Button onClick={() => setDeleteModalOpen(true)} variant="destructive">{loading? 'Loading...': 'Delete Report'}</Button>
             <Button onClick={handlePrint}  className="">Export PDF</Button>
             {/* <Button onClick={handlePrint} className="">Share</Button> */}
-            <Button onClick={exportToExcel} className="">Export Excel</Button>
+            <Button onClick={() => setExportModalOpen(true)} className="">Export Excel</Button>
             <Button onClick={handleExit} className="">Exit</Button>
           </div>
         </div>
