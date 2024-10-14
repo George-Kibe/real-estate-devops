@@ -25,6 +25,7 @@ export default function ReportsPage() {
   //console.log("Current Client: ", currentClient)
   //console.log("All Clients:", allClients)
   //vconsole.log("Tempuser: ", tempUser?._id)
+  
   const fetchClients = async() => {
     try {
       const response = await axios.get(`${BACKEND_URL}/api/clients/?owner_id=${currentUser?._id}`);
@@ -128,7 +129,6 @@ export default function ReportsPage() {
         status: report?.status,
         report_draft: report?.report_draft,
         report_final: report?.report_final,
-        created_at: moment(report?.created_at).format('MMMM Do YYYY'),
         updated_at: moment(report?.updated_at).format('MMMM Do YYYY'),
       };
       mainReportData.push(mainData);
@@ -152,13 +152,38 @@ export default function ReportsPage() {
 
     const mainSheet = XLSX.utils.json_to_sheet(mainReportData);
     const propertiesSheet = XLSX.utils.json_to_sheet(propertiesData);
+    mainSheet['!cols'] = [
+      { wch: 15 }, // created_at
+      { wch: 20 }, // title
+      { wch: 20 }, // description (allow larger width)
+      { wch: 20 }, // client_name
+      { wch: 10 }, // client_id
+      { wch: 10 }, // report_type
+      { wch: 10 }, // status
+      { wch: 50 }, // report_draft (allow larger width)
+      { wch: 50 },  // report_final (allow larger width)
+      { wch: 15 }, // updated_at
+
+    ];
+    propertiesSheet['!cols'] = [
+      { wch: 15 }, // date
+      { wch: 20 }, // title
+      { wch: 20 }, // address      
+      { wch: 10 }, // price
+      { wch: 20 }, // description (allow larger width)
+      { wch: 10 }, // bathrooms
+      { wch: 15 }, // phone number
+      { wch: 20 }, // amenities
+      { wch: 20 }, // images
+      { wch: 80 }, // comments
+    ];
 
     XLSX.utils.book_append_sheet(workbook, mainSheet, 'Summary Reports');
     XLSX.utils.book_append_sheet(workbook, propertiesSheet, 'Properties Details Report');
 
-    const excelBuffer = XLSX.write(workbook, { bookType: 'xls', type: 'array' });
+    const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
     const blob = new Blob([excelBuffer], { type: 'application/vnd.ms-excel' });
-    saveAs(blob, `${name}-reports.xls`);
+    saveAs(blob, `${name}-reports.xlsx`);
   };
 
   const exportAllClientReportsToExcel = async( ) => {

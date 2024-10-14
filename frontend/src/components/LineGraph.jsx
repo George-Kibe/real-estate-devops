@@ -16,8 +16,8 @@ const LineGraph = ({staffReports}) => {
   const staffData = staffReports?.slice(0, 10).map((report) => {
     return {
       name: report.client_name.substring(0, 5) + moment(report.created_at).format('YY-MM-DD'),
-      draft: report.report_draft?.length,
-      final: report.report_final?.length,
+      ReportWording: report.report_draft?.length,
+      Communication: report.report_final?.length,
     }
   })
   return (
@@ -55,11 +55,11 @@ const LineGraph = ({staffReports}) => {
           />
           <Line
             type="monotone"
-            dataKey="draft"
+            dataKey="ReportWording"
             stroke="#000000"
             strokeWidth={5}
           />
-          <Line type="monotone" dataKey="final" stroke="#1c71f1" strokeWidth={5}/>
+          <Line type="monotone" dataKey="Communication" stroke="#1c71f1" strokeWidth={5}/>
         </LineChart>
       </ResponsiveContainer>
     </div>

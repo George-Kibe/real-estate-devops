@@ -6,13 +6,13 @@ import { Textarea } from "@/components/ui/textarea";
 import { useMainProvider } from "@/providers/MainProvider";
 import axios from "axios";
 import { Brain, LoaderCircle, Eye, Pencil, Trash, DiamondPlus, Loader, Share2 } from 'lucide-react';
-import moment from "moment/moment";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import AddCommentModal from "@/components/modals/AddCommentModal";
 import { saveAs } from 'file-saver';
 import * as XLSX from 'xlsx';
+import moment from 'moment';
 import AddPropertyModal from "@/components/modals/AddPropertyModal";
 import EditLocationModal from "@/components/modals/EditLocationModal";
 import ConfirmDeleteModal from "@/components/modals/ConfirmDeleteModal";
@@ -87,6 +87,21 @@ export default function MembersPage({params, searchParams}) {
       }
     ];
     const mainSheet = XLSX.utils.json_to_sheet(mainData);
+     // Manually set larger column widths and enable wrap text for mainSheet
+    mainSheet['!cols'] = [
+      { wch: 10 }, // pkid
+      { wch: 10 }, // id
+      { wch: 15 }, // created_at
+      { wch: 15 }, // updated_at
+      { wch: 20 }, // title
+      { wch: 20 }, // description (allow larger width)
+      { wch: 20 }, // client_name
+      { wch: 10 }, // client_id
+      { wch: 15 }, // report_type
+      { wch: 10 }, // status
+      { wch: 50 }, // report_draft (allow larger width)
+      { wch: 50 }  // report_final (allow larger width)
+    ];
     XLSX.utils.book_append_sheet(workbook, mainSheet, 'Main Report');
 
     // Properties data
@@ -102,12 +117,27 @@ export default function MembersPage({params, searchParams}) {
       comments: property.comments
     }));
     const propertiesSheet = XLSX.utils.json_to_sheet(propertiesData);
+     // Set column widths for the Properties sheet, especially for long text fields like comments
+    propertiesSheet['!cols'] = [
+      { wch: 10 }, // Title
+      { wch: 10 }, // Street address
+      { wch: 10 }, // Price
+      { wch: 20 }, // Description
+      { wch: 10 }, // Bathrooms
+      { wch: 15 }, // Phone number
+      { wch: 30 }, // Amenities
+      { wch: 30 }, // Images
+      { wch: 100 }  // Comments (increase this value to make sure it accommodates long text)
+    ];
+
     XLSX.utils.book_append_sheet(workbook, propertiesSheet, 'Properties');
 
     // Generate the Excel file and trigger download
-    const excelBuffer = XLSX.write(workbook, { bookType: 'xls', type: 'array' });
+    const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
     const blob = new Blob([excelBuffer], { type: 'application/vnd.ms-excel' });
-    saveAs(blob, `${report?.client_name}-${report?.created_at}-report.xls`);
+    const formattedDate = moment(report?.created_at).format('MM-DD-YYYY');
+    saveAs(blob, `${report?.client_name}-${formattedDate}-report.xlsx`);
+    // saveAs(blob, `${report?.client_name}-${report?.created_at}-report.xls`);
   };
 
 

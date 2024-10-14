@@ -16,8 +16,8 @@ const BarGraph = ({staffReports}) => {
   const staffData = staffReports?.slice(0, 10).map((report) => {
     return {
       name: report.client_name.substring(0, 5) + moment(report.created_at).format('YY-MM-DD'),
-      draft: report.report_draft?.length,
-      final: report.report_final?.length,
+      ReportWording: report.report_draft?.length,
+      Communication: report.report_final?.length,
     }
   })
 
@@ -46,13 +46,13 @@ const BarGraph = ({staffReports}) => {
             wrapperStyle={{ paddingTop: "20px", paddingBottom: "40px" }}
           />
           <Bar
-            dataKey="draft"
+            dataKey="ReportWording"
             fill="#15ab3b"
             legendType="circle"
             radius={[10, 10, 0, 0]}
           />
           <Bar
-            dataKey="final"
+            dataKey="Communication"
             fill="#000000"
             legendType="circle"
             radius={[10, 10, 0, 0]}

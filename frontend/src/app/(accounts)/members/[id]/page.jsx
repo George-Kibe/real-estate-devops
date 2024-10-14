@@ -4,7 +4,7 @@ import axios from 'axios';
 import { useParams, useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
 import { toast } from 'react-toastify';
-import {BookAIcon, CalendarDays, Mail, PhoneCall, Users2, ScrollText} from "lucide-react"
+import { CalendarDays, Mail, PhoneCall, Users2, ScrollText} from "lucide-react";
 import { Button } from '@/components/ui/button';
 import { saveAs } from 'file-saver';
 import * as XLSX from 'xlsx';
@@ -92,8 +92,6 @@ const SingleMemberPage = () => {
     reports.forEach(report => {
       const mainData = {
         date: moment(report?.created_at).format('MMMM Do YYYY'),
-        created_at: report?.created_at,
-        updated_at: report?.updated_at,
         title: report?.title,
         description: report?.description,
         client_name: report?.client_name,
@@ -124,13 +122,38 @@ const SingleMemberPage = () => {
 
     const mainSheet = XLSX.utils.json_to_sheet(mainReportData);
     const propertiesSheet = XLSX.utils.json_to_sheet(propertiesData);
+    mainSheet['!cols'] = [
+      { wch: 15 }, // created_at
+      { wch: 20 }, // title
+      { wch: 20 }, // description (allow larger width)
+      { wch: 20 }, // client_name
+      { wch: 10 }, // client_id
+      { wch: 10 }, // report_type
+      { wch: 10 }, // status
+      { wch: 50 }, // report_draft (allow larger width)
+      { wch: 50 },  // report_final (allow larger width)
+      { wch: 15 }, // updated_at
+
+    ];
+    propertiesSheet['!cols'] = [
+      { wch: 15 }, // date
+      { wch: 20 }, // title
+      { wch: 20 }, // address      
+      { wch: 10 }, // price
+      { wch: 20 }, // description (allow larger width)
+      { wch: 10 }, // bathrooms
+      { wch: 15 }, // phone number
+      { wch: 20 }, // amenities
+      { wch: 20 }, // images
+      { wch: 80 }, // comments
+    ];
 
     XLSX.utils.book_append_sheet(workbook, mainSheet, 'Summary Reports');
     XLSX.utils.book_append_sheet(workbook, propertiesSheet, 'Properties Details Report');
 
-    const excelBuffer = XLSX.write(workbook, { bookType: 'xls', type: 'array' });
+    const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
     const blob = new Blob([excelBuffer], { type: 'application/vnd.ms-excel' });
-    saveAs(blob, `${member?.name}-reports.xls`);
+    saveAs(blob, `${member?.name}-reports.xlsx`);
   };
 
   const exportToExcel = async() => {
