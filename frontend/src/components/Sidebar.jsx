@@ -1,21 +1,17 @@
 import {
     Command,
-    CommandDialog,
     CommandEmpty,
     CommandGroup,
     CommandInput,
     CommandItem,
     CommandList,
     CommandSeparator,
-    CommandShortcut,
   } from '@/components/ui/command';
 import { useMainProvider } from '@/providers/MainProvider';
   import {
-    LayoutDashboard,
     Newspaper,
     Users,
     CreditCard,
-    Settings,
     Star,
     User,
     User2Icon,
@@ -75,7 +71,7 @@ import { useMainProvider } from '@/providers/MainProvider';
             }
           </CommandGroup>
           <CommandSeparator />
-          <CommandGroup heading='Settings'>
+          {/* <CommandGroup heading='Settings'>
             {
               !orgMode && 
               <>
@@ -92,7 +88,7 @@ import { useMainProvider } from '@/providers/MainProvider';
               }
               </>
             }
-          </CommandGroup>
+          </CommandGroup> */}
         </CommandList>
       </Command>
     );

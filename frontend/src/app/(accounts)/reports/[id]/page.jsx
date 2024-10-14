@@ -39,12 +39,15 @@ export default function MembersPage({params, searchParams}) {
   const [editMode, setEditMode] = useState(false);
   
   const [report, setReport] = useState(null);
+
   const [properties, setProperties] = useState([]);
   const [currentProperties, setCurrentProperties] = useState([]);
   const [userProperties, setUserProperties] = useState([]);
   const [comments, setComments] = useState('');
   const [startTime, setStartTime] = useState();
   const [endTime, setEndTime] = useState();
+  const [userLocation, setUserLocation] = useState('');
+  const [visitType, setVisitType] = useState('');
   const [currentProperty, setCurrentProperty] = useState({});
   const [currentIndex, setCurrentIndex] = useState();
   const [loading, setLoading] = useState(false);
@@ -53,6 +56,7 @@ export default function MembersPage({params, searchParams}) {
   const [summaryAiLoading, setSummaryAiLoading] = useState(false);
   const [summary, setSummary] = useState();
   const [summaryFinal, setSummaryFinal] = useState('');
+
   const [currentPropertiesIndex, setcurrentPropertiesIndex] = useState(5);
   //console.log("Report: ", report)
   console.log("User Properties: ", userProperties);
@@ -229,8 +233,16 @@ export default function MembersPage({params, searchParams}) {
 
   const updateReport = async() => {
     setLoading(true)
-    const data = {report_final: summaryFinal, start_time: startTime, end_time: endTime, report_draft: summary, properties: userProperties}
-    console.log(data)
+    const data = {
+      report_final: summaryFinal, 
+      start_time: startTime, 
+      end_time: endTime, 
+      report_draft: summary, 
+      properties: userProperties,
+      report_view_type: visitType,
+      report_location: userLocation
+    }
+
     try {
       const response = await axios.put(`${BACKEND_URL}/api/reports/${id}/`, data);
       const reportData = response.data
@@ -386,6 +398,41 @@ export default function MembersPage({params, searchParams}) {
                   onChange={e => setStartTime(e.target.value)} 
               />
               <p className="">{startTime ||report?.start_time}</p>
+            </div>
+            <div className="flex flex-col p-2">              
+              {/* Location Dropdown */}
+              <div className="w-full">
+                <label className="block mb-2 text-sm font-medium ">Select Location</label>
+                <div className="flex items-center gap-4">
+                  <select
+                    value={userLocation}
+                    onChange={(e) => setUserLocation(e.target.value)}
+                    className="block border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm px-3 py-2"
+                  >
+                    <option value="" disabled>Select Location</option>
+                    <option value="office">Office</option>
+                    <option value="home">Home</option>
+                  </select>
+                  <p className="text-sm">Selected Location: <span className="font-semibold ">{report?.report_location || userLocation || 'None'}</span></p>
+                </div>
+              </div>
+
+              {/* Visit Type Dropdown */}
+              <div className="w-full mt-2">
+                <label className="block mb-2 text-sm font-medium">Visit Type</label>
+                <div className="flex items-center gap-4">
+                  <select
+                    value={visitType}
+                    onChange={(e) => setVisitType(e.target.value)}
+                    className="block border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm px-3 py-2"
+                  >
+                    <option value="" disabled>Select Visit Type</option>
+                    <option value="direct">Direct</option>
+                    <option value="indirect">Indirect</option>
+                  </select>
+                  <p className="text-sm">Selected Visit Type: <span className="font-semibold">{report?.report_view_type || visitType || 'None'}</span></p>
+                </div>
+              </div>
             </div>
         </div>
         

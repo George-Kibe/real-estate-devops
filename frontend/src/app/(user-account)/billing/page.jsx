@@ -52,8 +52,7 @@ export default function BillingPage() {
             !currentUser?.isEnterprise && 
             <Button className="mt-5" onClick={upgradeToEnterPrise}>Upgrade to Enterprise</Button>
           }
-      </div>
-      
+      </div>      
     </div>
   );
 }
