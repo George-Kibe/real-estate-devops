@@ -34,7 +34,7 @@ export default function UsersPage() {
   }
   const searchUsers = () => {
     // filter users by search term if it matches their names
-    const filteredUsers = users.filter(user => user.name.toLowerCase().includes(searchText.toLowerCase()))
+    const filteredUsers = users.filter(user => user?.name?.toLowerCase().includes(searchText.toLowerCase()))
     if (filteredUsers.length > 0) {
         setUsers(filteredUsers)
     }else{

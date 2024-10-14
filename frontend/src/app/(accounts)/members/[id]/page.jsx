@@ -178,9 +178,10 @@ const SingleMemberPage = () => {
   const closeDeleteModal = () => {
     setDeleteModalOpen(false);
   }
-  const averageDraftLength = staffReports?.reduce((total, report) => {
-    return total + (report.report_draft?.length || 0); // Add the length or 0 if undefined
-  }, 0) / (staffReports?.length || 1); // Divide by the number of reports
+  const averageDraftLength = parseInt( staffReports?.reduce((total, report) => {
+      return total + (report.report_draft?.length || 0); // Add the length or 0 if undefined
+    }, 0) / (staffReports?.length || 1)
+  );
   
   
   if (loading) {
@@ -217,10 +218,6 @@ const SingleMemberPage = () => {
                   {member?.bio || "No User Bio"}
                 </p>
                 <div className="flex items-center justify-between gap-2 flex-wrap text-xs font-medium">
-                  <div className="w-full md:w-1/3 lg:w-full 2xl:w-1/3 flex items-center gap-2">
-                    <BookAIcon />
-                    <span>A+</span>
-                  </div>
                   <div className="w-full md:w-1/3 lg:w-full 2xl:w-1/3 flex items-center gap-2">
                     <CalendarDays/>
                     <span>Joined:{moment(member?.createdAt).format('MMMM Do YYYY')}</span>
@@ -260,22 +257,6 @@ const SingleMemberPage = () => {
                 <div className="">
                   <h1 className="text-xl font-semibold">{staffClients.length}</h1>
                   <span className="text-sm text-gray-400">Allocated clients</span>
-                </div>
-              </div>
-              {/* CARD */}
-              <div className="p-4 rounded-md flex gap-4 w-full md:w-[48%] xl:w-[45%] 2xl:w-[48%]">
-              <ScrollText />
-                <div className="">
-                  <h1 className="text-xl font-semibold">6</h1>
-                  <span className="text-sm text-gray-400">Lessons</span>
-                </div>
-              </div>
-              {/* CARD */}
-              <div className="bg-white p-4 rounded-md flex gap-4 w-full md:w-[48%] xl:w-[45%] 2xl:w-[48%]">
-              <CalendarDays />
-                <div className="">
-                  <h1 className="text-xl font-semibold">6</h1>
-                  <span className="text-sm text-gray-400">Classes</span>
                 </div>
               </div>
             </div>

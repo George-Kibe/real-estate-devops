@@ -8,9 +8,11 @@ import { PieChart, Pie, ResponsiveContainer } from "recharts";
 // ];
 
 const PieChartGraph = ({averageDraftLength}) => {
+  console.log("averageDraftLength: ", averageDraftLength);
+  console.log(typeof averageDraftLength)
   const data = [
     {name: "Group A", value: averageDraftLength, fill: "#000FFF"},
-    {name: "Group B", value: 200 - averageDraftLength, fill: "#FAE27C"}
+    {name: "Group B", value: 1000 - averageDraftLength, fill: "#FAE27C"}
   ]
   return (
     <div className="bg-white p-4 rounded-md h-80 relative">
