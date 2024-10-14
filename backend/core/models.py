@@ -63,6 +63,7 @@ class Report(TimeStampedUUIDModel):
     report_final = models.TextField(null=True, blank=True)
     start_time = models.TimeField(null=True, blank=True)
     end_time = models.TimeField(null=True, blank=True)
+    report_date = models.DateField(null=True, blank=True)
 
     def __str__(self):
         return f"{self.client_id} - {self.report_type}"

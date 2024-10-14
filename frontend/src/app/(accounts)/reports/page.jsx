@@ -8,20 +8,23 @@ import { toast } from "react-toastify";
 import { saveAs } from 'file-saver';
 import * as XLSX from 'xlsx';
 import moment from "moment";
-import { set } from "mongoose";
 import { Loader } from "lucide-react";
+import CustomDateModal from "@/components/modals/CustomDateModal";
+
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
 //const BACKEND_URL = "http://localhost:8000"
 
 export default function ReportsPage() {
   const [loading, setLoading] = useState(false);
+  const [showDateModal, setShowDateModal] = useState(false);
   const [reportsLoading, setReportsLoading] = useState(false);
   const [clients, setClients] = useState([]);
   const [allClients, setAllClients] = useState([]);
   const [reports, setReports] = useState([]);
   const {orgMode, tempUser, currentUser, currentClient, setCurrentClient} = useMainProvider();
   const router = useRouter();
+  const [selectedDate, setSelectedDate] = useState(null);
   //console.log("Current Client: ", currentClient)
   //console.log("All Clients:", allClients)
   //vconsole.log("Tempuser: ", tempUser?._id)
@@ -102,6 +105,7 @@ export default function ReportsPage() {
       setLoading(false);
     }
   }
+
   const viewReport = (id) => {
     router.push(`/reports/${id}`)
   }
@@ -205,6 +209,7 @@ export default function ReportsPage() {
       {/* <AnimatedText text={"Reports Page"} /> */}
       <p className="self-center font-bold text-2xl mb-4 md:mb-8">Select Client to View their  Reports</p>
 
+      <CustomDateModal selectedDate={selectedDate} setSelectedDate={setSelectedDate} isOpen={showDateModal} onClose={() => setShowDateModal(false)} />
       {
         !orgMode && (
           <div className="flex w-full">
@@ -251,11 +256,8 @@ export default function ReportsPage() {
                     <th className="flex gap-3 px-2 py-1 font-normal">
                       <div className="text-sm">
                         <div className="font-medium ">
-                          <Button>
                           {client.first_name || client.client_name}
-                          </Button>
                         </div>
-                        {/* <div className="">{client.email}</div> */}
                       </div>
                     </th>
                     <td className="px-2 py-1">{client.last_name || client.client_name}</td>
@@ -277,15 +279,23 @@ export default function ReportsPage() {
       </div>
       {
         currentClient && (
-          <div className="flex flex-col items-center justify-center">
+          <div className="flex flex-col  justify-center">
             <p className="self-center font-bold text-2xl mb-4 md:mb-8">Reports for: {currentClient?.client_name}</p>
-            <div className="flex-1 w-full flex flex-col md:flex-row justify-around">
-              <Button onClick={generateReport}>
-                {loading? "Generating Report...": `Generate ${currentClient?.client_name}'s Report for Today`}
-              </Button>
-              <Button onClick={() => exportToExcel(reports, currentClient?.client_name)}>
-                {loading? "Generating Report...": `Export ${currentClient?.client_name}'s Reports to Excel`}
-              </Button>
+            <div className="flex flex-col gap-4">
+              <div className="flex-1 w-full flex flex-col md:flex-row gap-4">
+                <Button onClick={generateReport}>
+                  {loading? "Generating Report...": `Generate ${currentClient?.client_name}'s Report for Today`}
+                </Button>
+                <Button onClick={() => exportToExcel(reports, currentClient?.client_name)}>
+                  {loading? "Generating Report...": `Export ${currentClient?.client_name}'s Reports to Excel`}
+                </Button>
+              </div>
+              <div className="flex-1 w-full flex flex-col md:flex-row">
+                <Button onClick={() => setShowDateModal(true)}>
+                  {loading? "Generating Report...": `Generate ${currentClient?.client_name}'s Report for Another Day`}
+                </Button>
+              </div>
+             
             </div>
             {
               !reports?.length && <p className="">You do not have any reports for this client yet!</p>
