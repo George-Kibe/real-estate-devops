@@ -42,7 +42,11 @@ export default function MembersPage({params, searchParams}) {
   const [properties, setProperties] = useState([]);
   const [currentProperties, setCurrentProperties] = useState([]);
   const [userProperties, setUserProperties] = useState([]);
+  // states for a single property
   const [comments, setComments] = useState('');
+  const [agentName, setAgentName] = useState('');
+  const [additionalResources, setAdditionalResources] = useState('');
+  // report states
   const [startTime, setStartTime] = useState();
   const [endTime, setEndTime] = useState();
   const [userLocation, setUserLocation] = useState('');
@@ -54,17 +58,14 @@ export default function MembersPage({params, searchParams}) {
   const [propertiesLoading, setPropertiesLoading] = useState(false);
   const [summaryAiLoading, setSummaryAiLoading] = useState(false);
   const [summary, setSummary] = useState();
-  
+
   const [summaryFinal, setSummaryFinal] = useState('');
 
   const [currentPropertiesIndex, setcurrentPropertiesIndex] = useState(5);
   //console.log("Report: ", report)
-  //console.log("User Properties: ", userProperties);
-  // join all property comments together
+  console.log("User Properties: ", userProperties);
   const allComments = userProperties.map(p => p.comments).join(' ');
   //console.log("All Comments: ", allComments);
-
-  // console.log("Current Properties: ", currentProperties);
   const {id} = useParams();
   const divRef = useRef();
   const router = useRouter();
@@ -312,6 +313,8 @@ export default function MembersPage({params, searchParams}) {
       return;
     }
     currentProperty.comments = comments
+    currentProperty.agentName = agentName
+    currentProperty.additionalResources = additionalResources
     if (editMode) {
       const updatedProperties = userProperties.map((p, i) => {
         if (i === currentIndex) {
@@ -320,14 +323,14 @@ export default function MembersPage({params, searchParams}) {
         return p;
       });
       setUserProperties(updatedProperties);
-      setComments('');
+      setComments(''); setAgentName(''); setAdditionalResources('');
       setModalOpen(false);
       setCurrentProperty(null);
       setEditMode(false);
       return;
     }
     setUserProperties([...userProperties, currentProperty]);
-    setComments('');
+    setComments(''); setAgentName(''); setAdditionalResources('');
     setModalOpen(false);
     setCurrentProperties(currentProperties.filter((p, i) => i !== currentIndex));
     setCurrentProperty(null);
@@ -386,7 +389,19 @@ export default function MembersPage({params, searchParams}) {
       
       <AnimatedText text={`Report for ${report?.client_name}-${moment(
         report?.report_date ? report?.report_date : report?.created_at).format('MMMM Do YYYY')} `} />
-      <AddCommentModal comments={comments} isOpen={modalOpen} onClose={closeModal} setComments={setComments} currentProperty={currentProperty} addToUserProperties={addToUserProperties} editMode={editMode}/>
+      <AddCommentModal 
+        comments={comments} 
+        setComments={setComments} 
+        isOpen={modalOpen} 
+        onClose={closeModal}         
+        currentProperty={currentProperty} 
+        addToUserProperties={addToUserProperties} 
+        editMode={editMode}
+        setAgentName={setAgentName}
+        agentName={agentName}
+        additionalResources={additionalResources}
+        setAdditionalResources={setAdditionalResources}
+      />
       <AddPropertyModal isOpen={propertyModalOpen} onClose={closePropertyModal} setUserProperties={setUserProperties}
       />
       <ConfirmExportModal exportAction={exportToExcel} isOpen={exportModalOpen} onClose={() => setExportModalOpen(false)} />
@@ -396,7 +411,7 @@ export default function MembersPage({params, searchParams}) {
       />
       <SendClientAlertModal isOpen={sendModalOpen} onClose={closeSendModal} client={currentClient} property={currentProperty} />
 
-        <div className="p-4 md:p-8">
+        <div className="px-2">
             <div className='flex flex-row gap-2'>
               <p className='flex flex-row gap-4'><p className="font-semibold">Report Title:</p> {report?.title}</p>
             </div>
