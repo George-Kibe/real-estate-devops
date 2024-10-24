@@ -23,7 +23,7 @@ import { useMainProvider } from '@/providers/MainProvider';
               <>
               <CommandItem>
                 <User className='mr-2 h-4 w-4' />
-                <Link href='/my-account'>My Account</Link>
+                <Link href='/my-account'>Account</Link>
               </CommandItem>
               {
                sellerMode && 

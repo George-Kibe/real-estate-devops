@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { Ellipsis, Eye, Pencil, Share2, Trash, DiamondPlus } from "lucide-react"
+import { Ellipsis, Eye, Pencil, Share2, Trash, DiamondPlus, Heart } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -10,8 +10,17 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { toast } from "react-toastify";
-
-export function PropertyActions({handleEdit, handleAddProperty, isNew, viewProperty, handleShareProperty, handleRemoveProperty}) {
+// handleMarkFavorite
+export function PropertyActions({
+  handleEdit, 
+  handleAddProperty, 
+  handleMarkFavorite,
+  isNew,
+  isFavorite,
+  viewProperty, 
+  handleShareProperty,
+  handleRemoveProperty
+}) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -23,8 +32,8 @@ export function PropertyActions({handleEdit, handleAddProperty, isNew, viewPrope
         {
           isNew? (
           <DropdownMenuItem onClick={handleAddProperty}>
-            <DiamondPlus className="h-5 w-5 mr-4" />
-            Add
+            <DiamondPlus className="h-5 w-5 mr-2" />
+            Add Comments
           </DropdownMenuItem>)
            :
           (
@@ -43,6 +52,12 @@ export function PropertyActions({handleEdit, handleAddProperty, isNew, viewPrope
         <DropdownMenuItem onClick={handleShareProperty}>
           <Share2 className="h-5 w-5 mr-2" />
           Share With Client
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={handleMarkFavorite}>
+          <Heart className="h-5 w-5 mr-2" />
+            {
+              isFavorite? "Unmark Favorite": "Mark As Favorite"
+            }
         </DropdownMenuItem>
         <DropdownMenuItem onClick={handleRemoveProperty}>
           <Trash className="h-5 w-5 mr-2" />

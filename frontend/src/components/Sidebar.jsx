@@ -50,7 +50,7 @@ import { useMainProvider } from '@/providers/MainProvider';
               </CommandItem>
               <CommandItem>
                 <Users className='mr-2 h-4 w-4' />
-                <Link href='/members'>{orgMode? `${currentUser?.name} 's Members` : "My Staff Members"}
+                <Link href='/members'>{orgMode? `${currentUser?.name} 's Members` : "Staff Members"}
                 </Link>
               </CommandItem>
               <CommandItem>
@@ -71,24 +71,6 @@ import { useMainProvider } from '@/providers/MainProvider';
             }
           </CommandGroup>
           <CommandSeparator />
-          {/* <CommandGroup heading='Settings'>
-            {
-              !orgMode && 
-              <>
-              <CommandItem>
-                <User className='mr-2 h-4 w-4' />
-                <Link href='/my-account'>My Account</Link>
-              </CommandItem>
-              {
-               sellerMode && 
-                <CommandItem>
-                  <CreditCard className='mr-2 h-4 w-4' />
-                  <Link href='/billing'>My Billing</Link>
-                </CommandItem>
-              }
-              </>
-            }
-          </CommandGroup> */}
         </CommandList>
       </Command>
     );

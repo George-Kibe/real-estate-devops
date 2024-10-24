@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useMainProvider } from "@/providers/MainProvider";
 import axios from "axios";
-import { Brain, LoaderCircle, Eye, Trash, DiamondPlus, Loader, Share2 } from 'lucide-react';
+import { Brain, LoaderCircle, Loader, Heart } from 'lucide-react';
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
@@ -20,10 +20,9 @@ import SendClientAlertModal from "@/components/modals/SendClientAlertModal";
 import { getTimeDifference } from "@/lib/getTimeDifference";
 import ConfirmExportModal from "@/components/modals/ConfirmExportModal";
 import { PropertyActions } from "@/components/PropertyActions";
-import { user } from "@nextui-org/react";
+import { FaHeart } from "react-icons/fa";
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
-//const BACKEND_URL = "http://localhost:8000"
 
 export default function MembersPage({params, searchParams}) {
   const location = searchParams?.searchTerm || '';
@@ -55,11 +54,17 @@ export default function MembersPage({params, searchParams}) {
   const [propertiesLoading, setPropertiesLoading] = useState(false);
   const [summaryAiLoading, setSummaryAiLoading] = useState(false);
   const [summary, setSummary] = useState();
+  
   const [summaryFinal, setSummaryFinal] = useState('');
 
   const [currentPropertiesIndex, setcurrentPropertiesIndex] = useState(5);
   //console.log("Report: ", report)
-  console.log("User Properties: ", userProperties);
+  //console.log("User Properties: ", userProperties);
+  // join all property comments together
+  const allComments = userProperties.map(p => p.comments).join(' ');
+  //console.log("All Comments: ", allComments);
+
+  // console.log("Current Properties: ", currentProperties);
   const {id} = useParams();
   const divRef = useRef();
   const router = useRouter();
@@ -167,7 +172,6 @@ export default function MembersPage({params, searchParams}) {
   }
   const viewProperty = (property) => {
     setTempProperty(property);
-    // router.push(`/properties`)
     window.open(`/properties`, '_blank');
   }
   const fetchProperties = async() => {
@@ -225,6 +229,7 @@ export default function MembersPage({params, searchParams}) {
   useEffect(() => {
     fetchReport();
   }, [])
+
   useEffect(() => {
     if (currentProperty?.comments) {
       setComments(currentProperty.comments);
@@ -343,6 +348,29 @@ export default function MembersPage({params, searchParams}) {
   const handleRemove = (index) => {
     setCurrentProperties(currentProperties.filter((p, i) => i !== index));
   }
+  const handleMarkFavorite = (index) => {
+    const propertyToFavorite = currentProperties[index]
+    const tempProperties = currentProperties.filter((p, i) => i !== index);
+    if (propertyToFavorite.isFavorite) {
+      propertyToFavorite.isFavorite = false;
+    } else {
+      propertyToFavorite.isFavorite = true;
+    }
+    tempProperties.splice(index, 0, propertyToFavorite);
+    setCurrentProperties(tempProperties);
+  }
+  const handleMarkFavoriteUser = (index) => {
+    const propertyToFavorite = userProperties[index]
+    const tempProperties = userProperties.filter((p, i) => i !== index);
+    if (propertyToFavorite.isFavorite) {
+      propertyToFavorite.isFavorite = false;
+    } else {
+      propertyToFavorite.isFavorite = true;
+    }
+    tempProperties.splice(index, 0, propertyToFavorite);
+    setUserProperties(tempProperties);
+  }
+
   const handleRemoveUserProperty = (title) => {
     console.log("Removing property with id: ", id)
     setUserProperties(userProperties.filter(p => p.title !== title))
@@ -379,7 +407,7 @@ export default function MembersPage({params, searchParams}) {
               <p className='flex flex-row gap-4'><p className="font-semibold">Report Description:</p> {report?.description}</p>
             </div>
             <div className='flex flex-row gap-2'>
-              <p className=''><p className="font-semibold">Report Draft:</p> {report?.report_draft}</p>
+              <p className=''><p className="font-semibold">Report Last Update:</p> {report?.report_draft}</p>
             </div>
             <div className='flex flex-row gap-2'>
               <p className=''><p className="font-semibold">Report Final:</p> {report?.report_final}</p>
@@ -399,6 +427,19 @@ export default function MembersPage({params, searchParams}) {
               />
               <p className="">{startTime ||report?.start_time}</p>
             </div>
+
+            <div className="mt-4 relative md:mt-6 cursor-pointer flex flex-row items-center gap-2">
+              <p className="">{report?.end_time ? "Edit": "Set"} End Time:</p>
+              <input 
+                  type="time" 
+                  id="startTimeInput"
+                  value={endTime} 
+                  //className="opacity-0 absolute t-0 l-0"
+                  onChange={e => setEndTime(e.target.value)} 
+              />
+              <p className="">{endTime|| report?.end_time}</p>
+            </div>
+
             <div className="flex flex-col p-2">              
               {/* Location Dropdown */}
               <div className="w-full">
@@ -500,7 +541,10 @@ export default function MembersPage({params, searchParams}) {
                             <td className="w-4 p-2">
                                 {index+1}.
                             </td>
-                            <th scope="row" className="flex items-center py-1 text-gray-900 whitespace-nowrap dark:text-white">
+                            <td scope="row" className="flex items-center py-1 text-gray-900 whitespace-nowrap dark:text-white">
+                                {
+                                  property.isFavorite && <FaHeart className='h-8 w-8 text-red-500 mr-4'  />
+                                }
                                 <img className="w-20 h-20 rounded-md" src={property?.images[0]} alt="Property Image" />
                                 <div className="ps-3">
                                   <div className="text-base text-wrap ">{property.title}</div>
@@ -512,7 +556,7 @@ export default function MembersPage({params, searchParams}) {
                                     <p className="font-bold mr-2">Bathrooms:</p>{property.bathrooms}  
                                   </div>
                                 </div>  
-                            </th>
+                            </td>
                             <td className="px-2 py-1">
                               {property.price}
                             </td>
@@ -531,7 +575,10 @@ export default function MembersPage({params, searchParams}) {
                              <PropertyActions 
                               handleEdit={() => handleEdit(property, index)}
                               viewProperty={() => viewProperty(property)} 
-                              handleShareProperty={() => handleShareProperty(property)} handleRemoveProperty={() =>handleRemoveUserProperty(property.title)} 
+                              handleShareProperty={() => handleShareProperty(property)} 
+                              handleRemoveProperty={() =>handleRemoveUserProperty(property.title)} 
+                              isFavorite={property.isFavorite}
+                              handleMarkFavorite={() => handleMarkFavoriteUser(index)}
                             />
                             </td>
                         </tr>
@@ -545,7 +592,10 @@ export default function MembersPage({params, searchParams}) {
                             <td className="w-4 p-2 ">
                                 {userProperties.length + index+1}.
                             </td>
-                            <th scope="row" className="flex justify-center items-center py-4 text-gray-900 whitespace-nowrap dark:text-white">
+                            <td scope="row" className="flex justify-center items-center py-4 text-gray-900 whitespace-nowrap dark:text-white">
+                                {
+                                  property.isFavorite && <FaHeart className='h-8 w-8 text-red-500 mr-4'  />
+                                }
                                 <img className="w-20 h-20 rounded-md" src={property?.images[0]} alt="Jese image" />
                                 <div className="ps-3">
                                     <div className="text-base text-wrap ">{property.title}</div>
@@ -558,7 +608,7 @@ export default function MembersPage({params, searchParams}) {
                                       <p className="font-bold mr-2">Bathrooms:</p>{property.bathrooms}  
                                     </div>
                                 </div>  
-                            </th>
+                            </td>
                             <td className="px-2 py-1">
                               {property.price}
                             </td>
@@ -576,8 +626,12 @@ export default function MembersPage({params, searchParams}) {
                             <td className="px-2 py-1  self-center justify-center flex-col gap-2">
                             <PropertyActions 
                               handleAddProperty={() => handleAdd(property, index)} 
-                              isNew={true} 
-                              viewProperty={() => viewProperty(property)} handleShareProperty={() => handleShareProperty(property)} handleRemoveProperty={() => handleRemove(index)}
+                              isNew={true}                               
+                              viewProperty={() => viewProperty(property)} 
+                              handleShareProperty={() => handleShareProperty(property)} 
+                              handleRemoveProperty={() => handleRemove(index)}
+                              isFavorite={property.isFavorite}
+                              handleMarkFavorite={() => handleMarkFavorite(index)}
                            />
                           </td>
                         </tr>
@@ -610,22 +664,12 @@ export default function MembersPage({params, searchParams}) {
                   </Button>
               </div>
               <Textarea className="mt-5" required
-                  value={summary}
+                  value={summary || allComments}
                   defaultValue={summary?summary:report?.report_draft}
                   onChange={(e)=>setSummary(e.target.value)}
               />
           </form>
-          <div className="mt-4 relative md:mt-6 cursor-pointer flex flex-row items-center gap-2">
-            <p className="">{report?.end_time ? "Edit": "Set"} End Time:</p>
-            <input 
-                type="time" 
-                id="startTimeInput"
-                value={endTime} 
-                //className="opacity-0 absolute t-0 l-0"
-                onChange={e => setEndTime(e.target.value)} 
-            />
-            <p className="">{endTime|| report?.end_time}</p>
-          </div>
+
           <div className='flex gap-2'>
             <Button onClick={updateReport}>{loading? 'Loading...': 'Save Report'}</Button>
             <Button onClick={() => setDeleteModalOpen(true)} variant="destructive">{loading? 'Loading...': 'Delete Report'}</Button>

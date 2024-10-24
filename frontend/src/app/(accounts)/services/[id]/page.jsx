@@ -127,7 +127,7 @@ export default function MembersPage({params, searchParams}) {
               <p className='flex flex-row gap-4'><p className="font-semibold">Report Description:</p> {report?.description}</p>
             </div>
             <div className='flex flex-row gap-2'>
-              <p className=''><p className="font-semibold">Report Draft:</p> {report?.report_draft}</p>
+              <p className=''><p className="font-semibold">Report Last Update:</p> {report?.report_draft}</p>
             </div>
             <div className='flex flex-row gap-2'>
               <p className=''><p className="font-semibold">Report Final:</p> {report?.report_final}</p>
