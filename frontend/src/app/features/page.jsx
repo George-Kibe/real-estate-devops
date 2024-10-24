@@ -28,11 +28,11 @@ const FeaturesPage = () => {
         <div id='subscription' className="-mx-4 flex flex-wrap justify-center">
           <div className="-mx-4 flex flex-wrap">
             <PricingCard
-              type="Basic"
-              price={99}
-              subscription="year"
+              type="Free 1 Month Trial"
+              price={0}
+              subscription="One Month"
               description="Perfect for personal search of properties."
-              buttonText="Choose Basic"
+              buttonText="Choose Free Trial"
               listItems= {[
                 'DHS Compliance Note Taking Assistance',
                 'Secure Cloud-Based Storage',

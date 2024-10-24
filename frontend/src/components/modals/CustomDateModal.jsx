@@ -73,7 +73,7 @@ const CustomDateModal = ({ selectedDate, setSelectedDate, isOpen, onClose }) => 
           <p className="font-bold text-2xl p-4">X</p>
         </button>
 
-        <div className="flex flex-col h-[50vh] items-center justify-center p-4 bg-gray-100">
+        <div className="flex flex-col h-[20vh] items-center justify-center p-4 bg-gray-100">
           <h2 className="mb-4 text-lg font-semibold text-gray-700">Select a Date</h2>
 
           <div className="relative">

@@ -12,7 +12,8 @@ const PaymentSuccess = ({searchParams: {amount}}) => {
     const body = {
       isPremium: true,
       isEnterprise: amount >= 299 ? true : false,
-      subscriptionDate: new Date().toISOString()
+      subscriptionDate: new Date().toISOString(),
+      isFreeTrial: false,
     }
     console.log('Updating: ', body);
     try {

@@ -1,7 +1,9 @@
 "use client"
+
 import { useMainProvider } from "@/providers/MainProvider";
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useState } from "react";
+import { toast } from "react-toastify";
 
 const PricingCard = ({
   description,
@@ -14,12 +16,46 @@ const PricingCard = ({
   listItems
 
 }) => {
-  const router = useRouter()
-  const {currentUser} = useMainProvider();
+  const router = useRouter();
+  const {currentUser, setCurrentUser} = useMainProvider();
+  const [loading, setLoading] = useState(false);
+
+  const handleUpdate = async() => {
+    const body = {
+      isPremium: true,
+      isEnterprise: false,
+      subscriptionDate: new Date().toISOString(),
+      isFreeTrial: true,
+    }
+    // console.log('Updating: ', body);
+    try {
+      setLoading(true)
+      const response = await fetch(`/api/auth/users/${currentUser?._id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(body)
+      })
+      if (response.status === 200){
+        const data = await response.json();
+        console.log('Response data', data);
+        setCurrentUser(data);
+        toast.success("Status update Successful. You can Test our services for one month")
+        setLoading(false)
+      }
+    } catch (error) {
+      toast.error("Error Updating, Try Again")
+      setLoading(false)
+    }
+  }
 
   const handleSubscription = async () => {
-    console.log("Handling checkout")
-    router.push(`/checkout/?amount=${price}`)
+    if (price === 0) {
+      handleUpdate();
+    } else{
+      router.push(`/checkout/?amount=${price}`)
+    }
   }
   return (
     <>
@@ -52,7 +88,7 @@ const PricingCard = ({
                 : "block w-full rounded-md border border-stroke bg-transparent p-3 text-center text-base font-medium text-primary transition hover:border-primary dark:border-dark-3"
             } `}
           >
-            {buttonText}
+            {loading ? 'Loading...' : buttonText}
           </button>
         </div>
       </div>

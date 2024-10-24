@@ -60,6 +60,11 @@ const UserSchema = new Schema({
         required: false,
         default: false,
     },
+    isFreeTrial: {
+        type: Boolean,
+        required: false,
+        default: false,
+    },
     profession: {
         type: String,
         required: false,
