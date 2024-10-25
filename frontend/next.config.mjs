@@ -8,6 +8,7 @@ const nextConfig = {
             "mernbnb-images-bucket.s3.amazonaws.com",
             "bayut-production.s3.eu-central-1.amazonaws.com",
             "housinglink.org",
+            "images1.apartments.com",
             "cdn.rentcafe.com",
             "s3.amazonaws.com",
             "images.pexels.com",

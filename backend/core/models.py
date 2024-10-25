@@ -57,6 +57,7 @@ class Report(TimeStampedUUIDModel):
     client_phone_number = models.CharField(max_length=18, blank=True)
     report_type = models.CharField(max_length=100, null=True, blank=True)
     staff_id = models.CharField(max_length=100, blank=True, null=True)
+    staff_name = models.CharField(max_length=100, blank=True, null=True)
     properties = models.JSONField(default=list, blank=True, null=True)
     status = models.CharField(max_length=100, null=True, blank=True)
     report_draft = models.TextField(null=True, blank=True)
@@ -67,6 +68,7 @@ class Report(TimeStampedUUIDModel):
     report_date = models.DateField(null=True, blank=True)
     report_view_type = models.CharField(max_length=100, null=True, blank=True)
     report_location = models.CharField(max_length=100, null=True, blank=True)
+    isBilled = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.client_id} - {self.report_type}"

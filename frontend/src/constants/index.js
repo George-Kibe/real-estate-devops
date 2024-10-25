@@ -1,0 +1,1 @@
+export const WORK_RATE_PER_HOUR = 20;

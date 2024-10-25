@@ -90,6 +90,7 @@ export default function ReportsPage() {
       report_type: "Daily",
       client_phone_number:currentClient?.phone_number,
       staff_id: orgMode? tempUser?._id : currentUser._id,
+      staff_name: orgMode? tempUser?.name : currentUser.name,
       owner_id: currentUser?._id
     }
     try {
