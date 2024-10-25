@@ -1,6 +1,7 @@
 import axios from 'axios'
 
-export const callAIPrompt = async () => {
+export const callAIPrompt = async ({location, searchTerm}) => {
+    console.log("Location: ", location, "Search Term: ", searchTerm)
     const apiKey = process.env.NEXT_PUBLIC_OPENAI_API_KEY
     try {
         const response = await axios.post('https://api.openai.com/v1/chat/completions', {
@@ -12,7 +13,7 @@ export const callAIPrompt = async () => {
             },
             {
               role: 'user',
-              content: 'List for me 10 different rental assistance and deposit assistance for housing in Ramsey County Minneapolis. Include details such as phonenumber, address, email and website for any reference. Let it be in the form of standard json. The json keys shouls be name, email, phonenumner, address, website'
+              content: `List for me 10 different ${searchTerm} in ${location}. Include details such as phonenumber, address, email and website for any reference. Let it be in the form of standard json. The json keys should be title(will be its name), phone_numner, email, price, address, website. Should be diffenrent from the last`
             }
           ]
         }, {

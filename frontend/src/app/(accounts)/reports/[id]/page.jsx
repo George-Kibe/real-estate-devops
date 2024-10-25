@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useMainProvider } from "@/providers/MainProvider";
 import axios from "axios";
-import { Brain, LoaderCircle, Loader, Heart } from 'lucide-react';
+import { Brain, LoaderCircle, Loader, Heart, Search } from 'lucide-react';
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
@@ -21,6 +21,8 @@ import { getTimeDifference } from "@/lib/getTimeDifference";
 import ConfirmExportModal from "@/components/modals/ConfirmExportModal";
 import { PropertyActions } from "@/components/PropertyActions";
 import { FaHeart } from "react-icons/fa";
+import { SearchButton } from "@/components/TableSearch";
+import { callAIPrompt } from "@/utils/functions";
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
 
@@ -38,6 +40,7 @@ export default function MembersPage({params, searchParams}) {
   const [editMode, setEditMode] = useState(false);
   
   const [report, setReport] = useState(null);
+  const [searchText, setSearchText] = useState('');
 
   const [properties, setProperties] = useState([]);
   const [currentProperties, setCurrentProperties] = useState([]);
@@ -54,16 +57,19 @@ export default function MembersPage({params, searchParams}) {
   const [currentProperty, setCurrentProperty] = useState({});
   const [currentIndex, setCurrentIndex] = useState();
   const [loading, setLoading] = useState(false);
+  const [searchLoading, setSearchLoading] = useState(false);
   const [localLoading, setLocalLoading] = useState(false);
   const [propertiesLoading, setPropertiesLoading] = useState(false);
   const [summaryAiLoading, setSummaryAiLoading] = useState(false);
   const [summary, setSummary] = useState();
+  const [followUpNotes, setFollowUpNotes] = useState('');
 
   const [summaryFinal, setSummaryFinal] = useState('');
 
   const [currentPropertiesIndex, setcurrentPropertiesIndex] = useState(5);
   //console.log("Report: ", report)
-  console.log("User Properties: ", userProperties);
+  //console.log("User Properties: ", userProperties);
+  // console.log("Current Properties: ", currentProperties)
   const allComments = userProperties.map(p => p.comments).join(' ');
   //console.log("All Comments: ", allComments);
   const {id} = useParams();
@@ -221,6 +227,26 @@ export default function MembersPage({params, searchParams}) {
     }
   }
 
+  const handleGeneralSearch = async() => {
+    if (!searchText) {
+      toast.error("Please enter a search phrase!");
+      return;
+    }
+    setSearchLoading(true)
+    try {
+      const location = 'Ramsry County'
+      const results = await callAIPrompt(location, searchText);
+      console.log("Search Result: ", results)
+      setProperties(results)
+      setCurrentProperties(results.slice(0, 5))
+      setSearchText('')
+      setSearchLoading(false)
+    } catch (error) {
+      toast.error("Some Error occured while searching. Try Again!")
+      setSearchLoading(false)
+    }
+  }
+
   useEffect(() => {
     if (searchLocation){
       fetchProperties();
@@ -246,6 +272,7 @@ export default function MembersPage({params, searchParams}) {
       report_draft: summary, 
       properties: userProperties,
       report_view_type: visitType,
+      follow_up_notes: followUpNotes,
       report_location: userLocation
     }
 
@@ -492,6 +519,28 @@ export default function MembersPage({params, searchParams}) {
             </div>
         </div>
         
+       
+        <div className="flex mt-4 my-2 flex-col md:flex-row">
+          {/* <h2 className="font-semibold text-xl mr-2 ml-4">Search for:</h2>  */}
+          <SearchButton 
+            onClick={handleGeneralSearch} 
+            value={searchText} 
+            setSearchText={setSearchText} 
+          />
+          {
+            searchLoading ?  (
+              <p className="flex items-center justify-center">
+                <Loader className="animate-spin ml-2" /> Loading....
+              </p>
+            ):
+            (
+              <button onClick={handleGeneralSearch} className="flex items-center ml-2 gap-2">
+                <Search className='h-4 w-4'  /> Search
+              </button>
+            )
+          }
+        </div>
+
         <div className="flex flex-col md:flex-row w-full justify-between">
           <Button onClick={() => setPropertyModalOpen(true)} className='m-4 '>
             Add Custom Property
@@ -514,7 +563,7 @@ export default function MembersPage({params, searchParams}) {
                         #
                       </th>
                       <th scope="col" className="px-2 py-1">
-                        Property Details
+                        Details
                       </th>
                       <th scope="col" className="px-2 py-1">
                           Price
@@ -552,104 +601,112 @@ export default function MembersPage({params, searchParams}) {
               <tbody>
                   {
                     userProperties?.map((property, index) => (
-                        <tr key={property.id} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                            <td className="w-4 p-2">
-                                {index+1}.
-                            </td>
-                            <td scope="row" className="flex items-center py-1 text-gray-900 whitespace-nowrap dark:text-white">
-                                {
-                                  property.isFavorite && <FaHeart className='h-8 w-8 text-red-500 mr-4'  />
-                                }
-                                <img className="w-20 h-20 rounded-md" src={property?.images[0]} alt="Property Image" />
-                                <div className="ps-3">
-                                  <div className="text-base text-wrap ">{property.title}</div>
-                                  <div className="text-base font-semibold text-wrap">Address: {property.street_address}</div>
-                                  <div className="font-normal text-gray-500 flex flex-row flex-wrap">
-                                    <p className="font-bold mr-2">Amenities:</p> {property.amenities.map((a, index) => <p className="ml-1" key={index}>{a +", "}</p>)}
-                                  </div>
-                                  <div className="font-normal text-gray-500 flex flex-row flex-wrap">
-                                    <p className="font-bold mr-2">Bathrooms:</p>{property.bathrooms}  
-                                  </div>
-                                </div>  
-                            </td>
-                            <td className="px-2 py-1">
-                              {property.price}
-                            </td>
-                            <td className="px-2 py-1">
-                                <div className="flex items-center w-28">
-                                    {property.phone_number}
-                                </div>
-                            </td>
-                            <td className="px-2 py-1">
-                                <p className="">{property.description}</p>
-                            </td>
-                            <td className="px-2 py-1">
-                                <p className="">{property.comments}</p>
-                            </td>
-                            <td className="px-2 py-1  self-center justify-center flex-col gap-2">
-                             <PropertyActions 
-                              handleEdit={() => handleEdit(property, index)}
-                              viewProperty={() => viewProperty(property)} 
-                              handleShareProperty={() => handleShareProperty(property)} 
-                              handleRemoveProperty={() =>handleRemoveUserProperty(property.title)} 
-                              isFavorite={property.isFavorite}
-                              handleMarkFavorite={() => handleMarkFavoriteUser(index)}
-                            />
-                            </td>
-                        </tr>
+                      <tr key={property.id} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                          <td className="w-4 p-2">
+                            {index+1}.
+                          </td>
+                          <td scope="row" className="flex items-center py-1 text-gray-900 whitespace-nowrap dark:text-white">
+                            {
+                              property.isFavorite && <FaHeart className='h-6 w-6 text-red-500 mr-2'  />
+                            }
+                            {property?.images?.[0] ? (
+                              <img src={property.images[0]} alt="image" />
+                            ) : (
+                              <p>No Image</p>
+                            )}
+                            <div className="ps-3">
+                              <div className="text-base text-wrap ">{property.title}</div>
+                              <div className="text-base font-semibold text-wrap">Address: {property.street_address}</div>
+                              <div className="font-normal text-gray-500 flex flex-row flex-wrap">
+                                <p className="font-bold mr-2">Amenities:</p> {property?.amenities?.map((a, index) => <p className="ml-1" key={index}>{a +", "}</p>)}
+                              </div>
+                              <div className="font-normal text-gray-500 flex flex-row flex-wrap">
+                                <p className="font-bold mr-2">Bathrooms:</p>{property.bathrooms}  
+                              </div>
+                            </div>  
+                          </td>
+                          <td className="px-2 py-1">
+                            {property.price}
+                          </td>
+                          <td className="px-2 py-1">
+                              <div className="flex items-center w-28">
+                                  {property.phone_number}
+                              </div>
+                          </td>
+                          <td className="px-2 py-1">
+                              <p className="">{property.description}</p>
+                          </td>
+                          <td className="px-2 py-1">
+                              <p className="">{property.comments}</p>
+                          </td>
+                          <td className="px-2 py-1  self-center justify-center flex-col gap-2">
+                            <PropertyActions 
+                            handleEdit={() => handleEdit(property, index)}
+                            viewProperty={() => viewProperty(property)} 
+                            handleShareProperty={() => handleShareProperty(property)} 
+                            handleRemoveProperty={() =>handleRemoveUserProperty(property.title)} 
+                            isFavorite={property.isFavorite}
+                            handleMarkFavorite={() => handleMarkFavoriteUser(index)}
+                          />
+                          </td>
+                      </tr>
                       ))
                   }
               </tbody>
               <tbody>
                   {
                     currentProperties?.map((property, index) => (
-                        <tr key={property.id} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                            <td className="w-4 p-2 ">
-                                {userProperties.length + index+1}.
-                            </td>
-                            <td scope="row" className="flex justify-center items-center py-4 text-gray-900 whitespace-nowrap dark:text-white">
-                                {
-                                  property.isFavorite && <FaHeart className='h-8 w-8 text-red-500 mr-4'  />
-                                }
-                                <img className="w-20 h-20 rounded-md" src={property?.images[0]} alt="Jese image" />
-                                <div className="ps-3">
-                                    <div className="text-base text-wrap ">{property.title}</div>
-                                    <div className="text-base font-semibold text-wrap">Address: {property.street_address}</div>
-                                    <div className="font-normal text-gray-500 flex flex-row flex-wrap">
-                                      <p className="font-bold mr-2">Amenities:</p> {property.amenities.map((a, index) => <p className="ml-1" key={index}>{a +", "}</p>)}
-                                    Bathrooms: {property.bathrooms}  
-                                    </div>
-                                    <div className="font-normal text-gray-500 flex flex-row flex-wrap">
-                                      <p className="font-bold mr-2">Bathrooms:</p>{property.bathrooms}  
-                                    </div>
-                                </div>  
-                            </td>
-                            <td className="px-2 py-1">
-                              {property.price}
-                            </td>
-                            <td className="px-2 py-1">
-                                <div className="flex w-28 items-center">
-                                    {property.phone_number}
-                                </div>
-                            </td>
-                            <td className="px-2 py-1">
-                                <p className="text-justify">{property.description}</p>
-                            </td>
-                            <td className="px-2 py-1">
-                                <p className=""></p>
-                            </td>
-                            <td className="px-2 py-1  self-center justify-center flex-col gap-2">
-                            <PropertyActions 
-                              handleAddProperty={() => handleAdd(property, index)} 
-                              isNew={true}                               
-                              viewProperty={() => viewProperty(property)} 
-                              handleShareProperty={() => handleShareProperty(property)} 
-                              handleRemoveProperty={() => handleRemove(index)}
-                              isFavorite={property.isFavorite}
-                              handleMarkFavorite={() => handleMarkFavorite(index)}
-                           />
+                      <tr key={property.id} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                          <td className="w-4 p-2 ">
+                              {userProperties.length + index+1}.
                           </td>
-                        </tr>
+                          <td scope="row" className="flex justify-center items-center py-4 text-gray-900 whitespace-nowrap dark:text-white">
+                            {
+                              property.isFavorite && <FaHeart className='h-6 w-6 text-red-500 mr-2'  />
+                            }
+                            {property?.images?.[0] ? (
+                              <img src={property.images[0]} alt="image" />
+                            ) : (
+                              <p>No Image</p>
+                            )}
+                            <div className="ps-3">
+                              <div className="text-base text-wrap ">{property.title}</div>
+                              <div className="text-base font-semibold text-wrap">Address: {property.street_address}</div>
+                              <div className="font-normal text-gray-500 flex flex-row flex-wrap">
+                                <p className="font-bold mr-2">Amenities:</p> {property?.amenities?.map((a, index) => <p className="ml-1" key={index}>{a +", "}</p>)}
+                              Bathrooms: {property.bathrooms}  
+                              </div>
+                              <div className="font-normal text-gray-500 flex flex-row flex-wrap">
+                                <p className="font-bold mr-2">Bathrooms:</p>{property.bathrooms}  
+                              </div>
+                            </div>  
+                          </td>
+                          <td className="px-2 py-1">
+                            {property.price}
+                          </td>
+                          <td className="px-2 py-1">
+                              <div className="flex w-28 items-center">
+                                  {property.phone_number}
+                              </div>
+                          </td>
+                          <td className="px-2 py-1">
+                              <p className="text-justify">{property.description}</p>
+                          </td>
+                          <td className="px-2 py-1">
+                              <p className=""></p>
+                          </td>
+                          <td className="px-2 py-1  self-center justify-center flex-col gap-2">
+                          <PropertyActions 
+                            handleAddProperty={() => handleAdd(property, index)} 
+                            isNew={true}                               
+                            viewProperty={() => viewProperty(property)} 
+                            handleShareProperty={() => handleShareProperty(property)} 
+                            handleRemoveProperty={() => handleRemove(index)}
+                            isFavorite={property.isFavorite}
+                            handleMarkFavorite={() => handleMarkFavorite(index)}
+                          />
+                        </td>
+                      </tr>
                       ))
                   }
               </tbody>
@@ -667,22 +724,31 @@ export default function MembersPage({params, searchParams}) {
         
         <div className='flex p-4 flex-col gap-4'>
           <form className='mt-7'>
+            <div className='flex justify-between items-end'>
+                <label>Add Summary</label>
+                <Button variant="outline" onClick={GenerateSummaryFromAI} 
+                type="button" size="sm" className="border-primary text-primary flex gap-2"> 
+                  
+                {
+                  summaryAiLoading ? <p className="flex items-center justify-center"><Loader className="animate-spin mr-2" /> Loading....</p> :
+                  <p className="flex items-center gap-2"><Brain className='h-4 w-4' /> Generate Summary Using AI</p>
+                }
+                </Button>
+            </div>
+            <Textarea className="mt-2" required
+                value={summary || allComments}
+                defaultValue={summary?summary:report?.report_draft}
+                onChange={(e)=>setSummary(e.target.value)}
+            />
+
               <div className='flex justify-between items-end'>
-                  <label>Add Summary</label>
-                  <Button variant="outline" onClick={GenerateSummaryFromAI} 
-                  type="button" size="sm" className="border-primary text-primary flex gap-2"> 
-                   
-                  {
-                    summaryAiLoading ? <p className="flex items-center justify-center"><Loader className="animate-spin mr-2" /> Loading....</p> :
-                    <p className="flex items-center gap-2"><Brain className='h-4 w-4' /> Generate Summary Using AI</p>
-                  }
-                  </Button>
-              </div>
-              <Textarea className="mt-5" required
-                  value={summary || allComments}
-                  defaultValue={summary?summary:report?.report_draft}
-                  onChange={(e)=>setSummary(e.target.value)}
-              />
+                <label className="mt-2">Add Follow Up Notes</label>
+            </div>
+            <Textarea className="mt-2" required
+                value={followUpNotes}
+                defaultValue={followUpNotes?followUpNotes:report?.followUpNotes}
+                onChange={(e)=>setFollowUpNotes(e.target.value)}
+            />
           </form>
 
           <div className='flex gap-2'>

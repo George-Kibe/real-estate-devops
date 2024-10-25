@@ -16,7 +16,6 @@ const AddCommentModal = ({
   editMode 
 }) => {
   //console.log("Current Property: ", currentProperty?.comments)
-  console.log("Agent Name: ", agentName)
   const [selected, setSelected] = useState('');
   const [addSelected, setAddSelected] = useState('');
   return (

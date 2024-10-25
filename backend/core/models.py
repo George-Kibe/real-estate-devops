@@ -62,6 +62,7 @@ class Report(TimeStampedUUIDModel):
     report_draft = models.TextField(null=True, blank=True)
     report_final = models.TextField(null=True, blank=True)
     start_time = models.TimeField(null=True, blank=True)
+    follow_up_notes = models.TextField(null=True, blank=True)
     end_time = models.TimeField(null=True, blank=True)
     report_date = models.DateField(null=True, blank=True)
     report_view_type = models.CharField(max_length=100, null=True, blank=True)
