@@ -92,13 +92,13 @@ export const getTimeDiffInHrs = (start_time, end_time) => {
 export const generateReportBilling = async(report) => {
   const worked_hours = getTimeDiffInHrs(report.start_time, report.end_time)
   const body = {
-    service_date_start: report.created_at,
-    service_date_end: report.updated_at,
+    service_date_start: moment(report.created_at).format("YYYY-MM-DD"),
+    service_date_end: moment(report.updated_at).format("YYYY-MM-DD"),
     client_name: report.client_name,
     client_id: report.client_id,
-    housing_coordinator_name: report.staff_name,
+    housing_coordinator_name: report.staff_name || "Not Captured",
     housing_coordinator_id: report.staff_id,
-    claim_amount: worked_hours * WORK_RATE_PER_HOUR,
+    claim_amount: (worked_hours * WORK_RATE_PER_HOUR).toFixed(2),
     bill_status: "Scheduled",
     scheduled_hours: 23.5,
     worked_hours,
@@ -108,17 +108,17 @@ export const generateReportBilling = async(report) => {
     modifier: "U8",
     payor: "MA"
   }
-  
+  console.log("Body: ", body)
   try {
-    const reponse = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/billings`, body)
+    const reponse = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/billings/`, body)
     if (reponse.status === 201) {
       // update report status to billed
-      const data = {isBilled: True}
-      await axios.put(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/reports/${report.pkid}`, data)
+      const data = {isBilled: true}
+      await axios.put(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/reports/${report.pkid}/`, data)
       return reponse.data
     }
   } catch (error) {
-    console.log(error)
+    console.log(error.message)
     return null
   }
 }

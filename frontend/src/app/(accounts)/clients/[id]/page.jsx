@@ -112,6 +112,10 @@ const SingleClientPage = () => {
     setModalOpen(false)
   }
   const generateBilling = async(report) => {
+    if (!report?.start_time || !report?.end_time){
+      toast.error("Start time and end time are required to generate billing!")
+      return;
+    }
     setLoading(true)
     try {
       const billingResponse = await generateReportBilling(report);
@@ -139,7 +143,7 @@ const SingleClientPage = () => {
       <div className="w-full p-4 md:p-8 flex-col md:flex-row flex-1 flex items-center overflow-hidden bg-white rounded-lg shadow-lg dark:bg-gray-800">
         {/* <img className="rounded-full object-center object-contain h-24 md:h-48" src={client?.image} alt="user avatar" /> */}
         {
-          loading && <Loader className="animate-spin" /> 
+          loading && <Loader className="animate-spin h-32 w-32" /> 
         }
         <AddClientModal client={client} isOpen={modalOpen} onClose={closeModal} 
       setLoading={setLoading} />
@@ -213,7 +217,7 @@ const SingleClientPage = () => {
                       {
                         !report?.isBilled && (
                           <Button className='bg-lime-600 ml-2' onClick={()=>generateBilling(report)}>
-                            {loading? <p className='flex gap-2'><Loader className='animate-spin' />"Adding..."</p>: "Add Billing"}
+                            {loading? <p className='flex gap-2'><Loader className='animate-spin' />Adding...</p>: "Add Billing"}
                           </Button>
                         )
                       }

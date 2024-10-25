@@ -24,7 +24,6 @@ import { FaHeart } from "react-icons/fa";
 import { SearchButton } from "@/components/TableSearch";
 import { callAIPrompt, generateAISummary, shuffleArray } from "@/utils/functions";
 import Image from "next/image";
-import { set } from "mongoose";
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
 
@@ -54,7 +53,6 @@ export default function MembersPage({params, searchParams}) {
   // report states
   const [startTime, setStartTime] = useState();
   const [endTime, setEndTime] = useState();
-  const [userLocation, setUserLocation] = useState('');
   const [staffLocation, setStaffLocation] = useState('');
   const [visitType, setVisitType] = useState('');
   const [currentProperty, setCurrentProperty] = useState({});
@@ -171,6 +169,7 @@ export default function MembersPage({params, searchParams}) {
       const data = response.data
       // console.log("Report Data: ", data.properties.length)
       setReport(data);
+      setSummary(data?.report_draft)
       if (data?.properties.length > 0){
         setUserProperties(data.properties)
       }
@@ -507,7 +506,7 @@ export default function MembersPage({params, searchParams}) {
                     <option value="office">Office</option>
                     <option value="home">Home</option>
                   </select>
-                  <p className="text-sm">Selected Location: <span className="font-semibold ">{report?.report_location || userLocation || 'None'}</span></p>
+                  <p className="text-sm">Selected Location: <span className="font-semibold ">{report?.report_location || staffLocation || 'None'}</span></p>
                 </div>
               </div>
 
