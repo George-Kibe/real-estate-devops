@@ -15,7 +15,7 @@ const PieChartGraph = ({averageDraftLength}) => {
     {name: "Group B", value: 1000 - averageDraftLength, fill: "#FAE27C"}
   ]
   return (
-    <div className="bg-white p-4 rounded-md h-80 relative">
+    <div className="p-4 rounded-md h-80 relative">
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-semibold">Performance</h1>
         <Image src="/images/plus.png" alt="" width={16} height={16} />

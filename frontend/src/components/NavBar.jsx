@@ -29,6 +29,7 @@ const CustomLink = ({href,name, items, toggle}) => {
 
 const NavBar = () => {
   const [showMobileNav, setShowMobileNav] = useState(false);
+  const [orgName, setOrgName] = useState('');
   const {currentUser, setCurrentUser, setLoading} = useMainProvider();
   //const session = useSession();
   //const email = session.data?.user?.email
@@ -54,6 +55,12 @@ const NavBar = () => {
     }
   }, [fetchUser, currentUser]); 
 
+  useEffect(() => {
+    if (currentUser?.orgName) {
+      setOrgName(currentUser.orgName);
+    }
+  }, [currentUser]);
+
   const pathname = usePathname()
 
   const handleClick = () => {
@@ -62,58 +69,17 @@ const NavBar = () => {
 
   return (    
     <nav className="darK:bg-black shadow-lg">
-        <div className="mx-auto px-4 mr-8">
-            <div className="flex justify-between">
-                <div className="flex space-x-2 justify-between flex-1">
-                    <div>
-                        <Link href="#" className="flex items-center border- py-4 px-2">
-                          <span className="font-semibold text-black dark:text-white text-2xl">
-                          AptTracking
-                            {
-                              currentUser?.orgName? " || " +currentUser?.orgName :""
-                            }
-                          </span>
-                        </Link>
-                    </div>                  
-                    <div className="hidden md:flex items-center space-x-1">
-                      <ModeToggle />
-                      <CustomLink href={"/#"} name={"Home"} toggle={handleClick}/>
-                      <CustomLink href={"/solutions"} name={"Solutions"} toggle={handleClick}/>
-                      <CustomLink href={"/case-studies"} name={"Case Studies"} toggle={handleClick}/>
-                      <CustomLink href={"/about-us"} name={"About Us"} toggle={handleClick}/>
-                      <CustomLink href={"/features"} name={"Features"} toggle={handleClick}/>
-                      <CustomLink href={"/contact"} name={"Contacts"} toggle={handleClick}/>
-                      {
-                        currentUser ? (
-                          <div className="flex flex-row items-center justify-center">
-                            <img src={currentUser?.image || '/images/defaultProfile.png' } alt="Profile" className="w-8 h-8 rounded-full" />
-                            <UserMenu />
-                          </div>
-                        ) : (
-                          <CustomLink href={"/login"} name={"Sign In"} toggle={handleClick}/>
-                        )}
-                    </div>
-                </div>
-                <div className="md:hidden flex items-center">
-                    <button onClick={handleClick} className="outline-none">
-                    <svg className=" w-6 h-6 text-gray-500 hover:text-green-500 "
-                        x-show="!showMenu"
-                        fill="none"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                    >
-                        <path d="M4 6h16M4 12h16M4 18h16"></path>
-                    </svg>
-                </button>
-                </div>
-            </div>
-        </div>
-        {
-         showMobileNav && (
-            <div className="md:hidden flex flex-col">
+      <div className="mx-auto px-4 mr-8">
+        <div className="flex justify-between">
+          <div className="flex space-x-2 justify-between flex-1">
+              <div>
+                <Link href="#" className="flex items-center border- py-4 px-2">
+                  <span className="font-semibold text-black dark:text-white text-2xl">
+                    AptTracking{orgName ? ` || ${orgName}` : ''}
+                  </span>
+                </Link>
+              </div>                  
+              <div className="hidden md:flex items-center space-x-1">
                 <ModeToggle />
                 <CustomLink href={"/#"} name={"Home"} toggle={handleClick}/>
                 <CustomLink href={"/solutions"} name={"Solutions"} toggle={handleClick}/>
@@ -123,16 +89,54 @@ const NavBar = () => {
                 <CustomLink href={"/contact"} name={"Contacts"} toggle={handleClick}/>
                 {
                   currentUser ? (
-                    <button className="flex flex-row ml-2 mb-2">
+                    <div className="flex flex-row items-center justify-center">
                       <img src={currentUser?.image || '/images/defaultProfile.png' } alt="Profile" className="w-8 h-8 rounded-full" />
                       <UserMenu />
-                    </button>
+                    </div>
                   ) : (
                     <CustomLink href={"/login"} name={"Sign In"} toggle={handleClick}/>
-                )}
-            </div> 
-         )
-        }
+                  )}
+              </div>
+          </div>
+          <div className="md:hidden flex items-center">
+            <button onClick={handleClick} className="outline-none">
+              <svg className=" w-6 h-6 text-gray-500 hover:text-green-500 "
+                x-show="!showMenu"
+                fill="none"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+            >
+              <path d="M4 6h16M4 12h16M4 18h16"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+      {
+        showMobileNav && (
+          <div className="md:hidden flex flex-col">
+            <ModeToggle />
+            <CustomLink href={"/#"} name={"Home"} toggle={handleClick}/>
+            <CustomLink href={"/solutions"} name={"Solutions"} toggle={handleClick}/>
+            <CustomLink href={"/case-studies"} name={"Case Studies"} toggle={handleClick}/>
+            <CustomLink href={"/about-us"} name={"About Us"} toggle={handleClick}/>
+            <CustomLink href={"/features"} name={"Features"} toggle={handleClick}/>
+            <CustomLink href={"/contact"} name={"Contacts"} toggle={handleClick}/>
+            {
+              currentUser ? (
+                <button className="flex flex-row ml-2 mb-2">
+                  <img src={currentUser?.image || '/images/defaultProfile.png' } alt="Profile" className="w-8 h-8 rounded-full" />
+                  <UserMenu />
+                </button>
+              ) : (
+                <CustomLink href={"/login"} name={"Sign In"} toggle={handleClick}/>
+            )}
+          </div> 
+        )
+      }
         
     </nav>
   )

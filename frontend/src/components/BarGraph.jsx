@@ -1,5 +1,4 @@
 "use client";
-import { PlusCircle } from "lucide-react"
 import {
   BarChart,
   Bar,
@@ -11,21 +10,23 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import moment from "moment";
+import { GraphActions } from "./GraphActions";
 
 const BarGraph = ({staffReports}) => {
+  console.log("staffReports: ", staffReports)
   const staffData = staffReports?.slice(0, 10).map((report) => {
     return {
       name: report.client_name.substring(0, 5) + moment(report.created_at).format('YY-MM-DD'),
-      ReportWording: report.report_draft?.length,
-      Communication: report.report_final?.length,
+      ReportQuality: report.report_draft?.length,
+      ApplicationForResources: report.additionalResources?.length * 10,
     }
   })
 
   return (
-    <div className="bg-white rounded-lg h-[50vh]">
+    <div className="rounded-lg h-[50vh]">
       <div className="flex justify-between items-center">
-        <h1 className="text-lg text-black font-semibold">Reports Wording</h1>
-        <PlusCircle/>
+        <h1 className="text-lg text-black font-semibold">Reports Quality and Applications for Resources</h1>
+        <GraphActions />
       </div>
       <ResponsiveContainer width="100%" height="90%">
         <BarChart width={500} height={300} data={staffData} barSize={20}>
@@ -36,7 +37,7 @@ const BarGraph = ({staffReports}) => {
             tick={{ fill: "#1c71f1", fontSize: 10 }}
             tickLine={false}
           />
-          <YAxis axisLine={false} tick={{ fill: "#d1d5db" }} tickLine={false} />
+          <YAxis axisLine={false} tick={{}} tickLine={false} />
           <Tooltip
             contentStyle={{ borderRadius: "10px", borderColor: "lightgray" }}
           />
@@ -46,14 +47,14 @@ const BarGraph = ({staffReports}) => {
             wrapperStyle={{ paddingTop: "20px", paddingBottom: "40px" }}
           />
           <Bar
-            dataKey="ReportWording"
+            dataKey="ReportQuality"
             fill="#15ab3b"
             legendType="circle"
             radius={[10, 10, 0, 0]}
           />
           <Bar
-            dataKey="Communication"
-            fill="#000000"
+            dataKey="ApplicationForResources"
+            fill="#E21D48"
             legendType="circle"
             radius={[10, 10, 0, 0]}
           />

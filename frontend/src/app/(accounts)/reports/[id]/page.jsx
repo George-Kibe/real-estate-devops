@@ -133,8 +133,8 @@ export default function MembersPage({params, searchParams}) {
       description: property.description,
       bathrooms: property.bathrooms,
       phone_number: property.phone_number,
-      amenities: property.amenities.join(', '),
-      images: property.images.join(', '),
+      amenities: property.amenities?.join(', ') || "",
+      images: property.images?.join(', ') || "",
       comments: property.comments
     }));
     const propertiesSheet = XLSX.utils.json_to_sheet(propertiesData);

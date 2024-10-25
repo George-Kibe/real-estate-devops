@@ -116,7 +116,6 @@ export default function ReportsPage() {
       toast.error("No reports to export.");
       return;
     }
-
     // Create a new workbook
     const workbook = XLSX.utils.book_new();
 
@@ -147,8 +146,8 @@ export default function ReportsPage() {
           description: property?.description,
           bathrooms: property?.bathrooms,
           phone_number: property?.phone_number,
-          amenities: property?.amenities.join(', '),
-          images: property?.images.join(', '),
+          amenities: property?.amenities?.join(', ') || "",
+          images: property?.images?.join(', ') || "",
           comments: property?.comments
         };
         propertiesData.push(propertyData);
@@ -201,6 +200,7 @@ export default function ReportsPage() {
       setReportsLoading(false);
     } catch (error) {
       toast.error("Fetching Reports failed. Try Again!")
+      console.log("Error: ", error.message)
       setReportsLoading(false);
     }
   }

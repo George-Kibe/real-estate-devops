@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useMainProvider } from '@/providers/MainProvider';
 import { Button } from '@/components/ui/button';
+import { BillingActions } from '@/components/BillingActions';
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
 const columns = [
@@ -73,6 +74,11 @@ const columns = [
   {
     header: "Payor",
     accessor: "payor",
+    className: "hidden md:table-cell",
+  },
+  {
+    header: "Action",
+    accessor: "action",
     className: "hidden md:table-cell",
   },
 ];
@@ -160,6 +166,9 @@ const BillingPage = ({searchParams}) => {
       <td className="hidden md:table-cell">{item.pro_code}</td>
       <td className="hidden md:table-cell">{item.modifier}</td>
       <td className="hidden md:table-cell">{item.payor}</td>
+      <td>
+        <BillingActions />
+      </td>
       {/* <td>
         <div className="flex items-center gap-2">
           <Link href={`/list/teachers/${item.id}`}>

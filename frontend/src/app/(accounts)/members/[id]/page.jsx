@@ -112,8 +112,8 @@ const SingleMemberPage = () => {
           description: property?.description,
           bathrooms: property?.bathrooms,
           phone_number: property?.phone_number,
-          amenities: property?.amenities.join(', '),
-          images: property?.images.join(', '),
+          amenities: property?.amenities?.join(', ') || "",
+          images: property?.images?.join(', ') || "",
           comments: property?.comments
         };
         propertiesData.push(propertyData);

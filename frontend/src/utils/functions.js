@@ -65,7 +65,7 @@ export const generateAISummary = async (text) => {
         },
         {
           role: 'user',
-          content: `Rephrase and correct all grammar errors in this text: ${text}`
+          content: `Rephrase and correct all grammar errors in this text: ${text}. Write it better and make it look like human`
         }
       ]
     }, {
