@@ -48,9 +48,12 @@ export default function MembersPage({params, searchParams}) {
   const [userProperties, setUserProperties] = useState([]);
   // states for a single property
   const [comments, setComments] = useState('');
+  const [agentSelected, setAgentSelected] = useState('');
+  const [resourcesSelected, setResourcesSelected] = useState('');
   const [agentName, setAgentName] = useState('');
   const [additionalResources, setAdditionalResources] = useState('');
   // report states
+  const [errors, setErrors] = useState([]);
   const [startTime, setStartTime] = useState();
   const [endTime, setEndTime] = useState();
   const [staffLocation, setStaffLocation] = useState('');
@@ -64,7 +67,6 @@ export default function MembersPage({params, searchParams}) {
   const [summaryAiLoading, setSummaryAiLoading] = useState(false);
   const [summary, setSummary] = useState();
   const [followUpNotes, setFollowUpNotes] = useState('');
-
   const [summaryFinal, setSummaryFinal] = useState('');
 
   const [currentPropertiesIndex, setcurrentPropertiesIndex] = useState(5);
@@ -168,7 +170,7 @@ export default function MembersPage({params, searchParams}) {
       const response = await axios.get(`${BACKEND_URL}/api/reports/${id}`);
       const data = response.data
       // console.log("Report Data: ", data.properties.length)
-      setReport(data);
+      setReport(data); setSummaryFinal(report.report_final)
       setSummary(data?.report_draft)
       if (data?.properties.length > 0){
         setUserProperties(data.properties)
@@ -176,6 +178,7 @@ export default function MembersPage({params, searchParams}) {
       setLoading(false);
     } catch (error) {
       toast.error("Fetching report failed. Try Again!")
+      setErrors([...errors, error.message])
       setLoading(false);
     }
   }
@@ -295,13 +298,19 @@ export default function MembersPage({params, searchParams}) {
   }
   // console.log("Current Report: ", report)
   const GenerateSummaryFromAI = async() => {
-    if (!summary) {
+    if (!summary || ! allComments) {
       toast.error("Please enter a summary!");
       return;
     }
     try {
       setSummaryAiLoading(true);
-      const responseText = await generateAISummary(summary);
+      let text;
+      if (summary){
+        text = summary;
+      }else{
+        text = allComments;
+      }
+      const responseText = await generateAISummary(text);
       console.log("AI Summary: ", responseText)
       setSummaryFinal(responseText);
       toast.success("Summary Generated Successfully!");
@@ -436,8 +445,12 @@ export default function MembersPage({params, searchParams}) {
         editMode={editMode}
         setAgentName={setAgentName}
         agentName={agentName}
+        agentSelected={agentSelected}
+        setAgentSelected={setAgentSelected}
         additionalResources={additionalResources}
         setAdditionalResources={setAdditionalResources}
+        resourcesSelected={resourcesSelected}
+        setResourcesSelected={setResourcesSelected}
       />
       <AddPropertyModal isOpen={propertyModalOpen} onClose={closePropertyModal} setUserProperties={setUserProperties}
       />
@@ -449,88 +462,99 @@ export default function MembersPage({params, searchParams}) {
       <SendClientAlertModal isOpen={sendModalOpen} onClose={closeSendModal} client={currentClient} property={currentProperty} />
 
         <div className="px-2">
-            <div className='flex flex-row gap-2'>
-              <p className='flex flex-row gap-4'><p className="font-semibold">Report Title:</p> {report?.title}</p>
-            </div>
-            <div className='flex flex-row gap-2'>
-              <p className='flex flex-row gap-4'><p className="font-semibold">Report Type:</p> {report?.report_type}</p>
-            </div>
-            <div className='flex flex-row gap-2'>
-              <p className='flex flex-row gap-4'><p className="font-semibold">Report Description:</p> {report?.description}</p>
-            </div>
-            <div className='flex flex-row gap-2'>
-              <p className=''><p className="font-semibold">Report Last Update:</p> {report?.report_draft}</p>
-            </div>
-            <div className='flex flex-row gap-2'>
-              <p className=''><p className="font-semibold">Report Final:</p> {report?.report_final}</p>
-            </div>
-            <div className='flex flex-row gap-2'>
-              <p className='flex flex-row gap-4'><p className="font-semibold">Time Spent:</p> { getTimeDifference(report?.start_time , report?.end_time)}</p>
-            </div>
-
-            <div className="mt-4 relative md:mt-6 cursor-pointer flex flex-row items-center gap-2">
-              <p className="">{report?.start_time ? "Edit": "Set"} Start Time:</p>
-              <input 
-                  type="time" 
-                  id="startTimeInput"
-                  value={startTime} 
-                  //className="opacity-0 absolute t-0 l-0"
-                  onChange={e => setStartTime(e.target.value)} 
-              />
-              <p className="">{startTime ||report?.start_time}</p>
-            </div>
-
-            <div className="mt-4 relative md:mt-6 cursor-pointer flex flex-row items-center gap-2">
-              <p className="">{report?.end_time ? "Edit": "Set"} End Time:</p>
-              <input 
-                  type="time" 
-                  id="startTimeInput"
-                  value={endTime} 
-                  //className="opacity-0 absolute t-0 l-0"
-                  onChange={e => setEndTime(e.target.value)} 
-              />
-              <p className="">{endTime|| report?.end_time}</p>
-            </div>
-
-            <div className="flex flex-col p-2">              
-              {/* Location Dropdown */}
-              <div className="w-full">
-                <label className="block mb-2 text-sm font-medium ">Select Location</label>
-                <div className="flex items-center gap-4">
-                  <select
-                    value={staffLocation}
-                    onChange={(e) => setStaffLocation(e.target.value)}
-                    className="block border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm px-3 py-2"
-                  >
-                    <option value="" disabled>Select Location</option>
-                    <option value="office">Office</option>
-                    <option value="home">Home</option>
-                  </select>
-                  <p className="text-sm">Selected Location: <span className="font-semibold ">{report?.report_location || staffLocation || 'None'}</span></p>
-                </div>
+          {
+            errors.length > 1 &&(
+              <div className="flex flex-col gap-2">
+                {
+                  errors.map((error, index) => (
+                    <p key={index} className="text-red-500">{error}</p>
+                  ))
+                }
               </div>
+            ) 
+          }
+          <div className='flex flex-row gap-2'>
+            <p className='flex flex-row gap-4'><p className="font-semibold">Report Title:</p> {report?.title}</p>
+          </div>
+          <div className='flex flex-row gap-2'>
+            <p className='flex flex-row gap-4'><p className="font-semibold">Report Type:</p> {report?.report_type}</p>
+          </div>
+          <div className='flex flex-row gap-2'>
+            <p className='flex flex-row gap-4'><p className="font-semibold">Report Description:</p> {report?.description}</p>
+          </div>
+          <div className='flex flex-row gap-2'>
+            <p className=''><p className="font-semibold">Report Last Update:</p> {report?.report_draft}</p>
+          </div>
+          <div className='flex flex-row gap-2'>
+            <p className=''><p className="font-semibold">Report Final:</p> {report?.report_final}</p>
+          </div>
+          <div className='flex flex-row gap-2'>
+            <p className='flex flex-row gap-4'><p className="font-semibold">Time Spent:</p> { getTimeDifference(report?.start_time , report?.end_time)}</p>
+          </div>
 
-              {/* Visit Type Dropdown */}
-              <div className="w-full mt-2">
-                <label className="block mb-2 text-sm font-medium">Visit Type</label>
-                <div className="flex items-center gap-4">
-                  <select
-                    value={visitType}
-                    onChange={(e) => setVisitType(e.target.value)}
-                    className="block border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm px-3 py-2"
-                  >
-                    <option value="" disabled>Select Visit Type</option>
-                    <option value="direct">Direct</option>
-                    <option value="indirect">Indirect</option>
-                  </select>
-                  <p className="text-sm">Selected Visit Type: <span className="font-semibold">{report?.report_view_type || visitType || 'None'}</span></p>
-                </div>
+          <div className="mt-4 relative md:mt-6 cursor-pointer flex flex-row items-center gap-2">
+            <p className="">{report?.start_time ? "Edit": "Set"} Start Time:</p>
+            <input 
+                type="time" 
+                id="startTimeInput"
+                value={startTime} 
+                //className="opacity-0 absolute t-0 l-0"
+                onChange={e => setStartTime(e.target.value)} 
+            />
+            <p className="">{startTime ||report?.start_time}</p>
+          </div>
+
+          <div className="mt-4 relative md:mt-6 cursor-pointer flex flex-row items-center gap-2">
+            <p className="">{report?.end_time ? "Edit": "Set"} End Time:</p>
+            <input 
+                type="time" 
+                id="startTimeInput"
+                value={endTime} 
+                //className="opacity-0 absolute t-0 l-0"
+                onChange={e => setEndTime(e.target.value)} 
+            />
+            <p className="">{endTime|| report?.end_time}</p>
+          </div>
+
+          <div className="flex flex-col p-2">              
+            {/* Location Dropdown */}
+            <div className="w-full">
+              <label className="block mb-2 text-sm font-medium ">Select Location</label>
+              <div className="flex items-center gap-4">
+                <select
+                  value={staffLocation}
+                  onChange={(e) => setStaffLocation(e.target.value)}
+                  className="block border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm px-3 py-2"
+                >
+                  <option value="" disabled>Select Location</option>
+                  <option value="office">Office</option>
+                  <option value="home">Home</option>
+                </select>
+                <p className="text-sm">Selected Location: <span className="font-semibold ">{report?.report_location || staffLocation || 'None'}</span></p>
               </div>
             </div>
+
+            {/* Visit Type Dropdown */}
+            <div className="w-full mt-2">
+              <label className="block mb-2 text-sm font-medium">Visit Type</label>
+              <div className="flex items-center gap-4">
+                <select
+                  value={visitType}
+                  onChange={(e) => setVisitType(e.target.value)}
+                  className="block border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm px-3 py-2"
+                >
+                  <option value="" disabled>Select Visit Type</option>
+                  <option value="direct">Direct</option>
+                  <option value="indirect">Indirect</option>
+                </select>
+                <p className="text-sm">Selected Visit Type: <span className="font-semibold">{report?.report_view_type || visitType || 'None'}</span></p>
+              </div>
+            </div>
+          </div>
         </div>
         
        
-        <div className="flex mt-4 my-2 flex-col md:flex-row">
+        <div className="flex w-[80%] items-center mt-4 mx-8  my-2 flex-col md:flex-row">
           {/* <h2 className="font-semibold text-xl mr-2 ml-4">Search for:</h2>  */}
           <SearchButton 
             onClick={handleGeneralSearch} 
@@ -540,11 +564,11 @@ export default function MembersPage({params, searchParams}) {
           {
             searchLoading ?  (
               <p className="flex items-center justify-center">
-                <Loader className="animate-spin ml-2" /> Loading....
+                <Loader className="animate-spin ml-auto" /> Loading....
               </p>
             ):
             (
-              <button onClick={handleGeneralSearch} className="flex items-center ml-2 gap-2">
+              <button onClick={handleGeneralSearch} className="flex items-center ml-auto gap-2">
                 <Search className='h-4 w-4'  /> Search
               </button>
             )
@@ -748,20 +772,39 @@ export default function MembersPage({params, searchParams}) {
             </div>
             <Textarea className="mt-2" required
                 value={summary || allComments}
-                defaultValue={summary?summary:report?.report_draft}
+                defaultValue={summary}
                 onChange={(e)=>setSummary(e.target.value)}
             />
+            {
+              summaryFinal && (
+                <div className='flex flex-col  items-start'>
+                  <label className="mt-2">Final Summary</label>
+                  <p className="text-justify text-sm">
+                    {summaryFinal}
+                  </p>
+                </div>
+              )
+            }
 
-              <div className='flex justify-between items-end'>
-                <label className="mt-2">Add Follow Up Notes</label>
+            <div className='flex justify-between items-end'>
+              <label className="mt-2">Add Follow Up Notes</label>
             </div>
             <Textarea className="mt-2" required
                 value={followUpNotes}
                 defaultValue={followUpNotes?followUpNotes:report?.followUpNotes}
                 onChange={(e)=>setFollowUpNotes(e.target.value)}
             />
+            {
+              followUpNotes && (
+                <div className='flex flex-col  items-start'>
+                  <label className="mt-2">Follow up Notes</label>
+                  <p className="text-justify text-sm">
+                    {followUpNotes}
+                  </p>
+                </div>
+              )
+            }
           </form>
-
           <div className='flex gap-2'>
             <Button onClick={updateReport}>{loading? 'Loading...': 'Save Report'}</Button>
             <Button onClick={() => setDeleteModalOpen(true)} variant="destructive">{loading? 'Loading...': 'Delete Report'}</Button>

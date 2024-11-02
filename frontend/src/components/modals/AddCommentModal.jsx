@@ -13,11 +13,10 @@ const AddCommentModal = ({
   agentName, setAgentName,
   addToUserProperties,
   additionalResources, setAdditionalResources,
-  editMode 
+  agentSelected, setAgentSelected,
+  resourcesSelected, setResourcesSelected 
 }) => {
   //console.log("Current Property: ", currentProperty?.comments)
-  const [selected, setSelected] = useState('');
-  const [addSelected, setAddSelected] = useState('');
   return (
     <div 
       //onClick={onClose}
@@ -52,7 +51,7 @@ const AddCommentModal = ({
           <div className="flex flex-col items-start p-2">
             <h2 className="text-xl font-bold mb-4">Did you call the agent?</h2>
             <div className="">
-              <RadioGroup value={selected} defaultValue="Yes" onValueChange={setSelected}>
+              <RadioGroup value={agentSelected} defaultValue="Yes" onValueChange={setAgentSelected}>
                 <div className="flex items-center space-x-2">
                   <RadioGroupItem value="Yes" id="r1" />
                   <Label htmlFor="r1">Yes</Label>
@@ -79,7 +78,7 @@ const AddCommentModal = ({
           <div className="flex flex-col items-start p-2">
             <h2 className="text-xl font-bold mb-4">Did you call the agent?</h2>
             <div className="">
-              <RadioGroup value={addSelected} defaultValue="Yes" onValueChange={setAddSelected}>
+              <RadioGroup value={resourcesSelected} defaultValue="Yes" onValueChange={setResourcesSelected}>
                 <div className="flex items-center space-x-2">
                   <RadioGroupItem value="Yes" id="r1" />
                   <Label htmlFor="r1">Yes</Label>
