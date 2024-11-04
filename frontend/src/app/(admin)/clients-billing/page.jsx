@@ -90,7 +90,10 @@ const BillingPage = ({searchParams}) => {
   const [loading, setLoading] = useState(false);
   const {selectedBillings, setSelectedBillings} = useMainProvider();
   const [count, setCount] = useState(1);
-  console.log("selected billings: ", selectedBillings)
+  console.log("selected billings: ", selectedBillings);
+  const viewBilling = (id) => {
+    router.push(`clients-billing/${id}`)
+  }
   
   const handleClick = (item) => {
     // add item to selected billings if it doesnt exist already
@@ -167,15 +170,8 @@ const BillingPage = ({searchParams}) => {
       <td className="hidden md:table-cell">{item.modifier}</td>
       <td className="hidden md:table-cell">{item.payor}</td>
       <td>
-        <BillingActions />
+        <BillingActions viewBilling={() =>viewBilling(item.id)} />
       </td>
-      {/* <td>
-        <div className="flex items-center gap-2">
-          <Link href={`/list/teachers/${item.id}`}>
-            <PlusCircle />
-          </Link>
-        </div>
-      </td> */}
     </tr>
   );
 

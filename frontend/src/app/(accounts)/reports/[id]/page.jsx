@@ -78,7 +78,6 @@ export default function MembersPage({params, searchParams}) {
   //console.log("User Properties: ", userProperties);
   // console.log("Current Properties: ", currentProperties)
   const allComments = userProperties.map(p => p.comments).join(' ');
-  console.log("All Errors: ", errors);
   const {id} = useParams();
   const divRef = useRef();
   const router = useRouter();
@@ -297,6 +296,7 @@ export default function MembersPage({params, searchParams}) {
   }, [currentProperty]);
 
   const updateReport = async() => {
+    setErrors([]);
     setLoading(true);
     if (!startTime || !endTime) {
       toast.error("Please enter start and end time!");
@@ -306,7 +306,7 @@ export default function MembersPage({params, searchParams}) {
     }
     if (!staffLocation || !visitType) {
       toast.error("Please enter staff location!");
-      setErrors([...errors, "Please enter staff location!"])
+      setErrors([...errors, "Please enter staff location and visit Type!"])
       setLoading(false);
       return;
     }
@@ -335,7 +335,7 @@ export default function MembersPage({params, searchParams}) {
   }
   // console.log("Current Report: ", report)
   const GenerateSummaryFromAI = async() => {
-    if (!summary || ! allComments) {
+    if (!summary && ! allComments) {
       toast.error("Please enter a summary!");
       return;
     }
@@ -412,11 +412,12 @@ export default function MembersPage({params, searchParams}) {
       toast.error("Please add comments before adding property!")
       return;
     }
-    if (agentSelected && !agentName){
+    if (agentSelected === "Yes" && !agentName){
+      console.log(agentSelected)
       toast.error("Please add agent name before adding property!")
       return;
     }
-    if (resourcesSelected && !additionalResources){
+    if (resourcesSelected === "Yes" && !additionalResources){
       toast.error("Please add additional resources before adding property!")
       return;
     }

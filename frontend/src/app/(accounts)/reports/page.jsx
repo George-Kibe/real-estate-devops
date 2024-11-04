@@ -10,6 +10,7 @@ import * as XLSX from 'xlsx';
 import moment from "moment";
 import { Loader } from "lucide-react";
 import CustomDateModal from "@/components/modals/CustomDateModal";
+import { ClientReportActions } from "@/components/ClientReportActions";
 
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
@@ -210,6 +211,15 @@ export default function ReportsPage() {
       {/* <AnimatedText text={"Reports Page"} /> */}
       <p className="self-center font-bold text-2xl mb-4 md:mb-8">Select Client to View their  Reports</p>
 
+      {
+        loading && (
+          <div className="flex flex-row gap-2 justify-center items-center">
+            <Loader className="animate-spin" />
+            Loading ...
+          </div>
+        )
+      }
+
       <CustomDateModal selectedDate={selectedDate} setSelectedDate={setSelectedDate} isOpen={showDateModal} onClose={() => setShowDateModal(false)} />
       {
         !orgMode && (
@@ -245,6 +255,7 @@ export default function ReportsPage() {
               <th scope="col" className="px-2 py-1 font-medium">Last Name</th>
               <th scope="col" className="px-2 py-1 font-medium">House Type</th>
               <th scope="col" className="px-2 py-1 font-medium">Preferred City</th>
+              <th scope="col" className="px-2 py-1 font-medium">Action</th>
             </tr>
           </thead>
           <tbody className="divide-y ">
@@ -272,6 +283,14 @@ export default function ReportsPage() {
                       </div>
                     </td>
                     <td className="px-2 py-1">{client.city}</td>
+                    <td className="px-2 py-1">
+                      <ClientReportActions 
+                        name={currentClient?.client_name}
+                        generateTodayReport={() => generateReport()}
+                        generatePastReport={() => setShowDateModal(true)}
+                        exportReportsToExcel={() => exportToExcel(reports, currentClient?.client_name)}
+                      />
+                    </td> 
                   </tr>
               ))
             }
@@ -281,23 +300,9 @@ export default function ReportsPage() {
       {
         currentClient && (
           <div className="flex flex-col  justify-center">
-            <p className="self-center font-bold text-2xl mb-4 md:mb-8">Reports for: {currentClient?.client_name}</p>
-            <div className="flex flex-col gap-4">
-              <div className="flex-1 w-full flex flex-col md:flex-row gap-4">
-                <Button onClick={generateReport}>
-                  {loading? "Generating Report...": `Generate ${currentClient?.client_name}'s Report for Today`}
-                </Button>
-                <Button onClick={() => exportToExcel(reports, currentClient?.client_name)}>
-                  {loading? "Generating Report...": `Export ${currentClient?.client_name}'s Reports to Excel`}
-                </Button>
-              </div>
-              <div className="flex-1 w-full flex flex-col md:flex-row">
-                <Button onClick={() => setShowDateModal(true)}>
-                  {loading? "Generating Report...": `Generate ${currentClient?.client_name}'s Report for Another Day`}
-                </Button>
-              </div>
-             
-            </div>
+            <p className="self-center font-bold text-2xl mb-4 md:mb-8">
+              Reports for: {currentClient?.client_name}
+            </p>
             {
               !reports?.length && <p className="">You do not have any reports for this client yet!</p>
             }

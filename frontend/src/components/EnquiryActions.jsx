@@ -2,7 +2,6 @@
 
 import * as React from "react"
 import { Ellipsis } from "lucide-react"
-import { useRouter } from 'next/navigation';
 import axios  from 'axios';
 import { Button } from "@/components/ui/button"
 import {
@@ -43,7 +42,6 @@ export function EnquiryActions({enquiry}) {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="outline ml-1" size="icon">
-          {/* <ChevronDownCircleIcon className="h-[1.6rem] w-[1.6rem] rotate-0 scale-100 " /> */}
            <Ellipsis className='animate rotate-90' />
         </Button>
       </DropdownMenuTrigger>

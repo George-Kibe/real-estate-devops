@@ -10,10 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 export function BillingActions({
-  handleEdit, 
-  handleAddProperty, 
-  viewProperty, 
-  handleRemoveProperty
+  viewBilling, 
 }) {
   return (
     <DropdownMenu>
@@ -23,20 +20,20 @@ export function BillingActions({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={handleAddProperty}>
+        <DropdownMenuItem onClick={viewBilling}>
           <CheckCheck className="h-5 w-5 mr-2" />
           Mark Confirmed
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={handleEdit}>
+        <DropdownMenuItem onClick={viewBilling}>
           <Pencil className="h-5 w-5 mr-2" />
           Edit
         </DropdownMenuItem>
         
-        <DropdownMenuItem onClick={viewProperty}>
+        <DropdownMenuItem onClick={viewBilling}>
           <Eye className="h-5 w-5 mr-2" />
             View In Detail
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={handleRemoveProperty}>
+        <DropdownMenuItem onClick={viewBilling}>
           <Trash className="h-5 w-5 mr-2" />
             Move to Trash
         </DropdownMenuItem>
