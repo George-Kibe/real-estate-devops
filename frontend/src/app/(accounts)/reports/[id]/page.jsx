@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useMainProvider } from "@/providers/MainProvider";
 import axios from "axios";
-import { Brain, LoaderCircle, Loader, Heart, Search } from 'lucide-react';
+import { Brain, LoaderCircle, Loader, Plus, Search } from 'lucide-react';
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
@@ -21,8 +21,9 @@ import { getTimeDifference } from "@/lib/getTimeDifference";
 import ConfirmExportModal from "@/components/modals/ConfirmExportModal";
 import { PropertyActions } from "@/components/PropertyActions";
 import { FaHeart } from "react-icons/fa";
-import { SearchButton } from "@/components/TableSearch";
-import { callAIPrompt, generateAISummary, shuffleArray } from "@/utils/functions";
+import ReactMarkdown from 'react-markdown';
+import { GeneralSearchButton, SearchButton } from "@/components/TableSearch";
+import { callAIPrompt, generalAIPrompt, generateAISummary, shuffleArray } from "@/utils/functions";
 import Image from "next/image";
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
@@ -68,13 +69,16 @@ export default function MembersPage({params, searchParams}) {
   const [summary, setSummary] = useState();
   const [followUpNotes, setFollowUpNotes] = useState('');
   const [summaryFinal, setSummaryFinal] = useState('');
+  const [anyAnswer, setAnyAnswer] = useState('');
+  const [questionMode, setQuestionMode] = useState(false);
+  const [anyQLoading, setAnyQLoading] = useState(false);
 
-  const [currentPropertiesIndex, setcurrentPropertiesIndex] = useState(5);
-  //console.log("Report: ", report)
+
+  const [currentPropertiesIndex, setCurrentPropertiesIndex] = useState(5);
   //console.log("User Properties: ", userProperties);
   // console.log("Current Properties: ", currentProperties)
   const allComments = userProperties.map(p => p.comments).join(' ');
-  //console.log("All Comments: ", allComments);
+  console.log("All Errors: ", errors);
   const {id} = useParams();
   const divRef = useRef();
   const router = useRouter();
@@ -170,14 +174,18 @@ export default function MembersPage({params, searchParams}) {
       const response = await axios.get(`${BACKEND_URL}/api/reports/${id}`);
       const data = response.data
       // console.log("Report Data: ", data.properties.length)
-      setReport(data); setSummaryFinal(report.report_final)
+      setReport(data); setSummaryFinal(data?.report_final); 
+      setStartTime(data?.start_time); setEndTime(data?.end_time);
       setSummary(data?.report_draft)
+      setStaffLocation(data?.report_location);
+      setVisitType(data?.report_view_type);
       if (data?.properties.length > 0){
         setUserProperties(data.properties)
       }
       setLoading(false);
     } catch (error) {
       toast.error("Fetching report failed. Try Again!")
+      console.log("Error: ", error.message)
       setErrors([...errors, error.message])
       setLoading(false);
     }
@@ -206,7 +214,7 @@ export default function MembersPage({params, searchParams}) {
       return;
     }
     setCurrentProperties(properties.slice(currentPropertiesIndex, currentPropertiesIndex+5));
-    setcurrentPropertiesIndex(currentPropertiesIndex + 5);
+    setCurrentPropertiesIndex(currentPropertiesIndex + 5);
   }
   const addLocalProperties = async() => {
     if (!searchLocation){
@@ -254,6 +262,23 @@ export default function MembersPage({params, searchParams}) {
       setSearchLoading(false)
     }
   }
+  const handleAiSearch = async() => {
+    if (!searchText) {
+      toast.error("Please enter a search phrase!");
+      return;
+    }
+    setAnyQLoading(true)
+    try {
+      const result = await generalAIPrompt(searchText);
+      // console.log("Search Result: ", results)
+      setAnyAnswer(result)
+      setSearchText('')
+      setAnyQLoading(false)
+    } catch (error) {
+      toast.error("Some Error occured while searching. Try Again!")
+      setAnyQLoading(false)
+    }
+  }
 
   useEffect(() => {
     if (searchLocation){
@@ -272,7 +297,19 @@ export default function MembersPage({params, searchParams}) {
   }, [currentProperty]);
 
   const updateReport = async() => {
-    setLoading(true)
+    setLoading(true);
+    if (!startTime || !endTime) {
+      toast.error("Please enter start and end time!");
+      setErrors([...errors, "Please enter start and end time!"])
+      setLoading(false);
+      return;
+    }
+    if (!staffLocation || !visitType) {
+      toast.error("Please enter staff location!");
+      setErrors([...errors, "Please enter staff location!"])
+      setLoading(false);
+      return;
+    }
     const data = {
       start_time: startTime, 
       end_time: endTime, 
@@ -320,6 +357,23 @@ export default function MembersPage({params, searchParams}) {
       setSummaryAiLoading(false); 
     }
   }
+  const GenerateFollowUpSummaryAI = async() => {
+    if (!followUpNotes) {
+      toast.error("Please enter notes to summarize!");
+      return;
+    }
+    try {
+      setSummaryAiLoading(true);
+      const responseText = await generateAISummary(followUpNotes);
+      console.log("AI Summary: ", responseText)
+      setFollowUpNotes(responseText);
+      toast.success("Summary Generated Successfully!");
+      setSummaryAiLoading(false);
+    } catch (error) {
+      toast.error("Error generating summary. Try Again!");
+      setSummaryAiLoading(false); 
+    }
+  }
   const handleExit = () => {
     router.push(`/reports`);
   }
@@ -356,6 +410,14 @@ export default function MembersPage({params, searchParams}) {
   const addToUserProperties = () => {
     if(!comments){
       toast.error("Please add comments before adding property!")
+      return;
+    }
+    if (agentSelected && !agentName){
+      toast.error("Please add agent name before adding property!")
+      return;
+    }
+    if (resourcesSelected && !additionalResources){
+      toast.error("Please add additional resources before adding property!")
       return;
     }
     currentProperty.comments = comments
@@ -463,11 +525,16 @@ export default function MembersPage({params, searchParams}) {
 
         <div className="px-2">
           {
-            errors.length > 1 &&(
-              <div className="flex flex-col gap-2">
+            errors.length > 0 &&(
+              <div className="p-2 flex flex-col items-center gap-2">
+                <p className="text-red-500">Errors!!</p>
                 {
                   errors.map((error, index) => (
-                    <p key={index} className="text-red-500">{error}</p>
+                    <div className="flex flex-row">
+                      <p key={index} className="text-red-500">
+                        {index+1}. {error}
+                      </p>
+                    </div>
                   ))
                 }
               </div>
@@ -547,7 +614,7 @@ export default function MembersPage({params, searchParams}) {
                   <option value="direct">Direct</option>
                   <option value="indirect">Indirect</option>
                 </select>
-                <p className="text-sm">Selected Visit Type: <span className="font-semibold">{report?.report_view_type || visitType || 'None'}</span></p>
+                <p className="text-sm">Selected Visit Type: <span className="font-semibold">{visitType || 'None'}</span></p>
               </div>
             </div>
           </div>
@@ -787,7 +854,15 @@ export default function MembersPage({params, searchParams}) {
             }
 
             <div className='flex justify-between items-end'>
-              <label className="mt-2">Add Follow Up Notes</label>
+              <label>Add Follow Up Notes</label>
+              <Button variant="outline" onClick={GenerateFollowUpSummaryAI} 
+              type="button" size="sm" className="border-primary text-primary flex gap-2"> 
+                
+              {
+                summaryAiLoading ? <p className="flex items-center justify-center"><Loader className="animate-spin mr-2" /> Loading....</p> :
+                <p className="flex items-center gap-2"><Brain className='h-4 w-4' /> Generate Summary Using AI</p>
+              }
+              </Button>
             </div>
             <Textarea className="mt-2" required
                 value={followUpNotes}
@@ -805,6 +880,52 @@ export default function MembersPage({params, searchParams}) {
               )
             }
           </form>
+          <div>
+            {
+              !questionMode && (
+                <div className='flex justify-between'>
+                  <Button variant="outline" onClick={() => setQuestionMode(true)} 
+                  type="button" size="sm" className="border-primary text-primary flex gap-2"> 
+                   <p className="flex items-center gap-2"><Plus className='h-4 w-4' /> Any Questions?</p>
+                  </Button>
+                </div>
+              )
+            }
+            {
+              questionMode && (
+                <div className="flex w-[80%] items-center mt-4 mx-8  my-2 flex-col md:flex-row">
+                  <GeneralSearchButton 
+                    onClick={handleAiSearch} 
+                    value={searchText} 
+                    setSearchText={setSearchText} 
+                  />
+                  {
+                    anyQLoading ?  (
+                      <p className="flex items-center justify-center">
+                        <Loader className="animate-spin ml-auto" /> Loading....
+                      </p>
+                    ):
+                    (
+                      <button onClick={handleAiSearch} className="flex items-center ml-auto gap-2">
+                        <Search className='h-4 w-4'  /> Search
+                      </button>
+                    )
+                  }
+                </div>
+              )
+            }
+            {
+              anyAnswer && (
+                <div className='flex flex-col  items-start'>
+                  <label className="mt-2 font-bold">Answer</label>
+                  <ReactMarkdown>
+                    {anyAnswer}
+                  </ReactMarkdown>
+                </div>
+              )
+            }
+
+          </div>
           <div className='flex gap-2'>
             <Button onClick={updateReport}>{loading? 'Loading...': 'Save Report'}</Button>
             <Button onClick={() => setDeleteModalOpen(true)} variant="destructive">{loading? 'Loading...': 'Delete Report'}</Button>

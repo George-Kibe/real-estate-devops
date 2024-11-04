@@ -63,7 +63,7 @@ const AddCommentModal = ({
               </RadioGroup>
             </div>
           </div>
-          {selected === "Yes" && (
+          {agentSelected === "Yes" && (
             <div className="">
               <p className="">Agent Name:</p>
               <input type="text" placeholder='Agent Name' 
@@ -91,7 +91,7 @@ const AddCommentModal = ({
             </div>
           </div>
 
-          {addSelected === "Yes" && (
+          {resourcesSelected === "Yes" && (
             <div className="">
               <p className="">Additional Resources:</p>
               <input type="text" placeholder='Additional Resources'
