@@ -11,7 +11,6 @@ import * as XLSX from 'xlsx';
 import moment from "moment";
 import AddClientModal from '@/components/modals/AddClientModal';
 import { generateReportBilling } from '@/utils/functions';
-import { set } from 'mongoose';
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
 
@@ -72,7 +71,8 @@ const SingleClientPage = () => {
         report_type: report?.report_type,
         status: report?.status,
         report_draft: report?.report_draft,
-        report_final: report?.report_final
+        report_final: report?.report_final,
+        follow_up_notes: report?.follow_up_notes,
       };
       mainReportData.push(mainData);
 
@@ -87,7 +87,8 @@ const SingleClientPage = () => {
           phone_number: property?.phone_number,
           amenities: property?.amenities?.join(', ') || "",
           images: property?.images?.join(', ') || "",
-          comments: property?.comments
+          comments: property?.comments,
+          isFavorite: property.isFavorite? "Yes": "No",
         };
         propertiesData.push(propertyData);
       });

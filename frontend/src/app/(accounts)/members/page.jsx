@@ -4,7 +4,7 @@ import AnimatedText from "@/components/AnimatedText";
 import InviteMemberModal from "@/components/modals/InviteMemberModal";
 import { Button } from "@/components/ui/button";
 import { useMainProvider } from "@/providers/MainProvider";
-import {Trash2, Pencil, CirclePlus, Eye} from 'lucide-react';
+import {CirclePlus, Eye} from 'lucide-react';
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -68,11 +68,6 @@ export default function MembersPage() {
                       View
                     </Button>
                   </td>
-                  {/* <td className="px-6 py-4">
-                    <div className="flex justify-end gap-4">
-                      <Trash2 className="text-red-500" />
-                    </div>
-                  </td> */}
                 </tr>
               ))
             }

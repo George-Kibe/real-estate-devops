@@ -16,7 +16,7 @@ const AddCommentModal = ({
   agentSelected, setAgentSelected,
   resourcesSelected, setResourcesSelected 
 }) => {
-  //console.log("Current Property: ", currentProperty?.comments)
+  // console.log("Current Property: ", currentProperty?.comments)
   return (
     <div 
       //onClick={onClose}
@@ -49,7 +49,7 @@ const AddCommentModal = ({
           /> 
 
           <div className="flex flex-col items-start p-2">
-            <h2 className="text-xl font-bold mb-4">Did you call the agent?</h2>
+            <h2 className="text-xl font-bold mb-4">Did you talk with Staff/agent?</h2>
             <div className="">
               <RadioGroup value={agentSelected} defaultValue="Yes" onValueChange={setAgentSelected}>
                 <div className="flex items-center space-x-2">
@@ -65,7 +65,7 @@ const AddCommentModal = ({
           </div>
           {agentSelected === "Yes" && (
             <div className="">
-              <p className="">Agent Name:</p>
+              <p className="">Name of Staff/Agent Called :</p>
               <input type="text" placeholder='Agent Name' 
                 value={agentName || currentProperty?.agentName || ''} 
                 onChange={ev => setAgentName(ev.target.value)}
@@ -76,7 +76,7 @@ const AddCommentModal = ({
           )}
 
           <div className="flex flex-col items-start p-2">
-            <h2 className="text-xl font-bold mb-4">Did you call the agent?</h2>
+            <h2 className="text-xl font-bold mb-4">Did you request for additional Resources?</h2>
             <div className="">
               <RadioGroup value={resourcesSelected} defaultValue="Yes" onValueChange={setResourcesSelected}>
                 <div className="flex items-center space-x-2">

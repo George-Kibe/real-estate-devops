@@ -99,7 +99,8 @@ const SingleMemberPage = () => {
         report_type: report?.report_type,
         status: report?.status,
         report_draft: report?.report_draft,
-        report_final: report?.report_final
+        report_final: report?.report_final,
+        follow_up_notes: report?.follow_up_notes,
       };
       mainReportData.push(mainData);
 
@@ -114,7 +115,8 @@ const SingleMemberPage = () => {
           phone_number: property?.phone_number,
           amenities: property?.amenities?.join(', ') || "",
           images: property?.images?.join(', ') || "",
-          comments: property?.comments
+          comments: property?.comments,
+          isFavorite: property.isFavorite? "Yes": "No",
         };
         propertiesData.push(propertyData);
       });
@@ -132,6 +134,7 @@ const SingleMemberPage = () => {
       { wch: 10 }, // status
       { wch: 50 }, // report_draft (allow larger width)
       { wch: 50 },  // report_final (allow larger width)
+      { wch: 50 }, //follow_up_notes
       { wch: 15 }, // updated_at
 
     ];
@@ -145,7 +148,8 @@ const SingleMemberPage = () => {
       { wch: 15 }, // phone number
       { wch: 20 }, // amenities
       { wch: 20 }, // images
-      { wch: 80 }, // comments
+      { wch: 40 }, // comments
+      { wch: 10 }, // isFavorite
     ];
 
     XLSX.utils.book_append_sheet(workbook, mainSheet, 'Summary Reports');

@@ -75,8 +75,8 @@ export default function MembersPage({params, searchParams}) {
 
 
   const [currentPropertiesIndex, setCurrentPropertiesIndex] = useState(5);
-  //console.log("User Properties: ", userProperties);
-  // console.log("Current Properties: ", currentProperties)
+  // console.log("User Properties: ", userProperties);
+  console.log("Current Properties: ", currentProperties)
   const allComments = userProperties.map(p => p.comments).join(' ');
   const {id} = useParams();
   const divRef = useRef();
@@ -109,7 +109,8 @@ export default function MembersPage({params, searchParams}) {
         report_type: report?.report_type,
         status: report?.status,
         report_draft: report?.report_draft,
-        report_final: report?.report_final
+        report_final: report?.report_final,
+        follow_up_notes: report?.follow_up_notes,
       }
     ];
     const mainSheet = XLSX.utils.json_to_sheet(mainData);
@@ -126,7 +127,8 @@ export default function MembersPage({params, searchParams}) {
       { wch: 15 }, // report_type
       { wch: 10 }, // status
       { wch: 50 }, // report_draft (allow larger width)
-      { wch: 50 }  // report_final (allow larger width)
+      { wch: 50 },  // report_final (allow larger width)
+      { wch: 50 } // follow up notes
     ];
     XLSX.utils.book_append_sheet(workbook, mainSheet, 'Main Report');
 
@@ -140,7 +142,8 @@ export default function MembersPage({params, searchParams}) {
       phone_number: property.phone_number,
       amenities: property.amenities?.join(', ') || "",
       images: property.images?.join(', ') || "",
-      comments: property.comments
+      comments: property.comments,
+      isFavorite: property.isFavorite? "Yes": "No",
     }));
     const propertiesSheet = XLSX.utils.json_to_sheet(propertiesData);
      // Set column widths for the Properties sheet, especially for long text fields like comments
@@ -153,7 +156,8 @@ export default function MembersPage({params, searchParams}) {
       { wch: 15 }, // Phone number
       { wch: 30 }, // Amenities
       { wch: 30 }, // Images
-      { wch: 100 }  // Comments (increase this value to make sure it accommodates long text)
+      { wch: 40 },  // Comments (increase this value to make sure it accommodates long text)
+      { wch: 10 },  // isFavorite
     ];
 
     XLSX.utils.book_append_sheet(workbook, propertiesSheet, 'Properties');
@@ -700,6 +704,7 @@ export default function MembersPage({params, searchParams}) {
                   </tr>
               </tbody>
             }
+            {/* user properties; These are properties Added to report */}
             <tbody>
               {
                 userProperties?.map((property, index) => (
@@ -717,14 +722,16 @@ export default function MembersPage({params, searchParams}) {
                       <p>No Image</p>
                     )}
                     <div className="">
-                      <div className="text-base text-wrap ">{property.title}</div>
-                      <div className="text-base font-semibold text-wrap">Address: {property.street_address}</div>
+                      <div className="text-base text-wrap ">Name: {property.title}</div>
+                      <div className="text-base font-semibold text-wrap">Address: {property.street_address || property.address}</div>
                       <div className="font-normal text-gray-500 flex flex-row flex-wrap">
                         <p className="font-bold mr-2">Amenities:</p> {property?.amenities?.map((a, index) => <p className="ml-1" key={index}>{a +", "}</p>)}
-                      Bathrooms: {property.bathrooms}  
                       </div>
                       <div className="font-normal text-gray-500 flex flex-row flex-wrap">
                         <p className="font-bold mr-2">Bathrooms:</p>{property.bathrooms}  
+                      </div>
+                      <div className="font-normal text-gray-500 flex flex-row flex-wrap">
+                        <p className="font-bold mr-2">Website:</p>{property.website}  
                       </div>
                     </div>  
                   </td>
@@ -756,6 +763,7 @@ export default function MembersPage({params, searchParams}) {
                 ))
               }
             </tbody>
+            {/* user properties; These are properties Searched or scrapped pending works */}
             <tbody>
                 {
                   currentProperties?.map((property, index) => (
@@ -773,14 +781,16 @@ export default function MembersPage({params, searchParams}) {
                           <p>No Image</p>
                         )}
                         <div className="">
-                          <div className="text-base text-wrap ">{property.title}</div>
-                          <div className="text-base font-semibold text-wrap">Address: {property.street_address}</div>
+                          <div className="text-base text-wrap ">Name: {property.title}</div>
+                          <div className="text-base font-semibold text-wrap">Address: {property.street_address || property.address}</div>
                           <div className="font-normal text-gray-500 flex flex-row flex-wrap">
                             <p className="font-bold mr-2">Amenities:</p> {property?.amenities?.map((a, index) => <p className="ml-1" key={index}>{a +", "}</p>)}
-                          Bathrooms: {property.bathrooms}  
                           </div>
                           <div className="font-normal text-gray-500 flex flex-row flex-wrap">
                             <p className="font-bold mr-2">Bathrooms:</p>{property.bathrooms}  
+                          </div>
+                          <div className="font-normal text-gray-500 flex flex-row flex-wrap">
+                            <p className="font-bold mr-2">Website:</p>{property.website}  
                           </div>
                         </div>  
                       </td>

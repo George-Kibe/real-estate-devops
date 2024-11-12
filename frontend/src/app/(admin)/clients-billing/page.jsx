@@ -91,8 +91,8 @@ const BillingPage = ({searchParams}) => {
   const {selectedBillings, setSelectedBillings} = useMainProvider();
   const [count, setCount] = useState(1);
   console.log("selected billings: ", selectedBillings);
-  const viewBilling = (id) => {
-    router.push(`clients-billing/${id}`)
+  const viewBilling = (pkid) => {
+    router.push(`clients-billing/${pkid}`)
   }
   
   const handleClick = (item) => {
@@ -170,7 +170,7 @@ const BillingPage = ({searchParams}) => {
       <td className="hidden md:table-cell">{item.modifier}</td>
       <td className="hidden md:table-cell">{item.payor}</td>
       <td>
-        <BillingActions viewBilling={() =>viewBilling(item.id)} />
+        <BillingActions viewBilling={() =>viewBilling(item.pkid)} />
       </td>
     </tr>
   );
