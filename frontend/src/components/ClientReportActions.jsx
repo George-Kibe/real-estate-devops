@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { Ellipsis, Download, File } from "lucide-react"
+import { Ellipsis, Download, File, BookOpen } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -14,7 +14,8 @@ export function ClientReportActions({
   generateTodayReport,
   name,
   generatePastReport, 
-  exportReportsToExcel
+  exportReportsToExcel,
+  generateBlankReport
 }) {
   return (
     <DropdownMenu>
@@ -27,6 +28,10 @@ export function ClientReportActions({
         <DropdownMenuItem onClick={generateTodayReport}>
           <File className="h-5 w-5 mr-2" />
             Generate {name}'s  Report for Today
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={generateBlankReport}>
+          <BookOpen className="h-5 w-5 mr-2" />
+            Generate {name}'s  Blank Report for Today
         </DropdownMenuItem>
         <DropdownMenuItem onClick={generatePastReport}>
           <File className="h-5 w-5 mr-2" />

@@ -9,6 +9,7 @@ const AddPropertyModal = ({ isOpen, onClose, setUserProperties }) => {
   const [title, setTitle] = useState('');
   const [street_address, setStreet_address] = useState('');
   const [phone_number, setPhone_number] = useState('');
+  const [website, setWebsite] = useState('');
   const [amenities, setAmenities] = useState('');
   const [imageBase64, setImageBase64] = useState('');
   const [description, setDescription] = useState('');
@@ -41,9 +42,10 @@ const AddPropertyModal = ({ isOpen, onClose, setUserProperties }) => {
       price,
       images: [imageBase64], // Assuming image is a URL or file path
       description,
+      website,
       amenities: amenitiesList,
     };
-    console.log("New Property: ", newProperty)
+    // console.log("New Property: ", newProperty)
     setUserProperties((prev) => [...prev, newProperty]);
     onClose()
     toast.success("Property Added Successfully");
@@ -118,13 +120,24 @@ const AddPropertyModal = ({ isOpen, onClose, setUserProperties }) => {
           className="border-2 h-16 border-gray-300 rounded-md p-1 w-full 
           mb-2 focus:border-blue-900" 
         /> 
-         <p className="font-semibold pr-2">Amenities</p>
+
+        <div className="">
+          <p className="">Website:</p>
+          <input type="text" placeholder='https://abc.com' 
+            value={website}
+            onChange={ev => setWebsite(ev.target.value)}
+            className="border-2 border-gray-300 rounded-md p-1 w-full 
+            mb-2 focus:border-blue-900" 
+          /> 
+        </div>
+        <p className="font-semibold pr-2">Amenities</p>
         <textarea type="text" placeholder='Amenities, separate with commas' 
           value={amenities} 
           onChange={ev => setAmenities(ev.target.value)}
           className="border-2 h-16 border-gray-300 rounded-md p-1 w-full 
           mb-2 focus:border-blue-900" 
         /> 
+
         <p className="font-semibold pr-2">Add Comments</p>
         <textarea type="text" placeholder='Enter Your comments here...' 
           value={comments} 

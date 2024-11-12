@@ -1,15 +1,16 @@
-
 'use client'
 import { toast } from 'react-toastify';
 import React, { useEffect, useState } from 'react'
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import axios from 'axios';
 import { Loader } from 'lucide-react';
 import moment from 'moment';
+import { Button } from '@/components/ui/button';
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
 
 const SingleBilling = () => {
+  const router = useRouter();
   const [billing, setBilling] = useState({});
   const [loading, setLoading] = useState(false);
   const [updateLoading, setUpdateLoading] = useState(false);
@@ -27,6 +28,10 @@ const SingleBilling = () => {
     modifier: '',
     payor: '',
   });
+  const goBack = () => {
+    router.push("/clients-billing")
+  };
+
   const {id} = useParams();
   const fetchBillingData = async () => {
     setLoading(true);
@@ -75,6 +80,46 @@ const SingleBilling = () => {
     console.log(formData);   
 
   };
+
+  const handleDownloadX123 = (data) => {
+    // Custom replacer to handle circular references
+    const cache = new Set();
+    const fileContent = JSON.stringify(data, (key, value) => {
+      if (typeof value === 'object' && value !== null) {
+        if (cache.has(value)) {
+          return; // Remove circular reference
+        }
+        cache.add(value);
+      }
+      return value;
+    }, 2);
+  
+    // Create a blob with the file content and set the MIME type
+    const blob = new Blob([fileContent], { type: 'application/json' });
+    // Create a download link
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `${data.client_name}_claim.clp`; // Name the file based on client name
+    // Trigger download
+    link.click();
+    // Clean up the URL object
+    URL.revokeObjectURL(link.href);
+  };
+  const handleDownloadX12 = (data) => {
+    // Format data as a string in JSON format with indentation
+    const fileContent = JSON.stringify(data, null, 2);
+    // Create a blob with the file content and set the MIME type
+    const blob = new Blob([fileContent], { type: 'application/json' });
+    // Create a download link
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `${data.client_name}_claim.clp`; // Name the file based on client name
+    // Trigger download
+    link.click();
+    // Clean up the URL object
+    URL.revokeObjectURL(link.href);
+  };
+
   return (
     <div className=" p-4 md:p-8">
         {
@@ -169,13 +214,11 @@ const SingleBilling = () => {
             Log Status
             </label>
             <select
-            className="shadow appearance-none border rounded w-full md:w-[40%] py-2 px-3 leading-tight focus:outline-none   
-    focus:shadow-outline"   
-
-            id="log_status"
-            name="log_status"
-            value={formData.log_status}
-            onChange={handleChange}
+                className="shadow appearance-none border rounded w-full md:w-[40%] py-2 px-3    leading-tight focus:outline-none focus:shadow-outline" 
+                id="log_status"
+                name="log_status"
+                value={formData.log_status}
+                onChange={handleChange}
             >
             <option value="Confirmed">Confirmed</option>
             <option value="Not Confirmed">Not Confirmed</option>
@@ -188,13 +231,12 @@ const SingleBilling = () => {
             Pro Code
             </label>
             <select
-            className="shadow appearance-none border rounded w-full md:w-[40%] py-2 px-3 leading-tight focus:outline-none focus:shadow-outline"   
+                className="shadow appearance-none border rounded w-full md:w-[40%] py-2 px-3 leading-tight focus:outline-none focus:shadow-outline"   
 
-            id="pro_code"   
-
-            name="pro_code"
-            value={formData.pro_code}
-            onChange={handleChange}
+                id="pro_code"   
+                name="pro_code"
+                value={formData.pro_code}
+                onChange={handleChange}
             >
             <option value="H2015">H2015</option>
             <option value="H0043">H0043</option>
@@ -208,32 +250,34 @@ const SingleBilling = () => {
             Payor
             </label>
             <select
-            className="shadow appearance-none border rounded w-full md:w-[40%] py-2 px-3 leading-tight focus:outline-none focus:shadow-outline"   
-
-            id="payor"   
-
-            name="payor"
-            value={formData.payor}
-            onChange={handleChange}
+                className="shadow appearance-none border rounded w-full md:w-[40%] py-2 px-3 leading-tight focus:outline-none focus:shadow-outline"
+                id="payor" 
+                name="payor"
+                value={formData.payor}
+                onChange={handleChange}
             >
             <option value="UCARE">UCARE</option>
             <option value="MA">MA</option>
             </select>
         </div>
+        <div className="flex gap-8">
         <button onClick={updateBilling}
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-            type="submit"
-        >
-            {
-                updateLoading ? (
-                    <p className="flex flex-row gap-2 items-center">
-                        <Loader /> Updating...
-                    </p>
-                ) : (
-                    "Update Billing"
-                )
-            }
-        </button>
+                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                type="submit"
+            >
+                {
+                    updateLoading ? (
+                        <p className="flex flex-row gap-2 items-center">
+                            <Loader /> Updating...
+                        </p>
+                    ) : (
+                        "Update Billing"
+                    )
+                }
+            </button>
+            <Button onClick={() => handleDownloadX12(billing)} className="bg-[#0b204c] rounded-md">Generate X12</Button>
+            <Button onClick={goBack} className="bg-[#0b204c] rounded-md">GO BACK</Button>
+        </div>
         </form> 
     </div>
   )

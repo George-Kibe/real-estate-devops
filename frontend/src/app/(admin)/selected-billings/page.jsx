@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useMainProvider } from '@/providers/MainProvider';
 import { Button } from '@/components/ui/button';
+import { useRouter } from 'next/navigation';
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
 const columns = [
@@ -78,7 +79,13 @@ const columns = [
 
 const SelectedBillingPage = ({searchParams}) => {
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
   const {selectedBillings, setSelectedBillings} = useMainProvider();
+  
+  const goBack = () => {
+  router.push("/clients-billing")
+  };
+
   const handleClick = (item) => {
     // add item to selected billings if it doesnt exist already
     if (!selectedBillings?.includes(item)) {
@@ -169,6 +176,9 @@ const SelectedBillingPage = ({searchParams}) => {
         <Button className="bg-[#e4b124] rounded-none">UPDATE BILLING STATUS</Button>
         <Button className="bg-[#1e753f] rounded-none">UPDATE CL TYPE</Button>
         <Button className="bg-[#bec2c0] rounded-none">UPDATE NOTES</Button>
+      </div>
+      <div className="flex gap-4 mt-4 flex-wrap items-center">
+        <Button onClick={goBack} className="bg-[#0b204c] rounded-none">GO BACK</Button>
       </div>
     </div>
   );

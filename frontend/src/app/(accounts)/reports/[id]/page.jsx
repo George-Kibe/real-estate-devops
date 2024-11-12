@@ -76,7 +76,7 @@ export default function MembersPage({params, searchParams}) {
 
   const [currentPropertiesIndex, setCurrentPropertiesIndex] = useState(5);
   // console.log("User Properties: ", userProperties);
-  console.log("Current Properties: ", currentProperties)
+  // console.log("Current Properties: ", currentProperties)
   const allComments = userProperties.map(p => p.comments).join(' ');
   const {id} = useParams();
   const divRef = useRef();
@@ -182,6 +182,7 @@ export default function MembersPage({params, searchParams}) {
       setSummary(data?.report_draft)
       setStaffLocation(data?.report_location);
       setVisitType(data?.report_view_type);
+      setFollowUpNotes(data?.follow_up_notes);
       if (data?.properties.length > 0){
         setUserProperties(data.properties)
       }
@@ -416,18 +417,23 @@ export default function MembersPage({params, searchParams}) {
       toast.error("Please add comments before adding property!")
       return;
     }
-    if (agentSelected === "Yes" && !agentName){
+    if (agentSelected === "Yes" && (!agentName && !currentProperty.agentName)){
       console.log(agentSelected)
       toast.error("Please add agent name before adding property!")
       return;
     }
-    if (resourcesSelected === "Yes" && !additionalResources){
+    if (resourcesSelected === "Yes" && (!additionalResources && !currentProperty.additionalResources )){
       toast.error("Please add additional resources before adding property!")
       return;
     }
     currentProperty.comments = comments
-    currentProperty.agentName = agentName
-    currentProperty.additionalResources = additionalResources
+    // modify agentName only if agentname exists
+    if (agentName){
+      currentProperty.agentName = agentName
+    }
+    if (additionalResources){
+      currentProperty.additionalResources = additionalResources
+    }
     if (editMode) {
       const updatedProperties = userProperties.map((p, i) => {
         if (i === currentIndex) {

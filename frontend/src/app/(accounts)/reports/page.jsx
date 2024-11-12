@@ -11,6 +11,7 @@ import moment from "moment";
 import { Loader } from "lucide-react";
 import CustomDateModal from "@/components/modals/CustomDateModal";
 import { ClientReportActions } from "@/components/ClientReportActions";
+import { SingleClientReportActions } from "@/components/SingleClientReportActions";
 
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
@@ -78,7 +79,7 @@ export default function ReportsPage() {
     setCurrentClient(client)
     //console.log("Selected Client ID: ", selectClient?.id)
   }
-  const generateReport = async() => {
+  const generateReport = async(isNew) => {
     setLoading(true);
     //const date = new Date().toISOString;
     //console.log("Date: ", date)
@@ -99,7 +100,11 @@ export default function ReportsPage() {
       const report = response.data
       // console.log("Report Details: ", report)
       if (response.status === 201) {
-        router.push(`/reports/${report.pkid}/?searchTerm=${currentClient?.city}`)
+        if (isNew) {
+          router.push(`/reports/${report.pkid}`)
+        } else {
+          router.push(`/reports/${report.pkid}/?searchTerm=${currentClient?.city}`)
+        }
       }
       setLoading(false);
     } catch (error) {
@@ -290,7 +295,8 @@ export default function ReportsPage() {
                     <td className="px-2 py-1">
                       <ClientReportActions 
                         name={currentClient?.client_name}
-                        generateTodayReport={() => generateReport()}
+                        generateTodayReport={() => generateReport(false)}
+                        generateBlankReport={() => generateReport(true)}
                         generatePastReport={() => setShowDateModal(true)}
                         exportReportsToExcel={() => exportToExcel(reports, currentClient?.client_name)}
                       />
@@ -330,7 +336,7 @@ export default function ReportsPage() {
                           {moment(report?.created_at).format('MM/DD/YYYY')}
                         </td>
                         <td className="px-2 py-1">
-                          <Button onClick={()=>viewReport(report?.pkid)}>View Report</Button>
+                          <SingleClientReportActions viewReport={()=>viewReport(report?.pkid)} />
                         </td>
                       </tr>
                     ))
