@@ -33,6 +33,10 @@ const SingleMemberPage = () => {
   const router = useRouter();
   const {id} = useParams();
 
+  const workedOnClients = new Set(staffReports?.map(report => report.client_id)).size
+  const allClients =  new Set(staffClients?.map(client => client.id)).size
+
+
   const fetchStaffClients = async () => {
     setLoading(true);
     try {
@@ -89,6 +93,7 @@ const SingleMemberPage = () => {
     const mainReportData = [];
     const propertiesData = [];
 
+    const truncateText = (text, maxLength = 32767) => text?.substring(0, maxLength) || "";
     reports.forEach(report => {
       const mainData = {
         date: moment(report?.created_at).format('MMMM Do YYYY'),
@@ -114,7 +119,7 @@ const SingleMemberPage = () => {
           bathrooms: property?.bathrooms,
           phone_number: property?.phone_number,
           amenities: property?.amenities?.join(', ') || "",
-          images: property?.images?.join(', ') || "",
+          images: truncateText(property?.images?.join(', ') || ""),
           comments: property?.comments,
           isFavorite: property.isFavorite? "Yes": "No",
         };
@@ -271,19 +276,34 @@ const SingleMemberPage = () => {
             {/* SMALL CARDS */}
             <div className="flex-1 flex gap-4 justify-between flex-wrap">
               {/* CARD */}
-              <div className=" p-4 rounded-md flex gap-4 w-full md:w-[48%] xl:w-[45%] 2xl:w-[48%]">
+              <div className="p-2 rounded-md flex gap-4 w-full md:w-[48%] xl:w-[45%] 2xl:w-[48%]">
                 <ScrollText />
                 <div className="">
                   <h1 className="text-xl font-semibold">{staffReports.length}</h1>
-                  <span className="text-sm text-gray-400">Reports Done</span>
+                  <span className="text-xs text-gray-400">Reports Done</span>
                 </div>
               </div>
               {/* CARD */}
-              <div className="p-4 rounded-md flex gap-4 w-full md:w-[48%] xl:w-[45%] 2xl:w-[48%]">
+              <div className="p-2 rounded-md flex gap-4 w-full md:w-[48%] xl:w-[45%] 2xl:w-[48%]">
                 <Users2/>
                 <div className="">
                   <h1 className="text-xl font-semibold">{staffClients.length}</h1>
-                  <span className="text-sm text-gray-400">Allocated clients</span>
+                  <span className="text-xs text-gray-400">Allocated clients</span>
+                </div>
+              </div>
+              {/* CARD */}
+              <div className="p-2 rounded-md flex gap-4 w-full md:w-[48%] xl:w-[45%] 2xl:w-[48%]">
+                <Users2/>
+                <div className="">
+                  <h1 className="text-xl font-semibold">{workedOnClients}</h1>
+                  <span className="text-xs text-gray-400">Worked On clients</span>
+                </div>
+              </div>
+              <div className="p-2 rounded-md flex gap-4 w-full md:w-[48%] xl:w-[45%] 2xl:w-[48%]">
+                <Users2/>
+                <div className="">
+                  <h1 className="text-xl font-semibold">{allClients - workedOnClients}</h1>
+                  <span className="text-xs text-gray-400">Pending Clients</span>
                 </div>
               </div>
             </div>

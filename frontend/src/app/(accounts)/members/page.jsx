@@ -43,26 +43,26 @@ export default function MembersPage() {
       }
       <div className="overflow-hidden rounded-lg border shadow-md m-5">
         <table className="w-full border-collapse text-left text-sm">
-          <thead className="">
+          <thead className="border-b-2">
             <tr>
-              <th scope="col" className="px-6 py-4 font-medium">#</th>
-              <th scope="col" className="px-6 py-4 font-medium">FirstName</th>
-              <th scope="col" className="px-6 py-4 font-medium">LastName</th>
-              <th scope="col" className="px-6 py-4 font-medium">Role</th>
-              <th scope="col" className="px-6 py-4 font-medium">Status</th>
-              <th scope="col" className="px-6 py-4 font-medium">Action</th>
+              <th scope="col" className="p-2 font-medium">#</th>
+              <th scope="col" className="p-2 font-medium">FirstName</th>
+              <th scope="col" className="p-2 font-medium">LastName</th>
+              <th scope="col" className="p-2 font-medium">Role</th>
+              <th scope="col" className="p-2 font-medium">Status</th>
+              <th scope="col" className="p-2 font-medium">Action</th>
             </tr>
           </thead>
           <tbody className="divide-y ">
             {
               members?.map((member, index) => (
                 <tr className="" key={index}>
-                  <td className="px-6 py-4">{index +1}.</td>
-                  <td className="px-6 py-4">{member.firstName || member.name}</td> 
-                  <td className="px-6 py-4">{member.lastName}</td>        
-                  <td className="px-6 py-4">{member.role}</td>
-                  <td className="px-6 py-4">{member.status || 'Active'}</td>
-                  <td className="px-6 py-4">
+                  <td className="p-2">{index +1}.</td>
+                  <td className="p-2">{member.firstName || member.name}</td> 
+                  <td className="p-2">{member.lastName}</td>        
+                  <td className="p-2">{member.role}</td>
+                  <td className="p-2">{member.status || 'Active'}</td>
+                  <td className="p-2">
                     <Button className="flex items-center gap-1" onClick={() => viewMember(member._id)}>
                       <Eye />
                       View

@@ -25,6 +25,7 @@ import ReactMarkdown from 'react-markdown';
 import { GeneralSearchButton, SearchButton } from "@/components/TableSearch";
 import { callAIPrompt, generalAIPrompt, generateAISummary, shuffleArray } from "@/utils/functions";
 import Image from "next/image";
+import { user } from "@nextui-org/react";
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
 
@@ -96,6 +97,7 @@ export default function MembersPage({params, searchParams}) {
     const workbook = XLSX.utils.book_new();
     // console.log("Exporting to excel: ", report)
     // Main report data
+    const truncateText = (text, maxLength = 32767) => text?.substring(0, maxLength) || "";
     const mainData = [
       {
         pkid: report?.pkid,
@@ -141,7 +143,7 @@ export default function MembersPage({params, searchParams}) {
       bathrooms: property.bathrooms,
       phone_number: property.phone_number,
       amenities: property.amenities?.join(', ') || "",
-      images: property.images?.join(', ') || "",
+      images: truncateText(property.images?.join(', ') || ""),
       comments: property.comments,
       isFavorite: property.isFavorite? "Yes": "No",
     }));
@@ -462,11 +464,19 @@ export default function MembersPage({params, searchParams}) {
     setCurrentIndex(index);
   }
   const handleEdit = (property, index) => {
+    if (property.isCustom){
+      setCurrentIndex(index);
+      setEditMode(true)
+      setCurrentProperty(property);
+      setPropertyModalOpen(true);
+      return;
+    }
     setModalOpen(true);
     setCurrentIndex(index);
     setCurrentProperty(property);
     setEditMode(true)
   }
+  
   const handleRemove = (index) => {
     setCurrentProperties(currentProperties.filter((p, i) => i !== index));
   }
@@ -525,14 +535,40 @@ export default function MembersPage({params, searchParams}) {
         resourcesSelected={resourcesSelected}
         setResourcesSelected={setResourcesSelected}
       />
-      <AddPropertyModal isOpen={propertyModalOpen} onClose={closePropertyModal} setUserProperties={setUserProperties}
+      <AddPropertyModal
+       currentProperty={currentProperty} 
+       editMode={editMode}
+       setEditMode={setEditMode}
+       userProperties={userProperties}
+       currentIndex={currentIndex}
+       setUserProperties={setUserProperties}
+       isOpen={propertyModalOpen} 
+       onClose={closePropertyModal} 
       />
-      <ConfirmExportModal exportAction={exportToExcel} isOpen={exportModalOpen} onClose={() => setExportModalOpen(false)} />
-      <EditLocationModal isOpen={locationModalOpen} onClose={closeLocationModal} searchLocation={searchLocation} fetchProperties={fetchProperties} setSearchLocation={setSearchLocation} 
+      <ConfirmExportModal 
+        exportAction={exportToExcel} 
+        isOpen={exportModalOpen} 
+        onClose={() => setExportModalOpen(false)} 
       />
-      <ConfirmDeleteModal deleteAction={deleteReport} isOpen={deleteModalOpen} onClose={closeDeleteModal} title={report?.title}
+      <EditLocationModal 
+        isOpen={locationModalOpen} 
+        onClose={closeLocationModal} 
+        searchLocation={searchLocation} 
+        fetchProperties={fetchProperties} 
+        setSearchLocation={setSearchLocation} 
       />
-      <SendClientAlertModal isOpen={sendModalOpen} onClose={closeSendModal} client={currentClient} property={currentProperty} />
+      <ConfirmDeleteModal 
+        deleteAction={deleteReport} 
+        isOpen={deleteModalOpen} 
+        onClose={closeDeleteModal} 
+        title={report?.title}
+      />
+      <SendClientAlertModal 
+        isOpen={sendModalOpen} 
+        onClose={closeSendModal} 
+        client={currentClient} 
+        property={currentProperty} 
+      />
 
         <div className="px-2">
           {
@@ -757,12 +793,12 @@ export default function MembersPage({params, searchParams}) {
                   </td>
                   <td className="px-2 py-1  self-center justify-center flex-col gap-2">
                     <PropertyActions 
-                    handleEdit={() => handleEdit(property, index)}
-                    viewProperty={() => viewProperty(property)} 
-                    handleShareProperty={() => handleShareProperty(property)} 
-                    handleRemoveProperty={() =>handleRemoveUserProperty(property.title)} 
-                    isFavorite={property.isFavorite}
-                    handleMarkFavorite={() => handleMarkFavoriteUser(index)}
+                      handleEdit={() => handleEdit(property, index)}
+                      viewProperty={() => viewProperty(property)} 
+                      handleShareProperty={() => handleShareProperty(property)} 
+                      handleRemoveProperty={() =>handleRemoveUserProperty(property.title)} 
+                      isFavorite={property.isFavorite}
+                      handleMarkFavorite={() => handleMarkFavoriteUser(index)}
                   />
                   </td>
                   </tr>

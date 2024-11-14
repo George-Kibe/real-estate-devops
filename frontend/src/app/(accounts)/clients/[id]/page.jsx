@@ -59,6 +59,7 @@ const SingleClientPage = () => {
     const mainReportData = [];
     const propertiesData = [];
 
+    const truncateText = (text, maxLength = 32767) => text?.substring(0, maxLength) || "";
     reports.forEach(report => {
       const mainData = {
         date: moment(report?.created_at).format('MMMM Do YYYY'),
@@ -86,7 +87,7 @@ const SingleClientPage = () => {
           bathrooms: property?.bathrooms,
           phone_number: property?.phone_number,
           amenities: property?.amenities?.join(', ') || "",
-          images: property?.images?.join(', ') || "",
+          images: truncateText(property?.images?.join(', ') || ""),
           comments: property?.comments,
           isFavorite: property.isFavorite? "Yes": "No",
         };

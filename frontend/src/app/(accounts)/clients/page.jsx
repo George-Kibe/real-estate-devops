@@ -116,30 +116,24 @@ export default function MembersPage() {
       }
       <div className="overflow-hidden rounded-lg border shadow-md m-5">
         <table className="w-full border-collapse text-left text-sm">
-          <thead className="">
+          <thead className="border-b-2">
             <tr>
-              <th scope="col" className="px-6 py-4 font-medium">#</th>
-              <th scope="col" className="px-6 py-4 font-medium">First Name</th>
-              <th scope="col" className="px-6 py-4 font-medium">Last Name</th>
-              <th scope="col" className="px-6 py-4 font-medium">HouseType</th>
-              <th scope="col" className="px-6 py-4 font-medium">Status</th>
-              <th scope="col" className="px-6 py-4 font-medium">Action</th>
+              <th scope="col" className="p-1 font-medium">#</th>
+              <th scope="col" className="p-1 font-medium">First Name</th>
+              <th scope="col" className="p-1 font-medium">Last Name</th>
+              <th scope="col" className="p-1 font-medium">HouseType</th>
+              <th scope="col" className="p-1 font-medium">Status</th>
+              <th scope="col" className="p-1 font-medium">Action</th>
             </tr>
           </thead>
           <tbody className="divide-y ">
             {
               clients?.map((client, index) => (
-                <tr className="" key={index}>
-                  <td className="px-6 py-4 text-sm">{index + 1}</td>
-                  <th className="flex gap-3 px-6 py-4 font-normal">
-                    <div className="text-sm">
-                      <div className="font-medium ">{client.first_name||client.client_name}</div>
-                      {/* <div className="">{client.email}</div> */}
-                    </div>
-                  </th>
-
-                  <td className="px-6 py-4 text-sm">{client.last_name}</td>
-                  <td className="px-6 py-4">
+                <tr className="self-center" key={index}>
+                  <td className="p-1 text-sm">{index + 1}.</td>
+                  <td className="p-1 text-sm">{client.first_name}</td>
+                  <td className="p-1 text-sm">{client.last_name}</td>
+                  <td className="p-1">
                     <div className="flex gap-2">
                       <span
                         className="inline-flex items-center gap-1 rounded-full bg-blue-50 px-2 py-1 text-xs font-semibold text-blue-600"
@@ -148,8 +142,8 @@ export default function MembersPage() {
                       </span>
                     </div>
                   </td>
-                  <td className="px-6 py-4">{client.status || "Active"}</td>
-                  <td className="px-6 py-4 flex gap-2">
+                  <td className="p-1">{client.status || "Active"}</td>
+                  <td className="p-1 flex gap-2">
                     <button className="" onClick={() => viewClient(client.pkid)}>
                      <Eye className="text-green-500" />
                     </button>

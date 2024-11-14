@@ -117,6 +117,8 @@ export default function ReportsPage() {
     router.push(`/reports/${id}`)
   }
 
+  const truncateText = (text, maxLength = 32767) => text?.substring(0, maxLength) || "";
+  
   const exportToExcel = (reports, name) => {
     if (reports.length === 0) {
       toast.error("No reports to export.");
@@ -132,14 +134,14 @@ export default function ReportsPage() {
       const mainData = {
         date: moment(report?.created_at).format('MMMM Do YYYY'),
         title: report?.title,
-        description: report?.description,
+        description: truncateText(report?.description),
         client_name: report?.client_name,
         client_id: report?.client_id,
         report_type: report?.report_type,
         status: report?.status,
-        report_draft: report?.report_draft,
-        report_final: report?.report_final,
-        follow_up_notes: report?.follow_up_notes,
+        report_draft: truncateText(report?.report_draft),
+        report_final: truncateText(report?.report_final),
+        follow_up_notes: truncateText(report?.follow_up_notes),
         updated_at: moment(report?.updated_at).format('MMMM Do YYYY'),
       };
       mainReportData.push(mainData);
@@ -150,12 +152,12 @@ export default function ReportsPage() {
           property_title: property?.title,
           street_address: property?.street_address,
           price: property?.price,
-          description: property?.description,
+          description: truncateText(property?.description),
           bathrooms: property?.bathrooms,
           phone_number: property?.phone_number,
-          amenities: property?.amenities?.join(', ') || "",
-          images: property?.images?.join(', ') || "",
-          comments: property?.comments,
+          amenities: truncateText(property?.amenities?.join(', ') || ""),
+          images: truncateText(property?.images?.join(', ') || ""),
+          comments: truncateText(property?.comments),
           isFavorite: property.isFavorite? "Yes": "No",
         };
         propertiesData.push(propertyData);
@@ -200,7 +202,7 @@ export default function ReportsPage() {
     saveAs(blob, `${name}-reports.xlsx`);
   };
 
-  const exportAllClientReportsToExcel = async( ) => {
+  const exportAllClientsReportsToExcel = async( ) => {
     try {
       setReportsLoading(true);
       const response = await axios.get(`${BACKEND_URL}/api/reports/?owner_id=${currentUser?._id}`);
@@ -233,7 +235,7 @@ export default function ReportsPage() {
       {
         !orgMode && (
           <div className="flex w-full">
-            <Button onClick={exportAllClientReportsToExcel} className="ml-auto">
+            <Button onClick={exportAllClientsReportsToExcel} className="ml-auto">
               {
                 reportsLoading? <Loader className="animate-spin mr-2" />
                 : "Export All Clients Reports to Excel"
