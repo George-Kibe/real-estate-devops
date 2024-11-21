@@ -1,33 +1,35 @@
 "use client";
 
-import {SearchIcon, PlusCircle} from 'lucide-react'
+import {SearchIcon} from 'lucide-react'
 import { useRouter } from "next/navigation";
+import { useState } from 'react';
 
 const TableSearch = () => {
+  const [searchText, setSearchText] = useState("");
   const router = useRouter();
 
   const handleSubmit = (e) => {
-    e.preventDefault();
-
-    const value = (e.currentTarget[0]).value;
-
     const params = new URLSearchParams(window.location.search);
-    params.set("search", value);
+    params.set("search", searchText);
     router.push(`${window.location.pathname}?${params}`);
   };
 
   return (
-    <form
+    <div
       onSubmit={handleSubmit}
       className="w-full md:w-auto flex items-center gap-2 text-xs rounded-full ring-[1.5px] ring-gray-300 px-2"
     >
-      <SearchIcon/>
+      <button onClick={handleSubmit} className="">
+        <SearchIcon/>
+      </button>
       <input
         type="text"
+        value={searchText}
+        onChange={ev => setSearchText(ev.target.value)}
         placeholder="Search..."
         className="w-[200px] p-2 bg-transparent outline-none"
       />
-    </form>
+    </div>
   );
 };
 

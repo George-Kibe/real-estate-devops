@@ -2,7 +2,6 @@
 
 import AnimatedText from "@/components/AnimatedText";
 import { useMainProvider } from "@/providers/MainProvider";
-import { signIn, useSession } from 'next-auth/react'
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
@@ -13,19 +12,9 @@ const LoginPage = () => {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-  // const session = useSession();
-  const {currentUser, setCurrentUser} = useMainProvider();
-  
-  // if (session.status === 'authenticated') {
-  //   router.push('/');
-  // }
-  
+  const {currentUser, setCurrentUser} = useMainProvider();  
   const handleSubmit = async(e) => {
     e.preventDefault();
-    // signIn("credentials", {
-    //   email,
-    //   password,
-    // });
     setLoading(true);
     try {
       const response = await fetch('/api/auth/login', {
@@ -76,12 +65,6 @@ const LoginPage = () => {
               <p className="mb-6 text-base text-secondary-color dark:text-dark-7">
                 OR
               </p>
-              {/* <div className="flex items-center justify-center gap-2 bg-black dark:bg-white rounded-md py-2">
-                <img src="/svgs/google.svg" alt="" className="w-[25px]" />
-                <button onClick={() => signIn("google")} className="text-white dark:text-black text-secondary-color dark:text-dark-7">
-                    Login with Google
-                </button>
-              </div> */}
               <a
                 href="/forgot-password"
                 className="mb-2 pt-2 inline-block text-base text-dark hover:text-primary hover:underline"

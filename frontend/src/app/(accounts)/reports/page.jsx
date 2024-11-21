@@ -114,7 +114,7 @@ export default function ReportsPage() {
   }
 
   const viewReport = (id) => {
-    router.push(`/reports/${id}`)
+    router.push(`/reports/preview/${id}`)
   }
 
   const truncateText = (text, maxLength = 32767) => text?.substring(0, maxLength) || "";
@@ -276,12 +276,8 @@ export default function ReportsPage() {
                   className={client.id === currentClient?.id ? "bg-lime-500 w-full cursor-pointer": "w-full cursor-pointer"}
                 >
                     <td className="px-2 py-1 text-sm">{index + 1}</td>
-                    <th className="flex gap-3 px-2 py-1 font-normal">
-                      <div className="text-sm">
-                        <div className="font-medium ">
-                          {client.first_name || client.client_name}
-                        </div>
-                      </div>
+                    <th className="px-2 py-1 font-normal">
+                      {client.first_name || client.client_name}
                     </th>
                     <td className="px-2 py-1">{client.last_name || client.client_name}</td>
                     <td className="px-2 py-1">
@@ -324,6 +320,7 @@ export default function ReportsPage() {
                   <tr>
                     <th scope="col" className="px-2 py-1 font-medium">#</th>
                     <th scope="col" className="px-2 py-1 font-medium">Report Title</th>
+                    <th scope="col" className="px-2 py-1 font-medium">Done By</th>
                     <th scope="col" className="px-2 py-1 font-medium">Report Date</th>
                     <th scope="col" className="px-2 py-1 font-medium">Action</th>
                   </tr>
@@ -334,6 +331,7 @@ export default function ReportsPage() {
                       <tr className="w-full flex-1" key={index}>
                         <td className="">{index+1}.</td>
                         <td className="">{report?.title}</td>
+                        <td className="">{report?.staff_name || "Nor Recorded"}</td>
                         <td className="px-2 py-1">
                           {moment(report?.created_at).format('MM/DD/YYYY')}
                         </td>

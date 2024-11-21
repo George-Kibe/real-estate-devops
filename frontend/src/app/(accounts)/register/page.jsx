@@ -95,7 +95,7 @@ const RegisterPage = () => {
                   />
                   <p className="">I am a Professional</p>
                 </div>
-                {
+                {/* {
                   isProfessional && (
                     <div className="flex flex-col items-center justify-center p-8">
                     <label className="mb-2 text-lg font-semibold" htmlFor="profession">
@@ -124,7 +124,7 @@ const RegisterPage = () => {
                     )}
                   </div>
                   )
-                }
+                } */}
                 <div className="mb-10">
                   <input
                     type="submit"

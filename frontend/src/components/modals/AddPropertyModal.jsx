@@ -96,6 +96,8 @@ const AddPropertyModal = ({
     setWebsite(''); setAgentName(''); setAdditionalResources('');
   }
   useEffect(() => {
+    if (!currentProperty) return;
+    // console.log("Current Property: ", currentProperty)
     setTitle(currentProperty.title || '');
     setStreet_address(currentProperty.street_address || '');
     setPhone_number(currentProperty.phone_number || '');
