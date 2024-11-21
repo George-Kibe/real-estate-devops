@@ -166,7 +166,6 @@ class Billing(TimeStampedUUIDModel):
     claim_amount = models.DecimalField(
         max_digits=10, decimal_places=2, null=True, blank=True)
     bill_status = models.CharField(max_length=50, choices=[
-        ('Ready', 'Ready'),
         ('Scheduled', 'Scheduled'),
         ('Submitted', 'Submitted'),
         ('Processing', 'Processing'),
@@ -178,11 +177,10 @@ class Billing(TimeStampedUUIDModel):
         max_digits=5, decimal_places=2, help_text="Hours worked", null=True, blank=True)
     billed_hours = models.DecimalField(
         max_digits=5, decimal_places=2, help_text="Hours billed", null=True, blank=True)
-    log_status = models.CharField(max_length=50, choices=[
-        ('Confirmed', 'Confirmed'),
-        ('Not Confirmed', 'Not Confirmed'),
-        ('Pending', 'Pending')
-    ], default="Not Confirmed")
+    approval_status = models.CharField(max_length=50, choices=[
+        ('Approved', 'Approved'),
+        ('Not Approved', 'Not Approved'),
+    ], default="Not Approved")
     pro_code = models.CharField(max_length=10, null=True, choices=[
                                 ("H2015", "H2015"), ("H0043", "H0043"), ("T1017", "T1017"), ("T2024", "T2024"), ("T2038", "T2038")],default="H2015",  blank=True)
     modifier = models.CharField(

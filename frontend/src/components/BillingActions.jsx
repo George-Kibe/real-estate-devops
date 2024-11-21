@@ -20,7 +20,7 @@ export function BillingActions({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={viewBilling}>
+        {/* <DropdownMenuItem onClick={viewBilling}>
           <CheckCheck className="h-5 w-5 mr-2" />
           Mark Confirmed
         </DropdownMenuItem>
@@ -28,15 +28,15 @@ export function BillingActions({
           <Pencil className="h-5 w-5 mr-2" />
           Edit
         </DropdownMenuItem>
-        
+         */}
         <DropdownMenuItem onClick={viewBilling}>
           <Eye className="h-5 w-5 mr-2" />
             View In Detail
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={viewBilling}>
+        {/* <DropdownMenuItem onClick={viewBilling}>
           <Trash className="h-5 w-5 mr-2" />
             Move to Trash
-        </DropdownMenuItem>
+        </DropdownMenuItem> */}
       </DropdownMenuContent>
     </DropdownMenu>
   )
