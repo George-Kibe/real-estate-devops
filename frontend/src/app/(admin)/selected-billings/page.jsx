@@ -77,6 +77,7 @@ const columns = [
 const SelectedBillingPage = ({searchParams}) => {
   const [loading, setLoading] = useState(false);
   const [showDeleteModal, setshowDeleteModal] = useState(false);
+  const [allBillingsApproved, setAllBillingsApproved] = useState(false);
   const router = useRouter();
   const {selectedBillings, setSelectedBillings} = useMainProvider();
   
@@ -98,7 +99,7 @@ const SelectedBillingPage = ({searchParams}) => {
     setLoading(true);
     selectedBillings.forEach(async (billing) => {
       try {
-        const response = await axios.delete(`${BACKEND_URL}/api/billings/${billing.id}`);
+        const response = await axios.delete(`${BACKEND_URL}/api/billings/${billing.pkid}`);
         console.log(response.data);
       } catch (error) {
         console.log(error);
@@ -109,21 +110,47 @@ const SelectedBillingPage = ({searchParams}) => {
     setSelectedBillings([]);
     router.push("/clients-billing")
   }
-  const approveBillings = () => {
+  const approveBillings = async (status) => {
     setLoading(true);
-    selectedBillings.forEach(async (billing) => {
-      try {
-        const response = await axios.put(`${BACKEND_URL}/api/billings/${billing.id}/`, {
-          approval_status: "Approved"
-        });
-        console.log(response.data);
-      } catch (error) {
-        console.log(error);
-      } finally {
-        setLoading(false);
-      }
-    });
+    try {
+      const approvedBillings = await Promise.all(
+        selectedBillings.map(async (billing) => {
+          const response = await axios.put(
+            `${BACKEND_URL}/api/billings/${billing.pkid}/`,
+            { approval_status: status }
+          );
+          return response.data;
+        })
+      );
+  
+      // Avoid duplicates
+      setSelectedBillings((prevBillings) => {
+        const uniqueBillings = [
+          ...approvedBillings,
+          ...prevBillings.filter(
+            (billing) =>
+              !approvedBillings.some((newBilling) => newBilling.pkid === billing.pkid)
+          ),
+        ];
+        return uniqueBillings;
+      });
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  const checkBillingStatus = () => {
+    const allApproved = selectedBillings.every(billing => billing.approval_status === "Approved");
+    console.log("allApproved: ", allApproved);
+    setAllBillingsApproved(allApproved);
   }
+
+  useEffect(() => {
+    checkBillingStatus()
+  }, [selectedBillings])
+  
+  
   const renderRow = (item) => (
     <tr
       key={item.id}
@@ -151,7 +178,7 @@ const SelectedBillingPage = ({searchParams}) => {
       <td className="hidden md:table-cell">{item.scheduled_hours}</td>
       <td className="hidden md:table-cell">{item.worked_hours}</td>
       <td className="hidden md:table-cell">{item.billed_hours}</td>
-      <td className="hidden md:table-cell">{item.log_status}</td>
+      <td className="hidden md:table-cell">{item.approval_status}</td>
       <td className="hidden md:table-cell">{item.pro_code}</td>
       <td className="hidden md:table-cell">{item.modifier}</td>
       <td className="hidden md:table-cell">{item.payor}</td>
@@ -164,6 +191,14 @@ const SelectedBillingPage = ({searchParams}) => {
       <div className="flex items-center justify-between">
         <h1 className="hidden md:block text-lg font-semibold">Selected Billings</h1>
       </div>
+      {
+        loading && (
+          <div className="flex items-center justify-center h-full">
+            <div className="animate-spin rounded-full h-32 w-32 border-t-8 border-b-8 border-gray-900 ">
+            </div>
+          </div>
+        )
+      }
       {/* LIST */}
       <ConfirmDeleteModal 
         deleteAction={deleteBillings} 
@@ -182,11 +217,24 @@ const SelectedBillingPage = ({searchParams}) => {
       </div>
       {/* <Pagination page={1} count={count}/> */}
       <div className="flex gap-4 flex-wrap items-center">
-        <Button onClick={approveBillings} className="bg-[#94420b] rounded-none">APPROVE WORK</Button>
+        {
+          allBillingsApproved ? (
+            <Button onClick={() => approveBillings("Not Approved")} className="bg-[#94420b] rounded-none">DISAPPROVE WORK</Button>
+          ) : (
+            <Button onClick={() => approveBillings("Approved")} className="bg-[#94420b] rounded-none">APPROVE WORK</Button>
+          )
+        }
+        
         <Button onClick={() => setshowDeleteModal(true)}  className="bg-[#f81505] rounded-none">DELETE</Button>
-        <Button className="bg-[#1e753f] rounded-none">SUBMIT BILLING</Button>
+        {
+          allBillingsApproved && 
+          <Button 
+            onClick={() => router.push("/submit-billings")} 
+            className="bg-[#1e753f] rounded-none"> 
+            SUBMIT BILLINGS
+          </Button>
+        }
         {/* <Button className="bg-[#0b204c] rounded-none">VOID</Button> */}
-        <Button className="bg-[#e4b124] rounded-none">UPDATE BILLING STATUS</Button>
       </div>
       <div className="flex gap-4 mt-4 flex-wrap items-center">
         <Button onClick={goBack} className="bg-[#0b204c] rounded-none">GO BACK</Button>

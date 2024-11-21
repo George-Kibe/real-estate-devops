@@ -229,7 +229,7 @@ const BillingPage = ({searchParams}) => {
       <td className="hidden md:table-cell">{item.scheduled_hours}</td>
       <td className="hidden md:table-cell">{item.worked_hours}</td>
       <td className="hidden md:table-cell">{item.billed_hours}</td>
-      <td className="hidden md:table-cell">{item.log_status}</td>
+      <td className="hidden md:table-cell">{item.approval_status}</td>
       <td className="hidden md:table-cell">{item.pro_code}</td>
       <td className="hidden md:table-cell">{item.modifier}</td>
       <td className="hidden md:table-cell">{item.payor}</td>
@@ -276,7 +276,7 @@ const BillingPage = ({searchParams}) => {
             )
           }
         </div>
-        <div className="mb-4">
+        <div className="hidden lg:block mb-4">
           <label className="block text-sm font-bold mb-2">
           Approval Status
           </label>
@@ -296,7 +296,7 @@ const BillingPage = ({searchParams}) => {
           </select>
         </div>
 
-        <div className="mb-4">
+        <div className="hidden lg:block mb-4">
           <label className="block text-sm font-bold mb-2">
           Billing Status
           </label>
@@ -313,7 +313,7 @@ const BillingPage = ({searchParams}) => {
           </select>
         </div>
 
-        <div className="mb-4">
+        <div className="hidden lg:block mb-4">
           <label className="block text-sm font-bold mb-2">
           Payor
           </label>

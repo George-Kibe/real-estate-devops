@@ -11,10 +11,12 @@ import * as XLSX from 'xlsx';
 import moment from "moment";
 import AddClientModal from '@/components/modals/AddClientModal';
 import { generateReportBilling } from '@/utils/functions';
+import { useMainProvider } from '@/providers/MainProvider';
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
 
 const SingleClientPage = () => {
+  const {currentUser } = useMainProvider();
   const {id} = useParams();
   const [modalOpen, setModalOpen] = useState(false);
   const [client, setClient] = useState();
@@ -120,7 +122,8 @@ const SingleClientPage = () => {
     }
     setLoading(true)
     try {
-      const billingResponse = await generateReportBilling(report);
+      const owner_org_id = currentUser._id;
+      const billingResponse = await generateReportBilling(report, owner_org_id);
       console.log("Billing Response: ", billingResponse);
       if (billingResponse) {
         toast.success("Billing Generated Successfully!")

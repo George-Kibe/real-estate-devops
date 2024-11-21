@@ -159,6 +159,7 @@ class Billing(TimeStampedUUIDModel):
     service_date_end = models.DateField(null=True, blank=True)
     client_name = models.CharField(max_length=100, null=True, blank=True)
     client_id = models.CharField(max_length=100, null=True, blank=True)
+    owner_org_id = models.CharField(max_length=100, null=True, blank=True)
     housing_coordinator_name = models.CharField(
         max_length=100, null=True, blank=True)
     housing_coordinator_id = models.CharField(

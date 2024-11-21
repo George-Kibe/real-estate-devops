@@ -168,12 +168,15 @@ class BillingViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows billings to be created, viewed and edited
     """
-
     queryset = Billing.objects.all()
     serializer_class = BillingSerializer
 
     def list(self, request):
-        queryset = self.filter_queryset(self.get_queryset())
+        owner_org_id = request.query_params.get('owner_org_id')
+        if owner_org_id is not None:
+            queryset = Billing.objects.filter(owner_org_id=owner_org_id)
+        else:
+            queryset = self.filter_queryset(self.get_queryset())
         page = self.paginate_queryset(queryset)
         if page is not None:
             serializer = self.get_serializer(page, many=True)
