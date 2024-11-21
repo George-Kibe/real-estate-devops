@@ -11,11 +11,11 @@ import { useMainProvider } from '@/providers/MainProvider';
   import {
     Newspaper,
     Users,
-    CreditCard,
     Star,
-    User,
+    PlusCircle,
     User2Icon,
-    Notebook
+    Notebook,
+    CreditCard,
   } from 'lucide-react';
   import Link from 'next/link';
   
@@ -45,6 +45,10 @@ import { useMainProvider } from '@/providers/MainProvider';
               (orgMode || sellerMode) && 
               <>
               <CommandItem>
+                <PlusCircle className='mr-2 h-4 w-4' />
+                <Link href='/add-visit'>Add Visit</Link>
+              </CommandItem>
+              <CommandItem>
                 <Newspaper className='mr-2 h-4 w-4' />
                 <Link href='/reports'>Reports</Link>
               </CommandItem>
@@ -57,6 +61,10 @@ import { useMainProvider } from '@/providers/MainProvider';
                 <User2Icon className='h-4 w-4' />
                 <User2Icon className='mr-2 h-4 w-4' />
                 <Link href='/clients'>Clients</Link>
+              </CommandItem>
+              <CommandItem>
+                <CreditCard className='mr-2 h-4 w-4' />
+                <Link href='/owner-billings'>Billings</Link>
               </CommandItem>
               {
                 orgMode && (

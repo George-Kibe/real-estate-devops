@@ -218,7 +218,7 @@ const SingleClientPage = () => {
                       {moment(report?.created_at).format('MM/DD/YYYY')}
                     </td>
                     <td className="px-2 py-1 gap-2">
-                      <Button onClick={()=>viewReport(report?.pkid)}>View Report</Button>
+                      <Button onClick={()=>viewReport(report?.pkid)}>Edit Report</Button>
                       {
                         !report?.isBilled && (
                           <Button className='bg-lime-600 ml-2' onClick={()=>generateBilling(report)}>

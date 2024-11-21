@@ -133,7 +133,7 @@ export const generateReportBilling = async(report, owner_org_id) => {
     scheduled_hours: 23.5,
     worked_hours,
     billed_hours: 30,
-    log_status: "Not Confirmed",
+    approval_status: "Not Approved",
     pro_code: "H2015",
     modifier: "U8",
     payor: "MA"

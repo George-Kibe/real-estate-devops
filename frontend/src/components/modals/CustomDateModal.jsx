@@ -24,7 +24,7 @@ const CustomDateModal = ({ selectedDate, setSelectedDate, isOpen, onClose }) => 
       toast.error("Please select a date.");
       return;
     }
-    const formattedDate = selectedDate ? moment(selectedDate).format('YYYY-MM-DD') : null;
+    const formattedDate = selectedDate ? moment(selectedDate).format() : null;
     setLoading(true);
     const data = {
       client_id: currentClient?.id,
@@ -36,7 +36,7 @@ const CustomDateModal = ({ selectedDate, setSelectedDate, isOpen, onClose }) => 
       client_phone_number:currentClient?.phone_number,
       staff_id: orgMode? tempUser?._id : currentUser._id,
       owner_id: currentUser?._id,
-      report_date: formattedDate
+      report_date: moment(selectedDate).format('YYYY-MM-DD')
     }
     try {
       const response = await axios.post(`${BACKEND_URL}/api/reports/`, data);

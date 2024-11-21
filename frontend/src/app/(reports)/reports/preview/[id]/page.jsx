@@ -466,6 +466,7 @@ export default function MembersPage() {
             <Button onClick={() => setDeleteModalOpen(true)} variant="destructive">{loading? 'Loading...': 'Delete Report'}</Button>
             <Button onClick={handlePrint}  className="">Export PDF</Button>
             <Button onClick={() => setExportModalOpen(true)} className="">Export Excel</Button>
+            <Button onClick={() => router.push(`/reports/${report.pkid}`)} className="">Edit</Button>
             <Button onClick={handleExit} className="">Exit</Button>
           </div>
         </div>
