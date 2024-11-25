@@ -252,7 +252,7 @@ export default function ReportsPage({searchParams}) {
     setLoading(true)
     try {
       // get the client
-      const response = await axios.get(`${BACKEND_URL}/api/clients?client_id=${report.client_id}/`)
+      const response = await axios.get(`${BACKEND_URL}/api/clients?client_id=${report.client_id}`)
       const owner_org_id = currentUser._id;
       console.log("Client: ", response.data)
       // generateReportBilling(report, client, owner_org_id )

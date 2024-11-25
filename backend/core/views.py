@@ -240,7 +240,7 @@ class ClientViewSet(viewsets.ModelViewSet):
         elif email is not None:
             queryset = Client.objects.filter(email=email)
         elif client_id is not None:
-            client_id = Client.objects.filter(id=client_id)
+            queryset = Client.objects.filter(id=client_id)
         else:
             queryset = self.filter_queryset(self.get_queryset())
         page = self.paginate_queryset(queryset)
