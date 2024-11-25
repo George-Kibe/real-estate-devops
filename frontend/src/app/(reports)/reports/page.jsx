@@ -9,109 +9,109 @@ import { saveAs } from 'file-saver';
 import * as XLSX from 'xlsx';
 import moment from "moment";
 import { Loader } from "lucide-react";
-import CustomDateModal from "@/components/modals/CustomDateModal";
-import { ClientReportActions } from "@/components/ClientReportActions";
 import { SingleClientReportActions } from "@/components/SingleClientReportActions";
+import Table from "@/components/Table";
+import AnimatedText from "@/components/AnimatedText";
+import ConfirmDeleteModal from "@/components/modals/ConfirmDeleteModal";
+import TableSearch from "@/components/TableSearch";
 
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
 //const BACKEND_URL = "http://localhost:8000"
 
-export default function ReportsPage() {
+const columns = [
+  {
+    header: "Date",
+    accessor: "date",
+  },
+  {
+    header: "Title",
+    accessor: "title",
+    className: "md:table-cell",
+  },
+  {
+    header: "Client Name",
+    accessor: "clientName",
+    className: "md:table-cell",
+  },
+  {
+    header: "Staff Name",
+    accessor: "staffName",
+    className: "md:table-cell",
+  },
+  {
+    header: "Report Type",
+    accessor: "reporttype",
+    className: "hidden lg:table-cell",
+  },
+  {
+    header: "Location",
+    accessor: "location",
+    className: "hidden md:table-cell",
+  },
+  {
+    header: "Properties",
+    accessor: "rProperties",
+    className: "hidden md:table-cell",
+  },
+  {
+    header: "Time",
+    accessor: "time",
+    className: "hidden md:table-cell",
+  },
+  {
+    header: "Action",
+    accessor: "action",
+    className: "md:table-cell",
+  },
+];
+
+export default function ReportsPage({searchParams}) {
+  const search = searchParams?.search;
   const [loading, setLoading] = useState(false);
-  const [showDateModal, setShowDateModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [reportsLoading, setReportsLoading] = useState(false);
   const [clients, setClients] = useState([]);
-  const [allClients, setAllClients] = useState([]);
+  const [allReports, setAllReports] = useState([]);
   const [reports, setReports] = useState([]);
-  const {orgMode, tempUser, currentUser, currentClient, setCurrentClient} = useMainProvider();
+  const [reportId, setreportId] = useState('');
+  const [currentStaff, setCurrentStaff] = useState(null);
+
+  const {orgMode, currentUser, currentClient, setCurrentClient} = useMainProvider();
   const router = useRouter();
-  const [selectedDate, setSelectedDate] = useState(null);
-  //console.log("Current Client: ", currentClient)
-  //console.log("All Clients:", allClients)
-  //vconsole.log("Tempuser: ", tempUser?._id)
+  console.log("memebers: ", currentUser.members)
+
+  const deleteReport = async() => {
+    setLoading(true);
+    try {
+      const response = await axios.delete(`${BACKEND_URL}/api/reports/${reportId}/`);
+      const data = response.data
+      toast.success("Report Deleted Successfully!")
+      router.push(`/reports`)
+      setLoading(false);
+    } catch (error) {
+      toast.error("Report Delete failed. Try Again!")
+      setLoading(false);
+    }
+  }
+  const handleDelete = (id) => {
+    setreportId(id);
+    setShowDeleteModal(true);
+  }
   
   const fetchClients = async() => {
     try {
       const response = await axios.get(`${BACKEND_URL}/api/clients/?owner_id=${currentUser?._id}`);
       const data = response.data
-      // console.log("Clients Data: ", data)
-      setAllClients(data.results);
       setClients(data.results);
     } catch (error) {
       toast.error("Fetching Clients failed. Try Again!")
     }
   }
-  const viewMyClients = () => {
-    setCurrentClient(null);
-    setClients(allClients.filter((client) => client.staff_id === tempUser?._id));
-  }
-  const viewAllClients = () => {
-    setCurrentClient(null);
-    setClients(allClients);
-  }
 
-  const fetchReports = async() => {
-    try {
-      const response = await axios.get(`${BACKEND_URL}/api/reports/?client_id=${currentClient?.id}`);
-      const data = response.data
-      //console.log("client ID: ", currentClient?.id)
-      //console.log("Reports Data: ", data)
-      const refinedReports = data.results.filter(report => report.properties.length > 0)
-      setReports(refinedReports);
-    } catch (error) {
-      toast.error("Fetching Reports failed. Try Again!")
-    }
-  }
   useEffect(() => {
     fetchClients()
   }, [loading])
-
-  useEffect(() => {
-    if(currentClient){
-      fetchReports();
-    }else{
-      setReports([]);
-    }
-  }, [currentClient?.id])
-
-  const selectClient = (client) => {
-    setCurrentClient(client)
-    //console.log("Selected Client ID: ", selectClient?.id)
-  }
-  const generateReport = async(isNew) => {
-    setLoading(true);
-    //const date = new Date().toISOString;
-    //console.log("Date: ", date)
-    const data = {
-      client_id: currentClient?.id,
-      title: `Daily report For ${currentClient?.client_name}`,
-      client_name: currentClient?.client_name,
-      description: "Daily report draft",
-      status: "completed",
-      report_type: "Daily",
-      client_phone_number:currentClient?.phone_number,
-      staff_id: orgMode? tempUser?._id : currentUser._id,
-      staff_name: orgMode? tempUser?.name : currentUser.name,
-      owner_id: currentUser?._id
-    }
-    try {
-      const response = await axios.post(`${BACKEND_URL}/api/reports/`, data);
-      const report = response.data
-      // console.log("Report Details: ", report)
-      if (response.status === 201) {
-        if (isNew) {
-          router.push(`/reports/${report.pkid}`)
-        } else {
-          router.push(`/reports/${report.pkid}/?searchTerm=${currentClient?.city}`)
-        }
-      }
-      setLoading(false);
-    } catch (error) {
-      toast.error("Report Generation failed. Try Again!")
-      setLoading(false);
-    }
-  }
 
   const viewReport = (id) => {
     router.push(`/reports/preview/${id}`)
@@ -201,6 +201,22 @@ export default function ReportsPage() {
     const blob = new Blob([excelBuffer], { type: 'application/vnd.ms-excel' });
     saveAs(blob, `${name}-reports.xlsx`);
   };
+  const fetchAllReports = async( ) => {
+    setLoading(true)
+    try {
+      const response = await axios.get(`${BACKEND_URL}/api/reports/?owner_id=${currentUser?._id}`);
+      setAllReports(response.data.results);
+      setReports(response.data.results);
+    } catch (error) {
+      toast.error("Fetching Reports failed. Try Again!")
+    } finally {
+      setLoading(false)
+    }
+  }
+  useEffect(() => {
+    fetchAllReports();
+  }, [])
+  
 
   const exportAllClientsReportsToExcel = async( ) => {
     try {
@@ -217,21 +233,139 @@ export default function ReportsPage() {
     }
   }
 
-  return (
-    <div className='flex flex-col justify-between gap-5 mb-5'>
-      {/* <AnimatedText text={"Reports Page"} /> */}
-      <p className="self-center font-bold text-2xl mb-4 md:mb-8">Select Client to View their  Reports</p>
+  const renderRow = (report) => (
+    <tr
+      key={report.id}
+      className="border border-gray-200 text-sm"
+    >
+      <td className="md:table-cell font-semibold">{report.report_date}</td>
+      <td className="md:table-cell text-xs">{report.title.substring(0, 50)}</td>
+      <td className="md:table-cell">{report.client_name}</td>
+      <td className="hidden md:table-cell">{report.staff_name}</td>
+      <td className="md:table-cell">{report.report_type}</td>
+      <td className="md:table-cell">{report.report_location}</td>
+      <td className="hidden md:table-cell">{report.properties.length}</td>
+      <td className="hidden md:table-cell">
+        <p className="">{report.start_time}-{report.end_time}</p>
+      </td>
+      <td>
+        <SingleClientReportActions 
+          viewReport={()=>viewReport(report?.pkid)} 
+          handleDelete={()=>handleDelete(report?.pkid)}
+        />
+      </td>
+    </tr>
+  );
 
+  useEffect(() => {
+    if (currentClient) {
+      const filteredReports = allReports.filter(report => report.client_id === currentClient.id);
+      setReports(filteredReports);
+    } else {
+      setReports(allReports);
+    }
+  }, [currentClient, allReports]);
+
+  useEffect(() => {
+    if (currentStaff) {
+      const filteredReports = allReports.filter(report => report.staff_id === currentStaff._id);
+      setReports(filteredReports);
+    } else {
+      setReports(allReports);
+    }
+  }, [currentStaff, allReports]);
+
+  console.log("search: ", search)
+  // Filter reports based on search query
+  useEffect(() => {
+    if (search) {
+      const filteredReports = allReports.filter(report => {
+        const searchQuery = search.toLowerCase();
+        return (
+          report?.title?.toLowerCase().includes(searchQuery) ||
+          report?.client_name?.toLowerCase().includes(searchQuery) ||
+          report?.staff_name?.toLowerCase().includes(searchQuery)
+        );
+      });
+      setReports(filteredReports);
+    } else {
+      setReports(allReports);
+    }
+  }, [search, allReports]);
+  
+  
+  
+  return (
+    <div className='flex flex-col justify-betweenmb-5'>
+      <AnimatedText text={"All Reports"} />
       {
         loading && (
-          <div className="flex flex-row gap-2 justify-center items-center">
-            <Loader className="animate-spin" />
+          <div className="flex flex-row gap-2 tex-2xl justify-center items-center">
+            <Loader className="animate-spin w-24 h-24" />
             Loading ...
           </div>
         )
       }
-
-      <CustomDateModal selectedDate={selectedDate} setSelectedDate={setSelectedDate} isOpen={showDateModal} onClose={() => setShowDateModal(false)} />
+      <div className="flex flex-col md:flex-row gap-4 md:gap-8">
+        <div className="mb-2">
+          <label className="block text-lg font-bold mb-2">
+            Filter By Client
+          </label>
+          <select
+            className="shadow appearance-none border rounded w-full py-2 px-3 leading-tight focus:outline-none focus:shadow-outline" 
+            id="bill_status"
+            name="bill_status"
+            value={currentClient?.id || ""}
+            onChange={(e) => {
+              const selectedClient = clients.find(client => client.id === e.target.value);
+              setCurrentClient(selectedClient);
+            }}
+          >
+            <option value="">-Select Client-</option>
+            {
+              clients?.map((client) => (
+                <option key={client.id} value={client.id}>
+                  {client.client_name}
+                </option>
+              ))
+            }
+          </select>
+        </div>
+        {
+          currentUser?.members.length > 0 && (
+            <div className="mb-2">
+              <label className="block text-lg font-bold mb-2">
+                Filter By Staff 
+              </label>
+              <select
+                className="shadow appearance-none border rounded w-full py-2 px-3 leading-tight focus:outline-none focus:shadow-outline" 
+                id="bill_status"
+                name="bill_status"
+                value={currentStaff?._id || ""}
+                onChange={(e) => {
+                  const selectedStaff = currentUser?.members?.find(member => member._id === e.target.value);
+                  setCurrentStaff(selectedStaff);
+                }}
+              >
+                <option value="">-Select Staff-</option>
+                {
+                  currentUser?.members?.map((member) => (
+                    <option key={member._id} value={member._id}>
+                      {member.name}
+                    </option>
+                  ))
+                }
+              </select>
+            </div>
+          )
+        }
+        <div className="flex flex-col gap-4 ">
+          <label className="block text-md ">
+            Search by Title, Client Name, or Staff Name 
+          </label>
+          <TableSearch />
+        </div>
+      </div>
       {
         !orgMode && (
           <div className="flex w-full">
@@ -244,109 +378,13 @@ export default function ReportsPage() {
           </div>
         )
       }
-      {
-        orgMode && (
-          <div className="flex flex-col gap-2 md:flex-row">
-            <Button onClick={viewAllClients}>View All Clients</Button>
-            <Button onClick={viewMyClients}>View Only Allocated Clients</Button>
-          </div>
-        )
-      }
-
-      {
-        !clients?.length && <p className="">You do not have any clients Reports yet!</p>
-      }
-      
-      <div className="overflow-hidden rounded-lg border shadow-md ">
-        <table className="w-full border-collapse text-left text-sm">
-          <thead className="">
-            <tr>
-              <th scope="col" className="px-2 py-1 font-medium">#</th>
-              <th scope="col" className="px-2 py-1 font-medium">First Name</th>
-              <th scope="col" className="px-2 py-1 font-medium">Last Name</th>
-              <th scope="col" className="px-2 py-1 font-medium">House Type</th>
-              <th scope="col" className="px-2 py-1 font-medium">Preferred City</th>
-              <th scope="col" className="px-2 py-1 font-medium">Action</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y ">
-            {
-              clients?.map((client, index) => (
-                <tr onClick={() => selectClient(client)} key={index}
-                  className={client.id === currentClient?.id ? "bg-lime-500 w-full cursor-pointer": "w-full cursor-pointer"}
-                >
-                    <td className="px-2 py-1 text-sm">{index + 1}</td>
-                    <th className="px-2 py-1 font-normal">
-                      {client.first_name || client.client_name}
-                    </th>
-                    <td className="px-2 py-1">{client.last_name || client.client_name}</td>
-                    <td className="px-2 py-1">
-                      <div className="flex gap-2">
-                        <span
-                          className="inline-flex items-center gap-1 rounded-full bg-blue-50 px-2 py-1 text-xs font-semibold text-blue-600"
-                        >
-                          {client.house_type}
-                        </span>
-                      </div>
-                    </td>
-                    <td className="px-2 py-1">{client.city}</td>
-                    <td className="px-2 py-1">
-                      <ClientReportActions 
-                        name={currentClient?.client_name}
-                        generateTodayReport={() => generateReport(false)}
-                        generateBlankReport={() => generateReport(true)}
-                        generatePastReport={() => setShowDateModal(true)}
-                        exportReportsToExcel={() => exportToExcel(reports, currentClient?.client_name)}
-                      />
-                    </td> 
-                  </tr>
-              ))
-            }
-          </tbody>
-        </table>
-      </div>
-      {
-        currentClient && (
-          <div className="flex flex-col  justify-center">
-            <p className="self-center font-bold text-2xl mb-4 md:mb-8">
-              Reports for: {currentClient?.client_name}
-            </p>
-            {
-              !reports?.length && <p className="">You do not have any reports for this client yet!</p>
-            }
-            <div className="w-full overflow-hidden rounded-lg border shadow-md m-5">
-              <table className="w-full border-collapse text-left text-sm">
-                <thead className="">
-                  <tr>
-                    <th scope="col" className="px-2 py-1 font-medium">#</th>
-                    <th scope="col" className="px-2 py-1 font-medium">Report Title</th>
-                    <th scope="col" className="px-2 py-1 font-medium">Done By</th>
-                    <th scope="col" className="px-2 py-1 font-medium">Report Date</th>
-                    <th scope="col" className="px-2 py-1 font-medium">Action</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y ">
-                  {
-                    reports?.map((report, index) => (
-                      <tr className="w-full flex-1" key={index}>
-                        <td className="">{index+1}.</td>
-                        <td className="">{report?.title}</td>
-                        <td className="">{report?.staff_name || "Nor Recorded"}</td>
-                        <td className="px-2 py-1">
-                          {moment(report?.created_at).format('MM/DD/YYYY')}
-                        </td>
-                        <td className="px-2 py-1">
-                          <SingleClientReportActions viewReport={()=>viewReport(report?.pkid)} />
-                        </td>
-                      </tr>
-                    ))
-                  }
-                </tbody>
-              </table>
-            </div>
-          </div>
-        )
-      }
+      <ConfirmDeleteModal 
+        deleteAction={deleteReport} 
+        title={"Report"}
+        isOpen={showDeleteModal}
+        onClose={() => setShowDeleteModal(false)}
+      />
+      <Table columns={columns} renderRow={renderRow} data={reports} />
     </div>
   );
 }

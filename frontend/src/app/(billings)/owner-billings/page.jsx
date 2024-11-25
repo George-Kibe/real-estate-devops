@@ -89,6 +89,7 @@ const columns = [
 
 const BillingPage = ({searchParams}) => {
   // console.log("searchParams: ", searchParams);
+  const {currentUser} = useMainProvider();
   const router = useRouter();
   const {selectedBillings, setSelectedBillings} = useMainProvider();
   const [showStartCalendar, setShowStartCalendar] = useState(false);
@@ -130,7 +131,7 @@ const BillingPage = ({searchParams}) => {
     const page = searchParams?.page || 1;
     setLoading(true);
     try {
-      const response = await axios.get(`${BACKEND_URL}/api/billings?page=${page}`);
+      const response = await axios.get(`${BACKEND_URL}/api/billings?owner_org_id=${currentUser._id}`);
       const billings = response.data.results;
       setBillings(billings);
       setAllBillings(billings);
@@ -242,7 +243,7 @@ const BillingPage = ({searchParams}) => {
 
   return (
     <div className="p-4 rounded-md flex-1 m-4 mt-0">
-      <AnimatedText text={"All Billings"} />
+      <AnimatedText text={"My Billings"} />
       {/* TOP */}
       <div className="flex justify-between">
         <div className="relative flex flex-col">

@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { Ellipsis, Telescope, View } from "lucide-react"
+import { Delete, Ellipsis, Eye } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -11,7 +11,8 @@ import {
 } from "@/components/ui/dropdown-menu"
 
 export function SingleClientReportActions({
-  viewReport
+  viewReport,
+  handleDelete,
 }) {
   return (
     <DropdownMenu>
@@ -22,8 +23,12 @@ export function SingleClientReportActions({
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">        
         <DropdownMenuItem onClick={viewReport}>
-          <Telescope className="h-5 w-5 mr-2" />
+          <Eye className="h-5 w-5 mr-2" />
             View report
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={handleDelete}>
+          <Delete className="h-5 w-5 mr-2" />
+            Delete Report
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
