@@ -95,7 +95,6 @@ const columns = [
 ];
 
 const BillingPage = ({searchParams}) => {
-  // console.log("searchParams: ", searchParams);
   const router = useRouter();
   const {selectedBillings, setSelectedBillings} = useMainProvider();
   const [showStartCalendar, setShowStartCalendar] = useState(false);
@@ -196,6 +195,10 @@ const BillingPage = ({searchParams}) => {
   }, [payor])
 
   useEffect(() => {
+    if (startDate > endDate) {
+      toast.error("The start date should not be after end date");
+      return;
+    }
     if (!startDate || !endDate) {
       return;
     }
@@ -259,6 +262,7 @@ const BillingPage = ({searchParams}) => {
       <AnimatedText text={"All Billings"} />
       {/* TOP */}
       <ViewNotesModal 
+        fetchBillings={fetchBillings}
         isOpen={showNotesModal}
         onClose={() => setShowNotesModal(false)}
         currentBilling={currentBilling}

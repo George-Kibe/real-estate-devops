@@ -660,6 +660,7 @@ export default function MembersPage({params, searchParams}) {
                   <option value="" disabled>Select Visit Type</option>
                   <option value="direct">Direct</option>
                   <option value="indirect">Indirect</option>
+                  <option value="remote">Remote</option>
                 </select>
                 <p className="text-sm">Selected Visit Type: <span className="font-semibold">{visitType || 'None'}</span></p>
               </div>

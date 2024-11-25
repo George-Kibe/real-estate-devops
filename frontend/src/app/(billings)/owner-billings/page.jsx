@@ -1,7 +1,7 @@
 "use client"
 
 import { useRouter } from 'next/navigation';
-import { Search} from 'lucide-react'
+import { Notebook} from 'lucide-react'
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
@@ -15,6 +15,8 @@ import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import moment from 'moment';
 import { insurance_companies } from '../../../../data/insurance';
+import ViewNotesModal from '@/components/modals/ViewNotesModal';
+import { toast } from 'react-toastify';
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
 const columns = [
@@ -67,6 +69,11 @@ const columns = [
     className: "hidden md:table-cell",
   },
   {
+    header: "Notes",
+    accessor: "notes",
+    className: "hidden md:table-cell",
+  },
+  {
     header: "Pro Code",
     accessor: "proCode",
     className: "hidden md:table-cell",
@@ -97,6 +104,8 @@ const BillingPage = ({searchParams}) => {
   const [showEndCalendar, setShowEndCalendar] = useState(false);
   const [allBillings, setAllBillings] = useState([]);
   const [billings, setBillings] = useState([]);
+  const [currentBilling, setCurrentBilling] = useState();
+  const [showNotesModal, setShowNotesModal] = useState(false);
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
   const [logStatus, setLogStatus] = useState('');
@@ -107,7 +116,7 @@ const BillingPage = ({searchParams}) => {
   const [count, setCount] = useState(1);
   // console.log("selected billings: ", selectedBillings);
   const viewBilling = (pkid) => {
-    router.push(`owner-billing/${pkid}`)
+    router.push(`owner-billings/${pkid}`)
   }
   const search = searchParams?.search;
   const handleClick = (item) => {
@@ -192,6 +201,11 @@ const BillingPage = ({searchParams}) => {
   }, [payor])
 
   useEffect(() => {
+    // console.log("startDate: ", startDate, "endDate: ", endDate)
+    if (startDate > endDate) {
+      toast.error("The start date should not be after end date");
+      return;
+    }
     if (!startDate || !endDate) {
       return;
     }
@@ -202,6 +216,11 @@ const BillingPage = ({searchParams}) => {
     // console.log("newBillings: ", newBillings);
     setBillings(newBillings);
   }, [startDate, endDate])
+
+  const showBillingNotes = (billing) => {
+    setCurrentBilling(billing);
+    setShowNotesModal(true);
+  }
 
   const renderRow = (item) => (
     <tr
@@ -232,6 +251,9 @@ const BillingPage = ({searchParams}) => {
       <td className="hidden md:table-cell">{item.worked_hours}</td>
       <td className="hidden md:table-cell">{item.billed_hours}</td>
       <td className="hidden md:table-cell">{item.approval_status}</td>
+      <td className="hidden md:table-cell">
+        <Notebook className="cursor-pointer" onClick={() => showBillingNotes(item)} />
+      </td>
       <td className="hidden md:table-cell">{item.pro_code}</td>
       <td className="hidden md:table-cell">{item.modifier}</td>
       <td className="hidden md:table-cell">{item.payor}</td>
@@ -245,7 +267,14 @@ const BillingPage = ({searchParams}) => {
   return (
     <div className="p-4 rounded-md flex-1 m-4 mt-0">
       <AnimatedText text={"My Billings"} />
-      {/* TOP */}
+
+      <ViewNotesModal
+        fetchBillings={fetchBillings}
+        isOpen={showNotesModal}
+        onClose={() => setShowNotesModal(false)}
+        currentBilling={currentBilling}
+        
+      />
       <div className="flex justify-between">
         <div className="relative flex flex-col">
           <p className="font-semibold">Date</p>

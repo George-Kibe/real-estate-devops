@@ -5,6 +5,7 @@ import { toast } from 'react-toastify';
 import { Button } from '../ui/button';
 import axios from 'axios';
 import { useMainProvider } from '@/providers/MainProvider';
+import { insurance_companies } from '../../../data/insurance';
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
 //const BACKEND_URL = "http://localhost:8000"
@@ -20,16 +21,26 @@ const AddClientModal = ({ isOpen, onClose, setLoading, client=null }) => {
   const [house_type, setHouse_type] = useState('');
   const [additional_info, setAdditional_info] = useState('');
   const [staff_id, setStaff_id] = useState('');
+  const [payor, setPayor] = useState('');
+  const [procode, setProcode] = useState('');
+  const [units, setUnits] = useState('');
+  const [modifier, setModifier] = useState('');
+  const [service_type, setServiceType] = useState('');
+  const [pmiNumber, setPmiNumber] = useState('');
+  const [insuranceMemberID, setInsuranceMemberID] = useState('');
   const [city, setCity] = useState('');
-  const [status, setStatus] = useState('');
- 
+  const [status, setStatus] = useState(''); 
 
   const handleClose = () => {
     onClose();
-    setLoading(false); setEmail(''); setFirst_name(''); setLast_name(''); setAddress('');
-    setPhoneNumber(''); setHouse_type(''); setAdditional_info(''); setCity('');
+    setLoading(false); setEmail(''); setFirst_name(''); 
+    setLast_name(''); setAddress(''); setPhoneNumber('');
+    setHouse_type(''); setAdditional_info(''); setCity('');
+    setPayor(''); setProcode(''); setUnits('');
+    setModifier(''); setServiceType('');
     setStaff_id(''); setFirst_name(''); setLast_name('');
   }
+  
   const getMembers = async() => {
     try {
       const response = await axios.get(`/api/members/?owner_id=${currentUser?._id}`);
@@ -51,6 +62,12 @@ const AddClientModal = ({ isOpen, onClose, setLoading, client=null }) => {
       setAdditional_info(client.additional_info);
       setCity(client.city);
       setStaff_id(client.staff_id);
+      setStatus(client.status);
+      setPayor(client.payor);
+      setProcode(client.procode);
+      setUnits(client.units);
+      setModifier(client.modifier);
+      setServiceType(client.service_type);
       return;
     }
   }, [client]);
@@ -71,11 +88,13 @@ const AddClientModal = ({ isOpen, onClose, setLoading, client=null }) => {
       first_name, last_name, 
       client_name:first_name + " " + last_name, 
       email, address,phone_number,
-      house_type, city, staff_id:staff_id, 
+      house_type, city, staff_id: staff_id, 
       additional_info, status,
+      payor, procode, units, modifier, 
+      service_type, pmiNumber, insuranceMemberID
       // owner_id: currentUser._id
     };
-    console.log(data)
+    // console.log(data)
 
     if (client){
       toast.info(`Updating ${email}'s Details`)
@@ -139,8 +158,8 @@ const AddClientModal = ({ isOpen, onClose, setLoading, client=null }) => {
         </button>
         <p className="font-semibold pr-2 text-2xl">{client? `Update ${client.client_name}'s Details` : "Add New Client"}</p>
 
-        <div className="flex flex-col md:flex-wrap">
-          <div className="">
+        <div className="flex w-full flex-col md:flex-row gap-4">
+          <div className="w-[50%]">
             <p className="">First Name</p>
             <input type="text" placeholder='First Name' 
               value={first_name}
@@ -149,7 +168,7 @@ const AddClientModal = ({ isOpen, onClose, setLoading, client=null }) => {
               mb-2 focus:border-blue-900" 
             /> 
           </div>
-          <div className="">
+          <div className="w-[50%]">
             <p className="">Last Name</p>
             <input type="text" placeholder='Last Name' 
               value={last_name}
@@ -158,7 +177,9 @@ const AddClientModal = ({ isOpen, onClose, setLoading, client=null }) => {
               mb-2 focus:border-blue-900" 
             /> 
           </div>
-          <div className="">
+        </div>
+        <div className="flex w-full flex-col md:flex-row gap-4">
+          <div className="w-[50%]">
             <p className="">Email</p>
             <input type="email" placeholder='Email' 
               value={email}
@@ -167,7 +188,7 @@ const AddClientModal = ({ isOpen, onClose, setLoading, client=null }) => {
               mb-2 focus:border-blue-900" 
             /> 
           </div>
-          <div className="">
+          <div className="w-[50%]">
             <p className="">Current Address: </p>
             <input type="text" placeholder='Address' 
               value={address}
@@ -176,7 +197,10 @@ const AddClientModal = ({ isOpen, onClose, setLoading, client=null }) => {
               mb-2 focus:border-blue-900" 
             /> 
           </div>
-          <div className="">
+        </div>
+
+        <div className="flex w-full flex-col md:flex-row gap-4">
+          <div className="w-[50%]">
             <p className="">Phone Number</p>
             <input type="text" placeholder='Phone Number' 
               value={phone_number}
@@ -185,7 +209,7 @@ const AddClientModal = ({ isOpen, onClose, setLoading, client=null }) => {
               mb-2 focus:border-blue-900" 
             /> 
           </div>
-          <div className="">
+          <div className="w-[50%]">
             <p className="">Preferred House Type </p>
             <input type="text" placeholder='House Type' 
               value={house_type}
@@ -194,7 +218,10 @@ const AddClientModal = ({ isOpen, onClose, setLoading, client=null }) => {
               mb-2 focus:border-blue-900" 
             /> 
           </div>
-          <div className="">
+        </div>
+
+        <div className="flex w-full flex-col md:flex-row gap-4">
+          <div className="w-[50%]">
             <p className="">Preferred City</p>
             <input type="text" placeholder='City' 
               value={city}
@@ -203,13 +230,13 @@ const AddClientModal = ({ isOpen, onClose, setLoading, client=null }) => {
               mb-2 focus:border-blue-900" 
             /> 
           </div>
-          <div className="mb-4">
-            <label htmlFor="dropdown" className="block text-sm font-medium text-gray-700 mb-1">
+          <div className="mb-4 w-[50%]">
+            <label className="block text-sm font-medium text-gray-700 mb-1">
               Status
             </label>
             <select
               id="dropdown"
-              onChange={(e) => setStatus(event.target.value)}
+              onChange={(event) => setStatus(event.target.value)}
               className="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
             >
               <option value="" disabled>Select Status...</option>
@@ -217,7 +244,121 @@ const AddClientModal = ({ isOpen, onClose, setLoading, client=null }) => {
               <option value={"Completed"}>{"Completed"}</option>
             </select>
           </div>
-          <div className="">
+        </div>
+
+        <div className="flex w-full flex-col md:flex-row gap-4">
+          <div className="mb-4 w-[50%]">
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Payor
+            </label>
+            <select
+              id="dropdown"
+              value={payor}
+              onChange={(event) => setPayor(event.target.value)}
+              className="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+            >
+              <option value="" disabled>-Select Payor-</option>
+              {
+                insurance_companies.map((company, index) => (
+                  <option key={index} value={company.name}>{company.name}</option>
+                  )
+                )
+              }
+            </select>
+          </div>
+          <div className="w-[50%]">
+            <p className="">Insurance Membership ID</p>
+            <input type="text" placeholder='12334...' 
+              value={insuranceMemberID}
+              onChange={ev => setInsuranceMemberID(ev.target.value)}
+              className="border-2 border-gray-300 rounded-md p-1 w-full 
+              mb-2 focus:border-blue-900" 
+            /> 
+          </div>
+        </div>
+
+        <div className="flex w-full flex-col md:flex-row gap-4">
+          <div className="w-[50%]">
+            <p className="">PMI Number</p>
+            <input type="text" placeholder='PMI Number' 
+              value={pmiNumber}
+              onChange={ev => setPmiNumber(ev.target.value)}
+              className="border-2 border-gray-300 rounded-md p-1 w-full 
+              mb-2 focus:border-blue-900" 
+            /> 
+          </div>
+          <div className="w-[50%]">
+            <p className="">Units </p>
+            <input type="text" placeholder='Units' 
+              value={units}
+              onChange={ev => setUnits(ev.target.value)}
+              className="border-2 border-gray-300 rounded-md p-1 w-full 
+              mb-2 focus:border-blue-900" 
+            /> 
+          </div>
+        </div>
+
+        <div className="flex w-full flex-col md:flex-row gap-4">
+          <div className="mb-4 w-[50%]">
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Procedure Code
+            </label>
+            <select
+              value={procode}
+              onChange={(event) => setProcode(event.target.value)}
+              className="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+            >
+              <option value="" disabled>-Select-</option>
+              <option value={"H2015"}>{"H2015"}</option>
+            </select>
+          </div>
+          <div className="mb-4 w-[50%]">
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Modifier
+            </label>
+            <select
+              value={modifier}
+              onChange={(event) => setModifier(event.target.value)}
+              className="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+            >
+              <option value="" disabled>-Select-</option>
+              <option value={"M8"}>{"M8"}</option>
+            </select>
+          </div>
+        </div>
+
+        <div className="flex w-full flex-col md:flex-row gap-4">
+          <div className="mb-4 w-[50%]">
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Service Type
+            </label>
+            <select
+              value={service_type}
+              onChange={(event) => setServiceType(event.target.value)}
+              className="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+            >
+              <option value="" disabled>-Select-</option>
+              <option value={"Housing Transition"}>{"Housing Transition"}</option>
+              <option value={"Housing Enquiry"}>{"Housing Enquiry"}</option>
+            </select>
+          </div>
+          {/* <div className="mb-4 w-[50%]">
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Modifier
+            </label>
+            <select
+              value={modifier}
+              onChange={(event) => setModifier(event.target.value)}
+              className="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+            >
+              <option value="" disabled>-Select-</option>
+              <option value={"M8"}>{"M8"}</option>
+            </select>
+          </div> */}
+        </div>
+
+        <div className="flex w-full gap-4">
+          <div className="w-full">
             <p className="">Additional Information</p>
             <textarea type="text" placeholder='Additional Information' 
               value={additional_info} 
@@ -226,6 +367,9 @@ const AddClientModal = ({ isOpen, onClose, setLoading, client=null }) => {
               mb-2 focus:border-blue-900" 
             /> 
           </div>
+        
+        </div>
+        <div className="flex flex-col md:flex-row gap-4">
           {
             members && (
               <div className="mb-4">

@@ -29,7 +29,7 @@ const SingleBilling = () => {
     payor: '',
   });
   const goBack = () => {
-    router.push("/clients-billing")
+    router.back();
   };
 
   const {id} = useParams();

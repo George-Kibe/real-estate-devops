@@ -231,7 +231,7 @@ export default function ReportsPage({searchParams}) {
   }
   useEffect(() => {
     fetchAllReports();
-  }, [])
+  }, [loading])
   
 
   const exportAllClientsReportsToExcel = async( ) => {
@@ -249,13 +249,27 @@ export default function ReportsPage({searchParams}) {
     }
   }
   const generateBilling = async(report) => {
+    if (!report?.start_time || !report?.end_time){
+      toast.error("Start time and end time are required to Generate Billing!")
+      return;
+    }
     setLoading(true)
     try {
       // get the client
-      const response = await axios.get(`${BACKEND_URL}/api/clients?client_id=${report.client_id}`)
       const owner_org_id = currentUser._id;
-      console.log("Client: ", response.data)
-      // generateReportBilling(report, client, owner_org_id )
+      const response = await axios.get(`${BACKEND_URL}/api/clients?client_id=${report.client_id}`)
+      if (response.data.results.length > 0) {
+        const client = response.data.results[0];
+        const billingResponse = await generateReportBilling(report, client, owner_org_id);
+        console.log("Billing Response: ", billingResponse);
+        if (billingResponse) {
+          toast.success("Billing Generated Successfully!")
+        }else{
+          toast.error("Billing Generation Failed!")
+        }
+      } else {
+        toast.error("Billing Generation failed")
+      }
     } catch (error) {
       console.log("Error: ", error.message);
       toast.error("Billing Generation failed. Try Again!")
@@ -308,7 +322,7 @@ export default function ReportsPage({searchParams}) {
     }
   }, [currentStaff, allReports]);
 
-  console.log("search: ", search)
+  // console.log("search: ", search)
   // Filter reports based on search query
   useEffect(() => {
     if (search) {

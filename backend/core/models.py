@@ -43,6 +43,13 @@ class Client(TimeStampedUUIDModel):
     staff_id = models.CharField(max_length=100, blank=True, null=True)
     owner_id = models.CharField(max_length=100, blank=True, null=True)
     staff_email = models.EmailField(blank=True, null=True)
+    payor = models.CharField(max_length=100, blank=True, null=True)
+    procode = models.CharField(max_length=100, blank=True, null=True)
+    units = models.CharField(max_length=100, blank=True, null=True)
+    modifier = models.CharField(max_length=100, blank=True, null=True)
+    pmiNumber = models.CharField(max_length=100, blank=True, null=True)
+    service_type = models.CharField(max_length=100, blank=True, null=True)
+    insuranceMemberID = models.CharField(max_length=100, blank=True, null=True)
 
     def __str__(self):
         return str(self.client_name)
@@ -169,8 +176,6 @@ class Billing(TimeStampedUUIDModel):
     bill_status = models.CharField(max_length=50, choices=[
         ('Scheduled', 'Scheduled'),
         ('Submitted', 'Submitted'),
-        ('Processing', 'Processing'),
-        ('Unable to Bill', 'Unable to Bill')
     ], null=True, default="Scheduled", blank=True)
     scheduled_hours = models.DecimalField(
         max_digits=5, decimal_places=2, help_text="Scheduled hours", null=True, blank=True)

@@ -23,7 +23,7 @@ export const callAIPrompt = async (location, searchTerm) => {
         },
         {
           role: 'user',
-          content: `List for me 10 different ${searchTerm} in ${location}. Include details such as phonenumber, address, email and website for any reference. Let it be in the form of standard json. The json keys should be title(will be its name, phone_numner,description, email, price, address, website. Should be diffenrent from the last`
+          content: `List for me 10 different ${searchTerm} in ${location}. Include details such as phonenumber, address, email and website for any reference. Let it be in the form of standard json. The json keys should be title(will be its name), phone_numner,description, email, price, address, website. Should be different from the last`
         }
       ]
     }, {

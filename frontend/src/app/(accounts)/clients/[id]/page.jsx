@@ -123,7 +123,7 @@ const SingleClientPage = () => {
     setLoading(true)
     try {
       const owner_org_id = currentUser._id;
-      const billingResponse = await generateReportBilling(report,client,  owner_org_id);
+      const billingResponse = await generateReportBilling(report, client, owner_org_id);
       console.log("Billing Response: ", billingResponse);
       if (billingResponse) {
         toast.success("Billing Generated Successfully!")
