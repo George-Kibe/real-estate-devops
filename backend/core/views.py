@@ -231,7 +231,7 @@ class ClientViewSet(viewsets.ModelViewSet):
         owner_id = request.query_params.get('owner_id')
         staff_id = request.query_params.get('staff_id')
         email = request.query_params.get('email')
-        # send_sms()
+        client_id = request.query_params.get('client_id')
         # queryset = self.filter_queryset(self.get_queryset())
         if owner_id is not None:
             queryset = Client.objects.filter(owner_id=owner_id)
@@ -239,6 +239,8 @@ class ClientViewSet(viewsets.ModelViewSet):
             queryset = Client.objects.filter(staff_id=staff_id)
         elif email is not None:
             queryset = Client.objects.filter(email=email)
+        elif email is not None:
+            client_id = Client.objects.filter(id=client_id)
         else:
             queryset = self.filter_queryset(self.get_queryset())
         page = self.paginate_queryset(queryset)

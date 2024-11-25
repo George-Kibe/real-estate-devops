@@ -86,7 +86,7 @@ export default function ReportsPage({searchParams}) {
   const getMembers = async() => {
     try {
       const response = await axios.get(`/api/members/?owner_id=${currentUser?._id}`);
-      console.log("Members Fetched : ", response.data)
+      // console.log("Members Fetched : ", response.data)
       setMembers(response.data);
     } catch (error) {
       toast.error("Fetching Members failed. Try Again!")
@@ -252,7 +252,7 @@ export default function ReportsPage({searchParams}) {
     setLoading(true)
     try {
       // get the client
-      const response = await axios.get(`${BACKEND_URL}/api/clients/${report.client_id}/`)
+      const response = await axios.get(`${BACKEND_URL}/api/clients?client_id=${report.client_id}/`)
       const owner_org_id = currentUser._id;
       console.log("Client: ", response.data)
       // generateReportBilling(report, client, owner_org_id )
