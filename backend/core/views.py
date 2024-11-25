@@ -239,7 +239,7 @@ class ClientViewSet(viewsets.ModelViewSet):
             queryset = Client.objects.filter(staff_id=staff_id)
         elif email is not None:
             queryset = Client.objects.filter(email=email)
-        elif email is not None:
+        elif client_id is not None:
             client_id = Client.objects.filter(id=client_id)
         else:
             queryset = self.filter_queryset(self.get_queryset())
