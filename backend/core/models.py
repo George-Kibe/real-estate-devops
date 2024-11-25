@@ -174,6 +174,8 @@ class Billing(TimeStampedUUIDModel):
     ], null=True, default="Scheduled", blank=True)
     scheduled_hours = models.DecimalField(
         max_digits=5, decimal_places=2, help_text="Scheduled hours", null=True, blank=True)
+    notes = models.TextField(null=True, blank=True,
+        default="Notes not Captured")
     worked_hours = models.DecimalField(
         max_digits=5, decimal_places=2, help_text="Hours worked", null=True, blank=True)
     billed_hours = models.DecimalField(
@@ -182,11 +184,16 @@ class Billing(TimeStampedUUIDModel):
         ('Approved', 'Approved'),
         ('Not Approved', 'Not Approved'),
     ], default="Not Approved")
-    pro_code = models.CharField(max_length=10, null=True, choices=[
-                                ("H2015", "H2015"), ("H0043", "H0043"), ("T1017", "T1017"), ("T2024", "T2024"), ("T2038", "T2038")],default="H2015",  blank=True)
+    start_time = models.TimeField(null=True, blank=True)
+    end_time = models.TimeField(null=True, blank=True)
+    pro_code = models.CharField(max_length=10, null=True,
+        choices=[("H2015", "H2015"), ("H0043", "H0043"),
+            ("T1017", "T1017"), ("T2024", "T2024"),
+            ("T2038", "T2038")], default="H2015",  blank=True)
     modifier = models.CharField(
         max_length=10, null=True, blank=True, default="U8")
-    payor = models.CharField(max_length=5, null=True, blank=True, default="UCARE")
+    payor = models.CharField(max_length=5, null=True,
+                             blank=True, default="UCARE")
 
     class Meta:
         verbose_name = "Billing"

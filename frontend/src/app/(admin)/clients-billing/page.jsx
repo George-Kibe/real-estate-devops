@@ -1,7 +1,7 @@
 "use client"
 
 import { useRouter } from 'next/navigation';
-import { Search} from 'lucide-react'
+import { Search, Notebook} from 'lucide-react'
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
@@ -14,6 +14,8 @@ import AnimatedText from '@/components/AnimatedText';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import moment from 'moment';
+import { insurance_companies } from '../../../../data/insurance';
+import ViewNotesModal from '@/components/modals/ViewNotesModal';
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
 const columns = [
@@ -66,6 +68,11 @@ const columns = [
     className: "hidden md:table-cell",
   },
   {
+    header: "Notes",
+    accessor: "notes",
+    className: "hidden md:table-cell",
+  },
+  {
     header: "Pro Code",
     accessor: "proCode",
     className: "hidden md:table-cell",
@@ -95,26 +102,25 @@ const BillingPage = ({searchParams}) => {
   const [showEndCalendar, setShowEndCalendar] = useState(false);
   const [allBillings, setAllBillings] = useState([]);
   const [billings, setBillings] = useState([]);
+  const [currentBilling, setCurrentBilling] = useState();
+  const [showNotesModal, setShowNotesModal] = useState(false);
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
   const [logStatus, setLogStatus] = useState('');
   const [billingStatus, setBillingStatus] = useState('');
   const [payor, setPayor] = useState('');
-  console.log("startDate: ", startDate)
   const [loading, setLoading] = useState(false);
   const [count, setCount] = useState(1);
-  // console.log("selected billings: ", selectedBillings);
+
   const viewBilling = (pkid) => {
     router.push(`clients-billing/${pkid}`)
   }
   const search = searchParams?.search;
   const handleClick = (item) => {
-    // add item to selected billings if it doesnt exist already
     const existingBilling = selectedBillings.find(billing => billing.id === item.id);
     if (!existingBilling) {
       setSelectedBillings([...selectedBillings, item]);
     }else{
-        // remove item from selected billings
         setSelectedBillings(selectedBillings.filter(billing => billing.id !== item.id))
     }
   }
@@ -155,7 +161,7 @@ const BillingPage = ({searchParams}) => {
       return;
     }
     const newBillings = allBillings.filter(billing => {
-      return billing.client_name.toLowerCase().includes(search?.toLowerCase()) || billing.housing_coordinator_name.toLowerCase().includes(search?.toLowerCase())
+      return billing?.client_name?.toLowerCase().includes(search?.toLowerCase()) || billing?.housing_coordinator_name?.toLowerCase().includes(search?.toLowerCase())
     })
     setBillings(newBillings);  
   }, [search])
@@ -164,7 +170,7 @@ const BillingPage = ({searchParams}) => {
       return;
     }
     const newBillings = allBillings.filter(billing => {
-      return billing.log_status.toLowerCase() === (logStatus?.toLowerCase())
+      return billing?.log_status?.toLowerCase() === (logStatus?.toLowerCase())
     })
     setBillings(newBillings);
   }, [logStatus])
@@ -174,7 +180,7 @@ const BillingPage = ({searchParams}) => {
       return;
     }
     const newBillings = allBillings.filter(billing => {
-      return billing.bill_status.toLowerCase() === (billingStatus?.toLowerCase())
+      return billing?.bill_status?.toLowerCase() === (billingStatus?.toLowerCase())
     })
     setBillings(newBillings);
   }, [billingStatus])
@@ -184,7 +190,7 @@ const BillingPage = ({searchParams}) => {
       return;
     }
     const newBillings = allBillings.filter(billing => {
-      return billing.payor.toLowerCase() === (payor?.toLowerCase())
+      return billing?.payor?.toLowerCase() === (payor?.toLowerCase())
     })
     setBillings(newBillings);
   }, [payor])
@@ -200,6 +206,11 @@ const BillingPage = ({searchParams}) => {
     // console.log("newBillings: ", newBillings);
     setBillings(newBillings);
   }, [startDate, endDate])
+
+  const showBillingNotes = (billing) => {
+    setCurrentBilling(billing);
+    setShowNotesModal(true);
+  }
 
   const renderRow = (item) => (
     <tr
@@ -230,6 +241,9 @@ const BillingPage = ({searchParams}) => {
       <td className="hidden md:table-cell">{item.worked_hours}</td>
       <td className="hidden md:table-cell">{item.billed_hours}</td>
       <td className="hidden md:table-cell">{item.approval_status}</td>
+      <td className="hidden md:table-cell">
+        <Notebook className="cursor-pointer" onClick={() => showBillingNotes(item)} />
+      </td>
       <td className="hidden md:table-cell">{item.pro_code}</td>
       <td className="hidden md:table-cell">{item.modifier}</td>
       <td className="hidden md:table-cell">{item.payor}</td>
@@ -244,6 +258,12 @@ const BillingPage = ({searchParams}) => {
     <div className="p-4 rounded-md flex-1 m-4 mt-0">
       <AnimatedText text={"All Billings"} />
       {/* TOP */}
+      <ViewNotesModal 
+        isOpen={showNotesModal}
+        onClose={() => setShowNotesModal(false)}
+        currentBilling={currentBilling}
+        
+      />
       <div className="flex justify-between">
         <div className="relative flex flex-col">
           <p className="font-semibold">Date</p>
@@ -325,12 +345,17 @@ const BillingPage = ({searchParams}) => {
             onChange={(e) => setPayor(e.target.value)}
           >
           <option value="">-Any-</option>
-          <option value="MA">MA</option>
-          <option value="UCARE">UCARE</option>
+          {
+            insurance_companies.map((company, index) => 
+              <option key={index} value={company.name}>{company.name}</option>)
+          }
           </select>
         </div>
 
-        <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
+        <div className="flex flex-col">
+        <label className=" text-sm font-bold mb-2">
+          Search by Client Name
+          </label>
           <TableSearch />
         </div>
       </div>

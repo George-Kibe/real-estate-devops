@@ -15,6 +15,7 @@ import Table from "@/components/Table";
 import AnimatedText from "@/components/AnimatedText";
 import ConfirmDeleteModal from "@/components/modals/ConfirmDeleteModal";
 import TableSearch from "@/components/TableSearch";
+import { generateReportBilling } from "@/utils/functions";
 
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
@@ -70,6 +71,7 @@ const columns = [
 export default function ReportsPage({searchParams}) {
   const search = searchParams?.search;
   const [loading, setLoading] = useState(false);
+  const [initLoading, setInitLoading] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [reportsLoading, setReportsLoading] = useState(false);
   const [clients, setClients] = useState([]);
@@ -216,7 +218,7 @@ export default function ReportsPage({searchParams}) {
     saveAs(blob, `${name}-reports.xlsx`);
   };
   const fetchAllReports = async( ) => {
-    setLoading(true)
+    setInitLoading(true)
     try {
       const response = await axios.get(`${BACKEND_URL}/api/reports/?owner_id=${currentUser?._id}`);
       setAllReports(response.data.results);
@@ -224,7 +226,7 @@ export default function ReportsPage({searchParams}) {
     } catch (error) {
       toast.error("Fetching Reports failed. Try Again!")
     } finally {
-      setLoading(false)
+      setInitLoading(false)
     }
   }
   useEffect(() => {
@@ -244,6 +246,21 @@ export default function ReportsPage({searchParams}) {
       toast.error("Fetching Reports failed. Try Again!")
       console.log("Error: ", error.message)
       setReportsLoading(false);
+    }
+  }
+  const generateBilling = async(report) => {
+    setLoading(true)
+    try {
+      // get the client
+      const response = await axios.get(`${BACKEND_URL}/api/clients/${report.client_id}/`)
+      const owner_org_id = currentUser._id;
+      console.log("Client: ", response.data)
+      // generateReportBilling(report, client, owner_org_id )
+    } catch (error) {
+      console.log("Error: ", error.message);
+      toast.error("Billing Generation failed. Try Again!")
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -266,6 +283,8 @@ export default function ReportsPage({searchParams}) {
         <SingleClientReportActions 
           viewReport={()=>viewReport(report?.pkid)} 
           handleDelete={()=>handleDelete(report?.pkid)}
+          showGenerateBilling={!report.isBilled}
+          generateBilling = {() => generateBilling(report)}
         />
       </td>
     </tr>
@@ -313,7 +332,7 @@ export default function ReportsPage({searchParams}) {
     <div className='flex flex-col justify-betweenmb-5'>
       <AnimatedText text={"All Reports"} />
       {
-        loading && (
+        (loading || initLoading) && (
           <div className="flex flex-row gap-2 tex-2xl justify-center items-center">
             <Loader className="animate-spin w-24 h-24" />
             Loading ...

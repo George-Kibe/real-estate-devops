@@ -14,6 +14,7 @@ import AnimatedText from '@/components/AnimatedText';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import moment from 'moment';
+import { insurance_companies } from '../../../../data/insurance';
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
 const columns = [
@@ -156,7 +157,7 @@ const BillingPage = ({searchParams}) => {
       return;
     }
     const newBillings = allBillings.filter(billing => {
-      return billing.client_name.toLowerCase().includes(search?.toLowerCase()) || billing.housing_coordinator_name.toLowerCase().includes(search?.toLowerCase())
+      return billing?.client_name?.toLowerCase().includes(search?.toLowerCase()) || billing?.housing_coordinator_name?.toLowerCase().includes(search?.toLowerCase())
     })
     setBillings(newBillings);  
   }, [search])
@@ -165,7 +166,7 @@ const BillingPage = ({searchParams}) => {
       return;
     }
     const newBillings = allBillings.filter(billing => {
-      return billing.log_status.toLowerCase() === (logStatus?.toLowerCase())
+      return billing?.log_status?.toLowerCase() === (logStatus?.toLowerCase())
     })
     setBillings(newBillings);
   }, [logStatus])
@@ -291,9 +292,6 @@ const BillingPage = ({searchParams}) => {
           <option value="">-Any-</option>
           <option value="Approved">Approved</option>
           <option value="Not Approved">Not Approved</option>
-          <option value="Pending">Pending</option>
-          <option value="Confirmed">Confirmed</option>
-
           </select>
         </div>
 
@@ -326,12 +324,17 @@ const BillingPage = ({searchParams}) => {
             onChange={(e) => setPayor(e.target.value)}
           >
           <option value="">-Any-</option>
-          <option value="MA">MA</option>
-          <option value="UCARE">UCARE</option>
+          {
+            insurance_companies.map((company, index) => 
+              <option key={index} value={company.name}>{company.name}</option>)
+          }
           </select>
         </div>
 
-        <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
+        <div className="flex flex-col">
+          <label className=" text-sm font-bold mb-2">
+          Search by Client Name
+          </label>
           <TableSearch />
         </div>
       </div>

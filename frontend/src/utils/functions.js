@@ -118,7 +118,7 @@ export const getTimeDiffInHrs = (start_time, end_time) => {
   return hours.toFixed(2);
 }
 
-export const generateReportBilling = async(report, owner_org_id) => {
+export const generateReportBilling = async(report, client, owner_org_id) => {
   const worked_hours = getTimeDiffInHrs(report.start_time, report.end_time)
   const body = {
     service_date_start: moment(report.created_at).format("YYYY-MM-DD"),
@@ -135,8 +135,11 @@ export const generateReportBilling = async(report, owner_org_id) => {
     billed_hours: 30,
     approval_status: "Not Approved",
     pro_code: "H2015",
-    modifier: "U8",
-    payor: "MA"
+    start_time: report.start_time,
+    end_time: report.end_time,
+    notes: report.report_final || report.report_draft,
+    modifier: client.modifier || "U8",
+    payor: client.payor || "MA"
   }
   console.log("Body: ", body)
   try {

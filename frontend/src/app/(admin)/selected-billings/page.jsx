@@ -82,7 +82,8 @@ const SelectedBillingPage = ({searchParams}) => {
   const {selectedBillings, setSelectedBillings} = useMainProvider();
   
   const goBack = () => {
-  router.push("/clients-billing")
+  // router.push("/clients-billing")
+  router.back()
   };
 
   const handleClick = (item) => {
