@@ -1,4 +1,5 @@
 "use client"
+
 import { Button } from "@/components/ui/button";
 import { useMainProvider } from "@/providers/MainProvider";
 import { useRouter } from 'next/navigation';
@@ -73,13 +74,22 @@ export default function ReportsPage({searchParams}) {
   const [reportsLoading, setReportsLoading] = useState(false);
   const [clients, setClients] = useState([]);
   const [allReports, setAllReports] = useState([]);
+  const [members, setMembers] = useState([]);
   const [reports, setReports] = useState([]);
   const [reportId, setreportId] = useState('');
   const [currentStaff, setCurrentStaff] = useState(null);
 
   const {orgMode, currentUser, currentClient, setCurrentClient} = useMainProvider();
   const router = useRouter();
-  console.log("memebers: ", currentUser.members)
+  const getMembers = async() => {
+    try {
+      const response = await axios.get(`/api/members/?owner_id=${currentUser?._id}`);
+      console.log("Members Fetched : ", response.data)
+      setMembers(response.data);
+    } catch (error) {
+      toast.error("Fetching Members failed. Try Again!")
+    }
+  }
 
   const deleteReport = async() => {
     setLoading(true);
@@ -111,7 +121,11 @@ export default function ReportsPage({searchParams}) {
 
   useEffect(() => {
     fetchClients()
-  }, [loading])
+  }, [loading]);
+
+  useEffect(() => {
+    getMembers()
+  }, [])
 
   const viewReport = (id) => {
     router.push(`/reports/preview/${id}`)
@@ -332,7 +346,7 @@ export default function ReportsPage({searchParams}) {
           </select>
         </div>
         {
-          currentUser?.members.length > 0 && (
+          members.length > 0 && (
             <div className="mb-2">
               <label className="block text-lg font-bold mb-2">
                 Filter By Staff 
@@ -343,13 +357,13 @@ export default function ReportsPage({searchParams}) {
                 name="bill_status"
                 value={currentStaff?._id || ""}
                 onChange={(e) => {
-                  const selectedStaff = currentUser?.members?.find(member => member._id === e.target.value);
+                  const selectedStaff = members?.find(member => member._id === e.target.value);
                   setCurrentStaff(selectedStaff);
                 }}
               >
                 <option value="">-Select Staff-</option>
                 {
-                  currentUser?.members?.map((member) => (
+                  members?.map((member) => (
                     <option key={member._id} value={member._id}>
                       {member.name}
                     </option>

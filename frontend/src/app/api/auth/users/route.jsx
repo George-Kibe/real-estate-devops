@@ -1,6 +1,5 @@
 import connect from "@/lib/db";
 import { NextResponse } from "next/server";
-import bcrypt from "bcryptjs"
 import User from "@/models/User";
 
 export const POST = async (request) => {
@@ -54,18 +53,16 @@ export const GET = async (request) => {
     } catch (error) {
         return new NextResponse(error.message, {status: 500,})
     }
-
 }
 
 export const PUT = async (request) => {
     const body = await request.json();
     const {_id} = body;
     try {
-      // await CheckIn.find();
       const newUserDoc = await User.findOneAndUpdate({_id}, {...body});
       const updatedUserDoc = await User.findOne({
         _id: newUserDoc._id,
-      })//.populate('lastLocation');
+      })
 
       const newUser = JSON.stringify(updatedUserDoc);
       return new NextResponse(newUser, {status: 200});

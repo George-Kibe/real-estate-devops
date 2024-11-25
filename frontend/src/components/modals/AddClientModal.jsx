@@ -10,11 +10,8 @@ const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
 //const BACKEND_URL = "http://localhost:8000"
 
 const AddClientModal = ({ isOpen, onClose, setLoading, client=null }) => {  
-  // console.log("Client: ", client.client_name)
   const {currentUser} = useMainProvider();
-  const owner_id = currentUser?._id;
-  const members = currentUser?.members;
-
+  const [members, setMembers] = useState([]);
   const [first_name, setFirst_name] = useState('');
   const [last_name, setLast_name] = useState('');
   const [email, setEmail] = useState("");
@@ -33,6 +30,15 @@ const AddClientModal = ({ isOpen, onClose, setLoading, client=null }) => {
     setPhoneNumber(''); setHouse_type(''); setAdditional_info(''); setCity('');
     setStaff_id(''); setFirst_name(''); setLast_name('');
   }
+  const getMembers = async() => {
+    try {
+      const response = await axios.get(`/api/members/?owner_id=${currentUser?._id}`);
+      console.log("Members Fetched : ", response.data)
+      setMembers(response.data);
+    } catch (error) {
+      toast.error("Fetching Members failed. Try Again!")
+    }
+  }
 
   useEffect(() => {
     if (client?.client_name) {
@@ -48,7 +54,7 @@ const AddClientModal = ({ isOpen, onClose, setLoading, client=null }) => {
       return;
     }
   }, [client]);
-  console.log("Staff ID: ", staff_id)
+  // console.log("Staff ID: ", staff_id)
   const handleSelectChange = (event) => {
     //console.log("Selected ID: ",event.target.value);
     setStaff_id(event.target.value)
@@ -61,7 +67,14 @@ const AddClientModal = ({ isOpen, onClose, setLoading, client=null }) => {
       return
     }
     setLoading(true);
-    const data = {first_name, last_name, client_name:first_name + " " + last_name, email, address,phone_number,house_type, city, staff_id:staff_id || members[0]?._id, additional_info, status, owner_id};
+    const data = {
+      first_name, last_name, 
+      client_name:first_name + " " + last_name, 
+      email, address,phone_number,
+      house_type, city, staff_id:staff_id, 
+      additional_info, status,
+      // owner_id: currentUser._id
+    };
     console.log(data)
 
     if (client){
@@ -99,6 +112,10 @@ const AddClientModal = ({ isOpen, onClose, setLoading, client=null }) => {
       }
     }
   }
+
+  useEffect(() => {
+    getMembers()
+  }, [])
 
   return (
     <div 
@@ -219,8 +236,6 @@ const AddClientModal = ({ isOpen, onClose, setLoading, client=null }) => {
                   {members?.find((member) => member._id === staff_id)?.name || "None"}
                 </p>
                   <select
-                    id="dropdown"
-                    //value={members?.find((member) => member._id === staff_id)?.name || ""}
                     onChange={handleSelectChange}
                     className="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                   >
