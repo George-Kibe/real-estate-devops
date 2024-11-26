@@ -39,8 +39,9 @@ export default function MembersPage() {
   }
  
   useEffect(() => {
-    fetchClients()
+    fetchClients();
   }, [loading])
+
   useEffect(() => {
     if (searchText) {
       const filteredClients = clients.filter((client) =>
@@ -96,21 +97,31 @@ export default function MembersPage() {
   return (
     <div className='flex flex-col justify-between gap-5 mb-5'>
       <AnimatedText text={"All Clients"} />
-      <InviteClientModal client={client} isOpen={modalOpen} onClose={closeModal} 
-      setLoading={setLoading} />
-      <ConfirmDeleteModal deleteAction={deleteClient} title={deleteTitle} isOpen={deleteModalOpen} onClose={closeDeleteModal} 
-      setLoading={setLoading} />
-        <Button className='self-start' onClick={addClient}>
-          {loading? "Loading" : <p className="flex items-center gap-1">
-            <CirclePlus />Add Client</p>}
-        </Button>
-        <input
-          type="text"
-          placeholder="Search by Name"
-          className="self-start rounded-md bg-background px-3 py-2"
-          value={searchText}
-          onChange={(e) => setSearchText(e.target.value)}
-        />
+      <InviteClientModal 
+        client={client} 
+        isOpen={modalOpen} 
+        onClose={closeModal} 
+        setLoading={setLoading} 
+      />
+      <ConfirmDeleteModal 
+        deleteAction={deleteClient} 
+        title={deleteTitle} 
+        isOpen={deleteModalOpen} 
+        onClose={closeDeleteModal} 
+        setLoading={setLoading} 
+      />
+
+      <Button className='self-start' onClick={addClient}>
+        {loading? "Loading" : <p className="flex items-center gap-1">
+          <CirclePlus />Add Client</p>}
+      </Button>
+      <input
+        type="text"
+        placeholder="Search by Name"
+        className="self-start rounded-md bg-background px-3 py-2"
+        value={searchText}
+        onChange={(e) => setSearchText(e.target.value)}
+      />
       {
         !clients?.length && <p className="">You do not have any clients yet!</p>
       }

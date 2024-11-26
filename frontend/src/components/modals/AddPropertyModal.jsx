@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { Button } from '../ui/button';
-import { CloudUpload, Copy } from 'lucide-react';
+import { CloudUpload, Copy, PlusCircle, Trash2 } from 'lucide-react';
 import { toast } from 'react-toastify';
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
@@ -78,6 +78,10 @@ const AddPropertyModal = ({
     }
     setResourceName(""); setResourceUrl('');
   }
+  const removeResource = (resource) => {
+    const updatedResources = additionalResources.filter((r) => r.name !== resource.name);
+    setAdditionalResources(updatedResources);
+  }
 
   const handleAddProperty = () => {
     if (!title || !street_address || !phone_number || !description || !price || !comments){
@@ -131,6 +135,8 @@ const AddPropertyModal = ({
     setImages([]), setTitle(''); setStreet_address(''); setPhone_number('');
     setDescription(''); setPrice(''); setComments('');
     setWebsite(''); setAgentName(''); setAdditionalResources([]);
+    setAgentSelected('');  setResourcesSelected('');
+    setResourceName('');
   }
   useEffect(() => {
     if (!currentProperty) return;
@@ -149,7 +155,9 @@ const AddPropertyModal = ({
     // check if currentproperty.additonal resources is a list
     if (Array.isArray(currentProperty.additionalResources)) {
       setAdditionalResources(currentProperty.additionalResources);
-    } 
+    } else {
+      setAdditionalResources([]);
+    }
   }, [currentProperty]);
 
   const handleCopy = async (text) => {
@@ -188,7 +196,7 @@ const AddPropertyModal = ({
         </p>
         <div className="flex flex-col md:flex-wrap">
           <div className="">
-            <p className="">Property Title:</p>
+            <p className="flex">Property Title: <p className="text-red-600">*</p></p>
             <input type="text" placeholder='Property Title' 
               value={title}
               onChange={ev => setTitle(ev.target.value)}
@@ -197,7 +205,7 @@ const AddPropertyModal = ({
             /> 
           </div>
           <div className="">
-            <p className="">Property Address:</p>
+            <p className="flex">Property Address: <p className="text-red-600">*</p></p>
             <input type="text" placeholder='Property Address' 
               value={street_address}
               onChange={ev => setStreet_address(ev.target.value)}
@@ -206,7 +214,7 @@ const AddPropertyModal = ({
             /> 
           </div>
           <div className="">
-            <p className="">Phone Number:</p>
+            <p className="flex">Phone Number: <p className="text-red-600">*</p> </p>
             <input type="text" placeholder='Phone Number' 
               value={phone_number}
               onChange={ev => setPhone_number(ev.target.value)}
@@ -215,7 +223,7 @@ const AddPropertyModal = ({
             /> 
           </div>
           <div className="">
-            <p className="">Price:</p>
+            <p className="flex">Price: <p className="text-red-600">*</p> </p>
             <input type="text" placeholder='Price' 
               value={price}
               onChange={ev => setPrice(ev.target.value)}
@@ -224,7 +232,7 @@ const AddPropertyModal = ({
             /> 
           </div>
         </div>
-        <p className="font-semibold pr-2">Description</p>
+        <p className="font-semibold pr-2 flex ">Description <p className="text-red-600">*</p> </p>
         <textarea type="text" placeholder='Enter Your Description here...' 
           value={description} 
           onChange={ev => setDescription(ev.target.value)}
@@ -242,7 +250,7 @@ const AddPropertyModal = ({
           /> 
         </div>
        
-        <p className="font-semibold pr-2">Add Comments</p>
+        <p className="font-semibold pr-2 flex">Add Comments<p className="text-red-600">* </p> </p>
         <textarea type="text" placeholder='Enter Your comments here...' 
           value={comments} 
           onChange={ev => setComments(ev.target.value)}
@@ -345,6 +353,7 @@ const AddPropertyModal = ({
                     <Copy 
                       onClick={() => handleCopy(resource.url)}  className="h-6 w-6" 
                     />  }
+                    <Trash2 onClick={() => removeResource(resource)} className="h-6 w-6" />
                   </div>
                 </div>
               ))}
@@ -357,6 +366,7 @@ const AddPropertyModal = ({
               />
               <input type="file" onChange={uploadFile} />
               <Button disabled={fileUploading || !resourceUrl} onClick={handleAddResource} className="mt-2">
+                <PlusCircle />
                 {fileUploading? "Uploading...": "Add"}
               </Button>
             </div>

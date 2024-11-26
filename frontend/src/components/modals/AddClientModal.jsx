@@ -91,8 +91,8 @@ const AddClientModal = ({ isOpen, onClose, setLoading, client=null }) => {
       house_type, city, staff_id: staff_id, 
       additional_info, status,
       payor, procode, units, modifier, 
-      service_type, pmiNumber, insuranceMemberID
-      // owner_id: currentUser._id
+      service_type, pmiNumber, insuranceMemberID,
+      owner_id: currentUser._id
     };
     // console.log(data)
 
@@ -239,7 +239,7 @@ const AddClientModal = ({ isOpen, onClose, setLoading, client=null }) => {
               onChange={(event) => setStatus(event.target.value)}
               className="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
             >
-              <option value="" disabled>Select Status...</option>
+              <option value="">-Select Status-</option>
               <option value={"Active"}>{"Active"}</option>
               <option value={"Completed"}>{"Completed"}</option>
             </select>
@@ -257,7 +257,7 @@ const AddClientModal = ({ isOpen, onClose, setLoading, client=null }) => {
               onChange={(event) => setPayor(event.target.value)}
               className="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
             >
-              <option value="" disabled>-Select Payor-</option>
+              <option value="">-Select Payor-</option>
               {
                 insurance_companies.map((company, index) => (
                   <option key={index} value={company.name}>{company.name}</option>
@@ -308,7 +308,7 @@ const AddClientModal = ({ isOpen, onClose, setLoading, client=null }) => {
               onChange={(event) => setProcode(event.target.value)}
               className="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
             >
-              <option value="" disabled>-Select-</option>
+              <option value="">-Select-</option>
               <option value={"H2015"}>{"H2015"}</option>
             </select>
           </div>
@@ -321,7 +321,7 @@ const AddClientModal = ({ isOpen, onClose, setLoading, client=null }) => {
               onChange={(event) => setModifier(event.target.value)}
               className="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
             >
-              <option value="" disabled>-Select-</option>
+              <option value="">-Select-</option>
               <option value={"M8"}>{"M8"}</option>
             </select>
           </div>
@@ -337,7 +337,7 @@ const AddClientModal = ({ isOpen, onClose, setLoading, client=null }) => {
               onChange={(event) => setServiceType(event.target.value)}
               className="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
             >
-              <option value="" disabled>-Select-</option>
+              <option value="">-Select-</option>
               <option value={"Housing Transition"}>{"Housing Transition"}</option>
               <option value={"Housing Enquiry"}>{"Housing Enquiry"}</option>
             </select>
@@ -351,7 +351,7 @@ const AddClientModal = ({ isOpen, onClose, setLoading, client=null }) => {
               onChange={(event) => setModifier(event.target.value)}
               className="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
             >
-              <option value="" disabled>-Select-</option>
+              <option value="">-Select-</option>
               <option value={"M8"}>{"M8"}</option>
             </select>
           </div> */}
@@ -383,7 +383,7 @@ const AddClientModal = ({ isOpen, onClose, setLoading, client=null }) => {
                     onChange={handleSelectChange}
                     className="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                   >
-                    <option value="" disabled>Select Staff...</option>
+                    <option value="">-Select Staff-</option>
                       {members.map((member, index) => (
                         <option key={index} value={member._id}>{member.name}</option>
                       ))}

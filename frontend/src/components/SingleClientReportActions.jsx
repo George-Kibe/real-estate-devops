@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { Delete, Ellipsis, Eye, CirclePlus } from "lucide-react"
+import { Ellipsis, Eye, CirclePlus, Trash2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -29,7 +29,7 @@ export function SingleClientReportActions({
             View report
         </DropdownMenuItem>
         <DropdownMenuItem onClick={handleDelete}>
-          <Delete className="h-5 w-5 mr-2" />
+          <Trash2 className="h-5 w-5 mr-2" />
             Delete Report
         </DropdownMenuItem>
         {

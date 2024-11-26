@@ -13,6 +13,7 @@ const nextConfig = {
             "s3.amazonaws.com",
             "images.pexels.com",
             "apartments.com",
+            "storage.googleapis.com",
         ]
     }
 };

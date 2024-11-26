@@ -62,10 +62,14 @@ import { useMainProvider } from '@/providers/MainProvider';
                 <User2Icon className='mr-2 h-4 w-4' />
                 <Link href='/clients'>Clients</Link>
               </CommandItem>
-              <CommandItem>
-                <CreditCard className='mr-2 h-4 w-4' />
-                <Link href='/owner-billings'>Billings</Link>
-              </CommandItem>
+              {
+                !orgMode && (
+                  <CommandItem>
+                    <CreditCard className='mr-2 h-4 w-4' />
+                    <Link href='/owner-billings'>Billings</Link>
+                  </CommandItem>
+                )
+              }
               {
                 orgMode && (
                   <CommandItem>

@@ -63,12 +63,11 @@ export default function MembersPage({params, searchParams}) {
   const [anyAnswer, setAnyAnswer] = useState('');
   const [questionMode, setQuestionMode] = useState(false);
   const [anyQLoading, setAnyQLoading] = useState(false);
-
+  const [allComments, setAllComments] = useState('');
 
   const [currentPropertiesIndex, setCurrentPropertiesIndex] = useState(5);
-  // console.log("User Properties: ", userProperties);
+  console.log("User Properties: ", userProperties);
   // console.log("Current Properties: ", currentProperties)
-  const allComments = userProperties.map(p => p.comments).join(' ');
   const {id} = useParams();
   const divRef = useRef();
   const router = useRouter();
@@ -285,6 +284,12 @@ export default function MembersPage({params, searchParams}) {
   useEffect(() => {
     fetchReport();
   }, [])
+
+  useEffect(() => {
+    const newComments = userProperties.map(p => p.comments).join(' ');
+    setAllComments(newComments);
+  }, [userProperties])
+  
 
   const updateReport = async() => {
     setErrors([]);
@@ -559,7 +564,7 @@ export default function MembersPage({params, searchParams}) {
                   onChange={(e) => setStaffLocation(e.target.value)}
                   className="block border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm px-3 py-2"
                 >
-                  <option value="" disabled>Select Location</option>
+                  <option value="">-Select Location-</option>
                   <option value="office">Office</option>
                   <option value="home">Home</option>
                 </select>
@@ -576,7 +581,7 @@ export default function MembersPage({params, searchParams}) {
                   onChange={(e) => setVisitType(e.target.value)}
                   className="block border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm px-3 py-2"
                 >
-                  <option value="" disabled>Select Visit Type</option>
+                  <option value="">-Select Visit Type-</option>
                   <option value="direct">Direct</option>
                   <option value="indirect">Indirect</option>
                   <option value="remote">Remote</option>

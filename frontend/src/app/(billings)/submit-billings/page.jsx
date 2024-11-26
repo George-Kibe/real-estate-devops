@@ -6,6 +6,8 @@ import { Button } from '@/components/ui/button';
 import { useMainProvider } from '@/providers/MainProvider';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react'
+import Link from 'next/link';
+import { Loader } from 'lucide-react';
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
 
@@ -26,12 +28,11 @@ const SubmitBillings = () => {
         selectedBillings.map(async (billing) => {
           const response = await axios.put(
             `${BACKEND_URL}/api/billings/${billing.pkid}/`,
-            { billing_status: "Submitted" }
+            { bill_status: "Submitted" }
           );
           return response.data;
         })
       );
-      downloadX12();
       setSelectedBillings([]);
     } catch (error) {
       console.log(error);
@@ -85,14 +86,30 @@ const SubmitBillings = () => {
         <p className="text-sm">Total Claim Amount: ${totalSelected}</p>
         
       </div>
-      <div className="flex flex-col items-center">
-        <Button onClick={updateBillings}>
-          DOWNLOAD X12
+      <div className="flex flex-col gap-2 mt-4">
+        <Button className='self-start' onClick={downloadX12}>
+          DOWNLOAD X12 BATCH
         </Button>
-        <p className="">OR</p>
-        <Button onClick={saveBatch}>
-          SAVE BATCH
+        <p className="">
+          STEP 1: Upload the downloaded batch file to 
+          <Link className='ml-2 underline' href={'https://www.waystar.com/'}>
+            WAYSTAR
+          </Link>
+        </p>
+        <p className="">
+          STEP 2: Once uploaded 
+          <Button className='ml-2' disabled={selectedBillings?.length === 0} onClick={updateBillings}>
+            {loading ? <Loader className="animate-spin mr-2" /> : "CONFIRM HERE"}
+          </Button>
+        </p>
+      </div>
+      <div className="flex gap-16 self-start px-8">
+        <Button className='' onClick={() => router.push("add-visit")}>
+          DONE
         </Button>
+        {/* <Button className='' onClick={() => router.push("billings-history")}>
+          HISTORY
+        </Button> */}
       </div>
     </div>
   )
