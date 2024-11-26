@@ -32,7 +32,7 @@ export function PropertyActions({
           isNew? (
           <DropdownMenuItem onClick={handleAddProperty}>
             <DiamondPlus className="h-5 w-5 mr-2" />
-            Add Comments
+            Add Property
           </DropdownMenuItem>)
            :
           (

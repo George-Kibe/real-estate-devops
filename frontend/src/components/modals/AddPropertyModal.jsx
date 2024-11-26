@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { Button } from '../ui/button';
-import { CloudUpload, File } from 'lucide-react';
+import { CloudUpload, Copy } from 'lucide-react';
 import { toast } from 'react-toastify';
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
@@ -16,7 +16,8 @@ const AddPropertyModal = ({
   userProperties,
   editMode,
   currentIndex,
-  setEditMode
+  setEditMode,
+  isNew
 }) => {
   const [title, setTitle] = useState('');
   const [street_address, setStreet_address] = useState('');
@@ -26,26 +27,56 @@ const AddPropertyModal = ({
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState('');
   const [comments, setComments] = useState('');
+  const [resourceName, setResourceName] = useState('');
+  const [resourceUrl, setResourceUrl] = useState(null);
+  const [fileUploading, setFileUploading] = useState(false);
 
   const [agentSelected, setAgentSelected] = useState('');
   const [resourcesSelected, setResourcesSelected] = useState('');
   const [agentName, setAgentName] = useState('');
-  const [additionalResources, setAdditionalResources] = useState('');
+  const [additionalResources, setAdditionalResources] = useState([]);
   const [uploadLoading, setUploadLoading] = useState(false);
-
+  const [copiedText, setCopiedText] = useState('');
+  // console.log("Additional Resources: ", additionalResources)
 
   const uploadImage = async(e) => {
     e.preventDefault();
     setUploadLoading(true);
     try {
       const fileUrl = await handleFileUpload(e.target.files[0]);
-      setImages((prevImages) => [fileUrl, ...prevImages]);
+      if (images?.length > 0){
+        setImages((prevImages) => [...prevImages, fileUrl]);
+      } else {
+        setImages([fileUrl]);
+      }
     } catch (error){
       console.log("Uploading error: ", error)
       toast.error("Error uploading file")
     } finally {
       setUploadLoading(false);
     }
+  }
+  const uploadFile = async(e) => {
+    e.preventDefault();
+    setFileUploading(true);
+    try {
+      const fileUrl = await handleFileUpload(e.target.files[0]);
+      setResourceUrl(fileUrl)
+    } catch (error){
+      console.log("Uploading error: ", error)
+      toast.error("Error uploading file")
+    } finally {
+      setFileUploading(false);
+    }
+  }
+  const handleAddResource = () => {
+    if (!resourceName || !resourceUrl) return;
+    if (additionalResources?.length > 0){
+      setAdditionalResources((prev) => [...prev, {name: resourceName, url: resourceUrl}]);
+    } else {
+      setAdditionalResources([{name: resourceName, url: resourceUrl}]);
+    }
+    setResourceName(""); setResourceUrl('');
   }
 
   const handleAddProperty = () => {
@@ -77,10 +108,10 @@ const AddPropertyModal = ({
       agentSelected: agentSelected,
       resourcesSelected: resourcesSelected,
       agentName: agentName.trim().replace(/\s+/g, ' '),
-      additionalResources: additionalResources.trim().replace(/\s+/g, ' '),
+      additionalResources,
     };
 
-    if (editMode) {
+    if (editMode && !isNew) {
       const updatedProperties = userProperties.map((p, i) => {
         if (i === currentIndex) {
           return newProperty;
@@ -97,9 +128,9 @@ const AddPropertyModal = ({
       toast.success("Property Added Successfully");
     }
     //reset everything to null
-    setImage(''); setTitle(''); setStreet_address(''); setPhone_number('');
+    setImages([]), setTitle(''); setStreet_address(''); setPhone_number('');
     setDescription(''); setPrice(''); setComments('');
-    setWebsite(''); setAgentName(''); setAdditionalResources('');
+    setWebsite(''); setAgentName(''); setAdditionalResources([]);
   }
   useEffect(() => {
     if (!currentProperty) return;
@@ -115,9 +146,21 @@ const AddPropertyModal = ({
     setAgentSelected(currentProperty.agentSelected || '');
     setResourcesSelected(currentProperty.resourcesSelected || '');
     setAgentName(currentProperty.agentName || '');
-    setAdditionalResources(currentProperty.additionalResources || '');
-
+    // check if currentproperty.additonal resources is a list
+    if (Array.isArray(currentProperty.additionalResources)) {
+      setAdditionalResources(currentProperty.additionalResources);
+    } 
   }, [currentProperty]);
+
+  const handleCopy = async (text) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopiedText(text);
+      setTimeout(() => setCopiedText(''), 2000); // Reset copied status after 2 seconds
+    } catch (err) {
+      console.error("Failed to copy: ", err);
+    }
+  };
 
   return (
     <div 
@@ -220,10 +263,10 @@ const AddPropertyModal = ({
             />
       
             {/* Image previews */}
-            <span className="flex flex-row flex-wrap rounded-full border border-stroke gap-2 dark:border-dark-3 bg-white dark:bg-dark-2">
+            <span className="flex flex-row flex-wrap gap-2 dark:border-dark-3 bg-white dark:bg-dark-2">
               {images?.length > 0 &&
                 images.map((image, index) => (
-                  <div key={index} className="h-36 w-40">
+                  <div key={index} className="rounded-sm border-2 border-stroke p-1 h-36 w-40">
                     <img
                       src={image}
                       alt={`${index}-image`}
@@ -292,15 +335,34 @@ const AddPropertyModal = ({
         {resourcesSelected === "Yes" && (
           <div className="">
             <p className="">Additional Resources:</p>
-            <input type="text" placeholder='Additional Resources'
-              value={additionalResources || ''}
-              onChange={ev => setAdditionalResources(ev.target.value)}
-              className="border-2 border-gray-300 rounded-md p-1 w-full
-              mb-2 focus:border-blue-900"
-            />
+            {additionalResources?.length > 0 &&
+              additionalResources?.map((resource, index) => (
+                <div key={index} className="flex flex-row items-center gap-2 mb-2">
+                  <p className="">{index+ 1}.{resource.name}:</p>
+                  <div className="flex items-center gap-2">
+                    <p className="text-sm">{resource.url.substring(0,30)}...</p>
+                    {copiedText === resource.url ? "Copied!" : 
+                    <Copy 
+                      onClick={() => handleCopy(resource.url)}  className="h-6 w-6" 
+                    />  }
+                  </div>
+                </div>
+              ))}
+            <div className="flex flex-row gap-4 items-center">
+              <input type="text" placeholder='Resource Name'
+                value={resourceName}
+                onChange={ev => setResourceName(ev.target.value)}
+                className="border-2 border-gray-300 rounded-md p-1
+                mb-2 focus:border-blue-900"
+              />
+              <input type="file" onChange={uploadFile} />
+              <Button disabled={fileUploading || !resourceUrl} onClick={handleAddResource} className="mt-2">
+                {fileUploading? "Uploading...": "Add"}
+              </Button>
+            </div>
           </div>
         )}
-        <Button onClick={handleAddProperty} className="mt-2">
+        <Button onClick={handleAddProperty} className="mt-8">
           {editMode? "Update": "Add Custom"}  Property
         </Button>
       </div>

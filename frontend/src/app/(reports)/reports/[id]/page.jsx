@@ -9,7 +9,6 @@ import { Brain, LoaderCircle, Loader, Plus, Search } from 'lucide-react';
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
-import AddCommentModal from "@/components/modals/AddCommentModal";
 import { saveAs } from 'file-saver';
 import * as XLSX from 'xlsx';
 import moment from 'moment';
@@ -25,14 +24,13 @@ import ReactMarkdown from 'react-markdown';
 import { GeneralSearchButton, SearchButton } from "@/components/TableSearch";
 import { callAIPrompt, generalAIPrompt, generateAISummary, shuffleArray } from "@/utils/functions";
 import Image from "next/image";
+import { set } from "mongoose";
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
 
 export default function MembersPage({params, searchParams}) {
   const location = searchParams?.searchTerm || '';
   const {currentClient, setTempProperty} = useMainProvider();
-  
-  const [commentsModalOpen, setCommentsModalOpen] = useState(false);
   const [searchLocation, setSearchLocation] = useState(location);
   const [propertyModalOpen, setPropertyModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -40,19 +38,12 @@ export default function MembersPage({params, searchParams}) {
   const [locationModalOpen, setLocationModalOpen] = useState(false);
   const [exportModalOpen, setExportModalOpen] = useState(false);
   const [editMode, setEditMode] = useState(false);
-  
+  const [isNew, setIsNew] = useState(false);
   const [report, setReport] = useState(null);
   const [searchText, setSearchText] = useState('');
-
   const [properties, setProperties] = useState([]);
   const [currentProperties, setCurrentProperties] = useState([]);
   const [userProperties, setUserProperties] = useState([]);
-  // states for a single property
-  const [comments, setComments] = useState('');
-  const [agentSelected, setAgentSelected] = useState('');
-  const [resourcesSelected, setResourcesSelected] = useState('');
-  const [agentName, setAgentName] = useState('');
-  const [additionalResources, setAdditionalResources] = useState('');
   // report states
   const [errors, setErrors] = useState([]);
   const [startTime, setStartTime] = useState();
@@ -295,12 +286,6 @@ export default function MembersPage({params, searchParams}) {
     fetchReport();
   }, [])
 
-  useEffect(() => {
-    if (currentProperty?.comments) {
-      setComments(currentProperty.comments);
-    }
-  }, [currentProperty]);
-
   const updateReport = async() => {
     setErrors([]);
     setLoading(true);
@@ -397,10 +382,6 @@ export default function MembersPage({params, searchParams}) {
       setLoading(false);
     }
   }
-  const closeModal = () => {
-    setCurrentProperty({})
-    setCommentsModalOpen(false)
-  }
   const closePropertyModal = () => {
     setCurrentProperty({});
     setPropertyModalOpen(false)
@@ -415,44 +396,14 @@ export default function MembersPage({params, searchParams}) {
     setSendModalOpen(false)
   } 
 
-  const addToUserProperties = () => {
-    if(!comments){
-      toast.error("Please add comments before adding property!")
-      return;
-    }
-    if (agentSelected === "Yes" && (!agentName && !currentProperty.agentName)){
-      console.log(agentSelected)
-      toast.error("Please add agent name before adding property!")
-      return;
-    }
-    if (resourcesSelected === "Yes" && (!additionalResources && !currentProperty.additionalResources )){
-      toast.error("Please add additional resources before adding property!")
-      return;
-    }
-    currentProperty.comments = comments
-    // modify agentName only if agentname exists
-    if (agentName){
-      currentProperty.agentName = agentName
-    }
-    if (additionalResources){
-      currentProperty.additionalResources = additionalResources
-    }
-    setUserProperties([...userProperties, currentProperty]);
-    setComments(''); setAgentName(''); setAdditionalResources('');
-    setCommentsModalOpen(false);
-    setCurrentProperties(currentProperties.filter((p, i) => i !== currentIndex));
-    setCurrentProperty({});
-    setCurrentIndex(null);
-    setEditMode(false);
-  }
-  const handleAdd = (property, index) => {
-    setCommentsModalOpen(true);
-    setCurrentProperty(property);
+  const handleEdit = (property, index, isNew) => {
     setCurrentIndex(index);
-  }
-  const handleEdit = (property, index) => {
-    setCurrentIndex(index);
-    setEditMode(true)
+    setEditMode(true);
+    if (isNew){
+      const tempProperties = currentProperties.filter((p, i) => i !== index);
+      setCurrentProperties(tempProperties);
+    }
+    setIsNew(isNew);
     setCurrentProperty(property);
     setPropertyModalOpen(true);
   }
@@ -500,29 +451,12 @@ export default function MembersPage({params, searchParams}) {
   return (
     <div className='flex flex-col justify-between gap-5 mb-5'>
       <div ref={divRef} className="">
-      
       <AnimatedText text={`Report for ${report?.client_name}-${moment(
         report?.report_date ? report?.report_date : report?.created_at).format('MMMM Do YYYY')} `} />
-      <AddCommentModal 
-        comments={comments} 
-        setComments={setComments} 
-        isOpen={commentsModalOpen} 
-        onClose={closeModal}     
-        currentProperty={currentProperty} 
-        addToUserProperties={addToUserProperties} 
-        editMode={editMode}
-        setAgentName={setAgentName}
-        agentName={agentName}
-        agentSelected={agentSelected}
-        setAgentSelected={setAgentSelected}
-        additionalResources={additionalResources}
-        setAdditionalResources={setAdditionalResources}
-        resourcesSelected={resourcesSelected}
-        setResourcesSelected={setResourcesSelected}
-      />
       <AddPropertyModal
        currentProperty={currentProperty} 
        editMode={editMode}
+       isNew={isNew}
        setEditMode={setEditMode}
        userProperties={userProperties}
        currentIndex={currentIndex}
@@ -779,7 +713,7 @@ export default function MembersPage({params, searchParams}) {
                   </td>
                   <td className="px-2 py-1  self-center justify-center flex-col gap-2">
                     <PropertyActions 
-                      handleEdit={() => handleEdit(property, index)}
+                      handleEdit={() => handleEdit(property, index, false)}
                       viewProperty={() => viewProperty(property)} 
                       handleShareProperty={() => handleShareProperty(property)} 
                       handleRemoveProperty={() =>handleRemoveUserProperty(property.title)} 
@@ -838,7 +772,7 @@ export default function MembersPage({params, searchParams}) {
                       </td>
                       <td className="px-2 py-1  self-center justify-center flex-col gap-2">
                       <PropertyActions 
-                        handleAddProperty={() => handleAdd(property, index)} 
+                        handleAddProperty={() => handleEdit(property, index, true)}
                         isNew={true}                               
                         viewProperty={() => viewProperty(property)} 
                         handleShareProperty={() => handleShareProperty(property)} 

@@ -22,7 +22,7 @@ const AddVisit = () => {
   const [showcalendar, setShowcalendar] = useState(false);
   const [date, setDate] = useState(new Date());
   const router = useRouter();
-  // console.log("Current Client: ", currentClient);
+  console.log("myClients: ", myClients);
   const fetchClients = async() => {
     try {
       const response = await axios.get(`${BACKEND_URL}/api/clients/?owner_id=${currentUser?._id}`);
@@ -39,10 +39,13 @@ const AddVisit = () => {
 
   const handleMyClients = () => {
     if (orgMode){
-      setMyClients(allClients.filter((client) => client.staff_id === tempUser?._id));
+      const myClients = allClients.filter((client) => client.staff_id === tempUser?._id);
+      setMyClients(myClients)
+      return;
     }
     setMyClients(allClients)
   }
+
   useEffect(() => {
     handleMyClients()
   }, [allClients.length])
@@ -66,7 +69,6 @@ const AddVisit = () => {
       owner_id: currentUser?._id,
       report_date: moment(date).format('YYYY-MM-DD')
     }
-    console.log("Data: ", data)
     try {
       setLoading(true);
       const response = await axios.post(`${BACKEND_URL}/api/reports/`, data);
