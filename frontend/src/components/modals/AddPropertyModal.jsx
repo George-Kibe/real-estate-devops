@@ -2,10 +2,11 @@
 
 import React, { useEffect, useState } from 'react';
 import { Button } from '../ui/button';
-import { File } from 'lucide-react';
+import { CloudUpload, File } from 'lucide-react';
 import { toast } from 'react-toastify';
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { handleFileUpload } from '@/utils/google-cloud';
 
 const AddPropertyModal = ({ 
   isOpen,
@@ -21,7 +22,7 @@ const AddPropertyModal = ({
   const [street_address, setStreet_address] = useState('');
   const [phone_number, setPhone_number] = useState('');
   const [website, setWebsite] = useState('');
-  const [imageBase64, setImageBase64] = useState('');;
+  const [images, setImages] = useState([]);
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState('');
   const [comments, setComments] = useState('');
@@ -30,15 +31,20 @@ const AddPropertyModal = ({
   const [resourcesSelected, setResourcesSelected] = useState('');
   const [agentName, setAgentName] = useState('');
   const [additionalResources, setAdditionalResources] = useState('');
+  const [uploadLoading, setUploadLoading] = useState(false);
 
-  const selectFile = (event) => {
-    const file = event.target.files[0];
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setImageBase64(reader.result);
-    };
-    if (file) {
-      reader.readAsDataURL(file);
+
+  const uploadImage = async(e) => {
+    e.preventDefault();
+    setUploadLoading(true);
+    try {
+      const fileUrl = await handleFileUpload(e.target.files[0]);
+      setImages((prevImages) => [fileUrl, ...prevImages]);
+    } catch (error){
+      console.log("Uploading error: ", error)
+      toast.error("Error uploading file")
+    } finally {
+      setUploadLoading(false);
     }
   }
 
@@ -63,7 +69,7 @@ const AddPropertyModal = ({
       street_address: street_address.trim().replace(/\s+/g, ' '),
       phone_number,
       price,
-      images: [imageBase64], // Assuming image is a URL or file path
+      images: images, 
       description: description.trim().replace(/\s+/g, ' '),
       website: website.trim().replace(/\s+/g, ' '),
       isCustom: true,
@@ -91,7 +97,7 @@ const AddPropertyModal = ({
       toast.success("Property Added Successfully");
     }
     //reset everything to null
-    setImageBase64(''); setTitle(''); setStreet_address(''); setPhone_number('');
+    setImage(''); setTitle(''); setStreet_address(''); setPhone_number('');
     setDescription(''); setPrice(''); setComments('');
     setWebsite(''); setAgentName(''); setAdditionalResources('');
   }
@@ -102,7 +108,7 @@ const AddPropertyModal = ({
     setStreet_address(currentProperty.street_address || '');
     setPhone_number(currentProperty.phone_number || '');
     setWebsite(currentProperty.website || '');
-    setImageBase64(currentProperty?.images?.[0] || '');
+    setImages(currentProperty?.images);
     setDescription(currentProperty.description || '');
     setPrice(currentProperty.price || '');
     setComments(currentProperty.comments || '');
@@ -133,7 +139,10 @@ const AddPropertyModal = ({
         >
           <p className="font-bold text-2xl p-4">X</p>
         </button>
-        <p className="font-bold text-xl">{editMode? "Edit": "Add"} Custom Property Details</p>
+        <p className="font-bold text-xl">
+          {editMode? "Edit ": "Add Custom "}
+          Property Details
+        </p>
         <div className="flex flex-col md:flex-wrap">
           <div className="">
             <p className="">Property Title:</p>
@@ -197,85 +206,102 @@ const AddPropertyModal = ({
           className="border-2 h-16 border-gray-300 rounded-md p-1 w-full 
           mb-2 focus:border-blue-900" 
         /> 
-        <p className="font-semibold pr-2">Property Image</p>
-        <div className=''>
-          <label
-            htmlFor='file'
-            className='flex h-24 cursor-pointer items-center justify-center rounded-md border border-dashed border-primary'
-          >
-            <div className='flex items-center'>
-              <input type='file' name='file' id='file' className='sr-only' onChange={selectFile} />
-              
-              <span className='mx-auto flex h-[90px] w-[100px] items-center justify-center rounded-full border border-stroke dark:border-dark-3 bg-white dark:bg-dark-2'>
-                {imageBase64 ? (
-                  <img src={imageBase64} alt='User Image' className='h-full w-full rounded-md object-cover' />
-                ) : (
-                  <File className='text-dark-6 dark:text-white' />
-                )}
+        
+        <p className="font-semibold pr-2">Property Images</p>
+        <div className='border border-gray-800 rounded-md border-dotted gap-2 p-2'>
+          <div className="flex flex-row">
+            {/* Hidden file input */}
+            <input
+              type="file"
+              id="file"
+              accept="image/*"
+              className="sr-only"
+              onChange={uploadImage}
+            />
+      
+            {/* Image previews */}
+            <span className="flex flex-row flex-wrap rounded-full border border-stroke gap-2 dark:border-dark-3 bg-white dark:bg-dark-2">
+              {images?.length > 0 &&
+                images.map((image, index) => (
+                  <div key={index} className="h-36 w-40">
+                    <img
+                      src={image}
+                      alt={`${index}-image`}
+                      className="w-full h-full rounded-md object-cover"
+                    />
+                  </div>
+                ))}
+            </span>
+      
+            {/* Trigger for file input */}
+            <label
+              htmlFor="file"
+              className="flex h-36 w-48 items-center justify-center cursor-pointer"
+            >
+              <CloudUpload className="h-12 w-12" />
+              <span className="text-center underline">
+                {uploadLoading ? "Uploading..." : "Browse"}
               </span>
-              <span className='text-base text-body-color dark:text-dark-6'>
-                Drag &amp; drop or
-                <span className='text-primary underline'> browse </span>
-              </span>
-            </div>
-          </label>
+            </label>
+          </div>
         </div>
+
         <div className="flex flex-col items-start p-2">
-            <h2 className="text-xl font-bold mb-4">Did you talk with Staff/agent?</h2>
-            <div className="">
-              <RadioGroup value={agentSelected} defaultValue="Yes" onValueChange={setAgentSelected}>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="Yes" id="r1" />
-                  <Label htmlFor="r1">Yes</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="No" id="r2" />
-                  <Label htmlFor="r2">No</Label>
-                </div>
-              </RadioGroup>
-            </div>
+          <h2 className="text-xl font-bold mb-4">Did you talk with Staff/agent?</h2>
+          <div className="">
+            <RadioGroup value={agentSelected} defaultValue="Yes" onValueChange={setAgentSelected}>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="Yes" id="r1" />
+                <Label htmlFor="r1">Yes</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="No" id="r2" />
+                <Label htmlFor="r2">No</Label>
+              </div>
+            </RadioGroup>
           </div>
-          {agentSelected === "Yes" && (
-            <div className="">
-              <p className="">Name of Staff/Agent Called :</p>
-              <input type="text" placeholder='Agent Name' 
-                value={agentName || ''} 
-                onChange={ev => setAgentName(ev.target.value)}
-                className="border-2 border-gray-300 rounded-md p-1 w-full 
-                mb-2 focus:border-blue-900" 
-              /> 
-            </div>
-          )}
-
-          <div className="flex flex-col items-start p-2">
-            <h2 className="text-xl font-bold mb-4">Did you request for additional Resources?</h2>
-            <div className="">
-              <RadioGroup value={resourcesSelected} defaultValue="Yes" onValueChange={setResourcesSelected}>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="Yes" id="r1" />
-                  <Label htmlFor="r1">Yes</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="No" id="r2" />
-                  <Label htmlFor="r2">No</Label>
-                </div>
-              </RadioGroup>
-            </div>
+        </div>
+        {agentSelected === "Yes" && (
+          <div className="">
+            <p className="">Name of Staff/Agent Called :</p>
+            <input type="text" placeholder='Agent Name' 
+              value={agentName || ''} 
+              onChange={ev => setAgentName(ev.target.value)}
+              className="border-2 border-gray-300 rounded-md p-1 w-full 
+              mb-2 focus:border-blue-900" 
+            /> 
           </div>
+        )}
 
-          {resourcesSelected === "Yes" && (
-            <div className="">
-              <p className="">Additional Resources:</p>
-              <input type="text" placeholder='Additional Resources'
-                value={additionalResources || ''}
-                onChange={ev => setAdditionalResources(ev.target.value)}
-                className="border-2 border-gray-300 rounded-md p-1 w-full
-                mb-2 focus:border-blue-900"
-              />
-            </div>
-          )}
+        <div className="flex flex-col items-start p-2">
+          <h2 className="text-xl font-bold mb-4">Did you request for additional Resources?</h2>
+          <div className="">
+            <RadioGroup value={resourcesSelected} defaultValue="Yes" onValueChange={setResourcesSelected}>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="Yes" id="r1" />
+                <Label htmlFor="r1">Yes</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="No" id="r2" />
+                <Label htmlFor="r2">No</Label>
+              </div>
+            </RadioGroup>
+          </div>
+        </div>
+
+        {resourcesSelected === "Yes" && (
+          <div className="">
+            <p className="">Additional Resources:</p>
+            <input type="text" placeholder='Additional Resources'
+              value={additionalResources || ''}
+              onChange={ev => setAdditionalResources(ev.target.value)}
+              className="border-2 border-gray-300 rounded-md p-1 w-full
+              mb-2 focus:border-blue-900"
+            />
+          </div>
+        )}
         <Button onClick={handleAddProperty} className="mt-2">
-          {editMode? "Update": "Add"}  Property
+          {editMode? "Update": "Add Custom"}  Property
         </Button>
       </div>
     </div>

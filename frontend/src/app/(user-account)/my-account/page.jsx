@@ -4,15 +4,15 @@ import { useMainProvider } from "@/providers/MainProvider";
 import React, { useState } from "react";
 import {File} from 'lucide-react';
 import { toast } from "react-toastify";
+import { handleFileUpload } from "@/utils/google-cloud";
 
 export default function MyAccountPage() {
   const {currentUser, setCurrentUser} = useMainProvider();
-  //console.log("Current User: ", currentUser?.name)
-  const [name, setName] = useState(currentUser?.name);
+  const [userImage, setUserImage] = useState(currentUser?.image);
+  const [uplaodLoading, setUploadLoading] = useState(false);
   const [firstName, setFirstName] = useState(currentUser?.firstName || currentUser?.name);
   const [lastName, setLastName] = useState(currentUser?.lastName);
   const [orgName, setOrgName] = useState(currentUser?.orgName);
-  const [userImageBase64, setUserImageBase64] = useState(currentUser?.image);
   const [email, setEmail] = useState(currentUser?.email);
   const [phoneNumber, setPhoneNumber] = useState(currentUser?.phoneNumber);
   const [isAvailable, setIsAvailable] = useState(currentUser?.isAvailable);
@@ -20,16 +20,19 @@ export default function MyAccountPage() {
   const [loading, setLoading] = useState(false);
 
   // console.log("Name: ", name, "Email: ", email)
-  const selectFile = (event) => {
-    const file = event.target.files[0];
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setUserImageBase64(reader.result);
-    };
-    if (file) {
-      reader.readAsDataURL(file);
+  const uploadImage = async (e) => {
+    e.preventDefault()
+    setUploadLoading(true);
+    try {
+      const fileUrl = await handleFileUpload(e.target.files[0]);
+      setUserImage(fileUrl)
+    } catch (error){
+      toast.error("Error uploading file")
+    } finally {
+      setUploadLoading(false);
     }
   }
+
   const handleUpdate = async() => {
     const body = {
       name: firstName + " " + lastName,
@@ -39,7 +42,7 @@ export default function MyAccountPage() {
       email,
       phoneNumber,
       isAvailable,
-      image: userImageBase64
+      image: userImage
     }
     //console.log('Updating: ', body);
     try {
@@ -73,22 +76,21 @@ export default function MyAccountPage() {
         </label>
         <div className='relative'>
           <label
-            htmlFor='file'
             className='flex min-h-[175px] cursor-pointer items-center justify-center rounded-md border border-dashed border-primary p-6'
           >
             <div>
-              <input type='file' name='file' id='file' className='sr-only' onChange={selectFile} />
-              
+              <input type='file' id='file' accept="image/*" className='sr-only' onChange={uploadImage} />
               <span className='mx-auto mb-3 flex h-[100px] w-[100px] items-center justify-center rounded-full border border-stroke dark:border-dark-3 bg-white dark:bg-dark-2'>
-                {userImageBase64 ? (
-                  <img src={userImageBase64} alt='User Image' className='h-full w-full rounded-full object-cover' />
+                {userImage ? (
+                  <img src={userImage} alt='User Image' className='h-full w-full rounded-full object-cover' />
                 ) : (
                   <File className='text-dark-6 dark:text-white' />
                 )}
               </span>
               <span className='text-base text-body-color dark:text-dark-6'>
-                Drag &amp; drop or
-                <span className='text-primary underline'> browse </span>
+                <span className='text-center underline'>
+                  {uplaodLoading ? "Uploading..." : "Browse"}
+                </span>
               </span>
             </div>
           </label>

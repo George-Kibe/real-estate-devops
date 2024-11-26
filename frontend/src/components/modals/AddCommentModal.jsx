@@ -1,15 +1,14 @@
 "use client"
 
-import React, { useState } from 'react';
+import React from 'react';
 import { Button } from '../ui/button';
 import { Label } from "@/components/ui/label"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 const AddCommentModal = ({ 
   currentProperty, 
   comments, setComments,
-  isOpen, 
-  onClose, 
+  isOpen, onClose, 
   agentName, setAgentName,
   addToUserProperties,
   additionalResources, setAdditionalResources,

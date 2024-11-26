@@ -25,7 +25,6 @@ import ReactMarkdown from 'react-markdown';
 import { GeneralSearchButton, SearchButton } from "@/components/TableSearch";
 import { callAIPrompt, generalAIPrompt, generateAISummary, shuffleArray } from "@/utils/functions";
 import Image from "next/image";
-import { user } from "@nextui-org/react";
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
 
@@ -33,7 +32,7 @@ export default function MembersPage({params, searchParams}) {
   const location = searchParams?.searchTerm || '';
   const {currentClient, setTempProperty} = useMainProvider();
   
-  const [modalOpen, setModalOpen] = useState(false);
+  const [commentsModalOpen, setCommentsModalOpen] = useState(false);
   const [searchLocation, setSearchLocation] = useState(location);
   const [propertyModalOpen, setPropertyModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -399,9 +398,11 @@ export default function MembersPage({params, searchParams}) {
     }
   }
   const closeModal = () => {
-    setModalOpen(false)
+    setCurrentProperty({})
+    setCommentsModalOpen(false)
   }
   const closePropertyModal = () => {
+    setCurrentProperty({});
     setPropertyModalOpen(false)
   }
   const closeLocationModal = () => {
@@ -436,45 +437,24 @@ export default function MembersPage({params, searchParams}) {
     if (additionalResources){
       currentProperty.additionalResources = additionalResources
     }
-    if (editMode) {
-      const updatedProperties = userProperties.map((p, i) => {
-        if (i === currentIndex) {
-          return currentProperty;
-        }
-        return p;
-      });
-      setUserProperties(updatedProperties);
-      setComments(''); setAgentName(''); setAdditionalResources('');
-      setModalOpen(false);
-      setCurrentProperty(null);
-      setEditMode(false);
-      return;
-    }
     setUserProperties([...userProperties, currentProperty]);
     setComments(''); setAgentName(''); setAdditionalResources('');
-    setModalOpen(false);
+    setCommentsModalOpen(false);
     setCurrentProperties(currentProperties.filter((p, i) => i !== currentIndex));
-    setCurrentProperty(null);
+    setCurrentProperty({});
     setCurrentIndex(null);
     setEditMode(false);
   }
   const handleAdd = (property, index) => {
-    setModalOpen(true);
+    setCommentsModalOpen(true);
     setCurrentProperty(property);
     setCurrentIndex(index);
   }
   const handleEdit = (property, index) => {
-    if (property.isCustom){
-      setCurrentIndex(index);
-      setEditMode(true)
-      setCurrentProperty(property);
-      setPropertyModalOpen(true);
-      return;
-    }
-    setModalOpen(true);
     setCurrentIndex(index);
-    setCurrentProperty(property);
     setEditMode(true)
+    setCurrentProperty(property);
+    setPropertyModalOpen(true);
   }
   
   const handleRemove = (index) => {
@@ -511,6 +491,11 @@ export default function MembersPage({params, searchParams}) {
     setSendModalOpen(true);
     setCurrentProperty(prop);
   }
+  const addCustomProperty = () => {
+    setCurrentProperty(null);
+    setEditMode(false);
+    setPropertyModalOpen(true);
+  }
 
   return (
     <div className='flex flex-col justify-between gap-5 mb-5'>
@@ -521,8 +506,8 @@ export default function MembersPage({params, searchParams}) {
       <AddCommentModal 
         comments={comments} 
         setComments={setComments} 
-        isOpen={modalOpen} 
-        onClose={closeModal}         
+        isOpen={commentsModalOpen} 
+        onClose={closeModal}     
         currentProperty={currentProperty} 
         addToUserProperties={addToUserProperties} 
         editMode={editMode}
@@ -691,7 +676,7 @@ export default function MembersPage({params, searchParams}) {
         </div>
 
         <div className="flex flex-col md:flex-row w-full justify-between">
-          <Button onClick={() => setPropertyModalOpen(true)} className='m-4 '>
+          <Button onClick={addCustomProperty} className='m-4 '>
             Add Custom Property
           </Button>
           <Button onClick={addLocalProperties} className='m-4 '>
