@@ -2,12 +2,9 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { ModeToggle } from './ModeToggle';
-import { useSession, signOut } from 'next-auth/react';
-import { toast } from 'react-toastify';
 import { UserMenu } from './UserMenu';
-import LoadingPage from './Loading';
 import { useMainProvider } from '@/providers/MainProvider';
 
 const CustomLink = ({href,name, items, toggle}) => {
@@ -30,43 +27,17 @@ const CustomLink = ({href,name, items, toggle}) => {
 const NavBar = () => {
   const [showMobileNav, setShowMobileNav] = useState(false);
   const [orgName, setOrgName] = useState('');
-  const {currentUser, setCurrentUser, setLoading} = useMainProvider();
-  //const session = useSession();
-  //const email = session.data?.user?.email
-  const email = currentUser?.email
-  
-  // Memoize the fetchUser function to prevent it from being re-created on every render
-  const fetchUser = useCallback(async () => {
-    setLoading(true);
-    try {
-      const res = await fetch(`/api/auth/users?email=${email}`);
-      const data = await res.json();
-      setCurrentUser(data);
-    } catch (error) {
-      toast.error("Error Fetching user");
-    } finally {
-      setLoading(false);
-    }
-  }, [email]); // Only change when `email` changes
-
-  useEffect(() => {
-    if (!currentUser && email) {
-      fetchUser();
-    }
-  }, [fetchUser, currentUser]); 
+  const { currentUser } = useMainProvider();
 
   useEffect(() => {
     if (currentUser?.orgName) {
       setOrgName(currentUser.orgName);
     }
   }, [currentUser]);
-
   const pathname = usePathname()
-
   const handleClick = () => {
     setShowMobileNav(!showMobileNav)
   }
-
   return (    
     <nav className="darK:bg-black shadow-lg">
       <div className="mx-auto px-4 mr-8">

@@ -2,6 +2,7 @@
 
 import AnimatedText from "@/components/AnimatedText";
 import { useMainProvider } from "@/providers/MainProvider";
+import axios from "axios";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
@@ -13,20 +14,15 @@ const LoginPage = () => {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const {currentUser, setCurrentUser} = useMainProvider();  
+  
   const handleSubmit = async(e) => {
     e.preventDefault();
     setLoading(true);
     try {
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        body: JSON.stringify({ email:email.trim(), password }),
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
-      const data = await response.json();
-      // console.log("login Response data: ", data);
-      setCurrentUser(data);
+      const body = { email:email.trim(), password };
+      const response = await axios.post('/api/auth/login', body);
+      console.log(response.data);
+      setCurrentUser(response.data);
       toast.success("Sign in Successful!")
       router.push('/');
       setLoading(false);

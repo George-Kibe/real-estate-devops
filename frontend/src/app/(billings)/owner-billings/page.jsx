@@ -108,7 +108,7 @@ const BillingPage = ({searchParams}) => {
   const [showNotesModal, setShowNotesModal] = useState(false);
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
-  const [logStatus, setLogStatus] = useState('');
+  const [approvalStatus, setApprovalStatus] = useState('');
   const [billingStatus, setBillingStatus] = useState('');
   const [payor, setPayor] = useState('');
   // console.log("startDate: ", startDate)
@@ -171,14 +171,14 @@ const BillingPage = ({searchParams}) => {
     setBillings(newBillings);  
   }, [search])
   useEffect(() => {
-    if (!logStatus) {
+    if (!approvalStatus) {
       return;
     }
     const newBillings = allBillings.filter(billing => {
-      return billing?.log_status?.toLowerCase() === (logStatus?.toLowerCase())
+      return billing?.approval_status?.toLowerCase() === (approvalStatus?.toLowerCase())
     })
     setBillings(newBillings);
-  }, [logStatus])
+  }, [approvalStatus])
 
   useEffect(() => {
     if (!billingStatus) {
@@ -313,10 +313,10 @@ const BillingPage = ({searchParams}) => {
           </label>
           <select
             className="shadow appearance-none border rounded w-full py-2 px-3 leading-tight focus:outline-none focus:shadow-outline"
-            id="logStatus" 
+            id="approvalStatus" 
             name="Log Status"
-            value={logStatus}
-            onChange={(e) => setLogStatus(e.target.value)}
+            value={approvalStatus}
+            onChange={(e) => setApprovalStatus(e.target.value)}
           >
           <option value="">-Any-</option>
           <option value="Approved">Approved</option>

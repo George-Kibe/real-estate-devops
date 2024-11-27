@@ -15,9 +15,12 @@ const AddPropertyModal = ({
   currentProperty,
   userProperties,
   editMode,
-  currentIndex,
   setEditMode,
-  isNew
+  isNew,
+  setIsNew,
+  currentIndex,
+  currentProperties,
+  setCurrentProperties,
 }) => {
   const [title, setTitle] = useState('');
   const [street_address, setStreet_address] = useState('');
@@ -70,7 +73,10 @@ const AddPropertyModal = ({
     }
   }
   const handleAddResource = () => {
-    if (!resourceName || !resourceUrl) return;
+    if (!resourceName || !resourceUrl) {
+      toast.error("Missing resource name or resource");
+      return
+    };
     if (additionalResources?.length > 0){
       setAdditionalResources((prev) => [...prev, {name: resourceName, url: resourceUrl}]);
     } else {
@@ -88,12 +94,12 @@ const AddPropertyModal = ({
       toast.error("Please fill in all fields");
       return
     }
-    if (agentSelected === "Yes" && (!agentName && !currentProperty?.agentName)){
+    if (agentSelected === "Yes" && !agentName){
       console.log(agentSelected)
       toast.error("Please add agent name before adding property!")
       return;
     }
-    if (resourcesSelected === "Yes" && (!additionalResources && !currentProperty?.additionalResources )){
+    if (resourcesSelected === "Yes" && !additionalResources.length ){
       toast.error("Please add additional resources before adding property!")
       return;
     }
@@ -127,6 +133,10 @@ const AddPropertyModal = ({
       toast.success("Property Edited Successfully");
       setEditMode(false);
     } else{
+      if (isNew){
+        const tempProperties = currentProperties.filter((p, i) => i !== currentIndex);
+        setCurrentProperties(tempProperties);
+      }
       setUserProperties((prev) => [...prev, newProperty]);
       onClose()
       toast.success("Property Added Successfully");

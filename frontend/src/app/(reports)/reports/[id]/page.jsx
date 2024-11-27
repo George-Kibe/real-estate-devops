@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useMainProvider } from "@/providers/MainProvider";
 import axios from "axios";
-import { Brain, LoaderCircle, Loader, Plus, Search } from 'lucide-react';
+import { Brain, LoaderCircle, Loader, Plus, Search, Copy, PlusCircle, Trash2  } from 'lucide-react';
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
@@ -25,6 +25,10 @@ import { GeneralSearchButton, SearchButton } from "@/components/TableSearch";
 import { callAIPrompt, generalAIPrompt, generateAISummary, shuffleArray } from "@/utils/functions";
 import Image from "next/image";
 import { set } from "mongoose";
+import { handleFileUpload } from "@/utils/google-cloud";
+import { add } from "date-fns";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
 
@@ -65,8 +69,15 @@ export default function MembersPage({params, searchParams}) {
   const [anyQLoading, setAnyQLoading] = useState(false);
   const [allComments, setAllComments] = useState('');
 
+  const [resourceName, setResourceName] = useState('');
+  const [resourceUrl, setResourceUrl] = useState(null);
+  const [copiedText, setCopiedText] = useState('');
+  const [resourcesSelected, setResourcesSelected] = useState('');
+  const [additionalResources, setAdditionalResources] = useState([]);
+  const [fileUploading, setFileUploading] = useState(false);
+
   const [currentPropertiesIndex, setCurrentPropertiesIndex] = useState(5);
-  console.log("User Properties: ", userProperties);
+  // console.log("User Properties: ", userProperties);
   // console.log("Current Properties: ", currentProperties)
   const {id} = useParams();
   const divRef = useRef();
@@ -293,7 +304,6 @@ export default function MembersPage({params, searchParams}) {
 
   const updateReport = async() => {
     setErrors([]);
-    setLoading(true);
     if (!startTime || !endTime) {
       toast.error("Please enter start and end time!");
       setErrors([...errors, "Please enter start and end time!"])
@@ -306,6 +316,12 @@ export default function MembersPage({params, searchParams}) {
       setLoading(false);
       return;
     }
+    if (resourcesSelected === "Yes" && !additionalResources.length ){
+      toast.error("Please add additional resources before adding property or click no!")
+      setErrors([...errors, "Please add additional resources before adding property or click no!"])
+      return;
+    }
+    setLoading(true);
     const data = {
       start_time: startTime, 
       end_time: endTime, 
@@ -314,7 +330,8 @@ export default function MembersPage({params, searchParams}) {
       properties: userProperties,
       report_view_type: visitType,
       follow_up_notes: followUpNotes,
-      report_location: staffLocation
+      report_location: staffLocation,
+      additional_resources: additionalResources
     }
 
     try {
@@ -323,10 +340,10 @@ export default function MembersPage({params, searchParams}) {
       // console.log("Update Report Data: ", reportData)
       toast.success("Report Updated Successfully!")
       fetchReport();
-      setLoading(false);
     } catch (error) {
       toast.error("Report Update failed. Try Again!")
-      setLoading(false)
+    } finally{
+      setLoading(false);
     }
   }
   // console.log("Current Report: ", report)
@@ -404,10 +421,6 @@ export default function MembersPage({params, searchParams}) {
   const handleEdit = (property, index, isNew) => {
     setCurrentIndex(index);
     setEditMode(true);
-    if (isNew){
-      const tempProperties = currentProperties.filter((p, i) => i !== index);
-      setCurrentProperties(tempProperties);
-    }
     setIsNew(isNew);
     setCurrentProperty(property);
     setPropertyModalOpen(true);
@@ -448,10 +461,51 @@ export default function MembersPage({params, searchParams}) {
     setCurrentProperty(prop);
   }
   const addCustomProperty = () => {
+    setIsNew(false);
     setCurrentProperty(null);
     setEditMode(false);
     setPropertyModalOpen(true);
   }
+
+  const uploadFile = async(e) => {
+    e.preventDefault();
+    setFileUploading(true);
+    try {
+      const fileUrl = await handleFileUpload(e.target.files[0]);
+      setResourceUrl(fileUrl)
+    } catch (error){
+      console.log("Uploading error: ", error)
+      toast.error("Error uploading file")
+    } finally {
+      setFileUploading(false);
+    }
+  }
+  const handleAddResource = () => {
+    if (!resourceName || !resourceUrl) {
+      toast.error("Missing resource name or resource");
+      return
+    };
+    if (additionalResources?.length > 0){
+      setAdditionalResources((prev) => [...prev, {name: resourceName, url: resourceUrl}]);
+    } else {
+      setAdditionalResources([{name: resourceName, url: resourceUrl}]);
+    }
+    setResourceName(""); setResourceUrl('');
+  }
+  const removeResource = (resource) => {
+    const updatedResources = additionalResources.filter((r) => r.name !== resource.name);
+    setAdditionalResources(updatedResources);
+  }
+
+  const handleCopy = async (text) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopiedText(text);
+      setTimeout(() => setCopiedText(''), 2000); // Reset copied status after 2 seconds
+    } catch (err) {
+      console.error("Failed to copy: ", err);
+    }
+  };
 
   return (
     <div className='flex flex-col justify-between gap-5 mb-5'>
@@ -462,11 +516,14 @@ export default function MembersPage({params, searchParams}) {
        currentProperty={currentProperty} 
        editMode={editMode}
        isNew={isNew}
+       currentProperties={currentProperties}
+       setIsNew={setIsNew}
        setEditMode={setEditMode}
        userProperties={userProperties}
        currentIndex={currentIndex}
        setUserProperties={setUserProperties}
        isOpen={propertyModalOpen} 
+       setCurrentProperties={setCurrentProperties}
        onClose={closePropertyModal} 
       />
       <ConfirmExportModal 
@@ -858,6 +915,56 @@ export default function MembersPage({params, searchParams}) {
               )
             }
           </form>
+
+          <div className="flex flex-col items-start p-2">
+          <h2 className="text-xl font-bold mb-4">Any additional Resources?</h2>
+          <div className="">
+            <RadioGroup value={resourcesSelected} defaultValue="Yes" onValueChange={setResourcesSelected}>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="Yes" id="r1" />
+                <Label htmlFor="r1">Yes</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="No" id="r2" />
+                <Label htmlFor="r2">No</Label>
+              </div>
+            </RadioGroup>
+          </div>
+        </div>
+
+          {resourcesSelected === "Yes" && (
+          <div className="">
+            <p className="">Additional Resources:</p>
+            {additionalResources?.length > 0 &&
+              additionalResources?.map((resource, index) => (
+                <div key={index} className="flex flex-row items-center gap-2 mb-2">
+                  <p className="">{index+ 1}.{resource.name}:</p>
+                  <div className="flex items-center gap-2">
+                    <p className="text-sm">{resource.url.substring(0,30)}...</p>
+                    {copiedText === resource.url ? "Copied!" : 
+                    <Copy 
+                      onClick={() => handleCopy(resource.url)}  className="h-6 w-6" 
+                    />  }
+                    <Trash2 onClick={() => removeResource(resource)} className="h-6 w-6" />
+                  </div>
+                </div>
+              ))}
+            <div className="flex flex-row gap-4 items-center">
+              <input type="text" placeholder='Resource Name'
+                value={resourceName}
+                onChange={ev => setResourceName(ev.target.value)}
+                className="border-2 border-gray-300 rounded-md p-1
+                mb-2 focus:border-blue-900"
+              />
+              <input type="file" onChange={uploadFile} />
+              <Button disabled={fileUploading || !resourceUrl} onClick={handleAddResource} className="mt-2">
+                <PlusCircle />
+                {fileUploading? "Uploading...": "Add"}
+              </Button>
+            </div>
+          </div>
+        )}
+
           <div>
             {
               !questionMode && (
