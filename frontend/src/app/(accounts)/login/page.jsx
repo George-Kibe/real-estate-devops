@@ -13,7 +13,7 @@ const LoginPage = () => {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-  const {currentUser, setCurrentUser} = useMainProvider();  
+  const { setCurrentUser, setLoggedIn} = useMainProvider();  
   
   const handleSubmit = async(e) => {
     e.preventDefault();
@@ -21,10 +21,15 @@ const LoginPage = () => {
     try {
       const body = { email:email.trim(), password };
       const response = await axios.post('/api/auth/login', body);
-      console.log(response.data);
       setCurrentUser(response.data);
       toast.success("Sign in Successful!")
-      router.push('/');
+      if (response.data?.isPremium) {
+        router.push("/reports");
+      }else if(response.data?.role){
+        router.push("/add-visit");
+      } else{
+        router.push("/");
+      }
       setLoading(false);
     } catch (error) {
       toast.error("Sign in Error! Try Again!")

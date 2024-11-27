@@ -49,13 +49,12 @@ const SingleClientPage = () => {
   const viewReport = (id) => {
     router.push(`/reports/${id}`)
   }
-
+  
   const exportDataToExcel = () => {
     if (reports.length === 0){
       toast.error("No reports found for this client.");
       return;
     }
-    
     const workbook = XLSX.utils.book_new();
 
     const mainReportData = [];
@@ -65,8 +64,6 @@ const SingleClientPage = () => {
     reports.forEach(report => {
       const mainData = {
         date: moment(report?.created_at).format('MMMM Do YYYY'),
-        created_at: report?.created_at,
-        updated_at: report?.updated_at,
         title: report?.title,
         description: report?.description,
         client_name: report?.client_name,
@@ -76,6 +73,9 @@ const SingleClientPage = () => {
         report_draft: report?.report_draft,
         report_final: report?.report_final,
         follow_up_notes: report?.follow_up_notes,
+        additional_resources: report.additional_resources
+          ?.map((resource, index) => `${index + 1}. name: ${resource.name}, url: ${resource.url}`)
+          .join(' ') || "",
       };
       mainReportData.push(mainData);
 
@@ -92,6 +92,11 @@ const SingleClientPage = () => {
           images: truncateText(property?.images?.join(', ') || ""),
           comments: property?.comments,
           isFavorite: property.isFavorite? "Yes": "No",
+          additional_resources: Array.isArray(property?.additionalResources)
+            ? property.additionalResources
+              .map((resource, index) => `${index + 1}. name: ${resource.name}, url: ${resource.url}`)
+              .join(' ')
+            : "",
         };
         propertiesData.push(propertyData);
       });
@@ -99,13 +104,42 @@ const SingleClientPage = () => {
 
     const mainSheet = XLSX.utils.json_to_sheet(mainReportData);
     const propertiesSheet = XLSX.utils.json_to_sheet(propertiesData);
+    mainSheet['!cols'] = [
+      { wch: 15 }, // created_at
+      { wch: 20 }, // title
+      { wch: 20 }, // description (allow larger width)
+      { wch: 20 }, // client_name
+      { wch: 10 }, // client_id
+      { wch: 10 }, // report_type
+      { wch: 10 }, // status
+      { wch: 50 }, // report_draft (allow larger width)
+      { wch: 50 },  // report_final (allow larger width)
+      { wch: 50 }, //follow_up_notes
+      { wch: 15 }, // updated_at
+      { wch: 50 }, // additional resources
+
+    ];
+    propertiesSheet['!cols'] = [
+      { wch: 15 }, // date
+      { wch: 20 }, // title
+      { wch: 20 }, // address      
+      { wch: 10 }, // price
+      { wch: 20 }, // description (allow larger width)
+      { wch: 10 }, // bathrooms
+      { wch: 15 }, // phone number
+      { wch: 20 }, // amenities
+      { wch: 20 }, // images
+      { wch: 40 }, // comments
+      { wch: 10 }, // isFavorite
+      { wch: 50 }, // additional resources
+    ];
 
     XLSX.utils.book_append_sheet(workbook, mainSheet, 'Summary Reports');
     XLSX.utils.book_append_sheet(workbook, propertiesSheet, 'Properties Details Report');
 
-    const excelBuffer = XLSX.write(workbook, { bookType: 'xls', type: 'array' });
+    const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
     const blob = new Blob([excelBuffer], { type: 'application/vnd.ms-excel' });
-    saveAs(blob, `${client?.client_name}-reports.xls`);
+    saveAs(blob, `${client?.client_name}-reports-as-at-${moment(new Date()).format('hh-mm, MMMM DD, YYYY')}.xlsx`);
   };
 
   const editClient = async(client) => {
@@ -138,11 +172,6 @@ const SingleClientPage = () => {
     }
   }
   
-  // if (loading) {
-  //   return (
-  //     <LoadingPage />
-  //   )
-  // }
   return (
     <div className="">
       <div className="w-full p-4 md:p-8 flex-col md:flex-row flex-1 flex items-center overflow-hidden bg-white rounded-lg shadow-lg dark:bg-gray-800">

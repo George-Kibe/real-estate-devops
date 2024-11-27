@@ -90,7 +90,7 @@ const AddPropertyModal = ({
   }
 
   const handleAddProperty = () => {
-    if (!title || !street_address || !phone_number || !description || !price || !comments){
+    if (!title || !phone_number || !description || !price || !comments){
       toast.error("Please fill in all fields");
       return
     }
@@ -367,15 +367,18 @@ const AddPropertyModal = ({
                   </div>
                 </div>
               ))}
-            <div className="flex flex-row gap-4 items-center">
+            <div className="flex flex-row gap-2 items-center py-2">
               <input type="text" placeholder='Resource Name'
                 value={resourceName}
                 onChange={ev => setResourceName(ev.target.value)}
                 className="border-2 border-gray-300 rounded-md p-1
-                mb-2 focus:border-blue-900"
+                mb-2 focus:border-blue-900 h-10"
               />
-              <input type="file" onChange={uploadFile} />
-              <Button disabled={fileUploading || !resourceUrl} onClick={handleAddResource} className="mt-2">
+              <input type="file" className='max-w-60 h-10' onChange={uploadFile} />
+              <Button 
+                disabled={fileUploading || !resourceUrl} 
+                onClick={handleAddResource}
+              >
                 <PlusCircle />
                 {fileUploading? "Uploading...": "Add"}
               </Button>

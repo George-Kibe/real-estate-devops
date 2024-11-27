@@ -159,6 +159,9 @@ export default function ReportsPage({searchParams}) {
         report_final: truncateText(report?.report_final),
         follow_up_notes: truncateText(report?.follow_up_notes),
         updated_at: moment(report?.updated_at).format('MMMM Do YYYY'),
+        additional_resources: report.additional_resources
+        ?.map((resource, index) => `${index + 1}. name: ${resource.name}, url: ${resource.url}`)
+        .join(' ') || "",
       };
       mainReportData.push(mainData);
 
@@ -175,6 +178,11 @@ export default function ReportsPage({searchParams}) {
           images: truncateText(property?.images?.join(', ') || ""),
           comments: truncateText(property?.comments),
           isFavorite: property.isFavorite? "Yes": "No",
+          additional_resources: Array.isArray(property?.additionalResources)
+            ? property.additionalResources
+              .map((resource, index) => `${index + 1}. name: ${resource.name}, url: ${resource.url}`)
+              .join(' ')
+            : "",
         };
         propertiesData.push(propertyData);
       });
@@ -194,6 +202,7 @@ export default function ReportsPage({searchParams}) {
       { wch: 50 },  // report_final (allow larger width)
       { wch: 50 }, // follow_up_notes
       { wch: 15 }, // updated_at
+      { wch: 50 }, // additional resources
 
     ];
     propertiesSheet['!cols'] = [
@@ -208,6 +217,7 @@ export default function ReportsPage({searchParams}) {
       { wch: 20 }, // images
       { wch: 40 }, // comments
       { wch: 10 }, // isFavorite
+      { wch: 40 }, // additional resources
     ];
 
     XLSX.utils.book_append_sheet(workbook, mainSheet, 'Summary Reports');
@@ -240,7 +250,8 @@ export default function ReportsPage({searchParams}) {
       const response = await axios.get(`${BACKEND_URL}/api/reports/?owner_id=${currentUser?._id}`);
       const data = response.data
       const refinedReports = data.results.filter(report => report.properties.length > 0)
-      exportToExcel(refinedReports, currentUser?.name);
+      const reportName = `All-reports-for-${currentUser?.name}-as-at-${moment(new Date()).format('hh-mm A, dddd, MMMM DD, YYYY')}`
+      exportToExcel(refinedReports, reportName);
       setReportsLoading(false);
     } catch (error) {
       toast.error("Fetching Reports failed. Try Again!")

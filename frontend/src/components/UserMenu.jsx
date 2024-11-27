@@ -17,24 +17,19 @@ import { toast } from "react-toastify";
 
 export function UserMenu() {
   const router = useRouter();
-  const {setUser,setOrgMode, currentUser,setAdminMode, setCurrentClient, setCurrentUser, tempUser, setTempUser, setSellerMode, setCustomProperties, orgMode} = useMainProvider();
-
-
+  const {setUser,setOrgMode, currentUser,setAdminMode, setCurrentClient, setCurrentUser, setTempUser, setSellerMode, setCustomProperties, orgMode} = useMainProvider();
 
   useEffect(() => {
     if(currentUser?.role && currentUser?.organization){
       setOrgMode(true)
       setTempUser(currentUser)
       setCurrentUser(currentUser?.organization)
-      router.push('/add-visit')
       return
     }
     if (currentUser?.isPremium && !orgMode) {
       setSellerMode(true);
-      router.push('/reports')
     }
   }, [currentUser])
-
 
   const handleLogout = async () => {
     localStorage.clear();

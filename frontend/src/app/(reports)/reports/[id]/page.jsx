@@ -83,96 +83,6 @@ export default function MembersPage({params, searchParams}) {
   const divRef = useRef();
   const router = useRouter();
 
-  const handlePrint = () => {
-    const printContent = divRef.current;
-    const originalContents = document.body.innerHTML;
-
-    document.body.innerHTML = printContent.innerHTML;
-    window.print();
-    document.body.innerHTML = originalContents;
-    window.location.reload(); // Refresh the page to restore original content
-  };
-  
-  const exportToExcel = () => {
-    const workbook = XLSX.utils.book_new();
-    // console.log("Exporting to excel: ", report)
-    // Main report data
-    const truncateText = (text, maxLength = 32767) => text?.substring(0, maxLength) || "";
-    const mainData = [
-      {
-        pkid: report?.pkid,
-        id: report?.id,
-        created_at: report?.created_at,
-        updated_at: report?.updated_at,
-        title: report?.title,
-        description: report?.description,
-        client_name: report?.client_name,
-        client_id: report?.client_id,
-        report_type: report?.report_type,
-        status: report?.status,
-        report_draft: report?.report_draft,
-        report_final: report?.report_final,
-        follow_up_notes: report?.follow_up_notes,
-      }
-    ];
-    const mainSheet = XLSX.utils.json_to_sheet(mainData);
-     // Manually set larger column widths and enable wrap text for mainSheet
-    mainSheet['!cols'] = [
-      { wch: 10 }, // pkid
-      { wch: 10 }, // id
-      { wch: 15 }, // created_at
-      { wch: 15 }, // updated_at
-      { wch: 20 }, // title
-      { wch: 20 }, // description (allow larger width)
-      { wch: 20 }, // client_name
-      { wch: 10 }, // client_id
-      { wch: 15 }, // report_type
-      { wch: 10 }, // status
-      { wch: 50 }, // report_draft (allow larger width)
-      { wch: 50 },  // report_final (allow larger width)
-      { wch: 50 } // follow up notes
-    ];
-    XLSX.utils.book_append_sheet(workbook, mainSheet, 'Main Report');
-
-    // Properties data
-    const propertiesData = report.properties.map(property => ({
-      title: property.title,
-      street_address: property.street_address,
-      price: property.price,
-      description: property.description,
-      bathrooms: property.bathrooms,
-      phone_number: property.phone_number,
-      amenities: property.amenities?.join(', ') || "",
-      images: truncateText(property.images?.join(', ') || ""),
-      comments: property.comments,
-      isFavorite: property.isFavorite? "Yes": "No",
-    }));
-    const propertiesSheet = XLSX.utils.json_to_sheet(propertiesData);
-     // Set column widths for the Properties sheet, especially for long text fields like comments
-    propertiesSheet['!cols'] = [
-      { wch: 10 }, // Title
-      { wch: 10 }, // Street address
-      { wch: 10 }, // Price
-      { wch: 20 }, // Description
-      { wch: 10 }, // Bathrooms
-      { wch: 15 }, // Phone number
-      { wch: 30 }, // Amenities
-      { wch: 30 }, // Images
-      { wch: 40 },  // Comments (increase this value to make sure it accommodates long text)
-      { wch: 10 },  // isFavorite
-    ];
-
-    XLSX.utils.book_append_sheet(workbook, propertiesSheet, 'Properties');
-
-    // Generate the Excel file and trigger download
-    const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
-    const blob = new Blob([excelBuffer], { type: 'application/vnd.ms-excel' });
-    const formattedDate = moment(report?.created_at).format('MM-DD-YYYY');
-    saveAs(blob, `${report?.client_name}-${formattedDate}-report.xlsx`);
-    // saveAs(blob, `${report?.client_name}-${report?.created_at}-report.xls`);
-  };
-
-
   const fetchReport = async() => {
     setLoading(true);
     try {
@@ -187,6 +97,10 @@ export default function MembersPage({params, searchParams}) {
       setFollowUpNotes(data?.follow_up_notes);
       if (data?.properties.length > 0){
         setUserProperties(data.properties)
+      }
+      if(data?.additional_resources.length > 0){
+        setAdditionalResources(data.additional_resources)
+        setResourcesSelected("Yes")
       }
       setLoading(false);
     } catch (error) {
@@ -214,6 +128,95 @@ export default function MembersPage({params, searchParams}) {
       setLoading(false); setPropertiesLoading(false)
     }
   }
+
+  const exportToExcel = () => {
+    const workbook = XLSX.utils.book_new();
+    // console.log("Exporting to excel: ", report)
+    // Main report data
+    const truncateText = (text, maxLength = 32767) => text?.substring(0, maxLength) || "";
+    const mainData = [
+      {
+        pkid: report?.pkid,
+        id: report?.id,
+        created_at: report?.created_at,
+        updated_at: report?.updated_at,
+        title: report?.title,
+        description: report?.description,
+        client_name: report?.client_name,
+        client_id: report?.client_id,
+        report_type: report?.report_type,
+        status: report?.status,
+        report_draft: report?.report_draft,
+        report_final: report?.report_final,
+        follow_up_notes: report?.follow_up_notes,
+        additional_resources: report.additional_resources
+        ?.map((resource, index) => `${index + 1}. name: ${resource.name}, url: ${resource.url}`)
+        .join(' ') || "",
+      }
+    ];
+    const mainSheet = XLSX.utils.json_to_sheet(mainData);
+     // Manually set larger column widths and enable wrap text for mainSheet
+    mainSheet['!cols'] = [
+      { wch: 10 }, // pkid
+      { wch: 10 }, // id
+      { wch: 15 }, // created_at
+      { wch: 15 }, // updated_at
+      { wch: 20 }, // title
+      { wch: 20 }, // description (allow larger width)
+      { wch: 20 }, // client_name
+      { wch: 10 }, // client_id
+      { wch: 15 }, // report_type
+      { wch: 10 }, // status
+      { wch: 50 }, // report_draft (allow larger width)
+      { wch: 50 },  // report_final (allow larger width)
+      { wch: 50 }, // follow up notes
+      { wch: 50 }, // additional resources
+    ];
+    XLSX.utils.book_append_sheet(workbook, mainSheet, 'Main Report');
+
+    // Properties data
+    const propertiesData = report.properties.map(property => ({
+      title: property.title,
+      street_address: property.street_address,
+      price: property.price,
+      description: property.description,
+      bathrooms: property.bathrooms,
+      phone_number: property.phone_number,
+      amenities: property.amenities?.join(', ') || "",
+      images: truncateText(property.images?.join(', ') || ""),
+      comments: property.comments,
+      isFavorite: property.isFavorite? "Yes": "No",
+      additional_resources: Array.isArray(property?.additionalResources)
+        ? property.additionalResources
+          .map((resource, index) => `${index + 1}. name: ${resource.name}, url: ${resource.url}`)
+          .join(' ')
+        : "",  
+    }));
+    const propertiesSheet = XLSX.utils.json_to_sheet(propertiesData);
+     // Set column widths for the Properties sheet, especially for long text fields like comments
+    propertiesSheet['!cols'] = [
+      { wch: 10 }, // Title
+      { wch: 10 }, // Street address
+      { wch: 10 }, // Price
+      { wch: 20 }, // Description
+      { wch: 10 }, // Bathrooms
+      { wch: 15 }, // Phone number
+      { wch: 30 }, // Amenities
+      { wch: 30 }, // Images
+      { wch: 40 },  // Comments
+      { wch: 10 },  // isFavorite
+      { wch: 40 },  // additional resources 
+    ];
+
+    XLSX.utils.book_append_sheet(workbook, propertiesSheet, 'Properties');
+
+    // Generate the Excel file and trigger download
+    const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    const blob = new Blob([excelBuffer], { type: 'application/vnd.ms-excel' });
+    saveAs(blob, `${report?.client_name}-${moment(report?.created_at).format('MM-DD-YYYY')}-report.xlsx`);
+  };
+
+
   const loadMore = () => {
     if (currentPropertiesIndex >= properties.length) {
       toast.info("No more properties to load!");
@@ -1014,8 +1017,7 @@ export default function MembersPage({params, searchParams}) {
           <div className='flex gap-2'>
             <Button onClick={updateReport}>{loading? 'Loading...': 'Save Report'}</Button>
             <Button onClick={() => setDeleteModalOpen(true)} variant="destructive">{loading? 'Loading...': 'Delete Report'}</Button>
-            <Button onClick={handlePrint}  className="">Export PDF</Button>
-            {/* <Button onClick={handlePrint} className="">Share</Button> */}
+            {/* <Button onClick={handlePrint}  className="">Export PDF</Button> */}
             <Button onClick={() => setExportModalOpen(true)} className="">Export Excel</Button>
             <Button onClick={handleExit} className="">Exit</Button>
           </div>

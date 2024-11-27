@@ -87,6 +87,9 @@ export default function MembersPage() {
         report_draft: report?.report_draft,
         report_final: report?.report_final,
         follow_up_notes: report?.follow_up_notes,
+        additional_resources: report.additional_resources
+        ?.map((resource, index) => `${index + 1}. name: ${resource.name}, url: ${resource.url}`)
+        .join(' ') || "",
       }
     ];
     const mainSheet = XLSX.utils.json_to_sheet(mainData);
@@ -104,7 +107,8 @@ export default function MembersPage() {
       { wch: 10 }, // status
       { wch: 50 }, // report_draft (allow larger width)
       { wch: 50 },  // report_final (allow larger width)
-      { wch: 50 } // follow up notes
+      { wch: 50 }, // follow up notes
+      { wch: 50 }, // additional resources
     ];
     XLSX.utils.book_append_sheet(workbook, mainSheet, 'Main Report');
 
@@ -120,6 +124,11 @@ export default function MembersPage() {
       images: truncateText(property.images?.join(', ') || ""),
       comments: property.comments,
       isFavorite: property.isFavorite? "Yes": "No",
+      additional_resources: Array.isArray(property?.additionalResources)
+        ? property.additionalResources
+          .map((resource, index) => `${index + 1}. name: ${resource.name}, url: ${resource.url}`)
+          .join(' ')
+        : "",  
     }));
     const propertiesSheet = XLSX.utils.json_to_sheet(propertiesData);
      // Set column widths for the Properties sheet, especially for long text fields like comments
@@ -132,8 +141,9 @@ export default function MembersPage() {
       { wch: 15 }, // Phone number
       { wch: 30 }, // Amenities
       { wch: 30 }, // Images
-      { wch: 40 },  // Comments (increase this value to make sure it accommodates long text)
+      { wch: 40 },  // Comments
       { wch: 10 },  // isFavorite
+      { wch: 40 },  // additional resources 
     ];
 
     XLSX.utils.book_append_sheet(workbook, propertiesSheet, 'Properties');
@@ -141,9 +151,7 @@ export default function MembersPage() {
     // Generate the Excel file and trigger download
     const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
     const blob = new Blob([excelBuffer], { type: 'application/vnd.ms-excel' });
-    const formattedDate = moment(report?.created_at).format('MM-DD-YYYY');
-    saveAs(blob, `${report?.client_name}-${formattedDate}-report.xlsx`);
-    // saveAs(blob, `${report?.client_name}-${report?.created_at}-report.xls`);
+    saveAs(blob, `${report?.client_name}-${moment(report?.created_at).format('MM-DD-YYYY')}-report.xlsx`);
   };
 
 
@@ -170,11 +178,6 @@ export default function MembersPage() {
       setLoading(false);
     }
   }
-  const viewProperty = (property) => {
-    setTempProperty(property);
-    window.open(`/properties`, '_blank');
-  }
-
   const handleAiSearch = async() => {
     if (!searchText) {
       toast.error("Please enter a search phrase!");
@@ -218,10 +221,6 @@ export default function MembersPage() {
   const closeDeleteModal = () => {
     setDeleteModalOpen(false)
   }
-  const closeSendModal = () => {
-    setSendModalOpen(false)
-  } 
-
   return (
     <div className='flex flex-col justify-between gap-5 mb-5'>
       <div ref={divRef} className="">

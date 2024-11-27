@@ -106,6 +106,9 @@ const SingleMemberPage = () => {
         report_draft: report?.report_draft,
         report_final: report?.report_final,
         follow_up_notes: report?.follow_up_notes,
+        additional_resources: report.additional_resources
+          ?.map((resource, index) => `${index + 1}. name: ${resource.name}, url: ${resource.url}`)
+          .join(' ') || "",
       };
       mainReportData.push(mainData);
 
@@ -122,6 +125,11 @@ const SingleMemberPage = () => {
           images: truncateText(property?.images?.join(', ') || ""),
           comments: property?.comments,
           isFavorite: property.isFavorite? "Yes": "No",
+          additional_resources: Array.isArray(property?.additionalResources)
+            ? property.additionalResources
+              .map((resource, index) => `${index + 1}. name: ${resource.name}, url: ${resource.url}`)
+              .join(' ')
+            : "",
         };
         propertiesData.push(propertyData);
       });
@@ -141,6 +149,7 @@ const SingleMemberPage = () => {
       { wch: 50 },  // report_final (allow larger width)
       { wch: 50 }, //follow_up_notes
       { wch: 15 }, // updated_at
+      { wch: 50 }, // additional resources
 
     ];
     propertiesSheet['!cols'] = [
@@ -155,6 +164,7 @@ const SingleMemberPage = () => {
       { wch: 20 }, // images
       { wch: 40 }, // comments
       { wch: 10 }, // isFavorite
+      { wch: 50 }, // additional resources
     ];
 
     XLSX.utils.book_append_sheet(workbook, mainSheet, 'Summary Reports');
@@ -162,7 +172,7 @@ const SingleMemberPage = () => {
 
     const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
     const blob = new Blob([excelBuffer], { type: 'application/vnd.ms-excel' });
-    saveAs(blob, `${member?.name}-reports.xlsx`);
+    saveAs(blob, `${member?.name}-reports-as-at-${moment(new Date()).format('hh-mm, MMMM DD, YYYY')}.xlsx`);
   };
 
   const exportToExcel = async() => {
