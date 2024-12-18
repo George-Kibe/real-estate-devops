@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useMainProvider } from "@/providers/MainProvider";
 import axios from "axios";
-import { Brain, LoaderCircle, Loader, Plus, Search, Copy, PlusCircle, Trash2, Notebook, CloudDownload  } from 'lucide-react';
+import { Brain, LoaderCircle, Loader, Plus, Search, Copy, PlusCircle, Trash2, CloudDownload  } from 'lucide-react';
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
@@ -24,17 +24,16 @@ import ReactMarkdown from 'react-markdown';
 import { GeneralSearchButton, SearchButton } from "@/components/TableSearch";
 import { callAIPrompt, generalAIPrompt, generateAISummary, shuffleArray } from "@/utils/functions";
 import Image from "next/image";
-import { set } from "mongoose";
 import { handleFileUpload } from "@/utils/google-cloud";
-import { add } from "date-fns";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
+import { staffActivities } from "../../../../../data/staff-activities";
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
 
 export default function MembersPage({params, searchParams}) {
   const location = searchParams?.searchTerm || '';
-  const {currentClient, setTempProperty} = useMainProvider();
+  const {currentClient, setCurrentClient, setTempProperty} = useMainProvider();
   const [searchLocation, setSearchLocation] = useState(location);
   const [propertyModalOpen, setPropertyModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -75,10 +74,12 @@ export default function MembersPage({params, searchParams}) {
   const [resourcesSelected, setResourcesSelected] = useState('');
   const [additionalResources, setAdditionalResources] = useState([]);
   const [fileUploading, setFileUploading] = useState(false);
+  const [reportActivities, setReportActivities] = useState([]);
 
   const [currentPropertiesIndex, setCurrentPropertiesIndex] = useState(5);
   // console.log("User Properties: ", userProperties);
   // console.log("Current Properties: ", currentProperties)
+  // console.log("reportActivities: ", reportActivities)
   const {id} = useParams();
   const divRef = useRef();
   const router = useRouter();
@@ -102,12 +103,18 @@ export default function MembersPage({params, searchParams}) {
         setAdditionalResources(data.additional_resources)
         setResourcesSelected("Yes")
       }
-      setLoading(false);
+      if(data?.report_activities?.length > 0){
+        setReportActivities(data.report_activities)
+      }
+      const clientResponse = await axios.get(`${BACKEND_URL}/api/clients?client_id=${data.client_id}`);
+      console.log(clientResponse.data.results[0]);
+      setCurrentClient(clientResponse.data.results[0]);
     } catch (error) {
       toast.error("Fetching report failed. Try Again!")
       console.log("Error: ", error.message)
       setErrors([...errors, error.message])
-      setLoading(false);
+    } finally{
+      setLoading(false)
     }
   }
   const viewProperty = (property) => {
@@ -334,7 +341,8 @@ export default function MembersPage({params, searchParams}) {
       report_view_type: visitType,
       follow_up_notes: followUpNotes,
       report_location: staffLocation,
-      additional_resources: additionalResources
+      additional_resources: additionalResources,
+      report_activities: reportActivities
     }
 
     try {
@@ -556,7 +564,7 @@ export default function MembersPage({params, searchParams}) {
 
         <div className="px-2">
           {
-            errors.length > 0 &&(
+            errors.length > 0 && (
               <div className="p-2 flex flex-col items-center gap-2">
                 <p className="text-red-500">Errors!!</p>
                 {
@@ -630,6 +638,32 @@ export default function MembersPage({params, searchParams}) {
                 </select>
                 <p className="text-sm">Selected Location: <span className="font-semibold ">{report?.report_location || staffLocation || 'None'}</span></p>
               </div>
+            </div>
+
+            <div className="mb-4">
+              <label className="block my-2 text-sm font-medium ">
+                Select Activity
+              </label>
+              <select
+                className="shadow appearance-none border rounded w-full py-2 px-3 leading-tight focus:outline-none focus:shadow-outline" 
+                id="reportActivities"
+                name="reportActivities"
+                value={reportActivities}
+                multiple
+                onChange={(e) => {
+                  const options = Array.from(e.target.selectedOptions, option => option.value);
+                  setReportActivities(options);
+                }}
+              >
+                <option value="">-Select Activity-</option>
+                {
+                  staffActivities?.map((activity, index) => (
+                    <option className="mt-1" key={activity.id} value={activity.value}>
+                      {index+ 1}. {activity.value}
+                    </option>
+                  ))
+                }
+              </select>
             </div>
 
             {/* Visit Type Dropdown */}
@@ -776,6 +810,7 @@ export default function MembersPage({params, searchParams}) {
                   <td className="px-2 py-1">
                     <p className="">{property.description}</p>
                   </td>
+
                   <td className="px-2 py-1">
                     <div className="flex flex-col items-center gap-2">
                       {property.additionalResources?.map((resource, index) => (
@@ -1051,6 +1086,7 @@ export default function MembersPage({params, searchParams}) {
             <Button onClick={() => setDeleteModalOpen(true)} variant="destructive">{loading? 'Loading...': 'Delete Report'}</Button>
             {/* <Button onClick={handlePrint}  className="">Export PDF</Button> */}
             <Button onClick={() => setExportModalOpen(true)} className="">Export Excel</Button>
+            <Button onClick={() => router.push(`/reports/preview/${report.pkid}`)} className="">View</Button>
             <Button onClick={handleExit} className="">Exit</Button>
           </div>
         </div>

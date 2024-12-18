@@ -1,22 +1,4 @@
-// import { Storage } from "@google-cloud/storage"
-
 const { default: axios } = require("axios");
-
-// export const getSignedUrl = async(fileName) => {
-//     const storage = new Storage();
-//     const options = {
-//         version: 'v4',
-//         action: 'write',
-//         expires: Date.now() + 15 * 60 * 1000, // 15 minutes
-//         contentType: 'application/octet-stream',
-//       };
-    
-//       // Get a v4 signed URL for uploading file
-//       const [url] = await storage
-//         .bucket(bucketName)
-//         .file(fileName)
-//         .getSignedUrl(options);
-// }
 
 export const handleFileUpload = async (file) => {
     if (!file) {

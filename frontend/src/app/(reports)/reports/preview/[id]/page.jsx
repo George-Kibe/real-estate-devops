@@ -4,7 +4,7 @@ import AnimatedText from "@/components/AnimatedText";
 import { Button } from "@/components/ui/button";
 import { useMainProvider } from "@/providers/MainProvider";
 import axios from "axios";
-import { LoaderCircle, Loader, Plus, Search } from 'lucide-react';
+import { LoaderCircle, Loader, Plus, Search, CloudDownload } from 'lucide-react';
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
@@ -311,16 +311,19 @@ export default function MembersPage() {
                   Details
                 </th>
                 <th scope="col" className="px-2 py-1">
-                    Price
+                  Price
                 </th>
                 <th scope="col" className="px-2 py-1">
-                    Phone Number
+                  Phone Number
                 </th>
                 <th scope="col" className="px-2 py-1">
-                    Description
+                  Description
                 </th>
                 <th scope="col" className="px-2 py-1">
-                    Comments
+                  Resources
+                </th>
+                <th scope="col" className="px-2 py-1">
+                  Comments
                 </th>
               </tr>
             </thead>
@@ -381,6 +384,21 @@ export default function MembersPage() {
                   </td>
                   <td className="px-2 py-1">
                       <p className="">{property.description}</p>
+                  </td>
+                  <td className="px-2 py-1">
+                    <div className="flex flex-col items-center gap-2">
+                      {property.additionalResources?.map((resource, index) => (
+                        <a
+                          key={index}
+                          href={resource.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-500 hover:underline"
+                        >
+                          <p className="flex flex-row gap-1">{resource.name} <CloudDownload className="h-6 w-6" /></p>
+                        </a>
+                      ))}
+                    </div>
                   </td>
                   <td className="px-2 py-1">
                       <p className="">{property.comments}</p>
@@ -446,6 +464,11 @@ export default function MembersPage() {
                       </button>
                     )
                   }
+                   <button onClick={() => setQuestionMode(false)}
+                      className='top-2 right-2 p-1 px-2 rounded-lg text-red-700 bg-white'
+                    >
+                      <p className="font-bold text-2xl p-4">X</p>
+                    </button>
                 </div>
               )
             }
