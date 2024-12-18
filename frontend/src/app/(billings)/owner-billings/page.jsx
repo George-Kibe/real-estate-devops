@@ -25,8 +25,8 @@ const columns = [
     accessor: "checkBox",
   },
   {
-    header: "Date Range",
-    accessor: "serviceDR",
+    header: "Date ",
+    accessor: "date",
   },
   {
     header: "Client Name",
@@ -47,11 +47,6 @@ const columns = [
     header: "Bill Status",
     accessor: "billS",
     className: "lg:table-cell",
-  },
-  {
-    header: "Scheduled Hours",
-    accessor: "scheduledHrs",
-    className: "hidden lg:table-cell",
   },
   {
     header: "Worked Hours",
@@ -96,10 +91,11 @@ const columns = [
 ];
 
 const BillingPage = ({searchParams}) => {
-  // console.log("searchParams: ", searchParams);
   const {currentUser} = useMainProvider();
   const router = useRouter();
   const {selectedBillings, setSelectedBillings} = useMainProvider();
+  const [suggestions, setSuggestions] = useState([]);
+  const [filteredSuggestions, setFilteredSuggestions] = useState([]);
   const [showStartCalendar, setShowStartCalendar] = useState(false);
   const [showEndCalendar, setShowEndCalendar] = useState(false);
   const [allBillings, setAllBillings] = useState([]);
@@ -111,14 +107,16 @@ const BillingPage = ({searchParams}) => {
   const [approvalStatus, setApprovalStatus] = useState('');
   const [billingStatus, setBillingStatus] = useState('');
   const [payor, setPayor] = useState('');
+  const [searchText, setSearchText] = useState('')
   // console.log("startDate: ", startDate)
   const [loading, setLoading] = useState(false);
   const [count, setCount] = useState(1);
   // console.log("selected billings: ", selectedBillings);
+  // console.log("suggestions: ", suggestions);
+
   const viewBilling = (pkid) => {
     router.push(`owner-billings/${pkid}`)
   }
-  const search = searchParams?.search;
   const handleClick = (item) => {
     // add item to selected billings if it doesnt exist already
     const existingBilling = selectedBillings.find(billing => billing.id === item.id);
@@ -146,6 +144,10 @@ const BillingPage = ({searchParams}) => {
       setBillings(billings);
       setAllBillings(billings);
       // setBillings([...billings, ...billings, ...billings, ...billings])
+      // create a list of all client names and set them to suggestions
+      const clientNames = billings.map(billing => billing.client_name);
+      const uniqueClientNames = [...new Set(clientNames)];
+      setSuggestions(uniqueClientNames);
       setCount(response.data.count);
     } catch (error) {
       console.log(error);
@@ -162,14 +164,15 @@ const BillingPage = ({searchParams}) => {
     //console.log("selected billings: ", selectedBillings);
   }
   useEffect(() => {
-    if (!search) {
+    if (!searchText) {
       return;
     }
     const newBillings = allBillings.filter(billing => {
-      return billing?.client_name?.toLowerCase().includes(search?.toLowerCase()) || billing?.housing_coordinator_name?.toLowerCase().includes(search?.toLowerCase())
+      return billing?.client_name?.toLowerCase().includes(searchText?.toLowerCase()) || billing?.housing_coordinator_name?.toLowerCase().includes(searchText?.toLowerCase())
     })
     setBillings(newBillings);  
-  }, [search])
+  }, [searchText])
+  
   useEffect(() => {
     if (!approvalStatus) {
       return;
@@ -217,6 +220,19 @@ const BillingPage = ({searchParams}) => {
     setBillings(newBillings);
   }, [startDate, endDate])
 
+  // Filter suggestions based on the input searchText
+  useEffect(() => {
+    if (searchText.trim()) {
+      setFilteredSuggestions(
+        suggestions.filter((suggestion) =>
+          suggestion.toLowerCase().includes(searchText.toLowerCase())
+        )
+      );
+    } else {
+      setFilteredSuggestions([]);
+    }
+  }, [searchText, suggestions]);
+
   const showBillingNotes = (billing) => {
     setCurrentBilling(billing);
     setShowNotesModal(true);
@@ -237,20 +253,30 @@ const BillingPage = ({searchParams}) => {
             <label for="checkbox-table-search-1" className="sr-only">checkbox</label>
         </div>
       </td>
-      <td className="flex items-center justify-center">
+      <td className="md:table-cell pl-2">
         <div className="flex flex-col justify-center">
-          <h4 className="font-semibold">{item.service_date_start} -</h4>
-          <h4 className="font-semibold">{item.service_date_end}</h4>
+          <h4 className="font-semibold">{moment(item.service_date_start).format("MM-DD-YYYY")}</h4>
+          {/* <h4 className="font-semibold">{item.service_date_end}</h4> */}
         </div>
       </td>
       <td className="md:table-cell">{item.client_name}</td>
       <td className="hidden md:table-cell">{item.housing_coordinator_name}</td>
-      <td className="md:table-cell">{item.claim_amount}</td>
+      <td className="md:table-cell">${item.claim_amount}</td>
       <td className="md:table-cell">{item.bill_status}</td>
-      <td className="hidden md:table-cell">{item.scheduled_hours}</td>
-      <td className="hidden md:table-cell">{item.worked_hours}</td>
-      <td className="hidden md:table-cell">{item.billed_hours}</td>
-      <td className="hidden md:table-cell">{item.approval_status}</td>
+      <td className="hidden md:table-cell">{item.worked_hours} Hrs</td>
+      <td className="hidden md:table-cell">{item.billed_hours}Hrs</td>
+      <td className="hidden md:table-cell">
+        <p
+          className={`p-1 self-center rounded-full px-2 text-white ${
+            item.approval_status === 'Approved' 
+              ? 'bg-green-500' 
+              : 'bg-red-500'
+          }`}
+        >
+          {item.approval_status}
+        </p>
+      </td>
+
       <td className="hidden md:table-cell">
         <Notebook className="cursor-pointer" onClick={() => showBillingNotes(item)} />
       </td>
@@ -364,7 +390,28 @@ const BillingPage = ({searchParams}) => {
           <label className=" text-sm font-bold mb-2">
           Search by Client Name
           </label>
-          <TableSearch />
+          <div className="relative">
+            <input
+              type="text"
+              value={searchText}
+              onChange={(e) => setSearchText(e.target.value)}
+              className="border rounded w-full py-2 px-3 shadow focus:outline-none focus:shadow-outline"
+              placeholder="Start typing..."
+            />
+            {filteredSuggestions.length > 0 && (
+              <ul className="absolute bg-white dark:bg-black border border-gray-200 rounded mt-1 w-full shadow-lg max-h-40 overflow-y-auto z-10">
+                {filteredSuggestions.map((suggestion, index) => (
+                  <li
+                    key={index}
+                    onClick={() => setSearchText(suggestion)} // Set the input value on click
+                    className="px-2 py-1 cursor-pointer hover:bg-gray-100 hover:dark:bg-black/90"
+                  >
+                    {suggestion}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
         </div>
       </div>
       {

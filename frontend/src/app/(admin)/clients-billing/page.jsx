@@ -1,7 +1,7 @@
 "use client"
 
 import { useRouter } from 'next/navigation';
-import { Search, Notebook} from 'lucide-react'
+import { Notebook} from 'lucide-react'
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
@@ -24,8 +24,8 @@ const columns = [
     accessor: "checkBox",
   },
   {
-    header: "Date Range",
-    accessor: "serviceDR",
+    header: "Date",
+    accessor: "date",
   },
   {
     header: "Client Name",
@@ -46,11 +46,6 @@ const columns = [
     header: "Bill Status",
     accessor: "billS",
     className: "lg:table-cell",
-  },
-  {
-    header: "Scheduled Hours",
-    accessor: "scheduledHrs",
-    className: "hidden lg:table-cell",
   },
   {
     header: "Worked Hours",
@@ -230,20 +225,29 @@ const BillingPage = ({searchParams}) => {
             <label for="checkbox-table-search-1" className="sr-only">checkbox</label>
         </div>
       </td>
-      <td className="flex items-center justify-center">
+      <td className="md:table-cell pl-2">
         <div className="flex flex-col justify-center">
-          <h4 className="font-semibold">{item.service_date_start} -</h4>
-          <h4 className="font-semibold">{item.service_date_end}</h4>
+          <h4 className="font-semibold">{moment(item.service_date_start).format("MM-DD-YYYY")}</h4>
+          {/* <h4 className="font-semibold">{item.service_date_end}</h4> */}
         </div>
       </td>
       <td className="md:table-cell">{item.client_name}</td>
       <td className="hidden md:table-cell">{item.housing_coordinator_name}</td>
-      <td className="md:table-cell">{item.claim_amount}</td>
+      <td className="md:table-cell">${item.claim_amount}</td>
       <td className="md:table-cell">{item.bill_status}</td>
-      <td className="hidden md:table-cell">{item.scheduled_hours}</td>
-      <td className="hidden md:table-cell">{item.worked_hours}</td>
-      <td className="hidden md:table-cell">{item.billed_hours}</td>
-      <td className="hidden md:table-cell">{item.approval_status}</td>
+      <td className="hidden md:table-cell">{item.worked_hours}Hrs</td>
+      <td className="hidden md:table-cell">{item.billed_hours}Hrs</td>
+      <td className="hidden md:table-cell">
+        <p
+          className={`p-1 self-center rounded-full px-2 text-white ${
+            item.approval_status === 'Approved' 
+              ? 'bg-green-500' 
+              : 'bg-red-500'
+          }`}
+        >
+          {item.approval_status}
+        </p>
+      </td>
       <td className="hidden md:table-cell">
         <Notebook className="cursor-pointer" onClick={() => showBillingNotes(item)} />
       </td>
