@@ -143,7 +143,6 @@ const BillingPage = ({searchParams}) => {
       const billings = response.data.results;
       setBillings(billings);
       setAllBillings(billings);
-      // setBillings([...billings, ...billings, ...billings, ...billings])
       // create a list of all client names and set them to suggestions
       const clientNames = billings.map(billing => billing.client_name);
       const uniqueClientNames = [...new Set(clientNames)];
