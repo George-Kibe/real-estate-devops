@@ -4,7 +4,6 @@ import { useRouter } from 'next/navigation';
 import { Notebook} from 'lucide-react'
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
-import TableSearch from "@/components/TableSearch";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useMainProvider } from '@/providers/MainProvider';
@@ -94,6 +93,7 @@ const BillingPage = ({searchParams}) => {
   const {currentUser} = useMainProvider();
   const router = useRouter();
   const {selectedBillings, setSelectedBillings} = useMainProvider();
+  const [searchText, setSearchText] = useState('')
   const [suggestions, setSuggestions] = useState([]);
   const [filteredSuggestions, setFilteredSuggestions] = useState([]);
   const [showStartCalendar, setShowStartCalendar] = useState(false);
@@ -107,7 +107,7 @@ const BillingPage = ({searchParams}) => {
   const [approvalStatus, setApprovalStatus] = useState('');
   const [billingStatus, setBillingStatus] = useState('');
   const [payor, setPayor] = useState('');
-  const [searchText, setSearchText] = useState('')
+ 
   // console.log("startDate: ", startDate)
   const [loading, setLoading] = useState(false);
   const [count, setCount] = useState(1);
@@ -172,7 +172,7 @@ const BillingPage = ({searchParams}) => {
     })
     setBillings(newBillings);  
   }, [searchText])
-  
+
   useEffect(() => {
     if (!approvalStatus) {
       return;
@@ -262,7 +262,17 @@ const BillingPage = ({searchParams}) => {
       <td className="md:table-cell">{item.client_name}</td>
       <td className="hidden md:table-cell">{item.housing_coordinator_name}</td>
       <td className="md:table-cell">${item.claim_amount}</td>
-      <td className="md:table-cell">{item.bill_status}</td>
+      <td className="hidden md:table-cell">
+        <p
+          className={`p-1 self-center rounded-full px-2 text-white ${
+            item.bill_status === 'Submitted' 
+              ? 'bg-green-500' 
+              : 'bg-red-500'
+          }`}
+        >
+          {item.bill_status}
+        </p>
+      </td>
       <td className="hidden md:table-cell">{item.worked_hours} Hrs</td>
       <td className="hidden md:table-cell">{item.billed_hours}Hrs</td>
       <td className="hidden md:table-cell">

@@ -92,6 +92,9 @@ const columns = [
 const BillingPage = ({searchParams}) => {
   const router = useRouter();
   const {selectedBillings, setSelectedBillings} = useMainProvider();
+  const [searchText, setSearchText] = useState('')
+  const [suggestions, setSuggestions] = useState([]);
+  const [filteredSuggestions, setFilteredSuggestions] = useState([]);
   const [showStartCalendar, setShowStartCalendar] = useState(false);
   const [showEndCalendar, setShowEndCalendar] = useState(false);
   const [allBillings, setAllBillings] = useState([]);
@@ -109,7 +112,7 @@ const BillingPage = ({searchParams}) => {
   const viewBilling = (pkid) => {
     router.push(`clients-billing/${pkid}`)
   }
-  const search = searchParams?.search;
+
   const handleClick = (item) => {
     const existingBilling = selectedBillings.find(billing => billing.id === item.id);
     if (!existingBilling) {
@@ -135,6 +138,9 @@ const BillingPage = ({searchParams}) => {
       setBillings(billings);
       setAllBillings(billings);
       // setBillings([...billings, ...billings, ...billings, ...billings])
+      const clientNames = billings.map(billing => billing.client_name);
+      const uniqueClientNames = [...new Set(clientNames)];
+      setSuggestions(uniqueClientNames);
       setCount(response.data.count);
     } catch (error) {
       console.log(error);
@@ -151,14 +157,14 @@ const BillingPage = ({searchParams}) => {
     //console.log("selected billings: ", selectedBillings);
   }
   useEffect(() => {
-    if (!search) {
+    if (!searchText) {
       return;
     }
     const newBillings = allBillings.filter(billing => {
-      return billing?.client_name?.toLowerCase().includes(search?.toLowerCase()) || billing?.housing_coordinator_name?.toLowerCase().includes(search?.toLowerCase())
+      return billing?.client_name?.toLowerCase().includes(searchText?.toLowerCase()) || billing?.housing_coordinator_name?.toLowerCase().includes(searchText?.toLowerCase())
     })
     setBillings(newBillings);  
-  }, [search])
+  }, [searchText])
   useEffect(() => {
     if (!logStatus) {
       return;
@@ -205,6 +211,19 @@ const BillingPage = ({searchParams}) => {
     setBillings(newBillings);
   }, [startDate, endDate])
 
+  // Filter suggestions based on the input searchText
+  useEffect(() => {
+    if (searchText.trim()) {
+      setFilteredSuggestions(
+        suggestions.filter((suggestion) =>
+          suggestion.toLowerCase().includes(searchText.toLowerCase())
+        )
+      );
+    } else {
+      setFilteredSuggestions([]);
+    }
+}, [searchText, suggestions]);
+
   const showBillingNotes = (billing) => {
     setCurrentBilling(billing);
     setShowNotesModal(true);
@@ -234,7 +253,17 @@ const BillingPage = ({searchParams}) => {
       <td className="md:table-cell">{item.client_name}</td>
       <td className="hidden md:table-cell">{item.housing_coordinator_name}</td>
       <td className="md:table-cell">${item.claim_amount}</td>
-      <td className="md:table-cell">{item.bill_status}</td>
+      <td className="hidden md:table-cell">
+        <p
+          className={`p-1 self-center rounded-full px-2 text-white ${
+            item.bill_status === 'Submitted' 
+              ? 'bg-green-500' 
+              : 'bg-red-500'
+          }`}
+        >
+          {item.bill_status}
+        </p>
+      </td>
       <td className="hidden md:table-cell">{item.worked_hours}Hrs</td>
       <td className="hidden md:table-cell">{item.billed_hours}Hrs</td>
       <td className="hidden md:table-cell">
@@ -364,7 +393,28 @@ const BillingPage = ({searchParams}) => {
         <label className=" text-sm font-bold mb-2">
           Search by Client Name
           </label>
-          <TableSearch />
+          <div className="relative">
+            <input
+              type="text"
+              value={searchText}
+              onChange={(e) => setSearchText(e.target.value)}
+              className="border rounded w-full py-2 px-3 shadow focus:outline-none focus:shadow-outline"
+              placeholder="Start typing..."
+            />
+            {filteredSuggestions.length > 0 && (
+              <ul className="absolute bg-white dark:bg-black border border-gray-200 rounded mt-1 w-full shadow-lg max-h-40 overflow-y-auto z-10">
+                {filteredSuggestions.map((suggestion, index) => (
+                  <li
+                    key={index}
+                    onClick={() => setSearchText(suggestion)} // Set the input value on click
+                    className="px-2 py-1 cursor-pointer hover:bg-gray-100 hover:dark:bg-black/90"
+                  >
+                    {suggestion}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
         </div>
       </div>
       {
