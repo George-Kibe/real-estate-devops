@@ -636,7 +636,7 @@ export default function MembersPage({params, searchParams}) {
                   <option value="office">Office</option>
                   <option value="home">Home</option>
                 </select>
-                <p className="text-sm">Selected Location: <span className="font-semibold ">{report?.report_location || staffLocation || 'None'}</span></p>
+                {/* <p className="text-sm">Selected Location: <span className="font-semibold ">{report?.report_location || staffLocation || 'None'}</span></p> */}
               </div>
             </div>
 
@@ -680,7 +680,7 @@ export default function MembersPage({params, searchParams}) {
                   <option value="indirect">Indirect</option>
                   <option value="remote">Remote</option>
                 </select>
-                <p className="text-sm">Selected Visit Type: <span className="font-semibold">{visitType || 'None'}</span></p>
+                {/* <p className="text-sm">Selected Visit Type: <span className="font-semibold">{visitType || 'None'}</span></p> */}
               </div>
             </div>
           </div>
