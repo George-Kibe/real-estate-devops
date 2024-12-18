@@ -14,7 +14,9 @@ const FRONTEND_URL = process.env.NEXT_PUBLIC_FRONTEND_URL;
 
 const SendClientAlertModal = ({ property, client, isOpen, onClose }) => {
   // console.log("Current Client: ", client)
-  const [loading, setLoading] = useState(false);
+  const [emailLoading, setEmailLoading] = useState(false);
+  const [messageLoading, setMessageLoading] = useState(false);
+
   const createProperty = async() => {
     // Implement property creation logic here
     const body = {...property, price: parseInt(property?.price), link: "Not Available"}
@@ -33,13 +35,12 @@ const SendClientAlertModal = ({ property, client, isOpen, onClose }) => {
   };
   const sendEmail = async() => {
     try {
-      setLoading(true)
+      setEmailLoading(true)
       if(property?.pkid){
         const body = {name: client?.client_name, email: client?.email, link: `${FRONTEND_URL}/properties/${property?.pkid}`}
         const response = await axios.post('/api/send-client-email', body);
         if (response.status === 200) {
           toast.success("Email sent successfully")
-          setLoading(false);
           onClose();
           return;
         }
@@ -52,22 +53,29 @@ const SendClientAlertModal = ({ property, client, isOpen, onClose }) => {
         const response = await axios.post('/api/send-client-email', body);
         if (response.status === 200) {
           toast.success("Email sent successfully")
-          setLoading(false);
           onClose();
           return;
         }
       }
-      setLoading(false);
     } catch (error) {
       toast.error("Error sending email")
       console.log(error); 
-      setLoading(false);
+    } finally {
+      setEmailLoading(false)
     }
   };
   const sendMessage = async() => {
     // Implement message sending logic here
-    toast.error("Error sending Message. Try Again!")
+    try {
+      setMessageLoading(true)
+      toast.error("Error sending Message. Try Again!")
+    } catch (error) {
+      toast.error("Error sending Message. Try Again!")
+    } finally {
+      setMessageLoading(false)
+    }
   };
+  
   return (
     <div 
       //onClick={onClose}
@@ -115,13 +123,13 @@ const SendClientAlertModal = ({ property, client, isOpen, onClose }) => {
           <Button onClick={sendEmail} className="mr-2">
             <Mail />
               {
-                loading ? "Sending..." : "Send Email"
+                emailLoading ? "Sending..." : "Send Email"
               }
           </Button>
           <Button onClick={sendMessage} className="mr-2">
             <MessageCircle />
               {
-                loading ? "Sending..." : "Send Message"
+                messageLoading ? "Sending..." : "Send Message"
               }
             </Button>
         </div>

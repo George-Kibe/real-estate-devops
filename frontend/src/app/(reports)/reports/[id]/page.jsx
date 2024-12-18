@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useMainProvider } from "@/providers/MainProvider";
 import axios from "axios";
-import { Brain, LoaderCircle, Loader, Plus, Search, Copy, PlusCircle, Trash2  } from 'lucide-react';
+import { Brain, LoaderCircle, Loader, Plus, Search, Copy, PlusCircle, Trash2, Notebook, CloudDownload  } from 'lucide-react';
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
@@ -708,6 +708,9 @@ export default function MembersPage({params, searchParams}) {
                     Description
                 </th>
                 <th scope="col" className="px-2 py-1">
+                  Resources
+                </th>
+                <th scope="col" className="px-2 py-1">
                     Comments
                 </th>
                 <th scope="col" className="px-2 py-1">
@@ -771,12 +774,28 @@ export default function MembersPage({params, searchParams}) {
                       </div>
                   </td>
                   <td className="px-2 py-1">
-                      <p className="">{property.description}</p>
+                    <p className="">{property.description}</p>
                   </td>
+                  <td className="px-2 py-1">
+                    <div className="flex flex-col items-center gap-2">
+                      {property.additionalResources?.map((resource, index) => (
+                        <a
+                          key={index}
+                          href={resource.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-500 hover:underline"
+                        >
+                          <p className="flex flex-row gap-1">{resource.name} <CloudDownload className="h-6 w-6" /></p>
+                        </a>
+                      ))}
+                    </div>
+                  </td>
+
                   <td className="px-2 py-1">
                       <p className="">{property.comments}</p>
                   </td>
-                  <td className="px-2 py-1  self-center justify-center flex-col gap-2">
+                  <td className="px-2 py-1 self-center justify-center flex-col gap-2">
                     <PropertyActions 
                       handleEdit={() => handleEdit(property, index, false)}
                       viewProperty={() => viewProperty(property)} 
@@ -790,6 +809,7 @@ export default function MembersPage({params, searchParams}) {
                 ))
               }
             </tbody>
+
             {/* user properties; These are properties Searched or scrapped pending works */}
             <tbody>
                 {
@@ -833,7 +853,10 @@ export default function MembersPage({params, searchParams}) {
                           <p className="text-justify">{property.description}</p>
                       </td>
                       <td className="px-2 py-1">
-                          <p className=""></p>
+                        <p className=""></p>
+                      </td>
+                      <td className="px-2 py-1">
+                        <p className=""></p>
                       </td>
                       <td className="px-2 py-1  self-center justify-center flex-col gap-2">
                       <PropertyActions 
@@ -949,6 +972,10 @@ export default function MembersPage({params, searchParams}) {
                       onClick={() => handleCopy(resource.url)}  className="h-6 w-6" 
                     />  }
                     <Trash2 onClick={() => removeResource(resource)} className="h-6 w-6" />
+                    <a key={index} href={resource.url} target="_blank" rel="noopener noreferrer">
+                      <CloudDownload className="h-6 w-6" />
+                    </a>
+                  
                   </div>
                 </div>
               ))}
@@ -971,7 +998,7 @@ export default function MembersPage({params, searchParams}) {
           <div>
             {
               !questionMode && (
-                <div className='flex justify-between'>
+                <div className='flex justify-between relative'>
                   <Button variant="outline" onClick={() => setQuestionMode(true)} 
                   type="button" size="sm" className="border-primary text-primary flex gap-2"> 
                    <p className="flex items-center gap-2"><Plus className='h-4 w-4' /> Any Questions?</p>
@@ -999,6 +1026,11 @@ export default function MembersPage({params, searchParams}) {
                       </button>
                     )
                   }
+                    <button onClick={() => setQuestionMode(false)}
+                      className='top-2 right-2 p-1 px-2 rounded-lg text-red-700 bg-white'
+                    >
+                      <p className="font-bold text-2xl p-4">X</p>
+                    </button>
                 </div>
               )
             }

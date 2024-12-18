@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { Button } from '../ui/button';
-import { CloudUpload, Copy, PlusCircle, Trash2 } from 'lucide-react';
+import { CloudUpload, Copy, PlusCircle, Trash2, CloudDownload } from 'lucide-react';
 import { toast } from 'react-toastify';
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
@@ -17,7 +17,6 @@ const AddPropertyModal = ({
   editMode,
   setEditMode,
   isNew,
-  setIsNew,
   currentIndex,
   currentProperties,
   setCurrentProperties,
@@ -364,6 +363,9 @@ const AddPropertyModal = ({
                       onClick={() => handleCopy(resource.url)}  className="h-6 w-6" 
                     />  }
                     <Trash2 onClick={() => removeResource(resource)} className="h-6 w-6" />
+                    <a key={index} href={resource.url} target="_blank" rel="noopener noreferrer">
+                      <CloudDownload className="h-6 w-6" />
+                    </a>
                   </div>
                 </div>
               ))}

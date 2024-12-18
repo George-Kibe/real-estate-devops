@@ -149,7 +149,7 @@ const AddVisit = () => {
             <PlusCircle />
         </Button>
         <Button className="self-start" onClick={() => generateNewReport(false)}>
-           <p className="mr-2">PROCEED AND SCRAP</p>
+           <p className="mr-2">PROCEED WITH HOUSING SEARCH</p>
             <PlusCircle />
         </Button>
       </div>
