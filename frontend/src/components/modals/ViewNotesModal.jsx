@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { Button } from '../ui/button';
-import { FilePen, FilePenLine} from 'lucide-react'
+import { FilePenLine} from 'lucide-react'
 import { useMainProvider } from '@/providers/MainProvider';
 import { toast } from 'react-toastify';
 import axios from 'axios';
@@ -34,6 +34,7 @@ const ViewNotesModal = ({
         toast.error("Error updating billing");
     } finally {
       setLoading(false);
+      setEditMode(false);
     }
   };
   useEffect(() => {
@@ -51,10 +52,11 @@ const ViewNotesModal = ({
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className={`bg-white w-full md:w-1/2 dark:bg-black rounded-xl p-2 md:p-16 shadow transition-all
-          ${isOpen ? "scale-100 opacity-100": "scale-125 opacity-0"}
+        className={`h-[90vh] w-full overflow-auto bg-white p-4 rounded-md
+          md:w-1/2 dark:bg-black md:p-16 shadow transition-all 
+          ${isOpen ? "scale-100 opacity-100": "sclae-125 opacity-0"}
           `}
-      >
+        >
         <button
           onClick={onClose}
           className='absolute top-2 right-2 p-1 px-2 rounded-lg text-red-700 bg-white hover:bg-gray-50 hover:text-gray-600'
@@ -63,7 +65,7 @@ const ViewNotesModal = ({
         </button>
         <div className="">
           <p className="font-semibold pr-2">Notes for {currentBilling?.client_name}-{currentBilling.service_date_start}-{currentBilling.start_time} to {currentBilling.end_time}</p>
-          <div className="mt-4 border border-gray p-2 mb-2 relative">
+          <div className="mt-4 border border-gray p-2 pr-8 mb-2 relative">
             {
               !editMode && (
                 <FilePenLine className="absolute top-2 right-2 cursor-pointer" onClick={() => setEditMode(!editMode)} />

@@ -943,7 +943,7 @@ export default function MembersPage({params, searchParams}) {
               summaryFinal && (
                 <div className='flex flex-col  items-start'>
                   <label className="mt-2">Final Summary</label>
-                  <p className="text-justify text-sm">
+                  <p className="text-sm mt-2 border border-gray p-2 mb-2 relative">
                     {summaryFinal}
                   </p>
                 </div>
@@ -970,7 +970,7 @@ export default function MembersPage({params, searchParams}) {
               followUpNotes && (
                 <div className='flex flex-col  items-start'>
                   <label className="mt-2">Follow up Notes</label>
-                  <p className="text-justify text-sm">
+                  <p className="text-sm mt-2 border border-gray p-2 mb-2 relative">
                     {followUpNotes}
                   </p>
                 </div>
