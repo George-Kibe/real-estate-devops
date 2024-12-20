@@ -19,6 +19,7 @@ import ReactMarkdown from 'react-markdown';
 import { GeneralSearchButton } from "@/components/TableSearch";
 import { generalAIPrompt } from "@/utils/functions";
 import Image from "next/image";
+import SmartText from "@/components/SmartText";
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
 
@@ -360,9 +361,9 @@ export default function MembersPage() {
                     ) : (
                       <p>No Image</p>
                     )}
-                    <div className="">
+                    <div className="max-w-60">
                       <div className="text-base text-wrap ">Name: {property.title}</div>
-                      <div className="text-base font-semibold text-wrap">Address: {property.street_address || property.address}</div>
+                      <div className="text-sm font-semibold text-wrap">Address: {property.street_address || property.address}</div>
                       <div className="font-normal text-gray-500 flex flex-row flex-wrap">
                         <p className="font-bold mr-2">Amenities:</p> {property?.amenities?.map((a, index) => <p className="ml-1" key={index}>{a +", "}</p>)}
                       </div>
@@ -383,7 +384,7 @@ export default function MembersPage() {
                       </div>
                   </td>
                   <td className="px-2 py-1">
-                      <p className="">{property.description}</p>
+                    <SmartText text={property.description} />
                   </td>
                   <td className="px-2 py-1">
                     <div className="flex flex-col items-center gap-2">
@@ -401,7 +402,7 @@ export default function MembersPage() {
                     </div>
                   </td>
                   <td className="px-2 py-1">
-                      <p className="">{property.comments}</p>
+                    <SmartText text={property.comments} />
                   </td>
                   </tr>
                 ))

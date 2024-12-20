@@ -28,6 +28,7 @@ import { handleFileUpload } from "@/utils/google-cloud";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { staffActivities } from "../../../../../data/staff-activities";
+import SmartText from "@/components/SmartText";
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
 
@@ -785,9 +786,9 @@ export default function MembersPage({params, searchParams}) {
                     ) : (
                       <p>No Image</p>
                     )}
-                    <div className="">
+                    <div className="max-w-60">
                       <div className="text-base text-wrap ">Name: {property.title}</div>
-                      <div className="text-base font-semibold text-wrap">Address: {property.street_address || property.address}</div>
+                      <div className="text-sm font-semibold text-wrap">Address: {property.street_address || property.address}</div>
                       <div className="font-normal text-gray-500 flex flex-row flex-wrap">
                         <p className="font-bold mr-2">Amenities:</p> {property?.amenities?.map((a, index) => <p className="ml-1" key={index}>{a +", "}</p>)}
                       </div>
@@ -808,7 +809,7 @@ export default function MembersPage({params, searchParams}) {
                       </div>
                   </td>
                   <td className="px-2 py-1">
-                    <p className="">{property.description}</p>
+                    <SmartText text={property.description} />
                   </td>
 
                   <td className="px-2 py-1">
@@ -828,7 +829,7 @@ export default function MembersPage({params, searchParams}) {
                   </td>
 
                   <td className="px-2 py-1">
-                      <p className="">{property.comments}</p>
+                    <SmartText text={property.comments} />
                   </td>
                   <td className="px-2 py-1 self-center justify-center flex-col gap-2">
                     <PropertyActions 
@@ -862,9 +863,9 @@ export default function MembersPage({params, searchParams}) {
                         ) : (
                           <p>No Image</p>
                         )}
-                        <div className="">
+                        <div className="max-w-60">
                           <div className="text-base text-wrap ">Name: {property.title}</div>
-                          <div className="text-base font-semibold text-wrap">Address: {property.street_address || property.address}</div>
+                          <div className="text-sm font-semibold text-wrap">Address: {property.street_address || property.address}</div>
                           <div className="font-normal text-gray-500 flex flex-row flex-wrap">
                             <p className="font-bold mr-2">Amenities:</p> {property?.amenities?.map((a, index) => <p className="ml-1" key={index}>{a +", "}</p>)}
                           </div>
@@ -885,7 +886,7 @@ export default function MembersPage({params, searchParams}) {
                           </div>
                       </td>
                       <td className="px-2 py-1">
-                          <p className="text-justify">{property.description}</p>
+                        <SmartText text={property.description} />
                       </td>
                       <td className="px-2 py-1">
                         <p className=""></p>
