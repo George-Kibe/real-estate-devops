@@ -16,13 +16,14 @@ const EditLocationModal = ({isOpen, onClose, searchLocation, fetchProperties, se
       setLoading(true);
       await fetchProperties()
       onClose();
-      toast.success("Search Location Updated and Scrap Afresh");
+      toast.success("Search Location Updated and Properties Scrapped Afresh!");
       setLoading(false);
     } catch (error) {
       toast.error('Failed. Try Again!')
       setLoading(false);
     }
   }
+  
   return (
     <div 
       //onClick={onClose}

@@ -263,14 +263,14 @@ export default function MembersPage() {
           <div className='flex flex-row gap-2'>
             <p className='flex flex-row gap-4'><p className="font-semibold">Report Type:</p> {report?.report_type}</p>
           </div>
+          {/* <div className='flex flex-row gap-2'>
+            <p className='flex flex-row gap-4'><p className="font-semibold">Report Description:</p> {report?.report_activities}</p>
+          </div> */}
           <div className='flex flex-row gap-2'>
-            <p className='flex flex-row gap-4'><p className="font-semibold">Report Description:</p> {report?.description}</p>
+            <p className='flex flex-row gap-4'><p className="font-semibold">Report Description:</p> {report?.report_activities.join(" ")}</p>
           </div>
           <div className='flex flex-row gap-2'>
-            <p className=''><p className="font-semibold">Report Last Update:</p> {report?.report_draft}</p>
-          </div>
-          <div className='flex flex-row gap-2'>
-            <p className=''><p className="font-semibold">Report Final:</p> {report?.report_final}</p>
+            <p className='flex flex-row gap-4'><p className="font-semibold">Report By:</p> {report?.staff_name}</p>
           </div>
           <div className='flex flex-row gap-2'>
             <p className='flex flex-row gap-4'><p className="font-semibold">Time Spent:</p> { getTimeDifference(report?.start_time , report?.end_time)}</p>

@@ -29,6 +29,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { staffActivities } from "../../../../../data/staff-activities";
 import SmartText from "@/components/SmartText";
+import { LinkActions } from "@/components/LinkActions";
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
 
@@ -321,6 +322,12 @@ export default function MembersPage({params, searchParams}) {
       setLoading(false);
       return;
     }
+    if (startTime >= endTime){
+      toast.error("Time overlap! End time must be after start time!");
+      setErrors([...errors, "Time overlap! End time must be after start time!"])
+      setLoading(false);
+      return;
+    }
     if (!staffLocation || !visitType) {
       toast.error("Please enter staff location!");
       setErrors([...errors, "Please enter staff location and visit Type!"])
@@ -586,14 +593,14 @@ export default function MembersPage({params, searchParams}) {
           <div className='flex flex-row gap-2'>
             <p className='flex flex-row gap-4'><p className="font-semibold">Report Type:</p> {report?.report_type}</p>
           </div>
+          {/* <div className='flex flex-row gap-2'>
+            <p className='flex flex-row gap-4'><p className="font-semibold">Report Description:</p> {report?.report_activities}</p>
+          </div> */}
           <div className='flex flex-row gap-2'>
-            <p className='flex flex-row gap-4'><p className="font-semibold">Report Description:</p> {report?.description}</p>
+            <p className='flex flex-row gap-4'><p className="font-semibold">Report Description:</p> {report?.report_activities.join(" ")}</p>
           </div>
           <div className='flex flex-row gap-2'>
-            <p className=''><p className="font-semibold">Report Last Update:</p> {report?.report_draft}</p>
-          </div>
-          <div className='flex flex-row gap-2'>
-            <p className=''><p className="font-semibold">Report Final:</p> {report?.report_final}</p>
+            <p className='flex flex-row gap-4'><p className="font-semibold">Report By:</p> {report?.staff_name}</p>
           </div>
           <div className='flex flex-row gap-2'>
             <p className='flex flex-row gap-4'><p className="font-semibold">Time Spent:</p> { getTimeDifference(report?.start_time , report?.end_time)}</p>
@@ -688,7 +695,7 @@ export default function MembersPage({params, searchParams}) {
         </div>
         
        
-        <div className="flex w-[80%] items-center mt-4 mx-8  my-2 flex-col md:flex-row">
+        <div className="flex items-center mt-4 mx-8  my-2  md:flex-row">
           {/* <h2 className="font-semibold text-xl mr-2 ml-4">Search for:</h2>  */}
           <SearchButton 
             onClick={handleGeneralSearch} 
@@ -720,6 +727,8 @@ export default function MembersPage({params, searchParams}) {
           </Button>
           <Button onClick={() => setLocationModalOpen(true)} className='m-4'>
             Change Search Location
+          </Button>
+          <Button className='m-4'> Links<LinkActions />
           </Button>
         </div>
       
@@ -1009,9 +1018,8 @@ export default function MembersPage({params, searchParams}) {
                     />  }
                     <Trash2 onClick={() => removeResource(resource)} className="h-6 w-6" />
                     <a key={index} href={resource.url} target="_blank" rel="noopener noreferrer">
-                      <CloudDownload className="h-6 w-6" />
-                    </a>
-                  
+                      <CloudDownload className="h-6 w-6 text-blue-600" />
+                    </a> 
                   </div>
                 </div>
               ))}

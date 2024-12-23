@@ -129,7 +129,7 @@ export const generateReportBilling = async(report, client, owner_org_id) => {
     housing_coordinator_name: report.staff_name || "Not Captured",
     housing_coordinator_id: report.staff_id,
     claim_amount: (worked_hours * WORK_RATE_PER_HOUR).toFixed(2),
-    bill_status: "Scheduled",
+    bill_status: "UnSubmitted",
     scheduled_hours: 23.5,
     worked_hours,
     billed_hours: 30,

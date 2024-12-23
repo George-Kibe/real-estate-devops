@@ -62,7 +62,7 @@ const AddVisit = () => {
       client_name: currentClient?.client_name,
       description: "Daily report draft",
       status: "completed",
-      report_type: "Daily",
+      report_type: "Transition Services",
       client_phone_number:currentClient?.phone_number,
       staff_id: orgMode? tempUser?._id : currentUser._id,
       staff_name: orgMode? tempUser?.name : currentUser.name,

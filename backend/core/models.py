@@ -178,6 +178,7 @@ class Billing(TimeStampedUUIDModel):
     bill_status = models.CharField(max_length=50, choices=[
         ('Scheduled', 'Scheduled'),
         ('Submitted', 'Submitted'),
+        ('UnSubmitted', 'UnSubmitted'),
     ], null=True, default="Scheduled", blank=True)
     scheduled_hours = models.DecimalField(
         max_digits=5, decimal_places=2, help_text="Scheduled hours", null=True, blank=True)
