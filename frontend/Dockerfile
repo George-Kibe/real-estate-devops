@@ -1,26 +1,27 @@
 # Use the official Node.js 20 Alpine image
-FROM node:20-alpine
+FROM node:20-alpine AS builder
 
-# Set the working directory inside the container
-WORKDIR /frontend
+# Set the working directory
+WORKDIR /app
 
-# Install curl (if needed)
-RUN apk --no-cache add curl
-
-# Copy package.json and package-lock.json to the working directory
+# Install dependencies first (better caching)
 COPY package.json ./
+RUN npm install --legacy-peer-deps
 
-# Install dependencies
-RUN npm install 
-
-# Copy the rest of the application code
+# Copy the rest of the app and build Next.js
 COPY . .
-
-# Build the Next.js application
 RUN npm run build
 
-# Expose the port the app runs on
+# Start a new stage to keep the final image small
+FROM node:20-alpine
+
+WORKDIR /app
+
+# Copy only the built files from the previous stage
+COPY --from=builder /app ./
+
+# Expose the Next.js port
 EXPOSE 3000
 
-# Start the application
+# Start the Next.js production server
 CMD ["npm", "run", "start"]
