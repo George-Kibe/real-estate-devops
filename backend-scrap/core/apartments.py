@@ -8,9 +8,9 @@ import time
 import re
 # Options for production and compatibility with docker environment
 options = ChromeOptions()
-#options.add_argument("--headless=new")
+options.add_argument("--headless=new")
 # The Docker container running Selenium
-#SELENIUM_CMD_EXECUTOR = "http://selenium:4444/wd/hub"
+SELENIUM_CMD_EXECUTOR = "http://selenium:4444/wd/hub"
 
 def convert_to_integer(s):
     # Use regular expressions to find the first numeric part of the string

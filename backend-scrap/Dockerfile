@@ -1,8 +1,9 @@
 # Use an official Python runtime as a parent image
-FROM python:3.13.1
+FROM python:3.12
 
 # Set the working directory in the container
 WORKDIR /backend
+
 ENV PYTHONUNBUFFERED 1
 
 # Copy the dependencies file to the working directory
@@ -22,7 +23,7 @@ RUN python manage.py collectstatic --noinput
 EXPOSE 8000
 
 # Start the application
-# CMD ["gunicorn", "project.wsgi:application", "--bind", "0.0.0.0:8000"]
+CMD ["gunicorn", "project.wsgi:application", "--bind", "0.0.0.0:8000"]
 
 # # Run Django server
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+# CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

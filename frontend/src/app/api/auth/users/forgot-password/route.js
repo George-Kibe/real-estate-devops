@@ -57,7 +57,7 @@ export const POST = async (request) => {
                 </tr>
                 <tr style="background-color: #f4f4f4; color: #888888;">
                     <td style="padding: 10px; text-align: center; font-size: 12px;">
-                        &copy; 2024 AptTracking. All rights reserved.
+                        &copy; 2024 Nuviane. All rights reserved.
                     </td>
                 </tr>
             </table>

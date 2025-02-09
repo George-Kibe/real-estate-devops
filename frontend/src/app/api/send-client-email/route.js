@@ -19,20 +19,20 @@ export async function POST(req) {
       const mailOptions = {
         from: 'buenasconsultants@gmail.com',
         to: email,
-        subject: `Property Alert on AptTracking`,
+        subject: `Property Alert on Nuviane`,
         html: `
           <!DOCTYPE html>
           <html lang="en">
           <head>
               <meta charset="UTF-8">
               <meta name="viewport" content="width=device-width, initial-scale=1.0">
-              <title>Invitation to AptTracking Organization</title>
+              <title>Invitation to Nuviane Organization</title>
           </head>
           <body style="font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 0;">
               <table style="width: 100%; max-width: 600px; margin: 20px auto; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
                   <tr style="background-color: #0044cc; color: #ffffff;">
                       <td style="padding: 20px; text-align: center;">
-                          <h2 style="margin: 0;">Property Alert on AptTracking</h2>
+                          <h2 style="margin: 0;">Property Alert on Nuviane</h2>
                       </td>
                   </tr>
                   <tr>
@@ -47,12 +47,12 @@ export async function POST(req) {
                               <a href=${link} style="color: #0044cc; text-decoration: none;">${link}</a>
                           </p>
                           <p>Thanks and have a good time.</p>
-                          <p>AptTracking</p>
+                          <p>Nuviane</p>
                       </td>
                   </tr>
                   <tr style="background-color: #f4f4f4; color: #888888;">
                       <td style="padding: 10px; text-align: center; font-size: 12px;">
-                          &copy; 2024 . AptTracking All rights reserved.
+                          &copy; 2024 . Nuviane All rights reserved.
                       </td>
                   </tr>
               </table>

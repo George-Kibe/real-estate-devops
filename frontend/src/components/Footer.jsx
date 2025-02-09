@@ -22,7 +22,7 @@ const Footer = () => {
                 />
               </Link>
               <p className="mb-8 max-w-[270px] text-base text-gray-7">
-                AptTracking is dedicated to revolutionizing Housing Stabilization Services (HSS) through innovative technology solutions.
+                Nuviane is dedicated to revolutionizing Housing Stabilization Services (HSS) through innovative technology solutions.
               </p>
               <div className="-mx-3 flex items-center">
                 <Link

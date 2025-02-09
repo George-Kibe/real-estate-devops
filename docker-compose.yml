@@ -1,4 +1,3 @@
-# version: '3'
 services:
   backend:
     container_name: backend
@@ -17,7 +16,7 @@ services:
       - selenium
     networks:
       - realestatenetwork
-    restart: always
+    restart: on-failure
   
   frontend:
     container_name: frontend
@@ -33,9 +32,10 @@ services:
       - "3000:3000"
     networks:
       - realestatenetwork
-    depends_on:
+    depends_on: 
+      - mongo
       - backend
-    restart: always
+    restart: on-failure
 
   selenium:
     environment:
@@ -46,7 +46,19 @@ services:
     networks:
       - realestatenetwork
     restart: always
-  
+  mongo:
+    image: mongo:8
+    container_name: mongodb
+    ports:
+      - "127.0.0.1:27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+    networks:
+      - realestatenetwork
+    restart: on-failure
+    volumes:
+      - mongo-data:/data/db
   nginx: 
     build: ./backend/nginx
     volumes:
@@ -61,6 +73,7 @@ services:
 
 volumes:
   static:
+  mongo-data:
   
 networks:
   realestatenetwork:
