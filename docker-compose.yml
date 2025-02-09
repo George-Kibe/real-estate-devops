@@ -45,7 +45,7 @@ services:
       - 7900:7900
     networks:
       - realestatenetwork
-    restart: always
+    restart: on-failure
   mongo:
     image: mongo:8
     container_name: mongodb
@@ -60,16 +60,16 @@ services:
     volumes:
       - mongo-data:/data/db
   nginx: 
-    build: ./backend/nginx
+    build: ./frontend/nginx
     volumes:
      - static:/static
     ports:
       - "80:80"
     depends_on:
-      - backend
+      - frontend
     networks:
       - realestatenetwork
-    restart: always
+    restart: on-failure
 
 volumes:
   static:
