@@ -80,7 +80,7 @@ export default function ReportsPage({searchParams}) {
   const [reports, setReports] = useState([]);
   const [reportId, setreportId] = useState('');
   const [currentStaff, setCurrentStaff] = useState(null);
-
+  console.log("BACKEND API URL:", process.env.NEXT_PUBLIC_BACKEND_API_URL);
   const {orgMode, currentUser, currentClient, setCurrentClient} = useMainProvider();
   const router = useRouter();
   const getMembers = async() => {

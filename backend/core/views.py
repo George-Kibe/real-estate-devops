@@ -8,10 +8,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from .serializers import PropertySerializer, MessageSerializer, ScrappedPropertySerializer
 from .serializers import ClientSerializer, ReportSerializer, EnquirySerializer, BillingSerializer
-from .apartments import get_apartments
+# from .apartments import get_apartments
 from .models import Property, Message, Client, Report, Enquiry, Billing
-
-from .send_sms import send_sms
 
 
 class MessageViewSet(viewsets.ModelViewSet):
@@ -63,7 +61,6 @@ class EnquiryViewSet(viewsets.ModelViewSet):
     serializer_class = EnquirySerializer
 
     def list(self, request):
-        send_sms()
         queryset = self.filter_queryset(self.get_queryset())
         page = self.paginate_queryset(queryset)
         if page is not None:
@@ -390,7 +387,8 @@ class ScrapeProperties(APIView):
         # print("Search term: ", request.query_params.get('search'))
         search_term = request.query_params.get('search')
         # Perform scraping based on search term
-        apartments = get_apartments(search_term)
+        # apartments = get_apartments(search_term)
+        apartments = []
         serialized_properties = []
         for apartment in apartments:
             #print(apartment)
