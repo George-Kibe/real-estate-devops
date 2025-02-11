@@ -17,6 +17,8 @@ services:
     networks:
       - realestatenetwork
     restart: on-failure
+    entrypoint: ["sh", "-c", "python manage.py makemigrations && python manage.py migrate && gunicorn project.wsgi:application --bind 0.0.0.0:8000"]
+
   
   frontend:
     container_name: frontend
