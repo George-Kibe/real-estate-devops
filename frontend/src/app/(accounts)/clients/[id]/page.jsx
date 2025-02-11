@@ -27,10 +27,10 @@ const SingleClientPage = () => {
   const fetchClientDetails = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`${BACKEND_URL}/api/clients/${id}`);
+      const response = await axios.get(`${BACKEND_URL}/drf-api/clients/${id}`);
       setClient(response.data);
       // console.log(response.data);
-      const reportsResponse = await axios.get(`${BACKEND_URL}/api/reports/?client_id=${response.data?.id}`);
+      const reportsResponse = await axios.get(`${BACKEND_URL}/drf-api/reports/?client_id=${response.data?.id}`);
       // console.log(reportsResponse.data.results);
       setReports(reportsResponse?.data?.results);
       setLoading(false);

@@ -143,11 +143,11 @@ export const generateReportBilling = async(report, client, owner_org_id) => {
   }
   console.log("Body: ", body)
   try {
-    const reponse = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/billings/`, body)
+    const reponse = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/drf-api/billings/`, body)
     if (reponse.status === 201) {
       // update report status to billed
       const data = {isBilled: true}
-      await axios.put(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/reports/${report.pkid}/`, data)
+      await axios.put(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/drf-api/reports/${report.pkid}/`, data)
       return reponse.data
     }
   } catch (error) {

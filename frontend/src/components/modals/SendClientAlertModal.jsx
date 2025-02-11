@@ -22,7 +22,7 @@ const SendClientAlertModal = ({ property, client, isOpen, onClose }) => {
     const body = {...property, price: parseInt(property?.price), link: "Not Available"}
     // console.log("Body: ", body)
     try {
-      const response = await axios.post(`${BACKEND_URL}/api/properties/`, body);
+      const response = await axios.post(`${BACKEND_URL}/drf-api/properties/`, body);
       if (response.status === 201) {
         // console.log("Response Data: ", response.data)
         return response.data.pkid;

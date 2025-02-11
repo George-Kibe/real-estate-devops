@@ -25,7 +25,7 @@ const AddVisit = () => {
   console.log("myClients: ", myClients);
   const fetchClients = async() => {
     try {
-      const response = await axios.get(`${BACKEND_URL}/api/clients/?owner_id=${currentUser?._id}`);
+      const response = await axios.get(`${BACKEND_URL}/drf-api/clients/?owner_id=${currentUser?._id}`);
       const data = response.data
       setAllClients(data.results);
     } catch (error) {
@@ -71,7 +71,7 @@ const AddVisit = () => {
     }
     try {
       setLoading(true);
-      const response = await axios.post(`${BACKEND_URL}/api/reports/`, data);
+      const response = await axios.post(`${BACKEND_URL}/drf-api/reports/`, data);
       const report = response.data
       // console.log("Report Details: ", report)
       if (response.status === 201) {

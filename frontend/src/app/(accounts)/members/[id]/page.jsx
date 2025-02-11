@@ -40,7 +40,7 @@ const SingleMemberPage = () => {
   const fetchStaffClients = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`${BACKEND_URL}/api/clients/?staff_id=${id}`);
+      const response = await axios.get(`${BACKEND_URL}/drf-api/clients/?staff_id=${id}`);
       const clients = response?.data?.results
       if (clients.length === 0) {
         toast.error("No clients found for this staff member");
@@ -57,7 +57,7 @@ const SingleMemberPage = () => {
   const fetchStaffReports = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`${BACKEND_URL}/api/reports/?staff_id=${id}`);
+      const response = await axios.get(`${BACKEND_URL}/drf-api/reports/?staff_id=${id}`);
       const reports = response?.data?.results
       setStaffReports(reports);
     } catch (error) {

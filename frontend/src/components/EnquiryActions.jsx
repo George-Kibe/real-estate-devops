@@ -19,7 +19,7 @@ export function EnquiryActions({enquiry}) {
     // console.log("Enquiry: ", enquiry);
     try {
       const data = { status: "Completed", message: enquiry?.message };
-      const response = await axios.put(`${BACKEND_URL}/api/enquiries/${enquiry.pkid}/`, data);
+      const response = await axios.put(`${BACKEND_URL}/drf-api/enquiries/${enquiry.pkid}/`, data);
       toast.success("Enquiry marked as completed");
       window.location.reload();
     } catch (error) {
@@ -29,7 +29,7 @@ export function EnquiryActions({enquiry}) {
   }
   const deleteEnquiry = async () => {
     try {
-      const response = await axios.delete(`${BACKEND_URL}/api/enquiries/${enquiry.pkid}/`);
+      const response = await axios.delete(`${BACKEND_URL}/drf-api/enquiries/${enquiry.pkid}/`);
       toast.success("Enquiry deleted");
       window.location.reload();
     } catch (error) {

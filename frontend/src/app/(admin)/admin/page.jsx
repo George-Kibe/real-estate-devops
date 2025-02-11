@@ -18,7 +18,7 @@ const AdminPage = () => {
   const fetchEnquiries = async() => {
     setLoading(true);
     try {
-      const response = await axios.get(`${BACKEND_URL}/api/enquiries/`)
+      const response = await axios.get(`${BACKEND_URL}/drf-api/enquiries/`)
       //console.log("Response Data:", response.data)
       setEnquiries(response.data.results);
       setLoading(false);

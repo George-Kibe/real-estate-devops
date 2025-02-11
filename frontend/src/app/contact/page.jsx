@@ -22,7 +22,7 @@ const ContactPage = () => {
     try {
       setLoading(true);
       const body = { name, email, message, phone_number}
-      const response  = await axios.post(`${BACKEND_URL}/api/enquiries/`, body);
+      const response  = await axios.post(`${BACKEND_URL}/drf-api/enquiries/`, body);
       console.log(response.data);
       if (response.status === 201) {
         toast.success("Your message has submitted successfully. One of us will get back to you");

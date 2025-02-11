@@ -85,7 +85,7 @@ export default function MembersPage({params, searchParams}) {
   const fetchReport = async() => {
     setLoading(true);
     try {
-      const response = await axios.get(`${BACKEND_URL}/api/reports/${id}`);
+      const response = await axios.get(`${BACKEND_URL}/drf-api/reports/${id}`);
       const data = response.data
       // console.log("Report Data: ", data.properties.length)
       setReport(data);

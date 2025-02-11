@@ -96,7 +96,7 @@ const SelectedBillingPage = ({searchParams}) => {
     setLoading(true);
     selectedBillings.forEach(async (billing) => {
       try {
-        const response = await axios.delete(`${BACKEND_URL}/api/billings/${billing.pkid}`);
+        const response = await axios.delete(`${BACKEND_URL}/drf-api/billings/${billing.pkid}`);
         console.log(response.data);
       } catch (error) {
         console.log(error);
@@ -113,7 +113,7 @@ const SelectedBillingPage = ({searchParams}) => {
       const approvedBillings = await Promise.all(
         selectedBillings.map(async (billing) => {
           const response = await axios.put(
-            `${BACKEND_URL}/api/billings/${billing.pkid}/`,
+            `${BACKEND_URL}/drf-api/billings/${billing.pkid}/`,
             { approval_status: status }
           );
           return response.data;

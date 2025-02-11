@@ -36,7 +36,7 @@ const SingleBilling = () => {
   const fetchBillingData = async () => {
     setLoading(true);
     try {
-        const response = await axios.get(`${BACKEND_URL}/api/billings/${id}`);
+        const response = await axios.get(`${BACKEND_URL}/drf-api/billings/${id}`);
         const billing = response.data;
         setBilling(billing);
         setFormData(billing);
@@ -49,7 +49,7 @@ const SingleBilling = () => {
   const updateBilling = async () => {
     setUpdateLoading(true);
     try {
-        const response = await axios.put(`${BACKEND_URL}/api/billings/${id}/`, formData);
+        const response = await axios.put(`${BACKEND_URL}/drf-api/billings/${id}/`, formData);
         const billing = response.data;
         setBilling(billing);
         setFormData(billing);

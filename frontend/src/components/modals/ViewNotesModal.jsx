@@ -25,7 +25,7 @@ const ViewNotesModal = ({
         const data = {
           notes: notes,
         }
-        const response = await axios.put(`${BACKEND_URL}/api/billings/${currentBilling.pkid}/`, data);
+        const response = await axios.put(`${BACKEND_URL}/drf-api/billings/${currentBilling.pkid}/`, data);
         toast.success("Billing updated successfully");
         fetchBillings()
         onClose();

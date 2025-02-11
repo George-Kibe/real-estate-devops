@@ -96,7 +96,7 @@ export default function ReportsPage({searchParams}) {
   const deleteReport = async() => {
     setLoading(true);
     try {
-      const response = await axios.delete(`${BACKEND_URL}/api/reports/${reportId}/`);
+      const response = await axios.delete(`${BACKEND_URL}/drf-api/reports/${reportId}/`);
       const data = response.data
       toast.success("Report Deleted Successfully!")
       router.push(`/reports`)
@@ -113,7 +113,7 @@ export default function ReportsPage({searchParams}) {
   
   const fetchClients = async() => {
     try {
-      const response = await axios.get(`${BACKEND_URL}/api/clients/?owner_id=${currentUser?._id}`);
+      const response = await axios.get(`${BACKEND_URL}/drf-api/clients/?owner_id=${currentUser?._id}`);
       const data = response.data
       setClients(data.results);
     } catch (error) {
@@ -230,7 +230,7 @@ export default function ReportsPage({searchParams}) {
   const fetchAllReports = async( ) => {
     setInitLoading(true)
     try {
-      const response = await axios.get(`${BACKEND_URL}/api/reports/?owner_id=${currentUser?._id}`);
+      const response = await axios.get(`${BACKEND_URL}/drf-api/reports/?owner_id=${currentUser?._id}`);
       setAllReports(response.data.results);
       setReports(response.data.results);
     } catch (error) {
@@ -247,7 +247,7 @@ export default function ReportsPage({searchParams}) {
   const exportAllClientsReportsToExcel = async( ) => {
     try {
       setReportsLoading(true);
-      const response = await axios.get(`${BACKEND_URL}/api/reports/?owner_id=${currentUser?._id}`);
+      const response = await axios.get(`${BACKEND_URL}/drf-api/reports/?owner_id=${currentUser?._id}`);
       const data = response.data
       const refinedReports = data.results.filter(report => report.properties.length > 0)
       const reportName = `All-reports-for-${currentUser?.name}-as-at-${moment(new Date()).format('hh-mm A, dddd, MMMM DD, YYYY')}`
@@ -268,7 +268,7 @@ export default function ReportsPage({searchParams}) {
     try {
       // get the client
       const owner_org_id = currentUser._id;
-      const response = await axios.get(`${BACKEND_URL}/api/clients?client_id=${report.client_id}`)
+      const response = await axios.get(`${BACKEND_URL}/drf-api/clients?client_id=${report.client_id}`)
       if (response.data.results.length > 0) {
         const client = response.data.results[0];
         const billingResponse = await generateReportBilling(report, client, owner_org_id);

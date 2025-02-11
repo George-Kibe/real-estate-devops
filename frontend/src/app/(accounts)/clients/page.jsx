@@ -29,7 +29,7 @@ export default function MembersPage() {
 
   const fetchClients = async() => {
     try {
-      const response = await axios.get(`${BACKEND_URL}/api/clients/?owner_id=${currentUser?._id}`);
+      const response = await axios.get(`${BACKEND_URL}/drf-api/clients/?owner_id=${currentUser?._id}`);
       const data = response.data
       // console.log("Clients Data: ", data)
       setClients(data.results);
@@ -60,7 +60,7 @@ export default function MembersPage() {
     }
     setLoading(true);
     try {
-      const response = await axios.delete(`${BACKEND_URL}/api/clients/${clientId}`);
+      const response = await axios.delete(`${BACKEND_URL}/drf-api/clients/${clientId}`);
       if (response.status === 200){
         toast.success("Client deleted successfully!")
       }

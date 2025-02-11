@@ -139,7 +139,7 @@ const BillingPage = ({searchParams}) => {
     const page = searchParams?.page || 1;
     setLoading(true);
     try {
-      const response = await axios.get(`${BACKEND_URL}/api/billings?owner_org_id=${currentUser._id}`);
+      const response = await axios.get(`${BACKEND_URL}/drf-api/billings?owner_org_id=${currentUser._id}`);
       const billings = response.data.results;
       setBillings(billings);
       setAllBillings(billings);

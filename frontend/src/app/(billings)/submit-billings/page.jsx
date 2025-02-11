@@ -27,7 +27,7 @@ const SubmitBillings = () => {
       const response = await Promise.all(
         selectedBillings.map(async (billing) => {
           const response = await axios.put(
-            `${BACKEND_URL}/api/billings/${billing.pkid}/`,
+            `${BACKEND_URL}/drf-api/billings/${billing.pkid}/`,
             { bill_status: "Submitted" }
           );
           return response.data;

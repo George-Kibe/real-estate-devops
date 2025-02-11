@@ -89,7 +89,7 @@ export default function MembersPage({params, searchParams}) {
   const fetchReport = async() => {
     setLoading(true);
     try {
-      const response = await axios.get(`${BACKEND_URL}/api/reports/${id}`);
+      const response = await axios.get(`${BACKEND_URL}/drf-api/reports/${id}`);
       const data = response.data
       // console.log("Report Data: ", data.properties.length)
       setReport(data); setSummaryFinal(data?.report_final); 
@@ -108,7 +108,7 @@ export default function MembersPage({params, searchParams}) {
       if(data?.report_activities?.length > 0){
         setReportActivities(data.report_activities)
       }
-      const clientResponse = await axios.get(`${BACKEND_URL}/api/clients?client_id=${data.client_id}`);
+      const clientResponse = await axios.get(`${BACKEND_URL}/drf-api/clients?client_id=${data.client_id}`);
       console.log(clientResponse.data.results[0]);
       setCurrentClient(clientResponse.data.results[0]);
     } catch (error) {
@@ -126,7 +126,7 @@ export default function MembersPage({params, searchParams}) {
   const fetchProperties = async() => {
     setLoading(true); setPropertiesLoading(true)
     try {
-      const response = await axios.get(`${BACKEND_URL}/api/scrapping?search=${searchLocation}`);
+      const response = await axios.get(`${BACKEND_URL}/drf-api/scrapping?search=${searchLocation}`);
       const data = shuffleArray(response.data)
       setProperties(data);
       setCurrentProperties(data.slice(0, currentPropertiesIndex));
@@ -354,7 +354,7 @@ export default function MembersPage({params, searchParams}) {
     }
 
     try {
-      const response = await axios.put(`${BACKEND_URL}/api/reports/${id}/`, data);
+      const response = await axios.put(`${BACKEND_URL}/drf-api/reports/${id}/`, data);
       const reportData = response.data
       // console.log("Update Report Data: ", reportData)
       toast.success("Report Updated Successfully!")
@@ -413,7 +413,7 @@ export default function MembersPage({params, searchParams}) {
   const deleteReport = async() => {
     setLoading(true);
     try {
-      const response = await axios.delete(`${BACKEND_URL}/api/reports/${id}/`);
+      const response = await axios.delete(`${BACKEND_URL}/drf-api/reports/${id}/`);
       const data = response.data
       toast.success("Report Deleted Successfully!")
       router.push(`/reports`)

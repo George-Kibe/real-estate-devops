@@ -27,8 +27,8 @@ export default function ServicesPage() {
 
   const fetchClientData = async() => {
     try {
-      console.log("API URL: ", `${BACKEND_URL}/api/clients/?email=${email}`)
-      const response = await axios.get(`${BACKEND_URL}/api/clients/?email=${email}`)
+      console.log("API URL: ", `${BACKEND_URL}/drf-api/clients/?email=${email}`)
+      const response = await axios.get(`${BACKEND_URL}/drf-api/clients/?email=${email}`)
       if (response.status === 200 && response?.data?.results?.length > 0) {
         setMyData(response.data.results[0]);
         setStaffId(response.data.results[0].staff_id);
@@ -74,7 +74,7 @@ export default function ServicesPage() {
 
   const fetchReports = async() => {
     try {
-      const response = await axios.get(`${BACKEND_URL}/api/reports/?client_id=${myData?.id}`);
+      const response = await axios.get(`${BACKEND_URL}/drf-api/reports/?client_id=${myData?.id}`);
       const data = response.data
       const refinedReports = data.results.filter(report => report.properties.length > 0)
       setReports(refinedReports);

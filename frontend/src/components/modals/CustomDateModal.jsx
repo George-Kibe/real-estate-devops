@@ -39,7 +39,7 @@ const CustomDateModal = ({ selectedDate, setSelectedDate, isOpen, onClose }) => 
       report_date: moment(selectedDate).format('YYYY-MM-DD')
     }
     try {
-      const response = await axios.post(`${BACKEND_URL}/api/reports/`, data);
+      const response = await axios.post(`${BACKEND_URL}/drf-api/reports/`, data);
       const report = response.data
       // console.log("Report Details: ", report)
       if (response.status === 201) {

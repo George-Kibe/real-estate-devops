@@ -103,7 +103,7 @@ const AddClientModal = ({ isOpen, onClose, setLoading, client=null }) => {
     }
     if (client){
       try {
-        const res = await axios.put(`${BACKEND_URL}/api/clients/${client.pkid}/`, data)
+        const res = await axios.put(`${BACKEND_URL}/drf-api/clients/${client.pkid}/`, data)
         if (res.status === 200){
           toast.success("Client Edited Successfully")
           setLoading(false); setEmail(''); setFirst_name(''); setLast_name(''); setAddress('');
@@ -118,7 +118,7 @@ const AddClientModal = ({ isOpen, onClose, setLoading, client=null }) => {
     }else{
       try {
         // invite member logic
-        const response = await axios.post(`${BACKEND_URL}/api/clients/`, data);
+        const response = await axios.post(`${BACKEND_URL}/drf-api/clients/`, data);
         onClose()
         if (response.status === 201){
           toast.success("Client Created Successfully!")

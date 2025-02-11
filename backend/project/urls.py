@@ -7,6 +7,6 @@ from .views import ServerStatusView
 
 urlpatterns = [
     path("admin-secret/", admin.site.urls),
-    path("api/", include('core.urls')),
+    path("drf-api/", include('core.urls')),
     path('', ServerStatusView.as_view(), name='server-status'),
 ]

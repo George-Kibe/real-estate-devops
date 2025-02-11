@@ -159,7 +159,7 @@ export default function MembersPage() {
   const fetchReport = async() => {
     setLoading(true);
     try {
-      const response = await axios.get(`${BACKEND_URL}/api/reports/${id}`);
+      const response = await axios.get(`${BACKEND_URL}/drf-api/reports/${id}`);
       const data = response.data
       // console.log("Report Data: ", data.properties.length)
       setReport(data); setSummaryFinal(data?.report_final); 
@@ -208,7 +208,7 @@ export default function MembersPage() {
   const deleteReport = async() => {
     setLoading(true);
     try {
-      const response = await axios.delete(`${BACKEND_URL}/api/reports/${id}/`);
+      const response = await axios.delete(`${BACKEND_URL}/drf-api/reports/${id}/`);
       const data = response.data
       toast.success("Report Deleted Successfully!")
       router.push(`/reports`)
