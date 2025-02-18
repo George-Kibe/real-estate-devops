@@ -7,6 +7,8 @@ import { toast } from 'react-toastify';
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { handleFileUpload } from '@/utils/google-cloud';
+import GooglePlacesAutocomplete from 'react-google-places-autocomplete';
+const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
 
 const AddPropertyModal = ({ 
   isOpen,
@@ -215,12 +217,13 @@ const AddPropertyModal = ({
           </div>
           <div className="">
             <p className="flex">Property Address: <p className="text-red-600">*</p></p>
-            <input type="text" placeholder='Property Address' 
-              value={street_address}
-              onChange={ev => setStreet_address(ev.target.value)}
-              className="border-2 border-gray-300 rounded-md p-1 w-full 
-              mb-2 focus:border-blue-900" 
-            /> 
+            <GooglePlacesAutocomplete
+              apiKey={GOOGLE_MAPS_API_KEY}
+              selectProps={{
+                street_address,
+                onChange: (val) => setStreet_address(val.label),
+              }}
+            />
           </div>
           <div className="">
             <p className="flex">Phone Number: <p className="text-red-600">*</p> </p>

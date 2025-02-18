@@ -15,3 +15,5 @@ Python django for REST APIs and Beautifulsoup for data scrapping
 ### Run Django Management Commands
 ```python3 manage.py housing_link```
 
+### Copying a file from my computer to a VPS
+```scp apttracking-files-admin.json ubuntu@135.148.26.200:/home/ubuntu/project/frontend```
