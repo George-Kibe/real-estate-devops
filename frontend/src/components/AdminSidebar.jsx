@@ -42,11 +42,11 @@ import { useState } from 'react';
               <CommandGroup heading='Suggestions'>
                   <CommandItem>
                     <LayoutDashboard className='mr-2 h-4 w-4' />
-                    <Link href='/dashboard'>Dashboard</Link>
+                    <Link href='/admin'>Admin Dashboard</Link>
                   </CommandItem>
                   <CommandItem>
                     <ShieldCheck className='mr-2 h-4 w-4' />
-                    <Link href='/admin'>Admin Functions</Link>
+                    <Link href='/admin-functions'>Admin Functions</Link>
                   </CommandItem>
                   <CommandItem>
                     <Users className='mr-2 h-4 w-4' />
