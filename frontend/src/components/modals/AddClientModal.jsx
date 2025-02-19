@@ -6,7 +6,9 @@ import { Button } from '../ui/button';
 import axios from 'axios';
 import { useMainProvider } from '@/providers/MainProvider';
 import { insurance_companies } from '../../../data/insurance';
+import GooglePlacesAutocomplete from 'react-google-places-autocomplete';
 
+const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
 //const BACKEND_URL = "http://localhost:8000"
 
@@ -79,7 +81,21 @@ const AddClientModal = ({ isOpen, onClose, setLoading, client=null }) => {
 
   const saveClient = async(e) => {
     e.preventDefault()
-    if(!email |!first_name |!last_name |!address |!city){
+    if(!email |!first_name |!last_name |!address |!city |!phone_number |!house_type |!payor |!procode |!modifier |!service_type){
+      console.log("Missing details")
+      console.log("Email: ", email,
+        "First Name: ", first_name,
+        "Last Name: ", last_name,
+        "Address: ", address,
+        "City: ", city,
+        "Phone Number: ", phone_number,
+        "House Type: ", house_type,
+        "Payor: ", payor,
+        "Procode: ", procode,
+        "Modifier: ", modifier,
+        "Service Type: ", service_type
+      )
+      
       toast.error("You have missing details!");
       return
     }
@@ -190,12 +206,19 @@ const AddClientModal = ({ isOpen, onClose, setLoading, client=null }) => {
           </div>
           <div className="w-[50%]">
             <p className="">Current Address: </p>
-            <input type="text" placeholder='Address' 
+            {/* <input type="text" placeholder='Address' 
               value={address}
               onChange={ev => setAddress(ev.target.value)}
               className="border-2 border-gray-300 rounded-md p-1 w-full 
               mb-2 focus:border-blue-900" 
-            /> 
+            />  */}
+            <GooglePlacesAutocomplete
+              apiKey={GOOGLE_MAPS_API_KEY}
+              selectProps={{
+                address,
+                onChange: (val) => setAddress(val.label),
+              }}
+            />
           </div>
         </div>
 
@@ -223,12 +246,19 @@ const AddClientModal = ({ isOpen, onClose, setLoading, client=null }) => {
         <div className="flex w-full flex-col md:flex-row gap-4">
           <div className="w-[50%]">
             <p className="">Preferred City</p>
-            <input type="text" placeholder='City' 
+            {/* <input type="text" placeholder='City' 
               value={city}
               onChange={ev => setCity(ev.target.value)}
               className="border-2 border-gray-300 rounded-md p-1 w-full 
               mb-2 focus:border-blue-900" 
-            /> 
+            />  */}
+            <GooglePlacesAutocomplete
+              apiKey={GOOGLE_MAPS_API_KEY}
+              selectProps={{
+                city,
+                onChange: (val) => setCity(val.label),
+              }}
+            />
           </div>
           <div className="mb-4 w-[50%]">
             <label className="block text-sm font-medium text-gray-700 mb-1">

@@ -10,16 +10,21 @@ import { useRouter } from "next/navigation";
 export default function BillingPage() {
   const {currentUser} = useMainProvider()
   let days = 365;
-  if (currentUser?.isFreeTrial) {
-    days = 30;
+  if (currentUser?.isEnterprise) {
+    days = 365;
+  } else if (currentUser?.isPremium) {
+    days = 365;
+  } else if(currentUser?.isFreeTrial) {
+    days = 7;
   }
   console.log('days', days);
   console.log('currentUser?.isFreeTrial', currentUser?.isFreeTrial);
   const futureDate = moment(currentUser?.subscriptionDate).add(days, "days").format("YYYY-MM-DD");
+  const membershipIsValid = moment(futureDate).isAfter(moment().format("YYYY-MM-DD"));
 
   const router = useRouter();
   const upgradeToEnterPrise = () => {
-   router.push("/features")
+   router.push("/features#pricing")
   }
   return (
     <div className='flex flex-col justify-between gap-5 mb-5'>
@@ -45,6 +50,10 @@ export default function BillingPage() {
             Membership Type: {currentUser?.isEnterprise ? "Enterprise" : "Premium"}
             {currentUser?.isFreeTrial ? " (Free Trial)" : ""}
           </h1>
+          <h1 className="text-gray-800 dark:text-white">
+            Membership Status: {membershipIsValid ? "Active" : "Expired"}
+          </h1>
+
           <h1 className="text-gray-800 dark:text-white">
             Last Subscription Date: {moment(currentUser?.subscriptionDate).format('MMMM Do YYYY')}
           </h1>

@@ -23,13 +23,7 @@ const LoginPage = () => {
       const response = await axios.post('/api/auth/login', body);
       setCurrentUser(response.data);
       toast.success("Sign in Successful!")
-      if (response.data?.isPremium) {
-        router.push("/reports");
-      }else if(response.data?.role){
-        router.push("/add-visit");
-      } else{
-        router.push("/");
-      }
+      router.push("/dashboard");
       setLoading(false);
     } catch (error) {
       toast.error("Sign in Error! Try Again!")

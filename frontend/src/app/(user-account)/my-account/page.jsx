@@ -68,7 +68,7 @@ export default function MyAccountPage() {
   }
 
   return (
-    <div className='flex flex-col justify-between gap-5 mb-5'>
+    <div className='p-4 md:p-8'>
       <AnimatedText text={"Account Details"} />
       <div className="w-1/3 self-center">
         <label className='mb-[10px] block text-base font-medium text-dark dark:text-white'>

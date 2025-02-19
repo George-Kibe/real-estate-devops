@@ -63,7 +63,7 @@ export function UserMenu() {
         {
           !orgMode && 
           <>
-            <DropdownMenuItem onClick={() => router.push("/reports")}>
+            <DropdownMenuItem onClick={() => router.push("/dashboard")}>
               {"Dashboard"}
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => router.push("/my-account")}>

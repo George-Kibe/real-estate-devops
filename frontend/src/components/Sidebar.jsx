@@ -1,13 +1,12 @@
 "use client"
 import {
     Command,
-    CommandEmpty,
     CommandGroup,
-    CommandInput,
     CommandItem,
     CommandList,
     CommandSeparator,
   } from '@/components/ui/command';
+import moment from 'moment';
 import { useMainProvider } from '@/providers/MainProvider';
   import {
     Newspaper,
@@ -16,9 +15,13 @@ import { useMainProvider } from '@/providers/MainProvider';
     PlusCircle,
     User2Icon,
     Notebook,
-    CreditCard,
     CircleChevronLeft,
     CircleChevronRight,
+    LogOut,
+    Cog,
+    ShieldPlus,
+    BadgeDollarSign,
+    CircleDollarSign
   } from 'lucide-react';
 
 import Link from 'next/link';
@@ -26,7 +29,27 @@ import { useState } from 'react';
   
   const Sidebar = () => {
     const [showSideBar, setShowSideBar] = useState(true);
-    const {adminMode, orgMode, currentUser, sellerMode} = useMainProvider();
+    const { orgMode, currentUser, sellerMode, setUser, setAdminMode, setCurrentUser, setOrgMode,setSellerMode,setCustomProperties, setTempUser, setCurrentClient } = useMainProvider();
+
+    const handleLogout = async () => {
+      localStorage.clear();
+      setUser(null); setOrgMode(false); setSellerMode(false); setAdminMode(false);
+      setCurrentUser(null); setCustomProperties([]);
+      setCurrentClient(null); setTempUser(null);
+      setSellerMode(false);
+      setOrgMode(false);
+      router.push("/")
+    }
+    let days = 365;
+    if (currentUser?.isEnterprise) {
+      days = 365;
+    } else if (currentUser?.isPremium) {
+      days = 365;
+    } else if(currentUser?.isFreeTrial) {
+      days = 7;
+    }
+    const futureDate = moment(currentUser?.subscriptionDate).add(days, "days").format("YYYY-MM-DD");
+    const membershipIsValid = moment(futureDate).isAfter(moment().format("YYYY-MM-DD"));
     
     return (
       <div className='flex flex-col'>
@@ -44,11 +67,9 @@ import { useState } from 'react';
         }
        
         
-        <div className={`max-h-[100vh] min-w-[300px] ${showSideBar ? 'block md:block': 'hidden'}`}>
-          <Command className='rounded-none'>
-            <CommandInput placeholder='Type a command or search...' />
+        <div className={`max-h-[100vh] min-h-[70vh] min-w-[300px] ${showSideBar ? 'block md:block': 'hidden'}`}>
+          <Command className='rounded-none flex-1 justify-between'>
             <CommandList>
-              <CommandEmpty>No results found.</CommandEmpty>
               <CommandGroup heading='Suggestions'>
                 {
                   !orgMode && !sellerMode &&
@@ -88,7 +109,7 @@ import { useState } from 'react';
                   {
                     !orgMode && (
                       <CommandItem>
-                        <CreditCard className='mr-2 h-4 w-4' />
+                        <BadgeDollarSign className='mr-2 h-4 w-4' />
                         <Link href='/owner-billings'>Billings</Link>
                       </CommandItem>
                     )
@@ -107,6 +128,43 @@ import { useState } from 'react';
               </CommandGroup>
               <CommandSeparator />
             </CommandList>
+
+            <CommandList>
+              <CommandGroup heading='Help'>
+                {/* <CommandItem>
+                  <Cog className='mr-2 h-4 w-4' />
+                  <Link href='/my-account'>Settings</Link>
+                </CommandItem> */}
+                {
+                  (currentUser?.isPremium || currentUser?.isEnterprise) && !membershipIsValid &&
+                  <CommandItem>
+                    <ShieldPlus className='mr-2 h-4 w-4' />
+                    <Link href='/features'>Update Membership</Link>
+                  </CommandItem>
+                }
+                {
+                  currentUser?.isFreeTrial &&
+                  <CommandItem>
+                    <ShieldPlus className='mr-2 h-4 w-4' />
+                    <Link href='/features#pricing'>Upgrade to Premium</Link>
+                  </CommandItem>
+                }
+                <CommandItem>
+                  <User2Icon className='mr-2 h-4 w-4' />
+                  <Link href='/my-account'>My Profile</Link>
+                </CommandItem>
+                <CommandItem>
+                  <CircleDollarSign className='mr-2 h-4 w-4' />
+                  <Link href='/billing'>My Billing</Link>
+                </CommandItem>
+                <CommandItem>
+                  <LogOut className='mr-2 h-4 w-4' />
+                  <button onClick={handleLogout}>Logout</button>
+                </CommandItem>
+              </CommandGroup>
+              <CommandSeparator />
+            </CommandList>
+
           </Command>
         </div>
       </div>

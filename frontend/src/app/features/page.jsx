@@ -2,12 +2,24 @@
 
 import AnimatedText from "@/components/AnimatedText";
 import FAQS from "@/components/FAQs";
-import Features from "@/components/Features";
-import OurOffering from "@/components/OurOffering";
 import PricingCard from "@/components/PricingCard";
-import React, { useState } from "react";
+import { usePathname } from "next/navigation";
+import React, { useEffect } from "react";
 
 const FeaturesPage = () => {
+  const pathname = usePathname();
+
+  useEffect(() => {
+    if (pathname.includes("#pricing")) {
+      setTimeout(() => {
+        const pricingSection = document.getElementById("pricing");
+        if (pricingSection) {
+          pricingSection.scrollIntoView({ behavior: "smooth" });
+        }
+      }, 200); // Short delay to ensure DOM is ready
+    }
+  }, [pathname]);
+  
   return (
     <section className="relative z-10 overflow-hidden pt-4 dark:bg-dark lg:pb-[10px] lg:pt-[10px]">
       {/* <OurOffering /> */}
@@ -25,12 +37,12 @@ const FeaturesPage = () => {
           </div>
         </div>
 
-        <div id='subscription' className="-mx-4 flex flex-wrap justify-center">
+        <div id='pricing' className="mx-4 flex flex-wrap justify-center">
           <div className="-mx-4 flex flex-wrap">
             <PricingCard
-              type="Free 1 Month Trial"
+              type="Free 7 Days Trial"
               price={0}
-              subscription="One Month"
+              subscription="7 Days Trial"
               description="Perfect for personal search of properties."
               buttonText="Choose Free Trial"
               listItems= {[
