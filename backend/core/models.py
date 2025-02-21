@@ -85,10 +85,10 @@ class Report(TimeStampedUUIDModel):
 
 class Property(TimeStampedUUIDModel):
     title = models.CharField(verbose_name=_("Property Title"), max_length=250)
-    link = models.CharField(verbose_name=_("Property Link"), max_length=250)
+    link = models.CharField(verbose_name=_("Property Link"), max_length=250, null=True)
     description = models.TextField(
         verbose_name=_("Description"),
-        default="Default description...update me please....",
+        default="No Default description...update me please....",
     )
     property_detail_link = models.CharField(verbose_name=_(
         "Property detail Link"), max_length=500, default="")
@@ -117,8 +117,9 @@ class Property(TimeStampedUUIDModel):
     # images = ArrayField(models.URLField(), blank=True, default=list)
     images = models.JSONField(default=list, null=True, blank=True)
     amenities = models.JSONField(default=list, null=True, blank=True)
-    source = models.CharField(max_length=50, default="housinglink")
-
+    source = models.CharField(max_length=50, default="")
+    client_email = models.EmailField(blank=True, null=True)
+    client_confirm_favorite = models.BooleanField(default=False)
     class Meta:
         verbose_name = "Property"
         verbose_name_plural = "Properties"

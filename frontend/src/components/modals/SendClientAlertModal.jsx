@@ -19,7 +19,7 @@ const SendClientAlertModal = ({ property, client, isOpen, onClose }) => {
 
   const createProperty = async() => {
     // Implement property creation logic here
-    const body = {...property, price: parseInt(property?.price), link: "Not Available"}
+    const body = {...property, client_email:client.email, price: parseInt(property?.price), link: "Not Available"}
     // console.log("Body: ", body)
     try {
       const response = await axios.post(`${BACKEND_URL}/drf-api/properties/`, body);
@@ -36,17 +36,16 @@ const SendClientAlertModal = ({ property, client, isOpen, onClose }) => {
   const sendEmail = async() => {
     try {
       setEmailLoading(true)
-      if(property?.pkid){
-        const body = {name: client?.client_name, email: client?.email, link: `${FRONTEND_URL}/properties/${property?.pkid}`}
-        const response = await axios.post('/api/send-client-email', body);
-        if (response.status === 200) {
-          toast.success("Email sent successfully")
-          onClose();
-          return;
-        }
-        return;
-      }
-      
+      // if(property?.pkid){
+      //   const body = {name: client?.client_name, email: client?.email, link: `${FRONTEND_URL}/properties/${property?.pkid}`}
+      //   const response = await axios.post('/api/send-client-email', body);
+      //   if (response.status === 200) {
+      //     toast.success("Email sent successfully")
+      //     onClose();
+      //     return;
+      //   }
+      //   return;
+      // }      
       const pkid = await createProperty();
       if (pkid) {
         const body = {name: client?.client_name, email: client?.email, link: `${FRONTEND_URL}/properties/${pkid}`}

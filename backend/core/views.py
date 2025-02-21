@@ -115,9 +115,11 @@ class PropertyViewSet(viewsets.ModelViewSet):
     serializer_class = PropertySerializer
 
     def list(self, request):
-        # serializer = PropertySerializer(self.queryset, many=True)
-        # return Response(serializer.data)
-        queryset = self.filter_queryset(self.get_queryset())
+        client_email = request.query_params.get('client_email')
+        if client_email is not None:
+            queryset = Property.objects.filter(client_email=client_email)
+        else:
+            queryset = self.filter_queryset(self.get_queryset())
         page = self.paginate_queryset(queryset)
         if page is not None:
             serializer = self.get_serializer(page, many=True)
