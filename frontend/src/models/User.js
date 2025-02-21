@@ -92,6 +92,11 @@ const UserSchema = new Schema({
         required: true,
         default: false,
     },
+    isSubscribed: {
+        type: Boolean,
+        required: true,
+        default: false,
+    },
     image: {
         type: String,
         required: false

@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation";
 
 export default function BillingPage() {
   const {currentUser} = useMainProvider()
-  let days = 365;
+  let days = 0;
   if (currentUser?.isEnterprise) {
     days = 365;
   } else if (currentUser?.isPremium) {
@@ -46,12 +46,21 @@ export default function BillingPage() {
                 <h1 className="px-2 text-sm">{currentUser?.phoneNumber}</h1>
             </div>
           </div>
+
           <h1 className="text-gray-800 dark:text-white">
-            Membership Type: {currentUser?.isEnterprise ? "Enterprise" : "Premium"}
-            {currentUser?.isFreeTrial ? " (Free Trial)" : ""}
+            Membership Type:{" "}
+            {(() => {
+              const types = [];
+              if (currentUser?.isEnterprise) types.push("Enterprise");
+              if (currentUser?.isPremium) types.push("Premium");
+              if (currentUser?.isFreeTrial) types.push("(Free Trial)");
+
+              return types.length > 0 ? types.join(" ") : "None";
+            })()}
           </h1>
+
           <h1 className="text-gray-800 dark:text-white">
-            Membership Status: {membershipIsValid ? "Active" : "Expired"}
+            Membership Status: {membershipIsValid ? "Active" : "Expired or Unsubscribed"}
           </h1>
 
           <h1 className="text-gray-800 dark:text-white">
@@ -61,20 +70,33 @@ export default function BillingPage() {
             Current Subscription Expiry Date: {moment(futureDate).format('MMMM Do YYYY')}
           </h1>
           {
-            !currentUser?.isEnterprise && 
-            <Button className="mt-5" onClick={upgradeToEnterPrise}>Upgrade to Enterprise</Button>
+            currentUser?.isPremium && !currentUser?.isEnterprise &&
+            <Button 
+              className="mt-5" 
+              onClick={upgradeToEnterPrise}
+            >
+              Upgrade to Enterprise
+            </Button>
+          }
+          {
+            currentUser?.isFreeTrial && 
+            <Button 
+              className="mt-5" 
+              onClick={upgradeToEnterPrise}
+            >
+              Upgrade to Premium
+            </Button>
+          }
+           {
+            !currentUser?.isSubscribed && 
+            <Button 
+              className="mt-5" 
+              onClick={upgradeToEnterPrise}
+            >
+              Upgrade to Premium
+            </Button>
           }
       </div>      
     </div>
   );
 }
-
-// import React from 'react'
-
-// const BillingPage = () => {
-//   return (
-//     <div>BillingPage</div>
-//   )
-// }
-
-// export default BillingPage

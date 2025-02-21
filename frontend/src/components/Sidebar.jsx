@@ -75,7 +75,7 @@ import { useState } from 'react';
                   !orgMode && !sellerMode &&
                   <CommandItem>
                     <Star className='mr-2 h-4 w-4' />
-                    <Link href='/favorites'>Favorites</Link>
+                    <Link href='/my-properties'>My Properties</Link>
                   </CommandItem>
                 }
                 {
@@ -143,7 +143,7 @@ import { useState } from 'react';
                   </CommandItem>
                 }
                 {
-                  currentUser?.isFreeTrial &&
+                  (currentUser?.isFreeTrial || !currentUser.isSubscribed) &&
                   <CommandItem>
                     <ShieldPlus className='mr-2 h-4 w-4' />
                     <Link href='/features#pricing'>Upgrade to Premium</Link>
