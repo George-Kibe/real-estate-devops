@@ -19,7 +19,12 @@ const SendClientAlertModal = ({ property, client, isOpen, onClose }) => {
 
   const createProperty = async() => {
     // Implement property creation logic here
-    const body = {...property, client_email:client.email, price: parseInt(property?.price), link: "Not Available"}
+    const body = {
+      ...property, 
+      client_email:client.email, 
+      price: parseInt(property?.price.replace(/[^0-9]/g, ""), 10), 
+      link: "Not Available"
+    }
     // console.log("Body: ", body)
     try {
       const response = await axios.post(`${BACKEND_URL}/drf-api/properties/`, body);

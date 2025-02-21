@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { useMainProvider } from "@/providers/MainProvider";
 import { toast } from "react-toastify";
+import Link from "next/link";
 
 export function UserMenu() {
   const router = useRouter();
@@ -48,8 +49,7 @@ export function UserMenu() {
       toast.success('Switched to seller Mode')
       router.push("/my-account")
     }else{
-      toast.error('Please subscribe to become a seller')
-      router.push("/features#subscription")
+      router.push("/features#pricing")
     }
   }
   return (
@@ -85,9 +85,9 @@ export function UserMenu() {
         }
         {
           !orgMode && !currentUser?.isPremium &&
-          <DropdownMenuItem onClick={switchToSeller}>
+          <Link className="text-sm ml-2" href='/features#pricing'>
             Upgrade to Seller
-          </DropdownMenuItem>
+          </Link>
         }
         <DropdownMenuItem onClick={() => handleLogout()}>
           Logout

@@ -3,6 +3,9 @@
 import React, { useEffect, useState } from 'react';
 import { Button } from '../ui/button';
 import { toast } from 'react-toastify';
+import GooglePlacesAutocomplete from 'react-google-places-autocomplete';
+
+const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
 
 const EditLocationModal = ({isOpen, onClose, searchLocation, fetchProperties, setSearchLocation}) => {
   const [loading, setLoading] = useState(false);
@@ -45,12 +48,19 @@ const EditLocationModal = ({isOpen, onClose, searchLocation, fetchProperties, se
         </button>
         <div className="">
             <p className="">Edit Search Location</p>
-            <input type="text" placeholder='Search Location...' 
+            {/* <input type="text" placeholder='Search Location...' 
               value={searchLocation}
               onChange={ev => setSearchLocation(ev.target.value)}
               className="border-2 border-gray-300 rounded-md p-1 w-full 
               mb-2 focus:border-blue-900" 
-            /> 
+            />  */}
+            <GooglePlacesAutocomplete
+              apiKey={GOOGLE_MAPS_API_KEY}
+              selectProps={{
+                searchLocation,
+                onChange: (val) => setSearchLocation(val.label),
+              }}
+            />
           </div>
         
         <div className="flex flex-col gap-2">

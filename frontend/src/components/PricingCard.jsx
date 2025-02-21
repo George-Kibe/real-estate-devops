@@ -41,7 +41,8 @@ const PricingCard = ({
         const data = await response.json();
         console.log('Response data', data);
         setCurrentUser(data);
-        toast.success("Status update Successful. You can Test our services for one month")
+        toast.success("Status update Successful. You can Test our servies for 7 days")
+        router.push("/dashboard")
         setLoading(false)
       }
     } catch (error) {

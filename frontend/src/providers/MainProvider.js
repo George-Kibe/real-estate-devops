@@ -18,6 +18,7 @@ export function MainProvider({ children }) {
   const [loading, setLoading] = useLocalStorage('loading', false);
   const [tempUser, setTempUser] = useLocalStorage('tempUser', {});
   const [tempProperty, setTempProperty] = useLocalStorage('tempProperty', {});
+  const [tempSubscription, setTempSubscription] = useLocalStorage('tempSubscription', "");
 
   return (
     <MainContext.Provider
@@ -35,6 +36,7 @@ export function MainProvider({ children }) {
         currentClient, setCurrentClient,
         tempProperty, setTempProperty,
         selectedBillings, setSelectedBillings,
+        tempSubscription, setTempSubscription,
       }}
     >
       {children}

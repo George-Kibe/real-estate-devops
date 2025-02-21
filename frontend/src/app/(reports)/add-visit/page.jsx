@@ -145,11 +145,19 @@ const AddVisit = () => {
         </div>
       <div className="flex flex-col w-auto gap-2">
         <Button className="self-start" onClick={() => generateNewReport(true)}>
-           <p className="mr-2">PROCEED</p>
+           <p className="mr-2">
+            {
+              loading ? "Loading Report..." : "PROCEED"
+            }
+           </p>
             <PlusCircle />
         </Button>
         <Button className="self-start" onClick={() => generateNewReport(false)}>
-           <p className="mr-2">PROCEED WITH HOUSING SEARCH</p>
+           <p className="mr-2">
+            {
+              loading ? "Loading Report..." : "PROCEED WITH HOUSING SEARCH"
+            }
+           </p>
             <PlusCircle />
         </Button>
       </div>
