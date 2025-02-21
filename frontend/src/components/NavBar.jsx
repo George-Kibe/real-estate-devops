@@ -58,10 +58,10 @@ const NavBar = () => {
               <div className="hidden md:flex items-center space-x-1">
                 <ModeToggle />
                 <CustomLink href={"/#"} name={"Home"} toggle={handleClick}/>
-                <CustomLink href={"/solutions"} name={"Solutions"} toggle={handleClick}/>
                 <CustomLink href={"/case-studies"} name={"Case Studies"} toggle={handleClick}/>
                 <CustomLink href={"/about-us"} name={"About Us"} toggle={handleClick}/>
                 <CustomLink href={"/features"} name={"Features"} toggle={handleClick}/>
+                <CustomLink href={"/professionals"} name={"Professionals"} toggle={handleClick}/>
                 <CustomLink href={"/contact"} name={"Contacts"} toggle={handleClick}/>
                 {
                   currentUser ? (
@@ -96,10 +96,10 @@ const NavBar = () => {
           <div className="md:hidden flex flex-col">
             <ModeToggle />
             <CustomLink href={"/#"} name={"Home"} toggle={handleClick}/>
-            <CustomLink href={"/solutions"} name={"Solutions"} toggle={handleClick}/>
             <CustomLink href={"/case-studies"} name={"Case Studies"} toggle={handleClick}/>
             <CustomLink href={"/about-us"} name={"About Us"} toggle={handleClick}/>
             <CustomLink href={"/features"} name={"Features"} toggle={handleClick}/>
+            <CustomLink href={"/professionals"} name={"Professionals"} toggle={handleClick}/>
             <CustomLink href={"/contact"} name={"Contacts"} toggle={handleClick}/>
             {
               currentUser ? (
