@@ -80,7 +80,8 @@ export function UserMenu() {
         {
           orgMode && 
           <DropdownMenuItem onClick={() => router.push("/reports")}>
-            {currentUser?.name}'s Organization
+            {/* {currentUser?.name}'s Organization */}
+            Dashboard
           </DropdownMenuItem>
         }
         {

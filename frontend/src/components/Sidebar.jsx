@@ -144,7 +144,7 @@ import { useState } from 'react';
                   </CommandItem>
                 }
                 {
-                  (currentUser?.isFreeTrial || !currentUser?.isSubscribed) &&
+                  (currentUser?.isFreeTrial || !currentUser?.isSubscribed) && !orgMode &&
                   <CommandItem>
                     <ShieldPlus className='mr-2 h-4 w-4' />
                     <Link href='/features#pricing'>Upgrade to Premium</Link>
@@ -154,10 +154,13 @@ import { useState } from 'react';
                   <User2Icon className='mr-2 h-4 w-4' />
                   <Link href='/my-account'>My Profile</Link>
                 </CommandItem>
-                <CommandItem>
-                  <CircleDollarSign className='mr-2 h-4 w-4' />
-                  <Link href='/billing'>My Billing</Link>
-                </CommandItem>
+                {
+                  !orgMode &&
+                  <CommandItem>
+                    <CircleDollarSign className='mr-2 h-4 w-4' />
+                    <Link href='/billing'>My Billing</Link>
+                  </CommandItem>
+                }
                 <CommandItem>
                   <LogOut className='mr-2 h-4 w-4' />
                   <button onClick={handleLogout}>Logout</button>

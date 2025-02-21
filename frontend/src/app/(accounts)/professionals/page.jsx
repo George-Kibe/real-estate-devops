@@ -1,12 +1,12 @@
 "use client"
 
 import { useRouter } from 'next/navigation';
-import { Loader, PlusCircle} from 'lucide-react'
+import { Loader, Star} from 'lucide-react'
 import Pagination from "@/components/Pagination";
-import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import Image from 'next/image';
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
 const columns = [
@@ -41,8 +41,9 @@ const columns = [
 ];
 
 const ProfessionalsPage = ({searchParams}) => {
-  console.log("SearchParams: ", searchParams)
+  console.log("searchParams: ", searchParams)
   const [professionals, setProfessionals] = useState([]);
+  const [filteredProfessionals, setFilteredProfessionals] = useState([]);
   const [users, setUsers] = useState([]);
   const router = useRouter();
   const [loading, setLoading] = useState(false);
@@ -56,6 +57,7 @@ const ProfessionalsPage = ({searchParams}) => {
         if (response.status === 200) {
           setUsers(response.data)
           setProfessionals(response.data.filter(user => user.isProfessional === true))
+          setFilteredProfessionals(response.data.filter(user => user.isProfessional === true))
         }
         setLoading(false)
     } catch (error) {
@@ -81,37 +83,25 @@ const ProfessionalsPage = ({searchParams}) => {
     fetchProfessionals();
   }, [])
 
+  useEffect(() => {
+    if (searchParams.search) {
+      filterProfessional(searchParams.search)
+    } else {
+      setFilteredProfessionals(professionals)
+    }
+  }, [searchParams, professionals])
+
   const goToProfessional = (id) => {
     router.push(`/professionals/${id}`);
   }
   
-  const renderRow = (professional) => (
-    <tr
-      key={professional.id}
-      onClick={() => goToProfessional(professional._id)}
-      className="border border-gray-200 text-sm cursor-pointer"
-    >
-      <td className="md:table-cell">{professional._id.substring(10)}</td>
-      <td className="md:table-cell">{professional.email}</td>
-      <td className="md:table-cell">{professional.firstName}</td>
-      <td className="hidden md:table-cell">{professional.lastName}</td>
-      <td className="md:table-cell">{professional.profession}</td>
-      <td className="md:table-cell">{professional.isAvailable? "Yes": "No"}</td>
-    </tr>
-  );
-
   return (
     <div className="p-4 rounded-md flex-1 m-4 mt-0">
       {/* TOP */}
       <div className="flex items-center justify-between">
-        <h1 className="hidden md:block text-lg font-semibold">All Professionals</h1>
+        <h1 className="hidden md:block text-lg font-semibold">Marketplace</h1>
         <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
           <TableSearch />
-          <div className="flex items-center gap-4 self-end">
-            <button className="w-8 h-8 flex items-center justify-center rounded-full">
-              <PlusCircle />
-            </button>
-          </div>
         </div>
       </div>
       { loading &&
@@ -122,7 +112,48 @@ const ProfessionalsPage = ({searchParams}) => {
           </p>
         </tr>
       }
-      <Table columns={columns} renderRow={renderRow} data={professionals} />
+      <div class="container">
+        <div class="flex flex-wrap -mx-4">
+          {
+            filteredProfessionals.map((professional, index) => (
+              <button 
+                onClick={() => goToProfessional(professional._id)} 
+                class="w-full  px-4 md:w-1/2 lg:w-1/3">
+                <div class="mb-4 wow fadeInUp group cursor-pointer" data-wow-delay=".1s">
+                  <div class="mb-4 overflow-hidden rounded-[5px]">
+                    <a class="">
+                      <Image width={300} height={300} 
+                        src="/images/defaultProfile.png"
+                        alt="image"
+                        class="object-contain w-full " 
+                      />
+                    </a>
+                  </div>
+                  <div className='flex flex-col items-start'>
+                    <h3>
+                      <a
+                        class="inline-block mb-2 text-xl font-semibold text-dark dark:text-white hover:text-primary dark:hover:text-primary sm:text-2xl lg:text-xl xl:text-2xl">
+                        {professional.name}
+                      </a>
+                    </h3>
+                    <p class="max-w-[370px] text-base text-body-color dark:text-dark-6">
+                      {professional.professionalBio || "No professional bio provided"}
+                    </p>
+                  </div>
+                  <div className="flex flex-row justify-between mt-8">
+                    <div className="flex flex-row ">
+                      <Star className='text-black' /> 5.0(20)
+                    </div>
+                    <div className="">
+                      <p className="">From: $25</p>
+                    </div>
+                  </div>
+                </div>
+              </button>
+            ))
+          }
+        </div>
+      </div>
       <Pagination page={1} count={count}/>
     </div>
   );

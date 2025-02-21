@@ -24,6 +24,16 @@ const UserSchema = new Schema({
         unique: false,
         required: false
     },
+    bio: {
+        type: String,
+        unique: false,
+        required: false
+    },
+    professionalBio: {
+        type: String,
+        unique: false,
+        required: false
+    },
     email: {
         type: String,
         unique: true,
