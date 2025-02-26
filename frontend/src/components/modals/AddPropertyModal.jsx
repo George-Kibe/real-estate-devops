@@ -91,8 +91,8 @@ const AddPropertyModal = ({
   }
 
   const handleAddProperty = () => {
-    if (!title || !phone_number || !description || !price || !comments){
-      toast.error("Please fill in all fields");
+    if (!title || !street_address){
+      toast.error("Please fill in all required fields");
       return
     }
     if (agentSelected === "Yes" && !agentName){
@@ -105,6 +105,7 @@ const AddPropertyModal = ({
       return;
     }
     // const amenitiesList = amenities.split(',').map(item => item.trim());
+    
     const newProperty = {
       title : title.trim().replace(/\s+/g, ' '),
       comments : comments.trim().replace(/\s+/g, ' '),
@@ -207,7 +208,7 @@ const AddPropertyModal = ({
         </p>
         <div className="flex flex-col md:flex-wrap">
           <div className="">
-            <p className="flex">Property Title: <p className="text-red-600">*</p></p>
+            <p className="flex">Property Name: <p className="text-red-600">*</p></p>
             <input type="text" placeholder='Property Title' 
               value={title}
               onChange={ev => setTitle(ev.target.value)}
@@ -216,17 +217,18 @@ const AddPropertyModal = ({
             /> 
           </div>
           <div className="">
-            <p className="flex">Property Address: <p className="text-red-600">*</p></p>
+            <p className="flex">Property Address: {street_address} <p className="text-red-600">*</p></p>
             <GooglePlacesAutocomplete
+              key={title} 
               apiKey={GOOGLE_MAPS_API_KEY}
               selectProps={{
-                street_address,
+                street_address, 
                 onChange: (val) => setStreet_address(val.label),
               }}
             />
           </div>
           <div className="">
-            <p className="flex">Phone Number: <p className="text-red-600">*</p> </p>
+            <p className="flex">Phone Number: </p>
             <input type="text" placeholder='Phone Number' 
               value={phone_number}
               onChange={ev => setPhone_number(ev.target.value)}
@@ -235,7 +237,7 @@ const AddPropertyModal = ({
             /> 
           </div>
           <div className="">
-            <p className="flex">Price: <p className="text-red-600">*</p> </p>
+            <p className="flex">Price: </p>
             <input type="text" placeholder='Price' 
               value={price}
               onChange={ev => setPrice(ev.target.value)}
@@ -244,7 +246,7 @@ const AddPropertyModal = ({
             /> 
           </div>
         </div>
-        <p className="font-semibold pr-2 flex ">Description <p className="text-red-600">*</p> </p>
+        <p className="font-semibold pr-2 flex ">Description</p>
         <textarea type="text" placeholder='Enter Your Description here...' 
           value={description} 
           onChange={ev => setDescription(ev.target.value)}
@@ -262,7 +264,7 @@ const AddPropertyModal = ({
           /> 
         </div>
        
-        <p className="font-semibold pr-2 flex">Add Comments<p className="text-red-600">* </p> </p>
+        <p className="font-semibold pr-2 flex">Add Comments </p>
         <textarea type="text" placeholder='Enter Your comments here...' 
           value={comments} 
           onChange={ev => setComments(ev.target.value)}
