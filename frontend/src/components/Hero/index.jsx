@@ -4,11 +4,11 @@ import Image from "next/image";
 const Hero = () => {
 
   return (
-    <section className="relative md:pt-16 md:pb-16 py-8 overflow-hidden z-1">
+    <section className="relative md:pt-4 md:pb-4 py-4 overflow-hidden z-1">
       <div className="container mx-auto lg:max-w-screen-xl px-4">
         <div className="grid grid-cols-12 justify-center items-center">
           <div className="flex flex-col justify-start h-full col-span-5">
-            <div className="py-2 rounded-full w-fit mb-40">
+            <div className="py-2 rounded-full w-fit mb-4 lg:mb-40">
               <p className="text-green-600 text-xl">
                 --- 10+ years of experience in the industry👋
               </p>
