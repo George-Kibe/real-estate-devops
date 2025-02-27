@@ -357,8 +357,9 @@ export default function MembersPage({params, searchParams}) {
       const response = await axios.put(`${BACKEND_URL}/drf-api/reports/${id}/`, data);
       const reportData = response.data
       // console.log("Update Report Data: ", reportData)
-      toast.success("Report Updated Successfully!")
-      fetchReport();
+      toast.success("Report Updated Successfully!");
+      router.push(`/reports`)
+      // fetchReport();
     } catch (error) {
       toast.error("Report Update failed. Try Again!")
     } finally{

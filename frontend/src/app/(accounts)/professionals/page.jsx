@@ -119,7 +119,7 @@ const ProfessionalsPage = ({searchParams}) => {
               <button 
                 onClick={() => goToProfessional(professional._id)} 
                 class="w-full  px-4 md:w-1/2 lg:w-1/3">
-                <div class="mb-4 wow fadeInUp group cursor-pointer" data-wow-delay=".1s">
+                <div class="mb-4 cursor-pointer" data-wow-delay=".1s">
                   <div class="mb-4 overflow-hidden rounded-[5px]">
                     <a class="">
                       <Image width={300} height={300} 

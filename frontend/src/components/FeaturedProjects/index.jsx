@@ -5,7 +5,7 @@ import React from 'react'
 
 const FeaturedProjects = () => {
   return (
-    <div className='container mx-auto lg:max-w-screen-xl px-4 pt-8 pb-4'>
+    <div className='container mx-auto lg:max-w-screen-xl px-4 pt-16 md:pt-24 pb-4'>
       <p className="text-[#45A71E] text-xl font-semibold">
         Featured Projects
       </p>
