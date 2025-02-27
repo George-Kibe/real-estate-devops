@@ -1,13 +1,9 @@
-import AllProperties from "@/components/AllProperties";
-import HomeLinks from "@/components/HomeLinks";
-import SearchView from "@/components/SearchView";
+import Hero from "@/components/Hero";
 
 export default async function Home() {
   return (
     <main className="flex flex-col items-center justify-between p-4">
-      <SearchView />
-      <AllProperties />
-      <HomeLinks />
+      <Hero />
     </main>
   );
 }

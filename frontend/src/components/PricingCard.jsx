@@ -1,6 +1,7 @@
 "use client"
 
 import { useMainProvider } from "@/providers/MainProvider";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { toast } from "react-toastify";
@@ -85,8 +86,8 @@ const PricingCard = ({
           <button onClick={() => handleSubscription(priceId)}
             className={` ${
               active
-                ? "block w-full rounded-md border border-primary bg-primary p-3 text-center text-base font-medium text-white dark:text-black transition hover:bg-opacity-90"
-                : "block w-full rounded-md border border-stroke bg-transparent p-3 text-center text-base font-medium text-primary transition hover:border-primary dark:border-dark-3"
+                ? "p-4 px-16 rounded-full text-white font-bold"
+                : "bg-[#45A71E] p-4 px-16 rounded-full text-white font-bold"
             } `}
           >
             {loading ? 'Loading...' : buttonText}
@@ -101,6 +102,10 @@ export default PricingCard;
 
 export const List = ({ children }) => {
   return (
-    <p className="text-base text-body-color dark:text-dark-6">· {children}</p>
+    <p className="text-base text-body-color dark:text-dark-6">
+      <Image src="/icons/check.png" alt="icon" 
+          width={30} height={30} className="mr-2 inline-block" />
+     {children}
+    </p>
   );
 };
