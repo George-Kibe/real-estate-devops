@@ -12,13 +12,14 @@ export default function BillingPage() {
   let days = 0;
   if (currentUser?.isEnterprise) {
     days = 365;
-  } else if (currentUser?.isPremium) {
-    days = 365;
   } else if(currentUser?.isFreeTrial) {
     days = 7;
+  } else if (currentUser?.isPremium) {
+    days = 365;
   }
-  console.log('days', days);
-  console.log('currentUser?.isFreeTrial', currentUser?.isFreeTrial);
+  
+  // console.log('days', days);
+  // console.log('currentUser?.isFreeTrial', currentUser?.isFreeTrial);
   const futureDate = moment(currentUser?.subscriptionDate).add(days, "days").format("YYYY-MM-DD");
   const membershipIsValid = moment(futureDate).isAfter(moment().format("YYYY-MM-DD"));
 
