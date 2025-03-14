@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { Button } from '../ui/button';
-import { CloudUpload, Copy, PlusCircle, Trash2, CloudDownload } from 'lucide-react';
+import { CloudUpload, Copy, PlusCircle, Trash2, CloudDownload, Delete } from 'lucide-react';
 import { toast } from 'react-toastify';
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
@@ -91,7 +91,7 @@ const AddPropertyModal = ({
   }
 
   const handleAddProperty = () => {
-    if (!title || !street_address){
+    if (!title || !comments){
       toast.error("Please fill in all required fields");
       return
     }
@@ -181,6 +181,12 @@ const AddPropertyModal = ({
       console.error("Failed to copy: ", err);
     }
   };
+  const removePropertyImage = (index) => {
+    console.log(`Deleting image at index ${index}`)
+    const updatedImages = images.filter((_, i) => i !== index);
+    setImages(updatedImages);
+ 
+  }
 
   return (
     <div 
@@ -208,8 +214,8 @@ const AddPropertyModal = ({
         </p>
         <div className="flex flex-col md:flex-wrap">
           <div className="">
-            <p className="flex">Property Name: <p className="text-red-600">*</p></p>
-            <input type="text" placeholder='Property Title' 
+            <p className="flex">Name And Address: <p className="text-red-600">*</p></p>
+            <input type="text" placeholder='Property name and Address' 
               value={title}
               onChange={ev => setTitle(ev.target.value)}
               className="border-2 border-gray-300 rounded-md p-1 w-full 
@@ -217,13 +223,17 @@ const AddPropertyModal = ({
             /> 
           </div>
           <div className="">
-            <p className="flex">Property Address: {street_address} <p className="text-red-600">*</p></p>
+            <p className="flex">Location: {street_address} </p>
             <GooglePlacesAutocomplete
               key={title} 
               apiKey={GOOGLE_MAPS_API_KEY}
               selectProps={{
                 street_address, 
-                onChange: (val) => setStreet_address(val.label),
+                placeholder: "Search Location...",
+                isClearable: true,  
+                isDisabled: false,  
+                isLoading: false,  
+                onChange: (val) => setStreet_address(val ? val.label : null)
               }}
             />
           </div>
@@ -264,7 +274,10 @@ const AddPropertyModal = ({
           /> 
         </div>
        
-        <p className="font-semibold pr-2 flex">Add Comments </p>
+        <p className="font-semibold pr-2 flex">
+          Add Comments 
+          <p className="text-red-600">*</p>
+        </p>
         <textarea type="text" placeholder='Enter Your comments here...' 
           value={comments} 
           onChange={ev => setComments(ev.target.value)}
@@ -288,7 +301,11 @@ const AddPropertyModal = ({
             <span className="flex flex-row flex-wrap gap-2 dark:border-dark-3 bg-white dark:bg-dark-2">
               {images?.length > 0 &&
                 images.map((image, index) => (
-                  <div key={index} className="rounded-sm border-2 border-stroke p-1 h-36 w-40">
+                  <div key={index} className="rounded-sm border-2 border-stroke p-0.5 h-36 w-40">
+                    <button onClick={() => removePropertyImage(index)} className='absolute'>
+                    <Trash2 className='absolute bg-red-500 rounded-md p-1 text-white' />
+                    </button>
+                    
                     <img
                       src={image}
                       alt={`${index}-image`}

@@ -58,7 +58,11 @@ const EditLocationModal = ({isOpen, onClose, searchLocation, fetchProperties, se
               apiKey={GOOGLE_MAPS_API_KEY}
               selectProps={{
                 searchLocation,
-                onChange: (val) => setSearchLocation(val.label),
+                placeholder: "Search Location...",
+                isClearable: true,  
+                isDisabled: false,  
+                isLoading: false,  
+                onChange: (val) => setSearchLocation(val ? val.label : null)
               }}
             />
           </div>

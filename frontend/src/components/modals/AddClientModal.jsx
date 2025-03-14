@@ -216,7 +216,11 @@ const AddClientModal = ({ isOpen, onClose, setLoading, client=null }) => {
               apiKey={GOOGLE_MAPS_API_KEY}
               selectProps={{
                 address,
-                onChange: (val) => setAddress(val.label),
+                placeholder: "Search Location...",
+                isClearable: true,  
+                isDisabled: false,  
+                isLoading: false,  
+                onChange: (val) => setAddress(val ? val.label : null)
               }}
             />
           </div>
@@ -256,7 +260,11 @@ const AddClientModal = ({ isOpen, onClose, setLoading, client=null }) => {
               apiKey={GOOGLE_MAPS_API_KEY}
               selectProps={{
                 city,
-                onChange: (val) => setCity(val.label),
+                placeholder: "Search City...",
+                isClearable: true,  
+                isDisabled: false,  
+                isLoading: false,  
+                onChange: (val) => setCity(val ? val.label : null)
               }}
             />
           </div>

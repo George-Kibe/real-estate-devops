@@ -79,8 +79,8 @@ export default function MembersPage({params, searchParams}) {
   const [reportActivities, setReportActivities] = useState([]);
 
   const [currentPropertiesIndex, setCurrentPropertiesIndex] = useState(5);
-  // console.log("User Properties: ", userProperties);
-  // console.log("Current Properties: ", currentProperties)
+  console.log("User Properties: ", userProperties);
+  console.log("Current Properties: ", currentProperties)
   // console.log("reportActivities: ", reportActivities)
   const {id} = useParams();
   const divRef = useRef();

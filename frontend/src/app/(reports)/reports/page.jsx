@@ -83,6 +83,7 @@ export default function ReportsPage({searchParams}) {
   console.log("BACKEND API URL:", process.env.NEXT_PUBLIC_BACKEND_API_URL);
   const {orgMode, currentUser, currentClient, setCurrentClient} = useMainProvider();
   const router = useRouter();
+  
   const getMembers = async() => {
     try {
       const response = await axios.get(`/api/members/?owner_id=${currentUser?._id}`);
