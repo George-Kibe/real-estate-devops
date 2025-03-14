@@ -27,6 +27,7 @@ export default function BillingPage() {
   const upgradeToEnterPrise = () => {
    router.push("/features#pricing")
   }
+  
   return (
     <div className='flex flex-col justify-between gap-5 mb-5'>
       <AnimatedText text={"Your Billing and Subscription Details"} />

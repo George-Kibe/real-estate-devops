@@ -79,8 +79,8 @@ export default function MembersPage({params, searchParams}) {
   const [reportActivities, setReportActivities] = useState([]);
 
   const [currentPropertiesIndex, setCurrentPropertiesIndex] = useState(5);
-  console.log("User Properties: ", userProperties);
-  console.log("Current Properties: ", currentProperties)
+  // console.log("User Properties: ", userProperties);
+  // console.log("Current Properties: ", currentProperties)
   // console.log("reportActivities: ", reportActivities)
   const {id} = useParams();
   const divRef = useRef();
@@ -934,18 +934,20 @@ export default function MembersPage({params, searchParams}) {
         <div className='flex p-4 flex-col gap-4'>
           <form className='mt-7'>
             <div className='flex justify-between items-end'>
-                <label>Add Summary</label>
-                <Button variant="outline" onClick={GenerateSummaryFromAI} 
-                type="button" size="sm" className="border-primary text-primary flex gap-2"> 
-                  
-                {
-                  summaryAiLoading ? <p className="flex items-center justify-center"><Loader className="animate-spin mr-2" /> Loading....</p> :
-                  <p className="flex items-center gap-2"><Brain className='h-4 w-4' /> Generate Summary Using AI</p>
-                }
-                </Button>
+              <label>Add Summary
+                <button onClick={() => setSummary(allComments)} className='text-green-600 ml-2'>Drop Comments</button>
+              </label>
+              <Button variant="outline" onClick={GenerateSummaryFromAI} 
+              type="button" size="sm" className="border-primary text-primary flex gap-2"> 
+                
+              {
+                summaryAiLoading ? <p className="flex items-center justify-center"><Loader className="animate-spin mr-2" /> Loading....</p> :
+                <p className="flex items-center gap-2"><Brain className='h-4 w-4' /> Generate Summary Using AI</p>
+              }
+              </Button>
             </div>
             <Textarea className="mt-2" required
-                value={summary || allComments}
+                value={summary}
                 defaultValue={summary}
                 onChange={(e)=>setSummary(e.target.value)}
             />

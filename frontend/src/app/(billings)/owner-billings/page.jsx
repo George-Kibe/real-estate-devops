@@ -90,9 +90,8 @@ const columns = [
 ];
 
 const BillingPage = ({searchParams}) => {
-  const {currentUser} = useMainProvider();
   const router = useRouter();
-  const {selectedBillings, setSelectedBillings} = useMainProvider();
+  const {selectedBillings, currentUser, setSelectedBillings} = useMainProvider();
   const [searchText, setSearchText] = useState('')
   const [suggestions, setSuggestions] = useState([]);
   const [filteredSuggestions, setFilteredSuggestions] = useState([]);

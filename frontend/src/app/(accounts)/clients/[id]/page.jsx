@@ -1,5 +1,5 @@
 "use client"
-import LoadingPage from '@/components/Loading';
+
 import axios from 'axios';
 import { useParams, useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
