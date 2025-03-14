@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation';
 import React from 'react'
 
 const Dashboard = () => {
-  const { currentUser} = useMainProvider();
+  const { currentUser, orgMode} = useMainProvider();
   // console.log("Current user: ", currentUser);
   let days = 0;
   if (currentUser?.isEnterprise) {
@@ -27,12 +27,15 @@ const Dashboard = () => {
   const upgradeToEnterPrise = () => {
    router.push("/features#pricing")
   }
+  const goToAccounts = () => {
+    router.push("/my-account")
+  }
   return (
     <div className=''>
       <AnimatedText text={"Dashboard"} />
       {
         (membershipIsValid && currentUser?.isEnterprise) && (
-          <div className="py-10 bg-white dark:bg-dark">
+          <div className="py-2 bg-white dark:bg-dark">
             <div className="container">
               <div className="border-green bg-green-light-6 flex w-full rounded-lg border-l-[6px] px-7 py-8 md:p-9">
                 <div className="bg-green mr-5 flex h-[34px] w-full max-w-[34px] items-center justify-center rounded-md">
@@ -52,8 +55,32 @@ const Dashboard = () => {
         )
       }
       {
+        (!currentUser?.orgName && !orgMode) && (
+          <div className="py-2 bg-white dark:bg-dark">
+            <div className="container">
+              <div className="border-yellow bg-yellow-light-4 flex w-full rounded-lg border-l-[6px] px-7 py-8 md:p-9">
+                <div className="bg-yellow mr-5 flex h-[34px] w-full max-w-[34px] items-center justify-center rounded-md">
+                  <ShieldAlert className='h-48 w-48' />
+                </div>
+                <div className="w-full">
+                  <h5 className="mb-3 text-lg font-semibold text-[#9D5425]">
+                    Attention needed: Complete your profile
+                  </h5>
+                  <p className="text-base leading-relaxed text-[#D0915C]">
+                    Complete your profile to get the best out of Nuviane: add your Organization Name in your Accoutn Settings
+                  </p>
+                  <button onClick={goToAccounts} className="text-base leading-relaxed text-[#D0915C]">
+                    Go To accounts Now
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )
+      }
+      {
         (membershipIsValid && currentUser?.isPremium) && (
-          <div className="py-10 bg-white dark:bg-dark">
+          <div className="py-2 bg-white dark:bg-dark">
             <div className="container">
               <div className="border-green bg-green-light-6 flex w-full rounded-lg border-l-[6px] px-7 py-8 md:p-9">
                 <div className="bg-green mr-5 flex h-[34px] w-full max-w-[34px] items-center justify-center rounded-md">
@@ -75,7 +102,7 @@ const Dashboard = () => {
 
       {
         (membershipIsValid && currentUser?.isFreeTrial) && (
-          <div className="py-10 bg-white dark:bg-dark">
+          <div className="py-2 bg-white dark:bg-dark">
             <div className="container">
               <div className="border-yellow bg-yellow-light-4 flex w-full rounded-lg border-l-[6px] px-7 py-8 md:p-9">
                 <div className="bg-yellow mr-5 flex h-[34px] w-full max-w-[34px] items-center justify-center rounded-md">
