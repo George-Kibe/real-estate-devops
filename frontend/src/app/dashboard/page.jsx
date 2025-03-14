@@ -1,6 +1,7 @@
 "use client";
 
 import AnimatedText from '@/components/AnimatedText';
+import { Button } from '@/components/ui/button';
 import { useMainProvider } from '@/providers/MainProvider';
 import { BadgeCheck, ShieldAlert } from 'lucide-react';
 import moment from 'moment';
@@ -69,9 +70,12 @@ const Dashboard = () => {
                   <p className="text-base leading-relaxed text-[#D0915C]">
                     Complete your profile to get the best out of Nuviane: add your Organization Name in your Accoutn Settings
                   </p>
-                  <button onClick={goToAccounts} className="text-base leading-relaxed text-[#D0915C]">
-                    Go To accounts Now
-                  </button>
+           
+                  <div className="mt-2">
+                    <Button onClick={goToAccounts} className="">
+                      Go To accounts Now
+                    </Button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -115,9 +119,9 @@ const Dashboard = () => {
                   <div className="text-base leading-relaxed text-[#D0915C]">
                     Your Free Trial will expire on {moment(futureDate).format("MMMM DD YYYY")}
                   </div>
-                  <button onClick={upgradeToEnterPrise} className="text-base leading-relaxed text-[#D0915C]">
+                  <Button onClick={upgradeToEnterPrise} className="">
                     Upgrade Now
-                  </button>
+                  </Button>
                 </div>
               </div>
             </div>
