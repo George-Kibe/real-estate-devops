@@ -70,8 +70,8 @@ const AddVisit = () => {
       owner_id: currentUser?._id,
       report_date: moment(date).format('YYYY-MM-DD'),
 
-      // start_time: moment(new Date().toISOString()).format('HH:mm:ss'),
-      // end_time: moment(new Date().toISOString()).format('HH:mm:ss'), 
+      start_time: moment(new Date().toISOString()).format('HH:mm:ss'),
+      end_time: moment(new Date().toISOString()).format('HH:mm:ss'), 
 
       report_draft: "No draft", 
       report_final: "No final report", 
