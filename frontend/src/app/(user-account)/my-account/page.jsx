@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 import { handleFileUpload } from "@/utils/google-cloud";
 
 export default function MyAccountPage() {
-  const {currentUser, setCurrentUser} = useMainProvider();
+  const {currentUser, setCurrentUser, orgMode} = useMainProvider();
   const [userImage, setUserImage] = useState(currentUser?.image);
   const [uplaodLoading, setUploadLoading] = useState(false);
   const [firstName, setFirstName] = useState(currentUser?.firstName || currentUser?.name);
@@ -122,7 +122,7 @@ export default function MyAccountPage() {
           />
         </div>
         {
-          currentUser?.isPremium && (
+          !orgMode && (
             <div className="">
               <label className='mb-[10px] text-base font-medium text-dark dark:text-white'>
                 Organization Name:

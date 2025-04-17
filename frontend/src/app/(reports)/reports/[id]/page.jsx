@@ -35,7 +35,7 @@ const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
 
 export default function MembersPage({params, searchParams}) {
   const location = searchParams?.searchTerm || '';
-  const {currentClient, setCurrentClient, setTempProperty} = useMainProvider();
+  const {currentClient, orgMode, currentUser, tempUser, setCurrentClient, setTempProperty} = useMainProvider();
   const [searchLocation, setSearchLocation] = useState(location);
   const [propertyModalOpen, setPropertyModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -313,7 +313,6 @@ export default function MembersPage({params, searchParams}) {
     setAllComments(newComments);
   }, [userProperties])
   
-
   const updateReport = async() => {
     setErrors([]);
     if (!startTime || !endTime) {
@@ -350,8 +349,11 @@ export default function MembersPage({params, searchParams}) {
       follow_up_notes: followUpNotes,
       report_location: staffLocation,
       additional_resources: additionalResources,
-      report_activities: reportActivities
+      housing_coordinator_name: orgMode? tempUser?.name : currentUser?.name,
+      housing_coordinator_id : orgMode? tempUser?._id : currentUser?._id,
+      report_activities: reportActivities,
     }
+    console.log("Update Report Data: ", data)
 
     try {
       const response = await axios.put(`${BACKEND_URL}/drf-api/reports/${id}/`, data);

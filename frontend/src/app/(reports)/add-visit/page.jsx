@@ -23,6 +23,7 @@ const AddVisit = () => {
   const [date, setDate] = useState(new Date());
   const router = useRouter();
   console.log("myClients: ", myClients);
+
   const fetchClients = async() => {
     try {
       const response = await axios.get(`${BACKEND_URL}/drf-api/clients/?owner_id=${currentUser?._id}`);
@@ -67,8 +68,17 @@ const AddVisit = () => {
       staff_id: orgMode? tempUser?._id : currentUser._id,
       staff_name: orgMode? tempUser?.name : currentUser.name,
       owner_id: currentUser?._id,
-      report_date: moment(date).format('YYYY-MM-DD')
+      report_date: moment(date).format('YYYY-MM-DD'),
+
+      // start_time: moment(new Date().toISOString()).format('HH:mm:ss'),
+      // end_time: moment(new Date().toISOString()).format('HH:mm:ss'), 
+
+      report_draft: "No draft", 
+      report_final: "No final report", 
+      housing_coordinator_name: orgMode? tempUser?.name : currentUser?.name,
+      housing_coordinator_id : orgMode? tempUser?._id : currentUser?._id,
     }
+    console.log("Data: ", data)
     try {
       setLoading(true);
       const response = await axios.post(`${BACKEND_URL}/drf-api/reports/`, data);

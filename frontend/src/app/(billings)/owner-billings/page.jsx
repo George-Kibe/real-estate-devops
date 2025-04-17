@@ -262,7 +262,7 @@ const BillingPage = ({searchParams}) => {
       <td className="md:table-cell">${item.claim_amount}</td>
       <td className="hidden md:table-cell">
         <p
-          className={`p-1 self-center rounded-full px-2 text-white ${
+          className={`p-1 flex justify-center rounded-full px-1 text-white mr-2 ${
             item.bill_status === 'Submitted' 
               ? 'bg-green-500' 
               : 'bg-red-500'
@@ -275,7 +275,7 @@ const BillingPage = ({searchParams}) => {
       <td className="hidden md:table-cell">{item.billed_hours}Hrs</td>
       <td className="hidden md:table-cell">
         <p
-          className={`p-1 self-center rounded-full px-2 text-white ${
+          className={`p-1 flex justify-center rounded-full px-1 text-white text-sm mr-2 ${
             item.approval_status === 'Approved' 
               ? 'bg-green-500' 
               : 'bg-red-500'

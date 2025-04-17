@@ -32,14 +32,14 @@ export function SingleClientReportActions({
           <Trash2 className="h-5 w-5 mr-2" />
             Delete Report
         </DropdownMenuItem>
-        {
+        {/* {
           showGenerateBilling && (
             <DropdownMenuItem onClick={generateBilling}>
               <CirclePlus className="h-5 w-5 mr-2" />
                 Generate Billing
             </DropdownMenuItem>
           )
-        }
+        } */}
       </DropdownMenuContent>
     </DropdownMenu>
   )
