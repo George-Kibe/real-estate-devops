@@ -78,6 +78,10 @@ class Report(TimeStampedUUIDModel):
     report_view_type = models.CharField(max_length=100, null=True, blank=True)
     report_location = models.CharField(max_length=100, null=True, blank=True)
     isBilled = models.BooleanField(default=False)
+    housing_coordinator_name = models.CharField(
+        max_length=100, null=True, blank=True)
+    housing_coordinator_id = models.CharField(
+        max_length=100, null=True, blank=True)
 
     def __str__(self):
         return f"{self.client_id} - {self.report_type}"
@@ -165,6 +169,8 @@ class Enquiry(TimeStampedUUIDModel):
 
 
 class Billing(TimeStampedUUIDModel):
+    report = models.ForeignKey(
+        Report, on_delete=models.CASCADE, null=True, blank=True)
     service_date_start = models.DateField(null=True, blank=True)
     service_date_end = models.DateField(null=True, blank=True)
     client_name = models.CharField(max_length=100, null=True, blank=True)
