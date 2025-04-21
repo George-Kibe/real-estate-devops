@@ -3,15 +3,27 @@ This file contains the signal handlers for the Report and Billing models.
 When a Report is created or updated, a corresponding Billing record is created or updated.
 """
 from decimal import Decimal
+from datetime import datetime, date, timedelta
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from .models import Report
 from .models import Billing  
 
+def calculate_hours(start_time, end_time):
+    # Combine with dummy date to safely subtract
+    dummy_date = date(2000, 1, 1)
+    dt_start = datetime.combine(dummy_date, start_time)
+    dt_end = datetime.combine(dummy_date, end_time)
+    
+    delta: timedelta = dt_end - dt_start
+    hours = Decimal(delta.total_seconds()) / Decimal(3600)
+    return round(hours, 2)  # optional rounding
+
 @receiver(post_save, sender=Report)
 def create_or_update_billing_for_report(sender, instance, created, **kwargs):
     if instance.start_time and instance.end_time:
-        hours = Decimal(instance.end_time.hour - instance.start_time.hour)
+        # hours = Decimal(instance.end_time.hour - instance.start_time.hour)
+        hours = calculate_hours(instance.start_time, instance.end_time)
     else:
         hours = Decimal("0")
     if created:
