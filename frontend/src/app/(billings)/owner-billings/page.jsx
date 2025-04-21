@@ -94,6 +94,7 @@ const BillingPage = ({searchParams}) => {
   const {selectedBillings, currentUser, setSelectedBillings} = useMainProvider();
   const [searchText, setSearchText] = useState('')
   const [suggestions, setSuggestions] = useState([]);
+  const [totalSelected, setTotalSelected] = useState(0);
   const [filteredSuggestions, setFilteredSuggestions] = useState([]);
   const [showStartCalendar, setShowStartCalendar] = useState(false);
   const [showEndCalendar, setShowEndCalendar] = useState(false);
@@ -130,9 +131,15 @@ const BillingPage = ({searchParams}) => {
   const totalPrice = parseFloat(
     billings?.reduce((acc, curr) => acc + parseFloat(curr.claim_amount), 0).toFixed(2)
   );
-  const totalSelected = parseFloat(
-    selectedBillings?.reduce((acc, curr) => acc + parseFloat(curr.claim_amount), 0).toFixed(2)
-  );
+  useEffect(() => {
+    const totalSelected = parseFloat(
+      selectedBillings?.reduce((acc, curr) => acc + parseFloat(curr.claim_amount), 0).toFixed(2)
+    );
+    setTotalSelected(totalSelected);
+
+  }, [selectedBillings])
+  
+  
 
   const fetchBillings = async () => {
     const page = searchParams?.page || 1;
@@ -235,17 +242,27 @@ const BillingPage = ({searchParams}) => {
     setCurrentBilling(billing);
     setShowNotesModal(true);
   }
+  const totals = {
+    id: "totals",
+    hidden: true,
+    client_name: "Totals",
+    housing_coordinator_name: "",
+    claim_amount: totalPrice,
+    count: count,
+    worked_hours: billings.reduce((acc, curr) => acc + parseFloat(curr.worked_hours), 0),
+    billed_hours: billings.reduce((acc, curr) => acc + parseFloat(curr.billed_hours), 0),
+  }
 
-  const renderRow = (item) => (
+  const RenderRow = (item) => (
     <tr
       key={item.id}
       className="border border-gray-200 text-sm"
     >
       <td className="w-4 items-center justify-center pl-2">
         <div className="flex items-center">
-          <input id="checkbox-table-search-1" type="checkbox" 
+          <input type="checkbox" 
             onChange={() =>handleClick(item)}
-            className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+            className={`${item.hidden? "hidden" : ""} w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600`}
             checked={selectedBillings.map(b => b.id).includes(item.id)}
           />
             <label for="checkbox-table-search-1" className="sr-only">checkbox</label>
@@ -253,7 +270,9 @@ const BillingPage = ({searchParams}) => {
       </td>
       <td className="md:table-cell pl-2">
         <div className="flex flex-col justify-center">
-          <h4 className="font-semibold">{moment(item.service_date_start).format("MM-DD-YYYY")}</h4>
+          <h4 className="font-semibold">
+            {item.service_date_start? moment(item.service_date_start).format("MM/DD/YYYY") : ""}
+          </h4>
           {/* <h4 className="font-semibold">{item.service_date_end}</h4> */}
         </div>
       </td>
@@ -262,8 +281,9 @@ const BillingPage = ({searchParams}) => {
       <td className="md:table-cell">${item.claim_amount}</td>
       <td className="hidden md:table-cell">
         <p
-          className={`p-1 flex justify-center rounded-full px-1 text-white mr-2 ${
-            item.bill_status === 'Submitted' 
+          className={`p-1 flex justify-center rounded-full px-1 text-white mr-2 
+            ${item.hidden? "hidden" : ""} 
+            ${ item.bill_status === 'Submitted' 
               ? 'bg-green-500' 
               : 'bg-red-500'
           }`}
@@ -275,8 +295,9 @@ const BillingPage = ({searchParams}) => {
       <td className="hidden md:table-cell">{item.billed_hours}Hrs</td>
       <td className="hidden md:table-cell">
         <p
-          className={`p-1 flex justify-center rounded-full px-1 text-white text-sm mr-2 ${
-            item.approval_status === 'Approved' 
+          className={`p-1 flex justify-center rounded-full px-1 text-white text-sm mr-2 
+            ${item.hidden? "hidden" : ""} 
+            ${item.approval_status === 'Approved' 
               ? 'bg-green-500' 
               : 'bg-red-500'
           }`}
@@ -286,13 +307,19 @@ const BillingPage = ({searchParams}) => {
       </td>
 
       <td className="hidden md:table-cell">
-        <Notebook className="cursor-pointer" onClick={() => showBillingNotes(item)} />
+        <Notebook className={`cursor-pointer ${item.hidden? "hidden" : ""} `} onClick={() => showBillingNotes(item)} />
       </td>
       <td className="hidden md:table-cell">{item.pro_code}</td>
       <td className="hidden md:table-cell">{item.modifier}</td>
       <td className="hidden md:table-cell">{item.payor}</td>
       <td>
-        <BillingActions viewBilling={() =>viewBilling(item.pkid)} />
+        {
+          item.hidden? " " : (
+            <BillingActions
+              viewBilling={() => viewBilling(item.id)}
+            />
+          )
+        }
       </td>
     </tr>
   );
@@ -431,18 +458,19 @@ const BillingPage = ({searchParams}) => {
 
       {/* LIST */}
 
-      <Table columns={columns} renderRow={renderRow} data={billings} />
+      <Table columns={columns} renderRow={RenderRow} data={billings} />
+      <Table columns={columns} renderRow={RenderRow} data={[totals]} hidden={true} />
       {/* PAGINATION */}
       <div className="flex items-center justify-between border-t border-gray-200 px-4 py-3 sm:px-6">
         <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
             <h2 className='font-bold'>
-                ALL TOTAL:{totalPrice}
+                ALL TOTAL: $ {totalPrice}
             </h2>
         </div>
         <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
-            <h2 className='font-bold'>
-                SELECTED TOTAL:{totalSelected}
-            </h2>
+          <h2 className='font-bold'>
+              SELECTED TOTAL: $ {totalSelected}
+          </h2>
         </div>
       </div>
       {

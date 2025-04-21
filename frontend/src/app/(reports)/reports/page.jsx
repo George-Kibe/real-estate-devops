@@ -303,7 +303,15 @@ export default function ReportsPage({searchParams}) {
       <td className="md:table-cell">{report.report_location}</td>
       <td className="hidden md:table-cell">{report.properties.length}</td>
       <td className="hidden md:table-cell">
-        <p className="">{report.start_time}-{report.end_time}</p>
+        <p className="">
+        {moment(report.start_time, "HH:mm:ss").isValid()
+          ? moment(report.start_time, "HH:mm:ss").format("hh:mm A")
+          : ""} 
+        - 
+        {moment(report.end_time, "HH:mm:ss").isValid()
+          ? moment(report.end_time, "HH:mm:ss").format("hh:mm A")
+          : ""}
+        </p>
       </td>
       <td>
         <SingleClientReportActions 

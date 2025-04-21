@@ -1,11 +1,12 @@
 const Table = ({
     columns,
     renderRow,
+    hidden=false,
     data,
   }) => {
     return (
       <table className="w-full mt-4">
-        <thead>
+        <thead className={hidden ? "hidden" : ""}>
           <tr className="text-left text-gray-500 text-sm">
             {columns.map((col) => (
               <th key={col.accessor} className={col.className}>{col.header}</th>

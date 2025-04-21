@@ -52,8 +52,8 @@ const ViewNotesModal = ({
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className={`h-[90vh] w-full overflow-auto bg-white p-4 rounded-md
-          md:w-1/2 dark:bg-black md:p-16 shadow transition-all 
+        className={`h-[90vh] w-full overflow-auto bg-white p-2 rounded-md
+          md:w-1/2 dark:bg-black md:p-4 shadow transition-all 
           ${isOpen ? "scale-100 opacity-100": "sclae-125 opacity-0"}
           `}
         >
@@ -64,7 +64,10 @@ const ViewNotesModal = ({
           <p className="font-bold text-2xl p-4">X</p>
         </button>
         <div className="">
-          <p className="font-semibold pr-2">Notes for {currentBilling?.client_name}-{currentBilling.service_date_start}-{currentBilling.start_time} to {currentBilling.end_time}</p>
+          <p className="font-semibold pr-2 md:text-xl">Notes for {currentBilling?.client_name}</p>
+          <p className="font-semibold pr-2 md:text-lg">Checkin Time: {currentBilling?.start_time}</p>
+          <p className="font-semibold pr-2 md:text-lg">Checkout Time: {currentBilling?.end_time}</p>
+          <p className="font-semibold pr-2 md:text-lg">Notes: </p>
           <div className="mt-4 border border-gray p-2 pr-8 mb-2 relative">
             {
               !editMode && (
@@ -77,6 +80,7 @@ const ViewNotesModal = ({
           {
             editMode && (
               <div className="">
+                
                 <textarea type="text" placeholder='Enter Your Notes here...'
                   value={notes}
                   onChange={ev => setNotes(ev.target.value)}
