@@ -8,7 +8,7 @@ const Footer = () => {
       data-wow-delay=".15s"
     >
       <div className="container">
-        <div className="-mx-4 flex flex-wrap">
+        <div className="flex flex-wrap">
           <div className="w-full px-4 sm:w-1/2 md:w-1/2 lg:w-4/12 xl:w-3/12">
             <div className="mb-10 w-full">
               <Link

@@ -9,16 +9,18 @@ import { LucideIcon } from 'lucide-react';
 
 const DashboardCard = ({ title, count, icon }) => {
   return (
-    <Card className='bg-slate-100 dark:bg-slate-800 p-4 pb-0'>
-      <CardContent>
-        <h3 className='text-xl text-center mb-4 font-bold text-slate-500 dark:text-slate-200'>
+    <Card className='p-2'>
+      <CardContent className='flex flex-row gap-4 justify-between'>
+        <h3 className='text-center mb-2 font-semibold'>
           {title}
-        </h3>
-        <div className='flex gap-5 justify-center items-center'>
-          {icon}
-          <h3 className='text-2xl font-semibold text-slate-500 dark:text-slate-200'>
+          <p className='text-2xl font-semibold'>
             {count}
-          </h3>
+          </p>
+        </h3>
+        <div className='flex-end'>
+          <div className="bg-[#E5FBDE] p-2 md:p-4 rounded-sm">
+            {icon}
+          </div>
         </div>
       </CardContent>
     </Card>
