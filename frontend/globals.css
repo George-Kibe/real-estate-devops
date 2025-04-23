@@ -3,13 +3,6 @@
 
 @custom-variant dark (&:is(.dark *));
 
-.screen-max-width {
-  margin-inline-start: auto;
-  margin-inline-end: auto;
-  position: relative;
-  max-width: 1720px;
-}
-
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);

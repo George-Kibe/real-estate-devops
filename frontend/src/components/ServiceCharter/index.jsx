@@ -48,8 +48,8 @@ const ServiceCharter = () => {
       </div>
       <div className="flex flex-wrap -mx-4 items-center justify-around">
         {
-          services.map((service) => (
-            <ServiceComponent service={service} />
+          services.map((service, index) => (
+            <ServiceComponent key={index} service={service} />
           ))
         }
       </div>

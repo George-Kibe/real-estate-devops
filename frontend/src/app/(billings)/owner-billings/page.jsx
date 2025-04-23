@@ -316,7 +316,7 @@ const BillingPage = ({searchParams}) => {
         {
           item.hidden? " " : (
             <BillingActions
-              viewBilling={() => viewBilling(item.id)}
+              viewBilling={() => viewBilling(item.pkid)}
             />
           )
         }
