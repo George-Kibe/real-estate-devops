@@ -338,6 +338,12 @@ export default function MembersPage({params, searchParams}) {
       setErrors([...errors, "Please add additional resources before adding property or click no!"])
       return;
     }
+    // ensure end time is not after current time
+    if (endTime > new Date()){
+      toast.error("Checkout time cannot be after current time!");
+      setErrors([...errors, "Checkout time cannot be after current time!"])
+      return;
+    }
     setLoading(true);
     const data = {
       start_time: startTime, 
