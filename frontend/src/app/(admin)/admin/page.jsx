@@ -301,7 +301,7 @@ export default function AdminMainPage() {[]
             {
               agencies.length > 0 ? (
                 <Table
-                  headerClassName="bg-[#E5FBDE]"
+                  headerClassName="bg-[#E1E7FA]"
                   columns={claimsColumns}
                   renderRow={RenderClaimsRow}
                   data={agencies}
@@ -317,7 +317,7 @@ export default function AdminMainPage() {[]
             {
               agencies.length > 0 ? (
                 <Table
-                  headerClassName="bg-[#E5FBDE]"
+                  headerClassName="bg-[#E1E7FA]"
                   columns={invoiceColumns}
                   renderRow={RenderInvoicesRow}
                   data={agencies}

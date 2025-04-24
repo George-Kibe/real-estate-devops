@@ -13,7 +13,7 @@ const InviteMemberModal = ({ isOpen, onClose, setLoading }) => {
   const [lastName, setLastName] = useState('');
   const [role, setRole] = useState('');
   const {currentUser} = useMainProvider();
-  const username = currentUser?.name
+  const username = currentUser?.orgName || currentUser?.username || " ";
 
   const inviteMember = async(e) => {
     e.preventDefault()

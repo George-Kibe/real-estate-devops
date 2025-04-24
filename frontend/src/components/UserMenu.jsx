@@ -18,6 +18,7 @@ import Link from "next/link";
 
 export function UserMenu() {
   const router = useRouter();
+  const admins = ["gkw@gmail.com", "abdulsimba@gmail.com", "gk@gmail.com"];
   const {setUser,setOrgMode, currentUser,setAdminMode, setCurrentClient, setCurrentUser, setTempUser, setSellerMode, setCustomProperties, orgMode} = useMainProvider();
 
   useEffect(() => {
@@ -56,7 +57,7 @@ export function UserMenu() {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="outline ml-1" size="icon">
-          <ChevronDownCircleIcon className="h-[1.6rem] w-[1.6rem] rotate-0 scale-100 " />
+          <ChevronDownCircleIcon className="h-8 w-8" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
@@ -72,7 +73,7 @@ export function UserMenu() {
           </>
         }
         {
-          (!orgMode && currentUser.isAdmin) && 
+          (!orgMode && admins.includes(currentUser?.email)) && 
           <DropdownMenuItem onClick={() => router.push("/admin")}>
             Admin Functions
           </DropdownMenuItem>
