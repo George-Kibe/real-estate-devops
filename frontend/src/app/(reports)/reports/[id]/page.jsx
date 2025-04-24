@@ -339,11 +339,23 @@ export default function MembersPage({params, searchParams}) {
       return;
     }
     // ensure end time is not after current time
-    if (endTime > new Date()){
+    const now = moment();
+    const end = moment(endTime, "HH:mm:ss");
+    
+    // Create full datetime for today with the endTime
+    const todayEndTime = moment()
+      .set({
+        hour: end.get("hour"),
+        minute: end.get("minute"),
+        second: end.get("second"),
+      });
+    
+    if (todayEndTime.isAfter(now)) {
       toast.error("Checkout time cannot be after current time!");
-      setErrors([...errors, "Checkout time cannot be after current time!"])
+      setErrors([...errors, "Checkout time cannot be after current time!"]);
       return;
     }
+    
     setLoading(true);
     const data = {
       start_time: startTime, 
