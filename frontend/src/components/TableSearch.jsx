@@ -27,7 +27,7 @@ const TableSearch = () => {
         value={searchText}
         onChange={ev => setSearchText(ev.target.value)}
         placeholder="Search..."
-        className="w-[200px] p-2 bg-transparent outline-none"
+        className="w-[200px] p-2 outline-none"
       />
     </div>
   );
@@ -38,7 +38,7 @@ export default TableSearch;
 export const SearchButton = ({onClick, value, setSearchText}) => {
   return (
     <div
-      className="w-full flex items-center gap-2 text-md mx-4 rounded-full ring-[1.5px] ring-gray-300 px-2"
+      className="w-full bg-gray-200 flex items-center gap-2 text-md mx-4 rounded-full ring-[1.5px] ring-gray-300 px-2"
     >
       <button onClick={onClick}>
         <SearchIcon/>

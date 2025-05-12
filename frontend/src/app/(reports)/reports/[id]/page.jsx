@@ -1,13 +1,13 @@
 "use client"
 
-import AnimatedText from "@/components/AnimatedText";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useMainProvider } from "@/providers/MainProvider";
 import axios from "axios";
-import { Brain, LoaderCircle, Loader, Plus, Search, Copy, PlusCircle, Trash2, CloudDownload  } from 'lucide-react';
+import { Tooltip as ReactTooltip } from "react-tooltip";
+import { Brain, LoaderCircle, Loader, Plus, Search, Copy, PlusCircle, Trash2, CloudDownload, CalendarDays, ChevronDown, MapPin, Sparkles  } from 'lucide-react';
 import { useParams, useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { saveAs } from 'file-saver';
 import * as XLSX from 'xlsx';
@@ -33,8 +33,9 @@ import { LinkActions } from "@/components/LinkActions";
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
 
-export default function MembersPage({params, searchParams}) {
-  const location = searchParams?.searchTerm || '';
+export default function SingleReportPage({params}) {
+
+  const { location } =  React.use(params)
   const {currentClient, orgMode, currentUser, tempUser, setCurrentClient, setTempProperty} = useMainProvider();
   const [searchLocation, setSearchLocation] = useState(location);
   const [propertyModalOpen, setPropertyModalOpen] = useState(false);
@@ -550,8 +551,20 @@ export default function MembersPage({params, searchParams}) {
   return (
     <div className='flex flex-col justify-between gap-5 mb-5'>
       <div ref={divRef} className="">
-      <AnimatedText text={`Report for ${report?.client_name}-${moment(
-        report?.report_date ? report?.report_date : report?.created_at).format('MMMM Do YYYY')} `} />
+        <div className="flex flex-col md:flex-row justify-between my-2 md:my-8">
+          <p className="flex gap-2 text-2xl">
+            Report for 
+            <p className="text-[#45A71E] font-semibold text-3xl flex items-center ">{report?.client_name} 
+              <ChevronDown className="h-6 w-6 font-bold" />
+            </p>
+          </p>
+          <div className="flex gap-2">
+            <p className="text-md font-semibold text-gray-500">
+              {moment(report?.report_date ? report?.report_date : report?.created_at).format('MMMM DD YYYY')}
+            </p>
+            <CalendarDays className="h-6 w-6 text-[#45A71E]" />
+          </div>
+      </div>
       <AddPropertyModal
        currentProperty={currentProperty} 
        editMode={editMode}
@@ -608,178 +621,193 @@ export default function MembersPage({params, searchParams}) {
               </div>
             ) 
           }
-          <div className='flex flex-row gap-2'>
-            <p className='flex flex-row gap-4'><p className="font-semibold">Report Title:</p> {report?.title}</p>
-          </div>
-          <div className='flex flex-row gap-2'>
-            <p className='flex flex-row gap-4'><p className="font-semibold">Report Type:</p> {report?.report_type}</p>
-          </div>
-          {/* <div className='flex flex-row gap-2'>
-            <p className='flex flex-row gap-4'><p className="font-semibold">Report Description:</p> {report?.report_activities}</p>
-          </div> */}
-          <div className='flex flex-row gap-2'>
-            <p className='flex flex-row gap-4'><p className="font-semibold">Report Description:</p> {report?.report_activities.join(" ")}</p>
-          </div>
-          <div className='flex flex-row gap-2'>
-            <p className='flex flex-row gap-4'><p className="font-semibold">Report By:</p> {report?.staff_name}</p>
-          </div>
-          <div className='flex flex-row gap-2'>
-            <p className='flex flex-row gap-4'><p className="font-semibold">Time Spent:</p> { getTimeDifference(report?.start_time , report?.end_time)}</p>
-          </div>
-
-          <div className="mt-4 relative md:mt-6 cursor-pointer flex flex-row items-center gap-2">
-            <p className="">{report?.start_time ? "Edit": "Set"} Start Time:</p>
-            <input 
-                type="time" 
-                id="startTimeInput"
-                value={startTime} 
-                //className="opacity-0 absolute t-0 l-0"
-                onChange={e => setStartTime(e.target.value)} 
-            />
-            <p className="">{startTime ||report?.start_time}</p>
-          </div>
-
-          <div className="mt-4 relative md:mt-6 cursor-pointer flex flex-row items-center gap-2">
-            <p className="">{report?.end_time ? "Edit": "Set"} End Time:</p>
-            <input 
-                type="time" 
-                id="startTimeInput"
-                value={endTime} 
-                //className="opacity-0 absolute t-0 l-0"
-                onChange={e => setEndTime(e.target.value)} 
-            />
-            <p className="">{endTime|| report?.end_time}</p>
-          </div>
-
-          <div className="flex flex-col p-2">              
-            {/* Location Dropdown */}
-            <div className="w-full">
-              <label className="block mb-2 text-sm font-medium ">Select Location</label>
-              <div className="flex items-center gap-4">
-                <select
-                  value={staffLocation}
-                  onChange={(e) => setStaffLocation(e.target.value)}
-                  className="block border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm px-3 py-2"
-                >
-                  <option value="">-Select Location-</option>
-                  <option value="office">Office</option>
-                  <option value="home">Home</option>
-                </select>
-                {/* <p className="text-sm">Selected Location: <span className="font-semibold ">{report?.report_location || staffLocation || 'None'}</span></p> */}
+          <div className="flex flex-col md:flex-row md:flex-wrap">
+            <div className="flex gap-2 w-full md:w-1/3 my-2 ">
+              <div className="flex flex-col gap-1 w-full">
+                <p className="font-semibold">Report Title:</p>
+                <div className=" border p-2 rounded-sm">
+                  <p>{report?.title}</p>
+                </div>
+              </div>
+            </div>
+            <div className="flex gap-2 w-full md:w-1/3 my-2">
+              <div className="flex flex-col gap-1 w-full">
+                <p className="font-semibold">Report Title:</p>
+                <div className="w-full border p-2 rounded-sm">
+                  <p>{report?.report_type}</p>
+                </div>
+              </div>
+            </div>
+            <div className="flex gap-2 w-full md:w-1/3 my-2">
+              <div className="flex flex-col gap-1 w-full">
+                <p className="font-semibold">Select Location</p>
+                <div className="relative w-full border rounded-sm">
+                   <select
+                      value={staffLocation}
+                      onChange={(e) => setStaffLocation(e.target.value)}
+                      className="block rounded-md focus:outline-none w-full h-full py-2"
+                    >
+                      <option value="">-Select Location-</option>
+                      <option value="office">Office</option>
+                      <option value="home">Home</option>
+                    </select>
+                </div>
+                {/* <ChevronDown className="absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-500" />  */}
+              </div>
+            </div>
+            <div className="flex gap-2 w-full md:w-1/3 my-2">
+              <div className="flex flex-col gap-1 w-full">
+                <p className="font-semibold">Report By:</p>
+                <div className="w-full border p-2 rounded-sm">
+                  <p>{report?.staff_name}</p>
+                </div>
+              </div>
+            </div>
+            <div className="flex gap-2 w-full md:w-1/3 my-2">
+              <div className="flex flex-col gap-1 w-full">
+                <p className="font-semibold">Visit Date:</p>
+                <div className="w-full border p-2 rounded-sm">
+                  <p>{moment(report?.report_date ? report?.report_date : report?.created_at).format('MMMM DD YYYY')}</p>
+                </div>
               </div>
             </div>
 
-            <div className="mb-4">
-              <label className="block my-2 text-sm font-medium ">
-                Select Activity
-              </label>
-              <select
-                className="shadow appearance-none border rounded w-full py-2 px-3 leading-tight focus:outline-none focus:shadow-outline" 
-                id="reportActivities"
-                name="reportActivities"
-                value={reportActivities}
-                multiple
-                onChange={(e) => {
-                  const options = Array.from(e.target.selectedOptions, option => option.value);
-                  setReportActivities(options);
-                }}
-              >
-                <option value="">-Select Activity-</option>
-                {
-                  staffActivities?.map((activity, index) => (
-                    <option className="mt-1" key={activity.id} value={activity.value}>
-                      {index+ 1}. {activity.value}
-                    </option>
-                  ))
-                }
-              </select>
+            <div className="flex gap-2 w-full md:w-1/3 my-2">
+              <div className="flex flex-col gap-1 w-full">
+                <p className="font-semibold">Select Visit Type:</p>
+                <div className="relative w-full border p-2 rounded-sm">
+                  <select
+                    value={visitType}
+                    onChange={(e) => setVisitType(e.target.value)}
+                    className="block rounded-md focus:outline-none w-full h-full pr-10"
+                  >
+                    <option value="">-Select Visit Type-</option>
+                    <option value="direct">Direct</option>
+                    <option value="indirect">Indirect</option>
+                    <option value="remote">Remote</option>
+                  </select>
+                  {/* <ChevronDown className="absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-500" /> */}
+                </div>
+              </div>
             </div>
 
-            {/* Visit Type Dropdown */}
-            <div className="w-full mt-2">
-              <label className="block mb-2 text-sm font-medium">Visit Type</label>
-              <div className="flex items-center gap-4">
-                <select
-                  value={visitType}
-                  onChange={(e) => setVisitType(e.target.value)}
-                  className="block border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm px-3 py-2"
-                >
-                  <option value="">-Select Visit Type-</option>
-                  <option value="direct">Direct</option>
-                  <option value="indirect">Indirect</option>
-                  <option value="remote">Remote</option>
-                </select>
-                {/* <p className="text-sm">Selected Visit Type: <span className="font-semibold">{visitType || 'None'}</span></p> */}
+            <div className="flex gap-2 w-full md:w-1/3 my-2">
+              <div className="flex flex-col gap-1 w-full">
+                <p className="font-semibold">{report?.start_time ? "Edit": "Set"} Start Time:</p>
+                <div className="w-full border flex gap-4 p-2 rounded-sm">
+                  <input 
+                    type="time" 
+                    id="startTimeInput"
+                    value={startTime} 
+                    onChange={e => setStartTime(e.target.value)} 
+                  />
+                  {/* <p className="">{startTime ||report?.start_time}</p> */}
+                </div>
+              </div>
+            </div>
+            <div className="flex gap-2 w-full md:w-1/3 my-2">
+              <div className="flex flex-col gap-1 w-full">
+                <p className="font-semibold">{report?.end_time ? "Edit": "Set"} End Time:</p>
+                <div className="w-full border p-2 rounded-sm">
+                  <input 
+                    type="time" 
+                    id="startTimeInput"
+                    value={endTime} 
+                    //className="opacity-0 absolute t-0 l-0"
+                    onChange={e => setEndTime(e.target.value)} 
+                  />
+                </div>
+              </div>
+            </div>
+            <div className="flex gap-2 w-full md:w-1/3 my-2">
+              <div className="flex flex-col gap-1 w-full">
+                <p className="font-semibold">Time Spent:</p>
+                <div className="w-full border p-2 rounded-sm">
+                  <p>
+                    {getTimeDifference(report?.start_time , report?.end_time)}
+                  </p>
+                </div>
               </div>
             </div>
           </div>
         </div>
-        
-       
-        <div className="flex items-center mt-4 mx-8  my-2  md:flex-row">
-          {/* <h2 className="font-semibold text-xl mr-2 ml-4">Search for:</h2>  */}
+
+        <div className="flex flex-col xl:flex-row items-center mt-4 mx-8  my-2 gap-2 md:flex-row">
           <SearchButton 
             onClick={handleGeneralSearch} 
             value={searchText} 
             setSearchText={setSearchText} 
           />
           {
-            searchLoading ?  (
+            searchLoading && (
               <p className="flex items-center justify-center">
                 <Loader className="animate-spin ml-auto" /> Loading....
               </p>
-            ):
-            (
-              <button onClick={handleGeneralSearch} className="flex items-center ml-auto gap-2">
-                <Search className='h-4 w-4'  /> Search
-              </button>
             )
           }
-        </div>
+          <button className="cursor-pointer flex gap-2" onClick={() => setLocationModalOpen(true)}>
+            <MapPin className="h-6 w-6 text-[#45A71E]" />
+            <p className="text-[#45A71E]">Location</p>
+          </button>
+          <button data-tooltip-id="add-custom-property-tooltip" className=" border-1 rounded-full p-2 px-4" onClick={addCustomProperty}>
+            <p className="text-sm">Add&nbsp;Housing&nbsp;Record</p>
+          </button>
+          
+          <ReactTooltip
+            id="add-custom-property-tooltip"
+            place="top"
+            // variant="info"
+            content="Add custom apartment listings or support service"
+          />
 
-        <div className="flex flex-col md:flex-row w-full justify-between">
-          <Button onClick={addCustomProperty} className='m-4 '>
-            Add Custom Property
-          </Button>
-          <Button onClick={addLocalProperties} className='m-4 '>
+          <button className=" border-1 rounded-full p-2 px-4" onClick={addLocalProperties}>
             {
-              localLoading? "Loading Affordable Properties" : "Import Affordable Properties"
+              localLoading?
+               (<p className="text-sm">Loading&nbsp;Local&nbsp;Properties...</p>):
+               (<p className="text-sm">Auto&nbsp;Generate&nbsp;Apartments</p>)
             }
-          </Button>
-          <Button onClick={() => setLocationModalOpen(true)} className='m-4'>
-            Change Search Location
-          </Button>
-          <Button className='m-4'> Links<LinkActions />
-          </Button>
-        </div>
-      
-        <div className="relative shadow-md sm:rounded-lg">
+          </button>
+          <button className="">
+            <LinkActions />
+          </button>
+        </div>  
+
+        <div className="relative shadow-md sm:rounded-lg mt-4 md:mt-8">
           <table className="w-full table-row text-sm text-left text-gray-500 dark:text-gray-400">
-            <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+            <thead className=" bg-[#E8FDDF] h-12 text-xs text-gray-700 uppercase dark:bg-gray-700 dark:text-gray-400">
               <tr>
                 <th scope="col" className="px-2 py-1 w-24">
                   No
                 </th>
                 <th scope="col" className="px-2 py-1">
-                  Details
+                  Image
+                </th>
+                <th scope="col" className="px-2 py-1">
+                    Name
+                </th>
+                <th scope="col" className="px-2 py-1">
+                    Address
                 </th>
                 <th scope="col" className="px-2 py-1">
                     Price
                 </th>
                 <th scope="col" className="px-2 py-1">
-                    Phone Number
+                  Phone Number
                 </th>
                 <th scope="col" className="px-2 py-1">
-                    Description
+                  Description
                 </th>
                 <th scope="col" className="px-2 py-1">
                   Resources
                 </th>
                 <th scope="col" className="px-2 py-1">
-                    Comments
+                  Comments
                 </th>
                 <th scope="col" className="px-2 py-1">
-                    Action
+                  Tracking
+                </th>
+                <th scope="col" className="px-2 py-1">
+                  Action
                 </th>
               </tr>
             </thead>
@@ -807,18 +835,17 @@ export default function MembersPage({params, searchParams}) {
                   <td className="">
                     {index+1}.
                   </td>
+
                   <td scope="row" className="flex gap-2 relative items-center py-2 text-gray-900 whitespace-nowrap dark:text-white">
                     {
                       property.isFavorite && <FaHeart className='h-6 w-6 absolute top-3 left-0 text-red-500 mr-2'  />
                     }
                     {property?.images?.[0] ? (
-                      <Image width={100} height={100} src={property.images[0]} className="rounded-md object-fill" alt="image" />
+                      <Image width={60} height={40} src={property.images[0]} className="rounded-md object-cover" alt="image" />
                     ) : (
                       <p>No Image</p>
                     )}
-                    <div className="max-w-60">
-                      <div className="text-base text-wrap ">Name: {property.title}</div>
-                      <div className="text-sm font-semibold text-wrap">Address: {property.street_address || property.address}</div>
+                    {/* <div className="max-w-60">
                       <div className="font-normal text-gray-500 flex flex-row flex-wrap">
                         <p className="font-bold mr-2">Amenities:</p> {property?.amenities?.map((a, index) => <p className="ml-1" key={index}>{a +", "}</p>)}
                       </div>
@@ -828,7 +855,15 @@ export default function MembersPage({params, searchParams}) {
                       <div className="font-normal text-gray-500 flex flex-row flex-wrap">
                         <p className="font-bold mr-2">Website:</p>{property.website}  
                       </div>
-                    </div>  
+                    </div>   */}
+                  </td>
+                  <td className="">
+                    <div className="text-base text-wrap ">{property.title}</div>
+                  </td>
+                  <td className="">
+                    <div className="text-base text-wrap ">
+                      {property.street_address || property.address}
+                    </div>
                   </td>
                   <td className="px-2 py-1">
                     {property.price}
@@ -860,6 +895,9 @@ export default function MembersPage({params, searchParams}) {
 
                   <td className="px-2 py-1">
                     <SmartText text={property.comments} />
+                  </td>
+                  <td className="px-2 py-1">
+                    <p className="">Tracking</p>
                   </td>
                   <td className="px-2 py-1 self-center justify-center flex-col gap-2">
                     <PropertyActions 
@@ -950,54 +988,92 @@ export default function MembersPage({params, searchParams}) {
             }
           </table>
         </div>
+
+        <div className="mt-4 md:mt-8">
+          <div className='flex gap-2'>
+            <p className='flex'>Report Description:</p> 
+            <p className="font-semibold">{report?.report_activities.join(" ")}</p>
+          </div>
+
+          <div className="flex flex-col p-2">              
+            <div className="mb-4">
+              <label className="block my-2 font-bold text-xl ">
+                Select Activity
+              </label>
+              <select
+                className="shadow appearance-none border rounded w-full py-2 px-3 leading-tight focus:outline-none focus:shadow-outline" 
+                id="reportActivities"
+                name="reportActivities"
+                value={reportActivities}
+                multiple
+                onChange={(e) => {
+                  const options = Array.from(e.target.selectedOptions, option => option.value);
+                  setReportActivities(options);
+                }}
+              >
+                <option value="">-Select Activity-</option>
+                {
+                  staffActivities?.map((activity, index) => (
+                    <option className="mt-1" key={activity.id} value={activity.value}>
+                      {index+ 1}. {activity.value}
+                    </option>
+                  ))
+                }
+              </select>
+            </div>
+          </div>
+        </div>
         
         <div className='flex p-4 flex-col gap-4'>
+          {
+            summaryFinal && (
+              <div className='flex flex-col  items-start'>
+                <label className="mt-2">Summary Notes</label>
+                <p className="text-sm mt-2 border border-gray p-2 mb-2 relative">
+                  {summaryFinal}
+                </p>
+              </div>
+            )
+          }
           <form className='mt-7'>
             <div className='flex justify-between items-end'>
-              <label>Add Summary
-                <button onClick={() => setSummary(allComments)} className='text-green-600 ml-2'>Drop Comments</button>
+              <label>
+                <button onClick={() => setSummary(allComments)} className='text-green-600 ml-2'>One Click Summary</button>
               </label>
-              <Button variant="outline" onClick={GenerateSummaryFromAI} 
-              type="button" size="sm" className="border-primary text-primary flex gap-2"> 
-                
-              {
-                summaryAiLoading ? <p className="flex items-center justify-center"><Loader className="animate-spin mr-2" /> Loading....</p> :
-                <p className="flex items-center gap-2"><Brain className='h-4 w-4' /> Generate Summary Using AI</p>
-              }
-              </Button>
             </div>
             <Textarea className="mt-2" required
                 value={summary}
                 defaultValue={summary}
                 onChange={(e)=>setSummary(e.target.value)}
             />
-            {
-              summaryFinal && (
-                <div className='flex flex-col  items-start'>
-                  <label className="mt-2">Final Summary</label>
-                  <p className="text-sm mt-2 border border-gray p-2 mb-2 relative">
-                    {summaryFinal}
-                  </p>
-                </div>
-              )
-            }
+            <div className="flex w-full justify-end">
+              <Button variant="outline" onClick={GenerateSummaryFromAI} 
+                type="button" size="sm" className="border-primary bg-black self-end text-white mt-2 flex gap-2"> 
+                {
+                  summaryAiLoading ? <p className="flex items-center justify-center"><Loader className="animate-spin mr-2" /> Loading....</p> :
+                  <p className="flex items-center gap-2"><Sparkles className='h-4 w-4' /> Generate Summary Using AI</p>
+                }
+              </Button>
+            </div>
+            
 
             <div className='flex justify-between items-end'>
               <label>Add Follow Up Notes</label>
-              <Button variant="outline" onClick={GenerateFollowUpSummaryAI} 
-              type="button" size="sm" className="border-primary text-primary flex gap-2"> 
-                
-              {
-                summaryAiLoading ? <p className="flex items-center justify-center"><Loader className="animate-spin mr-2" /> Loading....</p> :
-                <p className="flex items-center gap-2"><Brain className='h-4 w-4' /> Generate Summary Using AI</p>
-              }
-              </Button>
             </div>
             <Textarea className="mt-2" required
-                value={followUpNotes}
-                defaultValue={followUpNotes?followUpNotes:report?.followUpNotes}
-                onChange={(e)=>setFollowUpNotes(e.target.value)}
+              value={followUpNotes}
+              defaultValue={followUpNotes?followUpNotes:report?.followUpNotes}
+              onChange={(e)=>setFollowUpNotes(e.target.value)}
             />
+            <div className="flex w-full justify-end">
+              <Button variant="outline" onClick={GenerateFollowUpSummaryAI} 
+                type="button" size="sm" className="border-primary bg-black self-end text-white mt-2 flex gap-2"> 
+                {
+                  summaryAiLoading ? <p className="flex items-center justify-center"><Loader className="animate-spin mr-2" /> Loading....</p> :
+                  <p className="flex items-center gap-2"><Sparkles className='h-4 w-4' /> Generate Follow Up Summary Using AI</p>
+                }
+              </Button>
+            </div>
             {
               followUpNotes && (
                 <div className='flex flex-col  items-start'>
@@ -1114,12 +1190,29 @@ export default function MembersPage({params, searchParams}) {
 
           </div>
           <div className='flex gap-2'>
-            <Button onClick={updateReport}>{loading? 'Loading...': 'Save Report'}</Button>
-            <Button onClick={() => setDeleteModalOpen(true)} variant="destructive">{loading? 'Loading...': 'Delete Report'}</Button>
+            <Button 
+              className='bg-[#45A71E] text-white rounded-full md:p-6 md:px-16'
+              onClick={updateReport}>{loading? 'Loading...': 'Save Report'}
+            </Button>
+            <Button 
+              className='border-2 bg-white text-black rounded-full md:p-6 md:px-16'
+              onClick={() => setDeleteModalOpen(true)} 
+              variant="destructive">{loading? 'Loading...': 'Delete Report'}
+            </Button>
             {/* <Button onClick={handlePrint}  className="">Export PDF</Button> */}
-            <Button onClick={() => setExportModalOpen(true)} className="">Export Excel</Button>
-            <Button onClick={() => router.push(`/reports/preview/${report.pkid}`)} className="">View</Button>
-            <Button onClick={handleExit} className="">Exit</Button>
+            <Button 
+              className="underline bg-white hover:bg-gray-300 text-black rounded-full md:p-6 md:px-16"
+              onClick={() => setExportModalOpen(true)}>Export</Button>
+            {/* <Button 
+              className="border-2 bg-white hover:bg-gray-300 text-black rounded-full md:p-6 md:px-16"
+              onClick={() => router.push(`/reports/preview/${report.pkid}`)}>
+              View
+            </Button> */}
+            <Button 
+              className="border-2 bg-white hover:bg-gray-300 text-black rounded-full md:p-6 md:px-16"
+              onClick={handleExit}>
+              Exit
+            </Button>
           </div>
         </div>
       </div>
