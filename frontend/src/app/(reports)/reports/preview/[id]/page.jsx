@@ -562,22 +562,22 @@ export default function MembersPage() {
               className='border-2 text-white rounded-full md:p-6 md:px-16'
               onClick={() => setDeleteModalOpen(true)} variant="destructive">{loading? 'Loading...': 'Delete Report'}</Button>
             <Button 
-              className='border-2 bg-white text-black rounded-full md:p-6 md:px-16'
+              className='border-2 bg-white text-black rounded-full md:p-6 md:px-16 hover:bg-gray-300'
               onClick={handlePrint} >
               Export PDF
             </Button>
             <Button 
-              className='border-2 bg-white text-black rounded-full md:p-6 md:px-16'
+              className='border-2 bg-white text-black rounded-full md:p-6 md:px-16 hover:bg-gray-300'
               onClick={() => setExportModalOpen(true)}>
                 Export Excel
             </Button>
             <Button 
-              className='border-2 bg-white text-black rounded-full md:p-6 md:px-16'
+              className='border-2 bg-white text-black rounded-full md:p-6 md:px-16 hover:bg-gray-300'
               onClick={() => router.push(`/reports/${report.pkid}`)}>
               Edit
             </Button>
             <Button 
-              className='border-2 bg-white text-black rounded-full md:p-6 md:px-16'
+              className='border-2 bg-white text-black rounded-full md:p-6 md:px-16 hover:bg-gray-300'
               onClick={handleExit}>
                 Exit
             </Button>
