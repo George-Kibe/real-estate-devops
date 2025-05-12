@@ -257,47 +257,101 @@ export default function MembersPage() {
               </div>
             ) 
           }
-          <div className='flex flex-row gap-2'>
-            <p className='flex flex-row gap-4'><p className="font-semibold">Report Title:</p> {report?.title}</p>
+          <div className="flex flex-col md:flex-row md:flex-wrap">
+            <div className="flex gap-2 w-full md:w-1/3 my-2 ">
+              <div className="flex flex-col gap-1 w-full">
+                <p className="font-semibold">Report Title:</p>
+                <div className=" border p-2 rounded-sm">
+                  <p>{report?.title}</p>
+                </div>
+              </div>
+            </div>
+            <div className="flex gap-2 w-full md:w-1/3 my-2">
+              <div className="flex flex-col gap-1 w-full">
+                <p className="font-semibold">Report Title:</p>
+                <div className="w-full border p-2 rounded-sm">
+                  <p>{report?.report_type}</p>
+                </div>
+              </div>
+            </div>
+            <div className="flex gap-2 w-full md:w-1/3 my-2">
+              <div className="flex flex-col gap-1 w-full">
+                <p className="font-semibold">Location</p>
+                <div className="relative w-full border rounded-sm">
+                  <p className="p-2">{report?.report_location || staffLocation || "None"}</p>
+                </div>
+              </div>
+            </div>
+            <div className="flex gap-2 w-full md:w-1/3 my-2">
+              <div className="flex flex-col gap-1 w-full">
+                <p className="font-semibold">Report By:</p>
+                <div className="w-full border p-2 rounded-sm">
+                  <p>{report?.staff_name}</p>
+                </div>
+              </div>
+            </div>
+            <div className="flex gap-2 w-full md:w-1/3 my-2">
+              <div className="flex flex-col gap-1 w-full">
+                <p className="font-semibold">Visit Date:</p>
+                <div className="w-full border p-2 rounded-sm">
+                  <p>{moment(report?.report_date ? report?.report_date : report?.created_at).format('MMMM DD YYYY')}</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex gap-2 w-full md:w-1/3 my-2">
+              <div className="flex flex-col gap-1 w-full">
+                <p className="font-semibold">Report Visit Type:</p>
+                <div className="relative w-full border p-2 rounded-sm">
+                  <p className="">
+                    {report?.report_view_type || visitType || "None"}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex gap-2 w-full md:w-1/3 my-2">
+              <div className="flex flex-col gap-1 w-full">
+                <p className="font-semibold">{report?.start_time ? "Edit": "Set"} Start Time:</p>
+                <div className="w-full border flex gap-4 p-2 rounded-sm">
+                  <input 
+                    type="time" 
+                    id="startTimeInput"
+                    value={startTime} 
+                    onChange={e => setStartTime(e.target.value)} 
+                  />
+                  {/* <p className="">{startTime ||report?.start_time}</p> */}
+                </div>
+              </div>
+            </div>
+            <div className="flex gap-2 w-full md:w-1/3 my-2">
+              <div className="flex flex-col gap-1 w-full">
+                <p className="font-semibold">{report?.end_time ? "Edit": "Set"} End Time:</p>
+                <div className="w-full border p-2 rounded-sm">
+                  <input 
+                    type="time" 
+                    id="startTimeInput"
+                    value={endTime} 
+                    //className="opacity-0 absolute t-0 l-0"
+                    onChange={e => setEndTime(e.target.value)} 
+                  />
+                </div>
+              </div>
+            </div>
+            <div className="flex gap-2 w-full md:w-1/3 my-2">
+              <div className="flex flex-col gap-1 w-full">
+                <p className="font-semibold">Time Spent:</p>
+                <div className="w-full border p-2 rounded-sm">
+                  <p>
+                    {getTimeDifference(report?.start_time , report?.end_time)}
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
-          <div className='flex flex-row gap-2'>
-            <p className='flex flex-row gap-4'><p className="font-semibold">Report Type:</p> {report?.report_type}</p>
-          </div>
-          {/* <div className='flex flex-row gap-2'>
-            <p className='flex flex-row gap-4'><p className="font-semibold">Report Description:</p> {report?.report_activities}</p>
-          </div> */}
-          <div className='flex flex-row gap-2'>
+
+          <div className='flex flex-row gap-2 my-4 md:my-8'>
             <p className='flex flex-row gap-4'><p className="font-semibold">Report Description:</p> {report?.report_activities.join(" ")}</p>
-          </div>
-          <div className='flex flex-row gap-2'>
-            <p className='flex flex-row gap-4'><p className="font-semibold">Report By:</p> {report?.staff_name}</p>
-          </div>
-          <div className='flex flex-row gap-2'>
-            <p className='flex flex-row gap-4'><p className="font-semibold">Time Spent:</p> { getTimeDifference(report?.start_time , report?.end_time)}</p>
-          </div>
-
-          <div className="relative mt-2 cursor-pointer flex flex-row items-center">
-            <p className="font-semibold mr-2">Start Time:</p>
-            <p className="">{startTime ||report?.start_time}</p>
-          </div>
-
-          <div className="relative  mt-2 cursor-pointer flex flex-row items-center">
-            <p className="font-semibold mr-2">End Time:</p>
-            <p className="">{endTime|| report?.end_time}</p>
-          </div>
-
-          <div className="flex flex-col">              
-            <div className="w-full">
-              <div className="flex items-center">
-                <p className="text-sm">Selected Location: <span className="font-semibold ">{report?.report_location || staffLocation || 'None'}</span></p>
-              </div>
-            </div>
-
-            <div className="w-full mt-2">
-              <div className="flex items-center gap-4">
-                <p className="text-sm">Visit Type: <span className="font-semibold">{visitType || 'None'}</span></p>
-              </div>
-            </div>
           </div>
         </div>
       
@@ -309,10 +363,16 @@ export default function MembersPage() {
                   No
                 </th>
                 <th scope="col" className="px-2 py-1">
-                  Details
+                  Image
                 </th>
                 <th scope="col" className="px-2 py-1">
-                  Price
+                    Name
+                </th>
+                <th scope="col" className="px-2 py-1">
+                    Address
+                </th>
+                <th scope="col" className="px-2 py-1">
+                    Price
                 </th>
                 <th scope="col" className="px-2 py-1">
                   Phone Number
@@ -325,6 +385,9 @@ export default function MembersPage() {
                 </th>
                 <th scope="col" className="px-2 py-1">
                   Comments
+                </th>
+                <th scope="col" className="px-2 py-1">
+                  Tracking
                 </th>
               </tr>
             </thead>
@@ -349,61 +412,70 @@ export default function MembersPage() {
               {
                 userProperties?.map((property, index) => (
                   <tr key={property.id} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                  <td className="">
-                    {index+1}.
-                  </td>
-                  <td scope="row" className="flex gap-2 relative items-center py-2 text-gray-900 whitespace-nowrap dark:text-white">
-                    {
-                      property.isFavorite && <FaHeart className='h-6 w-6 absolute top-3 left-0 text-red-500 mr-2'  />
-                    }
-                    {property?.images?.[0] ? (
-                      <Image width={100} height={100} src={property.images[0]} className="rounded-md object-fill" alt="image" />
-                    ) : (
-                      <p>No Image</p>
-                    )}
-                    <div className="max-w-60">
-                      <div className="text-base text-wrap ">Name: {property.title}</div>
-                      <div className="text-sm font-semibold text-wrap">Address: {property.street_address || property.address}</div>
-                      <div className="font-normal text-gray-500 flex flex-row flex-wrap">
-                        <p className="font-bold mr-2">Amenities:</p> {property?.amenities?.map((a, index) => <p className="ml-1" key={index}>{a +", "}</p>)}
+                    <td className="">
+                      {index+1}.
+                    </td>
+                    <td scope="row" className="flex gap-2 relative items-center py-2 text-gray-900 whitespace-nowrap dark:text-white">
+                      {
+                        property.isFavorite && <FaHeart className='h-6 w-6 absolute top-3 left-0 text-red-500 mr-2'  />
+                      }
+                      {property?.images?.[0] ? (
+                        <Image width={60} height={40} src={property.images[0]} className="rounded-md object-fill" alt="image" />
+                      ) : (
+                        <p>No Image</p>
+                      )}
+                      {/* <div className="max-w-60">
+                        <div className="text-base text-wrap ">Name: {property.title}</div>
+                        <div className="text-sm font-semibold text-wrap">Address: {property.street_address || property.address}</div>
+                        <div className="font-normal text-gray-500 flex flex-row flex-wrap">
+                          <p className="font-bold mr-2">Amenities:</p> {property?.amenities?.map((a, index) => <p className="ml-1" key={index}>{a +", "}</p>)}
+                        </div>
+                        <div className="font-normal text-gray-500 flex flex-row flex-wrap">
+                          <p className="font-bold mr-2">Bathrooms:</p>{property.bathrooms}  
+                        </div>
+                        <div className="font-normal text-gray-500 flex flex-row flex-wrap">
+                          <p className="font-bold mr-2">Website:</p>{property.website}  
+                        </div>
+                      </div>   */}
+                    </td>
+                    <td className="px-2 py-1">
+                      {property.title}
+                    </td>
+                    <td className="px-2 py-1">
+                      {property.property_address || property.street_address}
+                    </td>
+                    <td className="px-2 py-1">
+                      {property.price}
+                    </td>
+                    <td className="px-2 py-1">
+                        <div className="flex items-center w-28">
+                            {property.phone_number}
+                        </div>
+                    </td>
+                    <td className="px-2 py-1">
+                      <SmartText text={property.description} />
+                    </td>
+                    <td className="px-2 py-1">
+                      <div className="flex flex-col items-center gap-2">
+                        {property.additionalResources?.map((resource, index) => (
+                          <a
+                            key={index}
+                            href={resource.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-blue-500 hover:underline"
+                          >
+                            <p className="flex flex-row gap-1">{resource.name} <CloudDownload className="h-6 w-6" /></p>
+                          </a>
+                        ))}
                       </div>
-                      <div className="font-normal text-gray-500 flex flex-row flex-wrap">
-                        <p className="font-bold mr-2">Bathrooms:</p>{property.bathrooms}  
-                      </div>
-                      <div className="font-normal text-gray-500 flex flex-row flex-wrap">
-                        <p className="font-bold mr-2">Website:</p>{property.website}  
-                      </div>
-                    </div>  
-                  </td>
-                  <td className="px-2 py-1">
-                    {property.price}
-                  </td>
-                  <td className="px-2 py-1">
-                      <div className="flex items-center w-28">
-                          {property.phone_number}
-                      </div>
-                  </td>
-                  <td className="px-2 py-1">
-                    <SmartText text={property.description} />
-                  </td>
-                  <td className="px-2 py-1">
-                    <div className="flex flex-col items-center gap-2">
-                      {property.additionalResources?.map((resource, index) => (
-                        <a
-                          key={index}
-                          href={resource.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-blue-500 hover:underline"
-                        >
-                          <p className="flex flex-row gap-1">{resource.name} <CloudDownload className="h-6 w-6" /></p>
-                        </a>
-                      ))}
-                    </div>
-                  </td>
-                  <td className="px-2 py-1">
-                    <SmartText text={property.comments} />
-                  </td>
+                    </td>
+                    <td className="px-2 py-1">
+                      <SmartText text={property.comments} />
+                    </td>
+                    <td className="px-2 py-1">
+                      <p className="">Tracking</p>
+                    </td>
                   </tr>
                 ))
               }
@@ -486,11 +558,29 @@ export default function MembersPage() {
 
           </div>
           <div className='flex gap-2'>
-            <Button onClick={() => setDeleteModalOpen(true)} variant="destructive">{loading? 'Loading...': 'Delete Report'}</Button>
-            <Button onClick={handlePrint}  className="">Export PDF</Button>
-            <Button onClick={() => setExportModalOpen(true)} className="">Export Excel</Button>
-            <Button onClick={() => router.push(`/reports/${report.pkid}`)} className="">Edit</Button>
-            <Button onClick={handleExit} className="">Exit</Button>
+            <Button 
+              className='border-2 text-white rounded-full md:p-6 md:px-16'
+              onClick={() => setDeleteModalOpen(true)} variant="destructive">{loading? 'Loading...': 'Delete Report'}</Button>
+            <Button 
+              className='border-2 bg-white text-black rounded-full md:p-6 md:px-16'
+              onClick={handlePrint} >
+              Export PDF
+            </Button>
+            <Button 
+              className='border-2 bg-white text-black rounded-full md:p-6 md:px-16'
+              onClick={() => setExportModalOpen(true)}>
+                Export Excel
+            </Button>
+            <Button 
+              className='border-2 bg-white text-black rounded-full md:p-6 md:px-16'
+              onClick={() => router.push(`/reports/${report.pkid}`)}>
+              Edit
+            </Button>
+            <Button 
+              className='border-2 bg-white text-black rounded-full md:p-6 md:px-16'
+              onClick={handleExit}>
+                Exit
+            </Button>
           </div>
         </div>
       </div>

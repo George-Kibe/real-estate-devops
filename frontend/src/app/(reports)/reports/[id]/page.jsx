@@ -885,7 +885,7 @@ export default function SingleReportPage({params}) {
                   </td>
                   <td className="px-2 py-1">
                       <div className="flex items-center w-28">
-                          {property.phone_number}
+                        {property.phone_number}
                       </div>
                   </td>
                   <td className="px-2 py-1">
@@ -946,48 +946,49 @@ export default function SingleReportPage({params}) {
                         ) : (
                           <p>No Image</p>
                         )}
-                        <div className="max-w-60">
-                          <div className="text-base text-wrap ">Name: {property.title}</div>
-                          <div className="text-sm font-semibold text-wrap">Address: {property.street_address || property.address}</div>
-                          <div className="font-normal text-gray-500 flex flex-row flex-wrap">
-                            <p className="font-bold mr-2">Amenities:</p> {property?.amenities?.map((a, index) => <p className="ml-1" key={index}>{a +", "}</p>)}
-                          </div>
-                          <div className="font-normal text-gray-500 flex flex-row flex-wrap">
-                            <p className="font-bold mr-2">Bathrooms:</p>{property.bathrooms}  
-                          </div>
-                          <div className="font-normal text-gray-500 flex flex-row flex-wrap">
-                            <p className="font-bold mr-2">Website:</p>{property.website}  
-                          </div>
-                        </div>  
+                      </td>
+                      <td className="">
+                        <div className="text-base text-wrap ">{property.title}</div>
+                      </td>
+                      <td className="">
+                        <div className="text-base text-wrap ">
+                          {property.street_address || property.address}
+                        </div>
                       </td>
                       <td className="px-2 py-1">
                         {property.price}
                       </td>
                       <td className="px-2 py-1">
-                          <div className="flex w-28 items-center">
-                              {property.phone_number}
+                          <div className="flex items-center w-28">
+                            {property.phone_number}
                           </div>
                       </td>
                       <td className="px-2 py-1">
                         <SmartText text={property.description} />
                       </td>
                       <td className="px-2 py-1">
-                        <p className=""></p>
+                        <div className="flex flex-col items-center gap-2">
+                          NA
+                        </div>
+                      </td>
+
+                      <td className="px-2 py-1">
+                        <SmartText text={property.comments || ""} />
                       </td>
                       <td className="px-2 py-1">
-                        <p className=""></p>
+                        <p className="">Tracking</p>
                       </td>
                       <td className="px-2 py-1  self-center justify-center flex-col gap-2">
-                      <PropertyActions 
-                        handleAddProperty={() => handleEdit(property, index, true)}
-                        isNew={true}                               
-                        viewProperty={() => viewProperty(property)} 
-                        handleShareProperty={() => handleShareProperty(property)} 
-                        handleRemoveProperty={() => handleRemove(index)}
-                        isFavorite={property.isFavorite}
-                        handleMarkFavorite={() => handleMarkFavorite(index)}
-                      />
-                    </td>
+                        <PropertyActions 
+                          handleAddProperty={() => handleEdit(property, index, true)}
+                          isNew={true}                               
+                          viewProperty={() => viewProperty(property)} 
+                          handleShareProperty={() => handleShareProperty(property)} 
+                          handleRemoveProperty={() => handleRemove(index)}
+                          isFavorite={property.isFavorite}
+                          handleMarkFavorite={() => handleMarkFavorite(index)}
+                        />
+                      </td>
                     </tr>
                   ))
                 }
