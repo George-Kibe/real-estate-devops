@@ -27,9 +27,10 @@ import Image from "next/image";
 import { handleFileUpload } from "@/utils/google-cloud";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { staffActivities } from "../../../../../data/staff-activities";
 import SmartText from "@/components/SmartText";
 import { LinkActions } from "@/components/LinkActions";
+import ReportDescriptionModal from "@/components/modals/ReportDescriptionModal";
+import { staffActivities } from "../../../../../data/staff-activities";
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
 
@@ -43,6 +44,7 @@ export default function SingleReportPage({params}) {
   const [sendModalOpen, setSendModalOpen] = useState(false);
   const [locationModalOpen, setLocationModalOpen] = useState(false);
   const [exportModalOpen, setExportModalOpen] = useState(false);
+  const [descriptionModal, setDescriptionModal] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [isNew, setIsNew] = useState(false);
   const [report, setReport] = useState(null);
@@ -604,6 +606,13 @@ export default function SingleReportPage({params}) {
         property={currentProperty} 
       />
 
+      <ReportDescriptionModal 
+        isOpen={descriptionModal} 
+        onClose={() => setDescriptionModal(false)}
+        reportActivities={reportActivities}
+        setReportActivities={setReportActivities}
+      />
+
         <div className="px-2">
           {
             errors.length > 0 && (
@@ -648,8 +657,11 @@ export default function SingleReportPage({params}) {
                       className="block rounded-md focus:outline-none w-full h-full py-2"
                     >
                       <option value="">-Select Location-</option>
-                      <option value="office">Office</option>
+                      <option value="office">Office</option>                      
                       <option value="home">Home</option>
+                      <option value="skilledNursingFacility">Skilled Nursing Facility</option>
+                      <option value="community">Community</option>
+                      <option value="others">Others</option>
                     </select>
                 </div>
                 {/* <ChevronDown className="absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-500" />  */}
@@ -682,9 +694,9 @@ export default function SingleReportPage({params}) {
                     className="block rounded-md focus:outline-none w-full h-full pr-10"
                   >
                     <option value="">-Select Visit Type-</option>
-                    <option value="direct">Direct</option>
-                    <option value="indirect">Indirect</option>
-                    <option value="remote">Remote</option>
+                    <option value="directinPerson">Direct In Person</option>
+                    <option value="directRemote">Direct Remote</option>
+                    <option value="InDirect">InDirect</option>
                   </select>
                   {/* <ChevronDown className="absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-500" /> */}
                 </div>
@@ -745,10 +757,13 @@ export default function SingleReportPage({params}) {
               </p>
             )
           }
-          <button className="cursor-pointer flex gap-2" onClick={() => setLocationModalOpen(true)}>
+
+          <button className="cursor-pointer flex gap-2" 
+            onClick={() => setLocationModalOpen(true)}>
             <MapPin className="h-6 w-6 text-[#45A71E]" />
             <p className="text-[#45A71E]">Location</p>
           </button>
+
           <button data-tooltip-id="add-custom-property-tooltip" className=" border-1 rounded-full p-2 px-4" onClick={addCustomProperty}>
             <p className="text-sm">Add&nbsp;Housing&nbsp;Record</p>
           </button>
@@ -992,42 +1007,19 @@ export default function SingleReportPage({params}) {
         <div className="mt-4 md:mt-8">
           <div className='flex gap-2'>
             <p className='flex'>Report Description:</p> 
-            <p className="font-semibold">{report?.report_activities.join(" ")}</p>
+            <p className="font-semibold">{reportActivities.join(" ")}</p>
           </div>
-
-          <div className="flex flex-col p-2">              
-            <div className="mb-4">
-              <label className="block my-2 font-bold text-xl ">
-                Select Activity
-              </label>
-              <select
-                className="shadow appearance-none border rounded w-full py-2 px-3 leading-tight focus:outline-none focus:shadow-outline" 
-                id="reportActivities"
-                name="reportActivities"
-                value={reportActivities}
-                multiple
-                onChange={(e) => {
-                  const options = Array.from(e.target.selectedOptions, option => option.value);
-                  setReportActivities(options);
-                }}
-              >
-                <option value="">-Select Activity-</option>
-                {
-                  staffActivities?.map((activity, index) => (
-                    <option className="mt-1" key={activity.id} value={activity.value}>
-                      {index+ 1}. {activity.value}
-                    </option>
-                  ))
-                }
-              </select>
-            </div>
-          </div>
+          <button className="border-2 w-full flex justify-between p-2 rounded-b-sm mt-2" 
+            onClick={() => setDescriptionModal(true)}>
+            <p className="">Select</p>
+            <ChevronDown className="h-6 w-6 text-[#45A71E]" />
+          </button>
         </div>
         
         <div className='flex p-4 flex-col gap-4'>
           {
             summaryFinal && (
-              <div className='flex flex-col  items-start'>
+              <div className='flex flex-col items-start'>
                 <label className="mt-2">Summary Notes</label>
                 <p className="text-sm mt-2 border border-gray p-2 mb-2 relative">
                   {summaryFinal}
@@ -1038,21 +1030,38 @@ export default function SingleReportPage({params}) {
           <form className='mt-7'>
             <div className='flex justify-between items-end'>
               <label>
-                <button onClick={() => setSummary(allComments)} className='text-green-600 ml-2'>One Click Summary</button>
+                <button data-tooltip-id="drop-comments-tooltop"  onClick={() => setSummary(allComments)} className='text-green-600 ml-2'>
+                  One Click Summary
+                </button>
               </label>
+              <ReactTooltip
+                id="drop-comments-tooltop"
+                place="top"
+                // variant="info"
+                content="Click to drop all property comments"
+              />
             </div>
             <Textarea className="mt-2" required
-                value={summary}
-                defaultValue={summary}
-                onChange={(e)=>setSummary(e.target.value)}
+              value={summary}
+              defaultValue={summary}
+              onChange={(e)=>setSummary(e.target.value)}
             />
             <div className="flex w-full justify-end">
-              <Button variant="outline" onClick={GenerateSummaryFromAI} 
+              <Button variant="outline" data-tooltip-id="summary-tooltop"  onClick={GenerateSummaryFromAI} 
                 type="button" size="sm" className="border-primary bg-black self-end text-white mt-2 flex gap-2"> 
                 {
-                  summaryAiLoading ? <p className="flex items-center justify-center"><Loader className="animate-spin mr-2" /> Loading....</p> :
-                  <p className="flex items-center gap-2"><Sparkles className='h-4 w-4' /> Generate Summary Using AI</p>
+                  summaryAiLoading ? <p className="flex items-center justify-center">
+                    <Loader className="animate-spin mr-2" /> Loading....</p> :
+                  <p className="flex items-center gap-2">
+                    <Sparkles className='h-4 w-4' /> Generate Summary Using AI
+                  </p>
                 }
+                <ReactTooltip
+                  id="summary-tooltop"
+                  place="top"
+                  // variant="info"
+                  content="Click once to summarize all clients' comments with AI"
+                />
               </Button>
             </div>
             
@@ -1087,20 +1096,20 @@ export default function SingleReportPage({params}) {
           </form>
 
           <div className="flex flex-col items-start p-2">
-          <h2 className="text-xl font-bold mb-4">Any additional Resources?</h2>
-          <div className="">
-            <RadioGroup value={resourcesSelected} defaultValue="Yes" onValueChange={setResourcesSelected}>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="Yes" id="r1" />
-                <Label htmlFor="r1">Yes</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="No" id="r2" />
-                <Label htmlFor="r2">No</Label>
-              </div>
-            </RadioGroup>
+            <h2 className="text-xl font-bold mb-4">Any additional Resources?</h2>
+            <div className="">
+              <RadioGroup value={resourcesSelected} defaultValue="Yes" onValueChange={setResourcesSelected}>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="Yes" id="r1" />
+                  <Label htmlFor="r1">Yes</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="No" id="r2" />
+                  <Label htmlFor="r2">No</Label>
+                </div>
+              </RadioGroup>
+            </div>
           </div>
-        </div>
 
           {resourcesSelected === "Yes" && (
           <div className="">

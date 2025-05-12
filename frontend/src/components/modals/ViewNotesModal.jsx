@@ -57,14 +57,14 @@ const ViewNotesModal = ({
           ${isOpen ? "scale-100 opacity-100": "sclae-125 opacity-0"}
           `}
         >
-        <button
-          onClick={onClose}
-          className='absolute top-2 right-2 p-1 px-2 rounded-lg text-red-700 bg-white hover:bg-gray-50 hover:text-gray-600'
+         <button onClick={onClose}
+          className='absolute top-0 right-0 rounded-lg text-red-700 bg-white hover:bg-gray-50
+          hover:text-gray-600'
         >
-          <p className="font-bold text-2xl p-4">X</p>
+          <p className="font-bold text-2xl p-2">X</p>
         </button>
         <div className="">
-          <p className="font-semibold pr-2 md:text-xl">Notes for {currentBilling?.client_name}</p>
+          <p className="font-semibold pr-2 md:text-xl text-[#45A71E]">Notes for {currentBilling?.client_name}</p>
           <p className="font-semibold pr-2 md:text-lg">Checkin Time: {currentBilling?.start_time}</p>
           <p className="font-semibold pr-2 md:text-lg">Checkout Time: {currentBilling?.end_time}</p>
           <p className="font-semibold pr-2 md:text-lg">Notes: </p>
