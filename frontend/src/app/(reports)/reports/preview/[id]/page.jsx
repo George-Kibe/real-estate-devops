@@ -4,7 +4,7 @@ import AnimatedText from "@/components/AnimatedText";
 import { Button } from "@/components/ui/button";
 import { useMainProvider } from "@/providers/MainProvider";
 import axios from "axios";
-import { LoaderCircle, Loader, Plus, Search, CloudDownload } from 'lucide-react';
+import { LoaderCircle, Loader, Plus, Search, CloudDownload, ChevronDown, CalendarDays } from 'lucide-react';
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
@@ -13,7 +13,6 @@ import * as XLSX from 'xlsx';
 import moment from 'moment';
 import ConfirmDeleteModal from "@/components/modals/ConfirmDeleteModal";
 import { getTimeDifference } from "@/lib/getTimeDifference";
-import ConfirmExportModal from "@/components/modals/ConfirmExportModal";
 import { FaHeart } from "react-icons/fa";
 import ReactMarkdown from 'react-markdown';
 import { GeneralSearchButton } from "@/components/TableSearch";
@@ -225,14 +224,20 @@ export default function MembersPage() {
   return (
     <div className='flex flex-col justify-between gap-5 mb-5'>
       <div ref={divRef} className="">
-      
-      <AnimatedText text={`Report for ${report?.client_name}-${moment(
-        report?.report_date ? report?.report_date : report?.created_at).format('MMMM Do YYYY')} `} />
-      <ConfirmExportModal 
-        exportAction={exportToExcel} 
-        isOpen={exportModalOpen} 
-        onClose={() => setExportModalOpen(false)} 
-      />
+        <div className="flex flex-col md:flex-row justify-between my-2 md:my-8">
+          <p className="flex flex-col md:flex-row gap-2 text-2xl">
+            Report for 
+            <p className="text-[#45A71E] font-semibold text-3xl flex items-center ">{report?.client_name} 
+              <ChevronDown className="h-6 w-6 font-bold" />
+            </p>
+          </p>
+          <div className="flex gap-2">
+            <p className="text-md font-semibold text-gray-500">
+              {moment(report?.report_date ? report?.report_date : report?.created_at).format('MMMM DD YYYY')}
+            </p>
+            <CalendarDays className="h-6 w-6 text-[#45A71E]" />
+          </div>
+      </div>
       <ConfirmDeleteModal 
         deleteAction={deleteReport} 
         isOpen={deleteModalOpen} 
@@ -318,6 +323,7 @@ export default function MembersPage() {
                     type="time" 
                     id="startTimeInput"
                     value={startTime} 
+                    disabled
                     onChange={e => setStartTime(e.target.value)} 
                   />
                   {/* <p className="">{startTime ||report?.start_time}</p> */}
@@ -332,7 +338,7 @@ export default function MembersPage() {
                     type="time" 
                     id="startTimeInput"
                     value={endTime} 
-                    //className="opacity-0 absolute t-0 l-0"
+                    disabled
                     onChange={e => setEndTime(e.target.value)} 
                   />
                 </div>
@@ -350,14 +356,18 @@ export default function MembersPage() {
             </div>
           </div>
 
-          <div className='flex flex-row gap-2 my-4 md:my-8'>
-            <p className='flex flex-row gap-4'><p className="font-semibold">Report Description:</p> {report?.report_activities.join(" ")}</p>
+          <div className='flex flex-col gap-2 my-4 md:my-8'>
+            <p className='flex flex-row gap-4'>
+              Report Description:</p> 
+            <p className="font-semibold">
+              {report?.report_activities.join(" ")}
+            </p>
           </div>
         </div>
       
         <div className="relative shadow-md sm:rounded-lg">
           <table className="w-full table-row text-sm text-left text-gray-500 dark:text-gray-400">
-            <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+            <thead className="bg-[#E8FDDF] h-12 text-xs text-gray-700 uppercase dark:bg-gray-700 dark:text-gray-400">
               <tr>
                 <th scope="col" className="px-2 py-1 w-24">
                   No

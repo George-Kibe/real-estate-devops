@@ -1,13 +1,13 @@
+
 "use client";
 import DashboardCard from '@/components/dashboard/DashboardCard';
 // import PostsTable from '@/components/posts/PostsTable';
-import AnalyticsChart from '@/components/dashboard/AnalyticsChart';
-import { BadgeDollarSign, Eye, Folder, MessageCircle, Newspaper, Pen, Trash2, User, Users, Users2 } from 'lucide-react';
+import { BadgeDollarSign, Eye, Newspaper, Pen, Trash2, User, Users, Users2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import Table from '@/components/Table';
 import moment from 'moment';
-
+import { useRouter } from 'next/navigation';
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
 
 const columns = [
@@ -121,6 +121,7 @@ export default function AdminMainPage() {[]
   const [staff, setStaff] = useState([])
   const [clients, setClients] = useState([]);
   const [billings, setBillings] = useState([]);
+  const router = useRouter();
 
 
   const fetchAgencies = async () => {
@@ -183,9 +184,21 @@ export default function AdminMainPage() {[]
       </td>
       <td className="hidden md:table-cell">
         <div className="flex gap-2 flex-row">
-          <button className="p-1 rounded-full bg-[#FCECE1]"> <Eye className='h-5 w-5 text-[#F44336]' /></button>
-          <button className="p-1 rounded-full bg-[#E1E7FA]"> <Pen className='h-5 w-5 text-[#214FDB]' /> </button>
-          <button className="p-1 rounded-full bg-[#FCECE1]"> <Trash2 className='h-5 w-5 text-[#F44336]' /> </button>
+          <button 
+            onClick={() => router.push(`/users/${user._id}`)} 
+            className="p-1 rounded-full bg-[#FCECE1]"> 
+            <Eye className='h-5 w-5 text-[#F44336]' />
+          </button>
+          <button 
+            onClick={() => router.push(`/users/${user._id}`)}
+            className="p-1 rounded-full bg-[#E1E7FA]"> 
+            <Pen className='h-5 w-5 text-[#214FDB]' /> 
+          </button>
+          <button 
+            onClick={() => router.push(`/users/${user._id}`)}
+            className="p-1 rounded-full bg-[#FCECE1]"> 
+            <Trash2 className='h-5 w-5 text-[#F44336]' /> 
+          </button>
         </div>
       </td>
     </tr>
@@ -286,7 +299,7 @@ export default function AdminMainPage() {[]
         {
           agencies.length > 0 ? (
             <Table
-              headerClassName="bg-[#E5FBDE]"
+              headerClassName="bg-[#E5FBDE] h-10"
               columns={columns}
               renderRow={RenderAgenciesRow}
               data={agencies}
@@ -301,7 +314,7 @@ export default function AdminMainPage() {[]
             {
               agencies.length > 0 ? (
                 <Table
-                  headerClassName="bg-[#E1E7FA]"
+                  headerClassName="bg-[#E1E7FA] h-10"
                   columns={claimsColumns}
                   renderRow={RenderClaimsRow}
                   data={agencies}
@@ -317,7 +330,7 @@ export default function AdminMainPage() {[]
             {
               agencies.length > 0 ? (
                 <Table
-                  headerClassName="bg-[#E1E7FA]"
+                  headerClassName="bg-[#E1E7FA] h-10"
                   columns={invoiceColumns}
                   renderRow={RenderInvoicesRow}
                   data={agencies}

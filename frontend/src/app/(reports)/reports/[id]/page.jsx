@@ -554,12 +554,12 @@ export default function SingleReportPage({params}) {
     <div className='flex flex-col justify-between gap-5 mb-5'>
       <div ref={divRef} className="">
         <div className="flex flex-col md:flex-row justify-between my-2 md:my-8">
-          <p className="flex gap-2 text-2xl">
-            Report for 
+          <div className="flex flex-col md:flex-row gap-2 text-2xl mb-4 ">
+           <p className=""> Report for </p>
             <p className="text-[#45A71E] font-semibold text-3xl flex items-center ">{report?.client_name} 
               <ChevronDown className="h-6 w-6 font-bold" />
             </p>
-          </p>
+          </div>
           <div className="flex gap-2">
             <p className="text-md font-semibold text-gray-500">
               {moment(report?.report_date ? report?.report_date : report?.created_at).format('MMMM DD YYYY')}
@@ -1006,7 +1006,7 @@ export default function SingleReportPage({params}) {
         </div>
 
         <div className="mt-4 md:mt-8">
-          <div className='flex gap-2'>
+          <div className='flex flex-col gap-2'>
             <p className='flex'>Report Description:</p> 
             <p className="font-semibold">{reportActivities.join(" ")}</p>
           </div>
