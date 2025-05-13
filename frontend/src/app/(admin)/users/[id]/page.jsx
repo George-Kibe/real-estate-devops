@@ -1,5 +1,7 @@
 "use client"
 
+import LoadingPage from '@/components/Loading';
+import ConfirmDeleteModal from '@/components/modals/ConfirmDeleteModal';
 import axios from 'axios';
 import { useParams } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
@@ -9,9 +11,13 @@ const SingleAgencyView = () => {
   const {id} = useParams();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [removeLoading, setRemoveLoading] = useState(false);
+  const [showRemoveModal, setShowRemoveModal] = useState(false);
   const [agency, setAgency] = useState({});
+  
   const getAgencyData = async() => {
     try {
+      setLoading(true);
       const response = await axios.get(`/api/auth/users/${id}`);
       console.log("Agency Data: ", response.data)
       setAgency(response.data);
@@ -22,6 +28,19 @@ const SingleAgencyView = () => {
       setLoading(false);
     }
   }
+  const removeAgency = async() => {
+    try {
+      setRemoveLoading(true);
+      const response = await axios.delete(`/api/auth/users/${id}`);
+      console.log("Delete Response: ", response.data)
+    }catch (error) {
+      console.log("Error: ", error);
+      toast.error("Error Removing agency", error.message);
+    }finally{
+      setRemoveLoading(false);
+    }
+  }
+      
   useEffect(() => {
     if (!id){
       return;
@@ -37,6 +56,12 @@ const SingleAgencyView = () => {
       {/* Header */}
       <h1 className="text-2xl md:text-3xl font-semibold mb-4">{agency.orgName}</h1>
 
+      <ConfirmDeleteModal 
+        deleteAction={removeAgency}
+        title={`agency ${agency.name}`}
+        isOpen={showRemoveModal}
+        onClose={() => setShowRemoveModal(false)}
+      />
       {/* Main Container */}
       <div className="flex flex-col md:flex-row gap-6">
 
@@ -142,7 +167,7 @@ const SingleAgencyView = () => {
 
           {/* Buttons */}
           <div className="flex gap-4 mt-6">
-            <button className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600">
+            <button  onClick={() => setShowRemoveModal(true)} className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600">
               Remove Agency
             </button>
             <button className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600">
