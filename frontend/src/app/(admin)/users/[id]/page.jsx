@@ -3,12 +3,13 @@
 import LoadingPage from '@/components/Loading';
 import ConfirmDeleteModal from '@/components/modals/ConfirmDeleteModal';
 import axios from 'axios';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
 import { toast } from 'react-toastify';
 
 const SingleAgencyView = () => {
   const {id} = useParams();
+  const router = useRouter()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [removeLoading, setRemoveLoading] = useState(false);
@@ -33,6 +34,8 @@ const SingleAgencyView = () => {
       setRemoveLoading(true);
       const response = await axios.delete(`/api/auth/users/${id}`);
       console.log("Delete Response: ", response.data)
+      toast.success(`${agency.name} Deleted successfully`)
+      router.push("/admin")
     }catch (error) {
       console.log("Error: ", error);
       toast.error("Error Removing agency", error.message);
