@@ -2,12 +2,12 @@ import { CircleCheck } from "lucide-react";
 
 export default function NuvianeServices() {
   return (
-    <section className="overflow-hidden text-black bg-repeat">
+    <section className="text-black">
       <div className="text-primary-50 relative px-8 py-16 max-xl:px-4 max-xl:py-4 max-lg:px-8 max-md:px-6">
         <div className="bg-primary-1300 absolute top-[50%] left-[100%] h-[62.5rem] w-[62.5rem] -translate-[50%] rounded-full opacity-100 blur-[40rem] max-xl:h-[35rem] max-xl:w-[35rem] max-xl:blur-[10rem] max-lg:left-[90%] max-lg:h-[20rem] max-lg:w-[20rem]" />
 
         <h2 className="mb-8 text-center text-6xl/18 font-semibold tracking-tighter max-xl:mb-4 max-xl:text-5xl/16 max-lg:text-4xl/10 max-lg:tracking-tight max-sm:text-3xl/9 max-sm:tracking-tighter">
-          The only Housing Software That Remembers Eveything <br />
+          The only Housing Software That Remembers Everything <br />
         </h2>
         <h2 className="text-center mb-4 md:mb-8">Every apartment search, every landlord reply. Every client action preserved forever in excel. Finally, a platform designed for provides for providers</h2>
         
@@ -80,14 +80,15 @@ export default function NuvianeServices() {
           </div>
         </div>
       </div>
+
       <div className="flex justify-center items-center flex-col p-2 max-xl:p-4">
         <button className="bg-[#0B2B5F] text-white rounded-2xl p-4 px-16 text-xl cursor-pointer">
             Try for free
         </button>
       </div>
 
-      <div className="mt-4 md:mt-16 mb-4 grid grid-cols-2 p-4 gap-x-16 max-xl:mb-12 max-md:mb-16 max-md:grid-cols-1 max-md:gap-y-10">
-          <div className="flex flex-col z-1 flex-1 max-w-2xl justify-self-end max-md:row-start-1 max-md:max-w-max justify-around">
+      <div className="mt-4 md:mt-16 mb-4 grid grid-cols-2 p-4 gap-x-16 max-xl:mb-12 max-md:mb-16 max-md:grid-cols-1  max-md:gap-y-10">
+        <div className="flex flex-col z-1 flex-1 max-w-2xl justify-self-end max-md:row-start-1 max-md:max-w-max justify-around">
             <p className="mb-8  text-6xl/18 font-semibold tracking-tighter max-xl:mb-4 max-xl:text-5xl/16 max-lg:text-4xl/10 max-lg:tracking-tight max-sm:text-3xl/9 max-sm:tracking-tighter">
               Apartment Tracking  & Record Keeping made Easy
             </p>
@@ -99,7 +100,7 @@ export default function NuvianeServices() {
                 Schedule a Demo
               </button>
             </div>
-          </div>
+        </div>
           <figure className="max-w-2xl">
             <img
               className="max-h-[45rem] max-md:max-w-[90%] max-md:justify-self-center"
@@ -107,7 +108,58 @@ export default function NuvianeServices() {
               alt="Smart Organization graphic"
             />
           </figure>
+      </div>
+    
+      <div className="text-primary-50 relative px-8 py-16 max-xl:px-4 max-xl:py-4 max-lg:px-8 max-md:px-6">
+        <div className="bg-primary-1300 absolute left-[100%] h-[62.5rem] w-[62.5rem] -translate-[50%] rounded-full opacity-100 blur-[40rem] max-xl:h-[35rem] max-xl:w-[35rem] max-xl:blur-[10rem] max-lg:left-[90%] max-lg:h-[20rem] max-lg:w-[20rem]" />        
+        <div className="mb-4 grid grid-cols-2 p-4 gap-x-16 max-xl:mb-12 max-md:mb-16 max-md:grid-cols-1 max-md:gap-y-10">
+          <div className="flex flex-col z-1 flex-1 max-w-2xl justify-center max-md:row-start-1 max-md:max-w-max">
+            <p className="mb-8 flex text-4xl font-semibold tracking-tighter max-xl:mb-6 max-xl:text-4xl/10 max-lg:mb-4 max-lg:text-4xl/12 max-lg:tracking-tighter max-sm:text-2xl/8 max-sm:tracking-tight">
+              Finding it Hard to Stay on top of Apartment Task?
+            </p>
+            <div className="gap-6 ">
+                <p className="mt-2">Who did you contact yesterday?</p>
+                <p className="mt-2">What was the status of that property?</p>
+                <p className="mt-2">Were waiting list applications signed?</p>
+                <p className="mt-2">Have you searched a specific apartment?</p>
+            </div>
+          </div>
+          <figure className="max-w-2xl">
+            <img
+              className="max-h-[45rem] max-md:max-w-[90%] max-md:justify-self-center"
+              src={"/pictures/man-tracking.webp"}
+              alt="Smart Organization graphic"
+            />
+          </figure>
         </div>
+
+         <div className="mb-4 grid grid-cols-2 p-4 gap-x-16 max-xl:mb-12 max-md:mb-16 max-md:grid-cols-1 max-md:gap-y-10">
+          <figure className="max-w-2xl">
+            <img
+              className="max-h-[45rem] max-md:max-w-[90%] max-md:justify-self-center"
+              src={"/pictures/man-tracking.webp"}
+              alt="Smart Organization graphic"
+            />
+          </figure>
+          <div className="flex flex-col z-1 flex-1 max-w-2xl justify-center max-md:row-start-1 max-md:max-w-max">
+            <p className="mb-8 flex text-4xl font-semibold tracking-tighter max-xl:mb-6 max-xl:text-4xl/10 max-lg:mb-4 max-lg:text-4xl/12 max-lg:tracking-tighter max-sm:text-2xl/8 max-sm:tracking-tight">
+              Our Software Keeps Everything Organized?
+            </p>
+            <div className="gap-6 ">
+                <p className="mt-2">Log all apartment searches, contracts and notes </p>
+                <p className="mt-2">Store documents and applications in pdf </p>
+                <p className="mt-2">Set reminders for client follow ups</p>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      
+       <div className="flex justify-center items-center flex-col p-2 max-xl:p-4">
+        <button className="bg-[#0B2B5F] text-white rounded-2xl p-4 px-16 text-xl cursor-pointer">
+            Try for free
+        </button>
+      </div>
     </section>
   );
 }

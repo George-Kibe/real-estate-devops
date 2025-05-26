@@ -1,7 +1,9 @@
 import AboutNuviane from "@/components/AboutNuviane";
+import EdiInsurance from "@/components/EdiInsurance";
 import FeaturedProjects from "@/components/FeaturedProjects";
 import Hero from "@/components/Hero";
 import HeroSection from "@/components/HeroSection";
+import NuvianeOffering from "@/components/NuvianeOffering";
 import NuvianeServices from "@/components/NuvianeServices";
 import ServiceCharter from "@/components/ServiceCharter";
 import ServiceOffering from "@/components/ServiceOffering";
@@ -21,6 +23,8 @@ export default async function Home() {
       <Testimonials /> */}
       <HeroSection />
       <NuvianeServices />
+      <EdiInsurance />
+      <NuvianeOffering />
     </main>
   );
 }
