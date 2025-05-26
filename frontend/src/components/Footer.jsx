@@ -4,7 +4,7 @@ import React from 'react'
 const Footer = () => {
   return (
     <footer
-      className="wow fadeInUp relative dark:bg-[black] pt-20 lg:pt-[100px]"
+      className="wow bg-[#0B2B5F] relative pt-20 lg:pt-[100px]"
       data-wow-delay=".15s"
     >
       <div className="container">
