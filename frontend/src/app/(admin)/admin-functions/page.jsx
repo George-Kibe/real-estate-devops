@@ -69,7 +69,7 @@ const AdminFunctionsPage = () => {
   }
 
   return (
-    <div>
+    <div className='text-[#0B2B5F]'>
       <AnimatedText text={"Admin Actions"} />
       <div className="flex flex-col gap-4">
         <Button className="self-start">

@@ -7,6 +7,7 @@ import GetStarted from "@/components/GetStarted";
 import Hero from "@/components/Hero";
 import HeroSection from "@/components/HeroSection";
 import MoreFeatures from "@/components/MoreFeatures";
+import NewHousing from "@/components/NewHousing";
 import NuvianeBranches from "@/components/NuvianeBranches";
 import NuvianeOffering from "@/components/NuvianeOffering";
 import NuvianeSecurity from "@/components/NuvianeSecurity";
@@ -40,6 +41,7 @@ export default function Home() {
       <PricingDetails />
       <GetStarted />
       <NuvianeTeam />
+      <NewHousing />
     </main>
   );
 }

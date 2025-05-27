@@ -270,7 +270,7 @@ export default function AdminMainPage() {[]
   );
 
   return (
-    <div className='p-4 md:p-8 '>
+    <div className='p-4 md:p-8 text-[#0B2B5F]'>
       <div className='flex flex-col md:flex-row justify-between gap-5 mb-5 mt-4 md:mb-12'>
         <DashboardCard
           title='Agencies'
@@ -314,7 +314,7 @@ export default function AdminMainPage() {[]
             {
               agencies.length > 0 ? (
                 <Table
-                  headerClassName="bg-[#E1E7FA] h-10"
+                  headerClassName="bg-[#E1E7FA] h-10 text-[#0B2B5F]"
                   columns={claimsColumns}
                   renderRow={RenderClaimsRow}
                   data={agencies}
@@ -330,7 +330,7 @@ export default function AdminMainPage() {[]
             {
               agencies.length > 0 ? (
                 <Table
-                  headerClassName="bg-[#E1E7FA] h-10"
+                  headerClassName="bg-[#E1E7FA] h-10 text-[#0B2B5F]"
                   columns={invoiceColumns}
                   renderRow={RenderInvoicesRow}
                   data={agencies}

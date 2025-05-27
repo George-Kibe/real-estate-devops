@@ -66,6 +66,5 @@ const SingleService = ({service}) => {
           </button>
       </div>
     </div>
-   
   )
 }

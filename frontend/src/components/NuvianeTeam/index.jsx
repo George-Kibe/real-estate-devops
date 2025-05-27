@@ -230,7 +230,7 @@ const Testimonials = () => {
             variants={fadeIn('left', 0.8)}
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
-            className="swiper-button-next-custom w-12 h-12 rounded-full border border-gray-200 flex items-center justify-center hover:bg-#0B2B5F] hover:text-white cursor-pointer transition-colors"
+            className="swiper-button-next-custom w-12 h-12 rounded-full border border-gray-200 flex items-center justify-center hover:bg-[#0B2B5F] hover:text-white cursor-pointer transition-colors"
           >
             <BsChevronRight className="w-6 h-6" />
           </motion.button>

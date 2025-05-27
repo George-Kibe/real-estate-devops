@@ -121,7 +121,7 @@ const SingleBilling = () => {
   };
 
   return (
-    <div className=" p-4 md:p-8">
+    <div className=" p-4 md:p-8 text-[#0B2B5F]">
         {
             loading && (
                 <p className="flex flex-row gap-2 items-center">
