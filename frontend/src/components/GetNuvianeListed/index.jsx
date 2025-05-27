@@ -141,7 +141,7 @@ export default function GetnuvianeListed() {
           professionals.map((professional, index) => (
             <div key={professional.id} class="px-4 mt-2 gap-2 ">
               <div className="bg-white p-4 rounded-full border-1 border-gray-600">
-                <h2 className="text-2xl font-bold">{professional.name}</h2>
+                <h2 className="md:text-2xl font-bold">{professional.name}</h2>
               </div>
             </div>
           ))

@@ -1,3 +1,4 @@
+"use client"
 import AboutNuviane from "@/components/AboutNuviane";
 import EdiInsurance from "@/components/EdiInsurance";
 import FeaturedProjects from "@/components/FeaturedProjects";
@@ -10,13 +11,14 @@ import NuvianeBranches from "@/components/NuvianeBranches";
 import NuvianeOffering from "@/components/NuvianeOffering";
 import NuvianeSecurity from "@/components/NuvianeSecurity";
 import NuvianeServices from "@/components/NuvianeServices";
+import NuvianeTeam from "@/components/NuvianeTeam";
 import PricingDetails from "@/components/PricingDetails";
 import ServiceCharter from "@/components/ServiceCharter";
 import ServiceOffering from "@/components/ServiceOffering";
 import Statistics from "@/components/Statistics";
 import Testimonials from "@/components/Testimonials";
 
-export default async function Home() {
+export default function Home() {
   return (
     <main className="flex flex-col items-center min-h-screen justify-between">
 
@@ -37,6 +39,7 @@ export default async function Home() {
       <GetnuvianeListed />
       <PricingDetails />
       <GetStarted />
+      <NuvianeTeam />
     </main>
   );
 }
