@@ -95,7 +95,7 @@ export default function ServicesPage() {
   }
   
   return (
-    <div className='flex flex-col justify-between gap-5 mb-5'>
+    <div className='flex flex-col justify-between gap-5 mb-5 text-[#0B2B5F]'>
       <AnimatedText text={"Properties' Services"} />
       <div className="px-6 py-4">
         <h1 className="text-xl font-semibold text-gray-800 dark:text-white">

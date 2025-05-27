@@ -68,7 +68,7 @@ export default function MyAccountPage() {
   }
 
   return (
-    <div className='p-4 md:p-8'>
+    <div className='p-4 md:p-8 text-[#0B2B5F]'>
       <AnimatedText text={"Account Details"} />
       <div className="w-1/3 self-center">
         <label className='mb-[10px] block text-base font-medium text-dark dark:text-white'>

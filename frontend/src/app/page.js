@@ -2,6 +2,7 @@ import AboutNuviane from "@/components/AboutNuviane";
 import EdiInsurance from "@/components/EdiInsurance";
 import FeaturedProjects from "@/components/FeaturedProjects";
 import GetnuvianeListed from "@/components/GetNuvianeListed";
+import GetStarted from "@/components/GetStarted";
 import Hero from "@/components/Hero";
 import HeroSection from "@/components/HeroSection";
 import MoreFeatures from "@/components/MoreFeatures";
@@ -35,6 +36,7 @@ export default async function Home() {
       <NuvianeSecurity />
       <GetnuvianeListed />
       <PricingDetails />
+      <GetStarted />
     </main>
   );
 }

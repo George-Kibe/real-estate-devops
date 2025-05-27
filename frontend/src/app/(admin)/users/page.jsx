@@ -64,7 +64,7 @@ export default function UsersPage() {
 //   }
   
   return (
-    <div className='flex flex-col justify-between gap-5 mb-5'>
+    <div className='flex flex-col justify-between gap-5 mb-5 text-[#0B2B5F]'>
       <AnimatedText text={"Users"} />
       <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
         <div className="flex items-center justify-between flex-column flex-wrap md:flex-row space-y-4 md:space-y-0 pb-4 bg-white dark:bg-gray-900">

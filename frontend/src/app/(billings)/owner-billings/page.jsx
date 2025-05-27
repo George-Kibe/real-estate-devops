@@ -326,7 +326,7 @@ const BillingPage = ({searchParams}) => {
 
 
   return (
-    <div className="p-4 rounded-md flex-1 m-4 mt-0">
+    <div className="p-4 rounded-md flex-1 m-4 mt-0 text-[#0B2B5F]">
       <AnimatedText text={"My Billings"} />
 
       <ViewNotesModal

@@ -55,7 +55,7 @@ const SingleAgencyView = () => {
     return <LoadingPage />
   }
   return (
-    <div className="p-4 md:p-8 bg-gray-100 min-h-screen">
+    <div className="p-4 md:p-8 bg-gray-100 min-h-screen text-[#0B2B5F]">
       {/* Header */}
       <h1 className="text-2xl md:text-3xl font-semibold mb-4">{agency.orgName}</h1>
 

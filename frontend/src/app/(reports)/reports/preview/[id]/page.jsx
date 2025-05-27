@@ -222,7 +222,7 @@ export default function MembersPage() {
     setDeleteModalOpen(false)
   }
   return (
-    <div className='flex flex-col justify-between gap-5 mb-5'>
+    <div className='flex flex-col justify-between gap-5 mb-5 text-[#0B2B5F]'>
       <div ref={divRef} className="">
         <div className="flex flex-col md:flex-row justify-between my-2 md:my-8">
           <p className="flex flex-col md:flex-row gap-2 text-2xl">

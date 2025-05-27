@@ -68,7 +68,7 @@ export default function MembersPage() {
   }
   
   return (
-    <div className='flex flex-col justify-between gap-5 mb-5'>
+    <div className='flex flex-col justify-between gap-5 mb-5 text-[#0B2B5F]'>
       <AnimatedText text={"Clients Allocated to Me"} />
       <InviteClientModal client={client} isOpen={modalOpen} onClose={closeModal} setLoading={setLoading} />
         <input

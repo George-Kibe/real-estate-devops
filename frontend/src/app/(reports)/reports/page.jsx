@@ -363,7 +363,7 @@ export default function ReportsPage({searchParams}) {
   
   
   return (
-    <div className='flex flex-col justify-betweenmb-5'>
+    <div className='flex flex-col justify-betweenm b-5 text-[#0B2B5F]'>
       <AnimatedText text={"All Reports"} />
       {
         (loading || initLoading) && (

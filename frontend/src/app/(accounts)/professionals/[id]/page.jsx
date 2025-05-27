@@ -32,7 +32,7 @@ const SingleProfessional = () => {
     }
   }, [id])
   return (
-    <div className="flex flex-col p-4 md:px-16 gap-4">
+    <div className="flex flex-col p-4 md:px-16 gap-4 text-[#0B2B5F]">
       <div className="flex flex-col lg:flex-row">
         <div className="w-full lg:w-2/3">
           <div className="flex flex-col lg:flex-row gap-4  shadow-lg ">

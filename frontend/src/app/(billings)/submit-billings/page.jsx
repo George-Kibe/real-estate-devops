@@ -67,7 +67,7 @@ const SubmitBillings = () => {
 
   }
   return (
-    <div className='flex flex-col gap-2 p-4 rounded-md flex-1 m-4 mt-0 items-center'>
+    <div className='flex flex-col gap-2 p-4 rounded-md flex-1 m-4 mt-0 items-center text-[#0B2B5F]'>
       <AnimatedText text={"Preview Before Claim Submission"} /> 
       <div className="flex flex-col gap-2">
         {

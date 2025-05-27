@@ -29,7 +29,7 @@ export default function BillingPage() {
   }
   
   return (
-    <div className='flex flex-col justify-between gap-5 mb-5'>
+    <div className='flex flex-col justify-between gap-5 mb-5 text-[#0B2B5F]'>
       <AnimatedText text={"Your Billing and Subscription Details"} />
       <div className="">
           <h1 className="text-xl font-semibold text-gray-800 dark:text-white">

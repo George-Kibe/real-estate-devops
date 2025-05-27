@@ -112,7 +112,7 @@ export default function MembersPage({params, searchParams}) {
   }
 
   return (
-    <div className='flex flex-col justify-between gap-5 mb-5'>
+    <div className='flex flex-col justify-between gap-5 mb-5 text-[#0B2B5F]'>
       <div ref={divRef} className="">
       
       <AnimatedText text={`Report for ${report?.client_name}-${moment(report?.created_at).format('MMMM Do YYYY')}`} />

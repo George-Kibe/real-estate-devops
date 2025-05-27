@@ -23,7 +23,7 @@ export default function FavoritesPage() {
   }, [currentUser._id])
 
   return (
-    <div className='flex flex-col justify-between gap-5 mb-5'>
+    <div className='flex flex-col justify-between gap-5 mb-5 text-[#0B2B5F]'>
       <AnimatedText text={"My Properties"} />
       {!myProperties.length &&
         <div className="text-center">

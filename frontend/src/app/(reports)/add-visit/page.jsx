@@ -102,7 +102,7 @@ const AddVisit = () => {
   }
 
   return (
-    <div className="p-4 md:p-8">
+    <div className="p-4 md:p-8 text-[#0B2B5F]">
       <AnimatedText text={"start Working on A Client"} />
       {
         loading && (

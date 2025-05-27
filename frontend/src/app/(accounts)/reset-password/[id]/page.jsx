@@ -39,7 +39,7 @@ const ResetPasswordPage = ({params}) => {
     }
   }
   return (
-    <section className="bg-gray-1 dark:bg-dark ">
+    <section className="text-[#0B2B5F] ">
         <AnimatedText text={"Reset password"} />
       <div className="container mx-auto">
         <div className="-mx-4 flex flex-wrap">

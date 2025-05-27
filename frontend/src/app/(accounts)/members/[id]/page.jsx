@@ -232,7 +232,7 @@ const SingleMemberPage = () => {
     )
   }
   return (
-    <div className="">
+    <div className="text-[#0B2B5F]">
       <EditRoleModal isOpen={modalOpen} onClose={handleClose} member={member} />
       <ConfirmDeleteModal isOpen={deleteModalOpen} onClose={closeDeleteModal} deleteAction={removeFromOrganization} title={member?.name} />
       
