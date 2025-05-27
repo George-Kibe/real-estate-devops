@@ -3,7 +3,10 @@ import EdiInsurance from "@/components/EdiInsurance";
 import FeaturedProjects from "@/components/FeaturedProjects";
 import Hero from "@/components/Hero";
 import HeroSection from "@/components/HeroSection";
+import MoreFeatures from "@/components/MoreFeatures";
+import NuvianeBranches from "@/components/NuvianeBranches";
 import NuvianeOffering from "@/components/NuvianeOffering";
+import NuvianeSecurity from "@/components/NuvianeSecurity";
 import NuvianeServices from "@/components/NuvianeServices";
 import ServiceCharter from "@/components/ServiceCharter";
 import ServiceOffering from "@/components/ServiceOffering";
@@ -25,6 +28,10 @@ export default async function Home() {
       <NuvianeServices />
       <EdiInsurance />
       <NuvianeOffering />
+      <MoreFeatures />
+      <NuvianeBranches />
+      <NuvianeSecurity />
+      
     </main>
   );
 }

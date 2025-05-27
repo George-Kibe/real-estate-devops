@@ -6,7 +6,7 @@ export default function EdiInsurance() {
   return (
     <div className="grid bg-[#0B2B5F] grid-cols-[5fr_4fr] items-center gap-x-18 px-24 py-16 max-xl:grid-cols-2 max-xl:gap-x-12 max-xl:px-16  max-lg:py-32 max-md:grid-cols-1 max-md:grid-rows-[repeat(2,auto)] max-md:gap-y-12 max-md:px-6 max-md:py-24">
       <div>
-        <h1 className="text-primary-50 mb-6 text-6xl/18 font-semibold tracking-tighter max-xl:mb-4 max-xl:text-5xl/16 max-lg:text-4xl/10 max-lg:tracking-tight max-sm:text-3xl/9 max-sm:tracking-tighter">
+        <h1 className="text-[#0B2B5F]mb-6 text-6xl/18 font-semibold tracking-tighter max-xl:mb-4 max-xl:text-5xl/16 max-lg:text-4xl/10 max-lg:tracking-tight max-sm:text-3xl/9 max-sm:tracking-tighter">
           Not just Another Billing Tool--Built for ALL HCBS & Home Care Services
         </h1>
         <p className="text-primary-100 mb-10 text-xl/loose font-light max-xl:mb-8 max-xl:text-lg/8 max-lg:text-base/loose">
