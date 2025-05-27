@@ -3,16 +3,16 @@ import Image from "next/image";
 
 const services = [
     {id: 1, image: "/pictures/house1.webp",
-        name: "Smart Billing",
-        description: "Simplify claims. Get paid faster. Nuviane streamlines insurance billing nad submissions, automates coding, tracks claim status, and reduces denials with built in compliance checks"
+      name: "Smart Billing",
+      description: "Simplify claims. Get paid faster. Nuviane streamlines insurance billing nad submissions, automates coding, tracks claim status, and reduces denials with built in compliance checks"
     },
     {id: 2, image: "/pictures/house2.webp",
-        name: "HSS Housing Tracking",
-        description: "Track Housing progress like never before. From apartmnet searches to subsidy application logs--organize, monitor, and document every step of your clients' housing journey in one place."
+      name: "HSS Housing Tracking",
+      description: "Track Housing progress like never before. From apartmnet searches to subsidy application logs--organize, monitor, and document every step of your clients' housing journey in one place."
     },
     {id: 3, image: "/pictures/house3.webp",
-        name: "Professional Match Directory",
-        description: "Connect clients to the right care--instantly. Search, match, and refer clients to be verified by professionals by speciality, availability, and location with real-time updates and integrated messaging"
+      name: "Professional Match Directory",
+      description: "Connect clients to the right care--instantly. Search, match, and refer clients to be verified by professionals by speciality, availability, and location with real-time updates and integrated messaging"
     },
 ]
 
@@ -43,28 +43,28 @@ export default function MoreFeatures() {
 const SingleService = ({service}) => {
   return (
     <div class="mb-4 cursor-pointer" data-wow-delay=".1s">
-        <div class="mb-4 overflow-hidden rounded-xl">
-        <a class="">
-            <Image width={300} height={300} 
-            src={service.image}
-            alt="image"
-            class="object-contain w-full " 
-            />
-        </a>
-        </div>
-        <div className='flex flex-col items-start'>
-        <h3 className="text-2xl font-semibold">
-            {service.name}
-        </h3>
-        <p class="max-w-[500px] my-2 md:my-4 text-base text-body-color dark:text-dark-6">
-            {service.description}
-        </p>
-        </div>
-        <div className="flex items-center p-2 max-xl:p-4">
-            <button className="bg-[#0B2B5F] text-white rounded-2xl p-3 px-16 text-xl cursor-pointer">
-            Free Trial
-            </button>
-        </div>
+      <div class="mb-4 overflow-hidden rounded-xl">
+      <a class="">
+          <Image width={300} height={300} 
+          src={service.image}
+          alt="image"
+          class="object-contain w-full " 
+          />
+      </a>
+      </div>
+      <div className='flex flex-col items-start'>
+      <h3 className="text-2xl font-semibold">
+          {service.name}
+      </h3>
+      <p class="max-w-[500px] my-2 md:my-4 text-base text-body-color dark:text-dark-6">
+          {service.description}
+      </p>
+      </div>
+      <div className="flex items-center p-2 max-xl:p-4">
+          <button className="bg-[#0B2B5F] text-white rounded-2xl p-3 px-16 text-xl cursor-pointer">
+          Free Trial
+          </button>
+      </div>
     </div>
    
   )

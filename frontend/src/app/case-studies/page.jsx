@@ -28,7 +28,7 @@ const Testimonials = () => {
 
 const CaseStudyCard = ({ caseStudy, index }) => {
   return (
-    <div className="max-w-6xl mx-auto p-6  shadow-lg rounded-lg my-8">
+    <div className="text-[#0B2B5F] max-w-6xl mx-auto p-6  shadow-lg rounded-lg my-8">
       <h2 className="text-2xl font-bold mb-4">Case Study {caseStudy.caseStudy}{index+1}: {caseStudy.title}</h2>
       <p className=" mb-2"><span className="font-semibold">Client:</span> {caseStudy.client}</p>
       <p className=" mb-4"><span className="font-semibold">Challenge:</span> {caseStudy.challenge}</p>

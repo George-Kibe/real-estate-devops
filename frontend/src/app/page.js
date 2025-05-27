@@ -1,6 +1,7 @@
 import AboutNuviane from "@/components/AboutNuviane";
 import EdiInsurance from "@/components/EdiInsurance";
 import FeaturedProjects from "@/components/FeaturedProjects";
+import GetnuvianeListed from "@/components/GetNuvianeListed";
 import Hero from "@/components/Hero";
 import HeroSection from "@/components/HeroSection";
 import MoreFeatures from "@/components/MoreFeatures";
@@ -8,6 +9,7 @@ import NuvianeBranches from "@/components/NuvianeBranches";
 import NuvianeOffering from "@/components/NuvianeOffering";
 import NuvianeSecurity from "@/components/NuvianeSecurity";
 import NuvianeServices from "@/components/NuvianeServices";
+import PricingDetails from "@/components/PricingDetails";
 import ServiceCharter from "@/components/ServiceCharter";
 import ServiceOffering from "@/components/ServiceOffering";
 import Statistics from "@/components/Statistics";
@@ -31,7 +33,8 @@ export default async function Home() {
       <MoreFeatures />
       <NuvianeBranches />
       <NuvianeSecurity />
-      
+      <GetnuvianeListed />
+      <PricingDetails />
     </main>
   );
 }
