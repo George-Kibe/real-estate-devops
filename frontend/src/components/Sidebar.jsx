@@ -22,11 +22,13 @@ import { useMainProvider } from '@/providers/MainProvider';
     ShieldPlus,
     BadgeDollarSign,
     CircleDollarSign,
-    Blinds
+    Blinds,
+    LayoutList
   } from 'lucide-react';
 
 import Link from 'next/link';
 import { useState } from 'react';
+import { TaskList } from './dropdowns/TaskList';
   
   const Sidebar = () => {
     const [showSideBar, setShowSideBar] = useState(true);
@@ -107,14 +109,12 @@ import { useState } from 'react';
                     <User2Icon className='mr-2 h-4 w-4' />
                     <Link href='/clients'>Clients</Link>
                   </CommandItem>
-                  {
-                    !orgMode && (
-                      <CommandItem>
-                        <BadgeDollarSign className='mr-2 h-4 w-4' />
-                        <Link href='/owner-billings'>Billings</Link>
-                      </CommandItem>
-                    )
-                  }
+                  <CommandItem>
+                    <LayoutList className='h-4 w-4' />
+                    Tasks and Reminders
+                    <TaskList />
+                  </CommandItem>
+                  
                   {
                     orgMode && (
                       <CommandItem>
@@ -136,6 +136,14 @@ import { useState } from 'react';
                   <Cog className='mr-2 h-4 w-4' />
                   <Link href='/my-account'>Settings</Link>
                 </CommandItem> */}
+                {
+                    !orgMode && (
+                      <CommandItem>
+                        <BadgeDollarSign className='mr-2 h-4 w-4' />
+                        <Link href='/owner-billings'>Billings</Link>
+                      </CommandItem>
+                    )
+                  }
                 {
                   (currentUser?.isPremium || currentUser?.isEnterprise) && !membershipIsValid &&
                   <CommandItem>

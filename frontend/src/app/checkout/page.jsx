@@ -18,7 +18,7 @@ export default function StripePayment({searchParams: { amount=99.99}}) {
     // if amount = 99.99 upgrade user to premium/organization
     // if amount =199.99 updgrade user to enterprise
     return (
-        <div> 
+        <div className="text-[#0B2B5F]"> 
             <main className="max-w-6xl mx-auto p-10 text-center">
                 <div className="mb-10">
                     <h1 className="text-4xl mb-2">{currentUser?.name}-Test</h1>

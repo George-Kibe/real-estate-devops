@@ -11,8 +11,10 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { useRouter } from "next/navigation"
 
-export function TableMenu() {
+export function TaskList() {
+  const router = useRouter();
   const handleEdit = () => {
     console.log("Edit clicked");
   }
@@ -27,18 +29,27 @@ export function TableMenu() {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="outline ml-1" size="icon">
-          <ChevronDownCircleIcon className="h-[1.6rem] w-[1.6rem] rotate-0 scale-100 " />
+          <ChevronDownCircleIcon className="h-8 w-8 rotate-0 scale-100 " />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuItem onClick={() => handleEdit()}>
-          Edit
+          Staff To Do List
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => handleDelete()}>
-          Delete
+          Client Reminders
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => router.push("/tracking")}>
+          Follow Up Tracker
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => handleDelete()}>
+          Daily Activity Logs
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => viewReports()}>
-          View Reports
+          Missed Follow Up Logs
+        </DropdownMenuItem>
+         <DropdownMenuItem onClick={() => viewReports()}>
+          Housing History Timeline
         </DropdownMenuItem>
       </DropdownMenuContent>
       

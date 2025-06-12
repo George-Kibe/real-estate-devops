@@ -34,6 +34,8 @@ const CustomDateModal = ({ selectedDate, setSelectedDate, isOpen, onClose }) => 
       status: "completed",
       report_type: "Daily",
       client_phone_number:currentClient?.phone_number,
+      client_email: currentClient?.email,
+      client_address: currentClient?.address,
       staff_id: orgMode? tempUser?._id : currentUser._id,
       owner_id: currentUser?._id,
       report_date: moment(selectedDate).format('YYYY-MM-DD')

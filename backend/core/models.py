@@ -60,8 +60,10 @@ class Report(TimeStampedUUIDModel):
     description = models.TextField(null=True, blank=True)
     owner_id = models.CharField(max_length=100, blank=True, null=True)
     client_name = models.CharField(max_length=100, null=True, blank=True)
+    client_email = models.EmailField(null=True, blank=True)
     client_id = models.CharField(max_length=100, null=True, blank=True)
     client_phone_number = models.CharField(max_length=18, blank=True)
+    client_address = models.CharField(max_length=255, blank=True)
     report_type = models.CharField(max_length=100, null=True, blank=True)
     staff_id = models.CharField(max_length=100, blank=True, null=True)
     staff_name = models.CharField(max_length=100, blank=True, null=True)
@@ -78,6 +80,7 @@ class Report(TimeStampedUUIDModel):
     report_view_type = models.CharField(max_length=100, null=True, blank=True)
     report_location = models.CharField(max_length=100, null=True, blank=True)
     isBilled = models.BooleanField(default=False)
+    status = models.CharField(max_length=100, null=True, blank=True)
     housing_coordinator_name = models.CharField(
         max_length=100, null=True, blank=True)
     housing_coordinator_id = models.CharField(

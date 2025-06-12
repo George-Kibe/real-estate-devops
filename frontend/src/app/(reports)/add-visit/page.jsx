@@ -65,6 +65,8 @@ const AddVisit = () => {
       status: "completed",
       report_type: "Transition Services",
       client_phone_number:currentClient?.phone_number,
+      client_address: currentClient?.address,
+      client_email: currentClient?.email,
       staff_id: orgMode? tempUser?._id : currentUser._id,
       staff_name: orgMode? tempUser?.name : currentUser.name,
       owner_id: currentUser?._id,

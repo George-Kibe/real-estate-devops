@@ -1,6 +1,7 @@
 "use client"
 
 import { useMainProvider } from "@/providers/MainProvider";
+import { BadgeCheck } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
@@ -86,8 +87,8 @@ const PricingCard = ({
           <button onClick={() => handleSubscription(priceId)}
             className={` ${
               active
-                ? "p-4 px-16 rounded-full text-white font-bold"
-                : "bg-[#45A71E] p-4 px-16 rounded-full text-white font-bold"
+                ? "p-4 px-16 rounded-full text-white font-bold cursor-pointer"
+                : "bg-[#0B2B5F] p-4 px-16 rounded-full text-white font-bold"
             } `}
           >
             {loading ? 'Loading...' : buttonText}
@@ -102,9 +103,8 @@ export default PricingCard;
 
 export const List = ({ children }) => {
   return (
-    <p className="text-base text-body-color dark:text-dark-6">
-      <Image src="/icons/check.png" alt="icon" 
-          width={30} height={30} className="mr-2 inline-block" />
+    <p className="text-base text-body-color dark:text-dark-6 flex">
+      <BadgeCheck className="text-[#0B2B5F] mr-2" />
      {children}
     </p>
   );
