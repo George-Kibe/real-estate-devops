@@ -12,11 +12,11 @@ const CallReminder = ({index, reminder}) => {
         <h2 className="font-bold my-2">{reminder.title}</h2>
         <div className="flex gap-4">
             <p className="font-semibold">Landlord:</p> 
-            {reminder.landlord}
+            {reminder.landlord_name}
         </div>
         <div className="flex gap-4">
             <p className="font-semibold">Address:</p> 
-            {reminder.address}
+            {reminder.property_name_and_address}
         </div>
         <div className="flex gap-4">
             <p className="font-semibold">Email:</p> 
@@ -24,7 +24,7 @@ const CallReminder = ({index, reminder}) => {
         </div>
         <div className="flex gap-4">
             <p className="font-semibold">Phone No</p>
-            {reminder.phone}
+            {reminder.contact}
         </div>
         <div className="flex gap-4">
             <p className="font-semibold">Notes:</p>

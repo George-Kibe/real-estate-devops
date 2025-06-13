@@ -273,6 +273,7 @@ class ReportLog(TimeStampedUUIDModel):
     client_referral_id = models.CharField(max_length=100, null=True, blank=True)
     property_name_and_address = models.CharField(max_length=100, null=True, blank=True)
     landlord_name = models.CharField(max_length=100, null=True, blank=True)
+    action_performed = models.CharField(max_length=100, null=True, blank=True)
     landlord_referral_id = models.CharField(max_length=100, null=True, blank=True)
     date = models.DateField(null=True, blank=True)
     time = models.TimeField(null=True, blank=True)

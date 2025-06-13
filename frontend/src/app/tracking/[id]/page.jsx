@@ -14,6 +14,7 @@ import CallReminder from "@/components/follow-ups/CallReminder";
 import { Button } from "@/components/ui/button";
 import AddLogModal from "@/components/modals/AddLogModal";
 import AddReminderModal from "@/components/modals/AddReminderModal";
+import { set } from "mongoose";
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
 //const BACKEND_URL = "http://localhost:8000"
@@ -73,8 +74,8 @@ export default function TrackingPage({params}) {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showAddLogModal, setShowAddLogModal] = useState(false);
   const [showReminderModal , setshowReminderModal ] = useState(false);
-  const [allReports, setAllReports] = useState([]);
-  const [reports, setReports] = useState([]);
+  const [reminders, setReminders] = useState([]);
+  const [reportLogs, setReportLogs] = useState([]);
   const [report, setReport] = useState();
   const [currentStaff, setCurrentStaff] = useState(null);
   const {orgMode, currentUser, currentClient, setCurrentClient} = useMainProvider();
@@ -91,43 +92,48 @@ export default function TrackingPage({params}) {
       console.log("Error: ", error)
     }
   }
+  const fetchReminders = async() => {
+    try {
+      const response = await axios.get(`${BACKEND_URL}/drf-api/reminders/?report_id=${parseInt(id)}`);
+      const data = response.data
+      setReminders(data.results);
+    } catch (error) {
+      // toast.error("Fetching Clients failed. Try Again!")
+      console.log("Error: ", error)
+    }
+  }
+  const fetchReportLogs = async() => {
+    try {
+      const response = await axios.get(`${BACKEND_URL}/drf-api/report-logs/?report_id=${parseInt(id)}`);
+      const data = response.data
+      setReportLogs(data.results);
+    } catch (error) {
+      // toast.error("Fetching Clients failed. Try Again!")
+      console.log("Error: ", error)
+    }
+  }
 
   useEffect(() => {
     if (!id){
       return;
     }else{
       fetchReport();
+      fetchReminders();
+      fetchReportLogs();
     }
   }, [id]);
-
-
-  const fetchAllReports = async( ) => {
-    setInitLoading(true)
-    try {
-      const response = await axios.get(`${BACKEND_URL}/drf-api/logs/?owner_id=${currentUser?._id}`);
-      setAllReports(response.data.results);
-      setReports(response.data.results);
-    } catch (error) {
-      console.log("Fetching Reports failed. Try Again!", error)
-    } finally {
-      setInitLoading(false)
-    }
-  }
-  useEffect(() => {
-    fetchAllReports();
-  }, [loading])
   
   const renderRow = (log) => (
     <tr
       key={log.id}
       className="border border-gray-200 text-sm h-10"
     >
-      <td className="md:table-cell font-semibold ">{log.serialNumber}</td>
+      <td className="md:table-cell font-semibold ">{log.pkid}</td>
       <td className="md:table-cell text-xs">{log.date}/ {log.time}</td>
-      <td className="md:table-cell">{log.staffName}</td>
-      <td className="hidden md:table-cell">{log.nameAndAddress}</td>
-      <td className="md:table-cell">{log.phone}</td>
-      <td className="md:table-cell">{log.actionPerformed}</td>
+      <td className="md:table-cell">{log.staff_name}</td>
+      <td className="hidden md:table-cell">{log.property_name_and_address}</td>
+      <td className="md:table-cell">{log.contact}</td>
+      <td className="md:table-cell">{log.action_performed}</td>
       <td className="hidden md:table-cell">{
         log.status === "Applied" ? (
           <span className="text-green-500">Applied</span>
@@ -153,42 +159,6 @@ export default function TrackingPage({params}) {
     </tr>
   );
 
-  useEffect(() => {
-    if (currentClient) {
-      const filteredReports = allReports.filter(log => log.client_id === currentClient.id);
-      setReports(filteredReports);
-    } else {
-      setReports(allReports);
-    }
-  }, [currentClient, allReports]);
-
-  useEffect(() => {
-    if (currentStaff) {
-      const filteredReports = allReports.filter(log => log.staff_id === currentStaff._id);
-      setReports(filteredReports);
-    } else {
-      setReports(allReports);
-    }
-  }, [currentStaff, allReports]);
-
-  // console.log("search: ", search)
-  // Filter logs based on search query
-  useEffect(() => {
-    if (search) {
-      const filteredReports = allReports.filter(log => {
-        const searchQuery = search.toLowerCase();
-        return (
-          log?.title?.toLowerCase().includes(searchQuery) ||
-          log?.client_name?.toLowerCase().includes(searchQuery) ||
-          log?.staff_name?.toLowerCase().includes(searchQuery)
-        );
-      });
-      setReports(filteredReports);
-    } else {
-      setReports(allReports);
-    }
-  }, [search, allReports]);
-  
   return (
     <div className='flex flex-col justify-betweenm b-5 text-[#0B2B5F]'>
       {
@@ -210,12 +180,14 @@ export default function TrackingPage({params}) {
         client_name={report?.client_name}
         client_referral_id={report?.client_referral_id}
         id={id}
+        fetchReportLogs={fetchReportLogs}
         onClose={() => setShowAddLogModal(false)}
       />
 
       <AddReminderModal
         setLoading={setLoading}
         id={id}
+        fetchReminders={fetchReminders}
         client_name={report?.client_name}
         client_referral_id={report?.client_referral_id}
         isOpen={showReminderModal}
@@ -241,7 +213,7 @@ export default function TrackingPage({params}) {
         <div className="flex flex-col md:flex-row md:gap-4">
             <div className="flex gap-4">
                 <p className="">Number of Follow Ups:</p>
-                <p className="font-semibold">32</p>
+                <p className="font-semibold">{reminders.length +  reportLogs.length}</p>
             </div>
             <div className="flex gap-4">
                 <p className="">Responses from Follow Ups: </p>
@@ -313,7 +285,7 @@ export default function TrackingPage({params}) {
               Add Reminder
             </Button>
           </div>
-          <p className="mb-2">You have 3 Call remainders today</p>
+          <p className="mb-2">You have {reminders.length} Call remainders today</p>
           <div className="flex flex-col md:flex-row md:gap-4 w-full">
               {
                   reminders.map((reminder, index) => (
@@ -341,7 +313,7 @@ export default function TrackingPage({params}) {
           </button> 
         </div>
       </div>
-      <Table columns={columns} renderRow={renderRow} data={logs} headerClassName={"h-12 bg-[#E5FBDE]"}/>
+      <Table columns={columns} renderRow={renderRow} data={reportLogs} headerClassName={"h-12 bg-[#E5FBDE]"}/>
     </div>
   );
 }

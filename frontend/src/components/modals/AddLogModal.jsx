@@ -7,12 +7,13 @@ import axios from 'axios';
 import { useMainProvider } from '@/providers/MainProvider';
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
 
-const AddLogModal = ({ isOpen, onClose, setLoading, id, client_name, client_referral_id }) => {
+const AddLogModal = ({ isOpen, onClose, setLoading, id, client_name, client_referral_id, fetchReportLogs }) => {
   const [logLoading, setLogLoading] = useState(false);
   const [clientName, setClientName] = useState("");
   const [contact, setContact] = useState('');
   const [email, setEmail] = useState('');
   const [clientReferralId, setClientReferralId] = useState("");
+  const [actionPerformed, setActionPerformed] = useState('');
   const [landLordName, setLandLordName] = useState("");
   const [landLordReferralId, setLandLordReferralId] = useState('');
   const [propertyNameAndAddress, setPropertyNameAndAddress] = useState('');
@@ -44,6 +45,7 @@ const AddLogModal = ({ isOpen, onClose, setLoading, id, client_name, client_refe
       notes: notes,
       contact: contact,
       email, 
+      action_performed: actionPerformed,
       owner_id:currentUser._id,
       report: id
     };
@@ -62,6 +64,7 @@ const AddLogModal = ({ isOpen, onClose, setLoading, id, client_name, client_refe
     } finally {
       setLoading(false);
       setLogLoading(false);
+      fetchReportLogs();
     }
   }
 
@@ -153,6 +156,15 @@ const AddLogModal = ({ isOpen, onClose, setLoading, id, client_name, client_refe
           <input type="text" placeholder='Property Name And Address' 
             value={propertyNameAndAddress}
             onChange={ev => setPropertyNameAndAddress(ev.target.value)}
+            className="border-2 border-gray-300 rounded-md p-1 w-full 
+            mb-2 focus:border-blue-900" 
+          /> 
+       </div>
+        <div className="">
+        <p className="">Action Performed</p>
+          <input type="text" placeholder='Property Name And Address' 
+            value={actionPerformed}
+            onChange={ev => setActionPerformed(ev.target.value)}
             className="border-2 border-gray-300 rounded-md p-1 w-full 
             mb-2 focus:border-blue-900" 
           /> 

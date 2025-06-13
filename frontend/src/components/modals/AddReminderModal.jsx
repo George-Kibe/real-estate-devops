@@ -7,7 +7,7 @@ import axios from 'axios';
 import { useMainProvider } from '@/providers/MainProvider';
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
 
-const AddReminderModal = ({ isOpen, onClose, setLoading, id, client_name, client_referral_id }) => {
+const AddReminderModal = ({ isOpen, onClose, setLoading, id, client_name, client_referral_id, fetchReminders }) => {
   const [remLoading, setRemLoading] = useState(false);
   const [clientName, setClientName] = useState("");
   const [title, setTitle] = useState("");
@@ -64,6 +64,7 @@ const AddReminderModal = ({ isOpen, onClose, setLoading, id, client_name, client
     } catch (error) {
       console.log("Error: ", error.message)
     } finally {
+      fetchReminders();
       setLoading(false);
       setRemLoading(false);
     }
