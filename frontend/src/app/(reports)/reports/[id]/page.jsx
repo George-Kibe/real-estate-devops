@@ -5,7 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useMainProvider } from "@/providers/MainProvider";
 import axios from "axios";
 import { Tooltip as ReactTooltip } from "react-tooltip";
-import { Brain, LoaderCircle, Loader, Plus, Search, Copy, PlusCircle, Trash2, CloudDownload, CalendarDays, ChevronDown, MapPin, Sparkles  } from 'lucide-react';
+import { LoaderCircle, Loader, Plus, Search, Copy, PlusCircle, Trash2, CloudDownload, CalendarDays, ChevronDown, MapPin, Sparkles  } from 'lucide-react';
 import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
@@ -30,12 +30,10 @@ import { Label } from "@/components/ui/label";
 import SmartText from "@/components/SmartText";
 import { LinkActions } from "@/components/LinkActions";
 import ReportDescriptionModal from "@/components/modals/ReportDescriptionModal";
-import { staffActivities } from "../../../../../data/staff-activities";
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
 
 export default function SingleReportPage({params}) {
-
   const { location } =  React.use(params)
   const {currentClient, orgMode, currentUser, tempUser, setCurrentClient, setTempProperty} = useMainProvider();
   const [searchLocation, setSearchLocation] = useState(location);

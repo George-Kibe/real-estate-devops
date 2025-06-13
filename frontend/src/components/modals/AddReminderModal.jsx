@@ -5,8 +5,9 @@ import { toast } from 'react-toastify';
 import { Button } from '../ui/button';
 import axios from 'axios';
 import { useMainProvider } from '@/providers/MainProvider';
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
 
-const AddReminderModal = ({ isOpen, onClose, setLoading }) => {
+const AddReminderModal = ({ isOpen, onClose, setLoading, id, client_name, client_referral_id }) => {
   const [remLoading, setRemLoading] = useState(false);
   const [clientName, setClientName] = useState("");
   const [title, setTitle] = useState("");
@@ -28,13 +29,13 @@ const AddReminderModal = ({ isOpen, onClose, setLoading }) => {
   const createReminder = async(e) => {
     e.preventDefault()
     setLoading(true);
-    if(!clientName |!landLordName){
+    if(!title |!landLordName){
       toast.error("You have missing details!");
       return
     }
     const data = {
-      client_name: clientName, 
-      client_referral_id: clientReferralId,
+      client_name: client_name, 
+      client_referral_id: client_referral_id,
       property_name_and_address: propertyNameAndAddress,
       landlord_name: landLordName,
       landlord_referral_id: landLordReferralId,
@@ -42,24 +43,26 @@ const AddReminderModal = ({ isOpen, onClose, setLoading }) => {
       time: followUpTime,
       title,
       priority,
-      staff_name: firstName + " " + lastName,
+      staff_name: currentUserName,
       staff_id: currentUser._id, 
       notes: notes,
       contact: contact,
       email, 
-      owner_id:currentUser._id
+      owner_id:currentUser._id,
+      report: id,
     };
 
     try {
       setRemLoading(true);
-      const response = await axios.post('/api/invite-member', data);
-      console.log("Response: ", response);
-      if (response.status === 200){
-        toast.success("Invitation sent successfully!")
+      const response = await axios.post(`${BACKEND_URL}/drf-api/reminders/`, data);
+      const newReminder = response.data
+      console.log("Create Reminder Data: ", newReminder)
+      if (response.status === 201){
+        toast.success("Reminder Created successfully!")
       }
       onClose()
     } catch (error) {
-      setLoading(false)
+      console.log("Error: ", error.message)
     } finally {
       setLoading(false);
       setRemLoading(false);
@@ -181,7 +184,23 @@ const AddReminderModal = ({ isOpen, onClose, setLoading }) => {
           /> 
        </div>
 
-        <Button onClick={createReminder} className="mt-2">
+       <div className="mb-4 w-[50%]">
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Priority
+          </label>
+          <select
+            id="dropdown"
+            onChange={(event) => setPriority(event.target.value)}
+            className="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+          >
+            <option value="">-Select Priority-</option>
+            <option value={"High"}>{"High"}</option>
+            <option value={"Medium"}>{"Medium"}</option>
+            <option value={"Low"}>{"Low"}</option>
+          </select>
+        </div>
+
+        <Button onClick={createReminder} className="mt-2 cursor-pointer">
           {
             remLoading? "Creating..." : "Create Reminder"
           }

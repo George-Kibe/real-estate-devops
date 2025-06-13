@@ -357,19 +357,19 @@ class ReportViewSet(viewsets.ModelViewSet):
 
 
 class ReminderViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that allows properties to be created, viewed and edited
-    """
-
     queryset = Reminder.objects.all()
     serializer_class = ReminderSerializer
 
     def list(self, request):
+        queryset = self.get_queryset()
+        report_id = request.query_params.get('report_id')
         client_email = request.query_params.get('client_email')
-        if client_email is not None:
-            queryset = Reminder.objects.filter(client_email=client_email)
-        else:
-            queryset = self.filter_queryset(self.get_queryset())
+
+        if report_id:
+            queryset = queryset.filter(report_id=report_id)
+        if client_email:
+            queryset = queryset.filter(client_email=client_email)
+
         page = self.paginate_queryset(queryset)
         if page is not None:
             serializer = self.get_serializer(page, many=True)
@@ -413,20 +413,41 @@ class ReminderViewSet(viewsets.ModelViewSet):
         reminder.delete()
         return Response(data={"message": "Reminder deleted successfully"}, status=status.HTTP_200_OK)
 
-class ReportLogViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that allows properties to be created, viewed and edited
-    """
+# class ReportLogViewSet(viewsets.ModelViewSet):
+#     """
+#     API endpoint that allows properties to be created, viewed and edited
+#     """
 
+#     queryset = ReportLog.objects.all()
+#     serializer_class = ReportLogSerializer
+
+#     def list(self, request):
+#         client_email = request.query_params.get('client_email')
+#         if client_email is not None:
+#             queryset = ReportLog.objects.filter(client_email=client_email)
+#         else:
+#             queryset = self.filter_queryset(self.get_queryset())
+#         page = self.paginate_queryset(queryset)
+#         if page is not None:
+#             serializer = self.get_serializer(page, many=True)
+#             return self.get_paginated_response(serializer.data)
+
+#         serializer = self.get_serializer(queryset, many=True)
+#         return Response(serializer.data)
+class ReportLogViewSet(viewsets.ModelViewSet):
     queryset = ReportLog.objects.all()
     serializer_class = ReportLogSerializer
 
     def list(self, request):
+        queryset = self.get_queryset()
+        report_id = request.query_params.get('report_id')
         client_email = request.query_params.get('client_email')
-        if client_email is not None:
-            queryset = ReportLog.objects.filter(client_email=client_email)
-        else:
-            queryset = self.filter_queryset(self.get_queryset())
+
+        if report_id:
+            queryset = queryset.filter(report_id=report_id)
+        if client_email:
+            queryset = queryset.filter(client_email=client_email)
+
         page = self.paginate_queryset(queryset)
         if page is not None:
             serializer = self.get_serializer(page, many=True)
@@ -434,6 +455,7 @@ class ReportLogViewSet(viewsets.ModelViewSet):
 
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
+
 
     def retrieve(self, request, pk=None):
         try:

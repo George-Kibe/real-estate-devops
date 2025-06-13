@@ -1,11 +1,9 @@
 "use client"
 
 import { useMainProvider } from "@/providers/MainProvider";
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import axios from "axios";
-import { useEffect, useState } from "react";
-import { toast } from "react-toastify";
-import moment from "moment";
+import React, { useEffect, useState } from "react";
 import { ArrowDownUp, BadgeCheck, CalendarDays, ChevronRight, Clock, Eye, FolderUp, Loader, Plus, SlidersHorizontal, Trash, TriangleAlert } from "lucide-react";
 import Table from "@/components/Table";
 import ConfirmDeleteModal from "@/components/modals/ConfirmDeleteModal";
@@ -67,49 +65,41 @@ const columns = [
   },
 ];
 
-export default function TrackingPage({searchParams}) {
-  const search = searchParams?.search;
+export default function TrackingPage({params}) {
+  const {id} = useParams();
+  const { search } =  React.use(params)
   const [loading, setLoading] = useState(false);
   const [initLoading, setInitLoading] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showAddLogModal, setShowAddLogModal] = useState(false);
   const [showReminderModal , setshowReminderModal ] = useState(false);
-  const [clients, setClients] = useState([]);
   const [allReports, setAllReports] = useState([]);
-  const [members, setMembers] = useState([]);
   const [reports, setReports] = useState([]);
-  const [logId, setlogId] = useState('');
+  const [report, setReport] = useState();
   const [currentStaff, setCurrentStaff] = useState(null);
   const {orgMode, currentUser, currentClient, setCurrentClient} = useMainProvider();
   const router = useRouter();
-  
-  const getMembers = async() => {
-    try {
-      const response = await axios.get(`/api/members/?owner_id=${currentUser?._id}`);
-      // console.log("Members Fetched : ", response.data)
-      setMembers(response.data);
-    } catch (error) {
-      toast.error("Fetching Members failed. Try Again!")
-    }
-  }
 
-  const fetchClients = async() => {
+
+  const fetchReport = async() => {
     try {
-      const response = await axios.get(`${BACKEND_URL}/drf-api/clients/?owner_id=${currentUser?._id}`);
+      const response = await axios.get(`${BACKEND_URL}/drf-api/reports/${id}/`);
       const data = response.data
-      setClients(data.results);
+      setReport(data);
     } catch (error) {
-      toast.error("Fetching Clients failed. Try Again!")
+      // toast.error("Fetching Clients failed. Try Again!")
+      console.log("Error: ", error)
     }
   }
 
   useEffect(() => {
-    fetchClients()
-  }, [loading]);
+    if (!id){
+      return;
+    }else{
+      fetchReport();
+    }
+  }, [id]);
 
-  useEffect(() => {
-    getMembers()
-  }, [])
 
   const fetchAllReports = async( ) => {
     setInitLoading(true)
@@ -118,7 +108,7 @@ export default function TrackingPage({searchParams}) {
       setAllReports(response.data.results);
       setReports(response.data.results);
     } catch (error) {
-      toast.error("Fetching Reports failed. Try Again!")
+      console.log("Fetching Reports failed. Try Again!", error)
     } finally {
       setInitLoading(false)
     }
@@ -216,10 +206,18 @@ export default function TrackingPage({searchParams}) {
       />
       <AddLogModal
         isOpen={showAddLogModal}
+        setLoading={setLoading}
+        client_name={report?.client_name}
+        client_referral_id={report?.client_referral_id}
+        id={id}
         onClose={() => setShowAddLogModal(false)}
       />
 
       <AddReminderModal
+        setLoading={setLoading}
+        id={id}
+        client_name={report?.client_name}
+        client_referral_id={report?.client_referral_id}
         isOpen={showReminderModal}
         onClose={() => setshowReminderModal(false)}
       />
@@ -234,8 +232,8 @@ export default function TrackingPage({searchParams}) {
       <div className="flex gap-2 mb-2 md:mb-4">
         <Image src={'/images/noAvatar.png'} width={50} height={50} className="rounded-md" />
         <div className="">
-            <h2 className="font-bold text-xl">John Doe</h2>
-            <p className="">johndoe@gmail.com</p>
+            <h2 className="font-bold text-xl">{report?.client_name}</h2>
+            <p className="">{report?.client_email}</p>
         </div>
       </div>
       <div className="bg-gray-100 m-2 p-2">

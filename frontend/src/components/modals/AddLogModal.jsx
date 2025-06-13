@@ -5,8 +5,9 @@ import { toast } from 'react-toastify';
 import { Button } from '../ui/button';
 import axios from 'axios';
 import { useMainProvider } from '@/providers/MainProvider';
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
 
-const AddLogModal = ({ isOpen, onClose, setLoading }) => {
+const AddLogModal = ({ isOpen, onClose, setLoading, id, client_name, client_referral_id }) => {
   const [logLoading, setLogLoading] = useState(false);
   const [clientName, setClientName] = useState("");
   const [contact, setContact] = useState('');
@@ -19,7 +20,6 @@ const AddLogModal = ({ isOpen, onClose, setLoading }) => {
   const [followUpTime, setFollowUpTime] = useState('');
   const [notes, setNotes] = useState('');
 
-
   const {currentUser, orgMode, tempUser} = useMainProvider();
   const username = currentUser?.orgName || currentUser?.username || " ";
   const currentUserName = orgMode? tempUser.firstName : currentUser.firstName;
@@ -27,36 +27,38 @@ const AddLogModal = ({ isOpen, onClose, setLoading }) => {
   const createLog = async(e) => {
     e.preventDefault()
     setLoading(true);
-    if(!clientName |!landLordName){
+    if( !landLordName){
       toast.error("You have missing details!");
       return
     }
     const data = {
-      client_name: clientName, 
-      client_referral_id: clientReferralId,
+      client_name: client_name, 
+      client_referral_id: client_referral_id,
       property_name_and_address: propertyNameAndAddress,
       landlord_name: landLordName,
       landlord_referral_id: landLordReferralId,
       date: followUpDate,
       time: followUpTime,
-      staff_name: firstName + " " + lastName,
+      staff_name: currentUserName,
       staff_id: currentUser._id, 
       notes: notes,
       contact: contact,
       email, 
-      owner_id:currentUser._id
+      owner_id:currentUser._id,
+      report: id
     };
-
+    console.log("Create Report Log Data: ", data)
     try {
       setLogLoading(true);
-      const response = await axios.post('/api/invite-member', data);
-      console.log("Response: ", response);
-      if (response.status === 200){
-        toast.success("Invitation sent successfully!")
+      const response = await axios.post(`${BACKEND_URL}/drf-api/report-logs/`, data);
+      const newLog = response.data
+      console.log("Create Report Log Data: ", newLog)
+      if (response.status === 201){
+        toast.success("Report Log Created successfully!")
       }
       onClose()
     } catch (error) {
-      setLoading(false)
+      console.log("Error: ", error.message)
     } finally {
       setLoading(false);
       setLogLoading(false);
@@ -90,7 +92,7 @@ const AddLogModal = ({ isOpen, onClose, setLoading }) => {
         </div>
 
        <div className="flex flex-wrap gap-2">
-        <div className="w-full md:w-1/3">
+        {/* <div className="w-full md:w-1/3">
           <p className="">Client Name</p>
           <input type="text" placeholder='Client Name' 
             value={clientName}
@@ -107,7 +109,7 @@ const AddLogModal = ({ isOpen, onClose, setLoading }) => {
             className="border-2 border-gray-300 rounded-md p-1 w-full 
             mb-2 focus:border-blue-900" 
           /> 
-        </div>
+        </div> */}
         <div className="w-full md:w-1/3">
           <p className="">Landlord Name: </p>
           <input type="text" placeholder='Landlord Name' 
