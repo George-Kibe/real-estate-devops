@@ -154,7 +154,7 @@ const AddPropertyModal = ({
     if (!currentProperty) return;
     // console.log("Current Property: ", currentProperty)
     setTitle(currentProperty.title || '');
-    setStreet_address(currentProperty.street_address || '');
+    setStreet_address(currentProperty.address || '');
     setPhone_number(currentProperty.phone_number || '');
     setWebsite(currentProperty.website || '');
     setImages(currentProperty?.images);

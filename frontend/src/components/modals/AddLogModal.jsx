@@ -44,7 +44,7 @@ const AddLogModal = ({ isOpen, onClose, setLoading }) => {
       notes: notes,
       contact: contact,
       email, 
-      _id:currentUser._id
+      owner_id:currentUser._id
     };
 
     try {

@@ -6,7 +6,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import moment from "moment";
-import { ArrowDownUp, BadgeCheck, CalendarDays, ChevronRight, Clock, Eye, FolderUp, Loader, Pencil, Plus, SlidersHorizontal, Trash, TriangleAlert } from "lucide-react";
+import { ArrowDownUp, BadgeCheck, CalendarDays, ChevronRight, Clock, Eye, FolderUp, Loader, Plus, SlidersHorizontal, Trash, TriangleAlert } from "lucide-react";
 import Table from "@/components/Table";
 import ConfirmDeleteModal from "@/components/modals/ConfirmDeleteModal";
 import TableSearch from "@/components/TableSearch";

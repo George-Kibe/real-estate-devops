@@ -6,7 +6,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import moment from "moment";
-import { Loader, Pencil, Trash2 } from "lucide-react";
+import { Ellipsis, Loader, Pencil, Trash2 } from "lucide-react";
 import Table from "@/components/Table";
 import ConfirmDeleteModal from "@/components/modals/ConfirmDeleteModal";
 import TableSearch from "@/components/TableSearch";
@@ -138,7 +138,7 @@ export default function TrackingPage({searchParams}) {
   const renderRow = (report) => (
     <tr
       key={report.id}
-      className="border border-gray-200 text-sm h-10"
+      className="border border-gray-200 text-sm h-10 "
     >
       <td className="md:table-cell font-semibold ">{report.client_name}</td>
       <td className="md:table-cell text-xs">{report.client_email}</td>
@@ -154,14 +154,20 @@ export default function TrackingPage({searchParams}) {
         ) : (
           <span className="text-red-500">Cancelled</span>
         )}</td>
-      <td className="flex items-center">
-        <button className="flex gap-2 cursor-pointer border-1 border-green-500 p-2 rounded-full" onClick={() =>viewTrackReport(report.pkid)}>
+      <td className="flex">
+        <div className="flex">
+          <button className="flex gap-2 cursor-pointer border-1 border-green-500 p-2 rounded-full" 
+          onClick={() =>viewTrackReport(report.pkid)}>
           <Pencil className="h-4 w-4 text-green-600 font-bold"/>
           Tracking
         </button>
         <button className="flex gap-2 cursor-pointer border-1 p-2 border-red-500 rounded-full ml-2 px-4" onClick={() =>{}}>
           <Trash2 className="h-4 w-4 text-red-600 font-bold"/>
         </button>
+        <button className="">
+          <Ellipsis className="h-6 w-6 ml-2 font-bold" />
+        </button>
+        </div>
       </td>
     </tr>
   );
@@ -224,28 +230,28 @@ export default function TrackingPage({searchParams}) {
           onClick={() => setActiveName("All")}
         >
           <p className="">All</p>
-          <p className="text-xs">10</p>
+          <p className="text-xs">{reports.length}</p>
         </button>
         <button 
           className={`flex gap-2 items-center ${activeName === "Completed" && 'text-green-500'}`}
           onClick={() => setActiveName("Completed")}
         >
           <p className="">Completed</p>
-          <p className="text-xs">12</p>
+          <p className="text-xs">{reports.length}</p>
         </button>
         <button 
           className={`flex gap-2 items-center ${activeName === "InProgress" && 'text-green-500'}`}
           onClick={() => setActiveName("InProgress")}
         >
           <p className="">In Progress</p>
-          <p className="text-xs">6</p>
+          <p className="text-xs">{reports.length}</p>
         </button>
         <button 
           className={`flex gap-2 items-center ${activeName === "Pending" && 'text-green-500'}`}
           onClick={() => setActiveName("Pending")}
         >
           <p className="">Pending</p>
-          <p className="text-xs">8</p>
+          <p className="text-xs">{reports.length}</p>
         </button>
       </div>
       <div className="flex flex-col md:flex-row gap-4 md:gap-8">

@@ -2,7 +2,7 @@
 """
 from .views import PropertyViewSet, MessageViewSet, ScrapeProperties, PropertySearchAPIView
 from .views import ClientViewSet, ReportViewSet, EnquiryViewSet, BillingViewSet
-
+from .views import ReminderViewSet, ReportLogViewSet
 from django.urls import path
 
 urlpatterns = [
@@ -33,6 +33,14 @@ urlpatterns = [
     path('billings/', BillingViewSet.as_view({'get': 'list', 'post': 'create'})),
     path('billings/<int:pk>/',
          BillingViewSet.as_view({'get': 'retrieve', 'put': 'update', 'delete': 'destroy'})),
+    # Reminders endpoints
+    path('reminders/', ReminderViewSet.as_view({'get': 'list', 'post': 'create'})),
+    path('reminders/<int:pk>/',
+         ReminderViewSet.as_view({'get': 'retrieve', 'put': 'update', 'delete': 'destroy'})),
+    # Billings endpoints
+    path('report-logs/', ReportLogViewSet.as_view({'get': 'list', 'post': 'create'})),
+    path('report-logs/<int:pk>/',
+         ReportLogViewSet.as_view({'get': 'retrieve', 'put': 'update', 'delete': 'destroy'})),
     # scrapping endpoint
     path('scrapping/', ScrapeProperties.as_view(), name='scrape-properties'),
     # search properties endpoint

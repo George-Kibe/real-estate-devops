@@ -8,6 +8,8 @@ from this class
 5. Message: Message Model
 6. Enquiry: Enquiry Model
 7. Billing: Billing Model
+8. Reminder: Reminder Model
+9. ReportLog: ReportLog Model
 """
 import uuid
 import random
@@ -221,3 +223,70 @@ class Billing(TimeStampedUUIDModel):
 
     def __str__(self):
         return f"{self.client_name} ({self.service_date_start} - {self.service_date_end})"
+
+class Reminder(TimeStampedUUIDModel):
+    title = models.CharField(max_length=255, null=True, blank=True)
+    priority  = models.CharField(max_length=50, null=True, blank=True)
+    report = models.ForeignKey(
+        Report, on_delete=models.CASCADE, null=True, blank=True)
+    client_name = models.CharField(max_length=100, null=True, blank=True)
+    staff_name  = models.CharField(max_length=100, null=True, blank=True)
+    staff_id = models.CharField(max_length=100, null=True, blank=True)
+    contact = models.CharField(max_length=100, null=True, blank=True)
+    email =  models.EmailField(null=True, blank=True)
+    client_email =  models.EmailField(null=True, blank=True)
+    owner_id = models.CharField(max_length=100, null=True, blank=True)
+    notes  = models.TextField(null=True, blank=True)
+    client_referral_id = models.CharField(max_length=100, null=True, blank=True)
+    property_name_and_address = models.CharField(max_length=100, null=True, blank=True)
+    landlord_name = models.CharField(max_length=100, null=True, blank=True)
+    landlord_referral_id = models.CharField(max_length=100, null=True, blank=True)
+    date = models.DateField(null=True, blank=True)
+    time = models.TimeField(null=True, blank=True)
+    reminder_date = models.DateField(null=True, blank=True)
+    reminder_time = models.TimeField(null=True, blank=True)
+    reminder_notes = models.TextField(null=True, blank=True)
+    reminder_status = models.CharField(max_length=50, choices=[
+        ('Pending', 'Pending'),
+        ('Completed', 'Completed'),
+    ], null=True, default="Pending", blank=True)
+
+    class Meta:
+        verbose_name = "Reminder"
+        verbose_name_plural = "Reminders"
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"{self.title}"
+
+class ReportLog(TimeStampedUUIDModel):
+    report = models.ForeignKey(
+        Report, on_delete=models.CASCADE, null=True, blank=True)
+    client_name = models.CharField(max_length=100, null=True, blank=True)
+    staff_name  = models.CharField(max_length=100, null=True, blank=True)
+    staff_id = models.CharField(max_length=100, null=True, blank=True)
+    contact = models.CharField(max_length=100, null=True, blank=True)
+    email =  models.EmailField(null=True, blank=True)
+    client_email =  models.EmailField(null=True, blank=True)
+    owner_id = models.CharField(max_length=100, null=True, blank=True)
+    notes  = models.TextField(null=True, blank=True)
+    client_referral_id = models.CharField(max_length=100, null=True, blank=True)
+    property_name_and_address = models.CharField(max_length=100, null=True, blank=True)
+    landlord_name = models.CharField(max_length=100, null=True, blank=True)
+    landlord_referral_id = models.CharField(max_length=100, null=True, blank=True)
+    date = models.DateField(null=True, blank=True)
+    time = models.TimeField(null=True, blank=True)
+    log = models.TextField(null=True, blank=True)
+    log_type = models.CharField(max_length=50, choices=[
+        ('Info', 'Info'),
+        ('Warning', 'Warning'),
+        ('Error', 'Error'),
+    ], null=True, default="Info", blank=True)
+
+    class Meta:
+        verbose_name = "Report Log"
+        verbose_name_plural = "Report Logs"
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"{self.report} ({self.log_type})"

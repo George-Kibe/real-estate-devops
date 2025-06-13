@@ -1,28 +1,39 @@
-# Use an official Python runtime as a parent image
-FROM python:3.13.1
+FROM python:3.11-alpine3.18
+LABEL maintainer="Realhive Consultants (https://www.realhiveconsultants.com/)"
 
-# Set the working directory in the container
+ENV PYTHONUNBUFFERED=1 \
+    PATH="/venv/bin:$PATH"
+
+# Install system dependencies
+RUN apk add --update --no-cache \
+    netcat-openbsd\
+    postgresql-client \
+    && apk add --update --no-cache --virtual .tmp-build-deps \
+    build-base postgresql-dev musl-dev
+
+# Set up virtual environment
+RUN python -m venv /venv && /venv/bin/pip install --upgrade pip
+
+# Install Python dependencies
+COPY ./requirements.txt /tmp/requirements.txt
+RUN pip install -r /tmp/requirements.txt && \
+    rm -rf /tmp && \
+    apk del .tmp-build-deps
+
+# Add non-root user
+RUN adduser --disabled-password --no-create-home django-user
+
+# Copy entrypoint and make it executable
+COPY ./entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+# Copy application code
 WORKDIR /backend
-ENV PYTHONUNBUFFERED 1
-
-# Copy the dependencies file to the working directory
-COPY ./requirements.txt .
-#Upgrade pip
-RUN pip install --upgrade pip
-# Install any needed packages specified in requirements.txt
-RUN pip install --no-cache-dir -r requirements.txt
-
-# Copy the rest of the application code to the working directory
 COPY . .
 
-# Collect static files
-RUN python manage.py collectstatic --noinput
+# Use non-root user
+USER django-user
 
-# Expose the application port
 EXPOSE 8000
 
-# Start the application
-CMD ["gunicorn", "project.wsgi:application", "--bind", "0.0.0.0:8000"]
-
-# # Run Django server
-#CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+ENTRYPOINT ["/entrypoint.sh"]

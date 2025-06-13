@@ -8,8 +8,9 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from .serializers import PropertySerializer, MessageSerializer, ScrappedPropertySerializer
 from .serializers import ClientSerializer, ReportSerializer, EnquirySerializer, BillingSerializer
+from .serializers import ReminderSerializer, ReportLogSerializer
 # from .apartments import get_apartments
-from .models import Property, Message, Client, Report, Enquiry, Billing
+from .models import Property, Message, Client, Report, Enquiry, Billing, Reminder, ReportLog
 
 
 class MessageViewSet(viewsets.ModelViewSet):
@@ -163,6 +164,7 @@ class PropertyViewSet(viewsets.ModelViewSet):
         property.delete()
         return Response(data={"message": "Property deleted successfully"}, status=status.HTTP_200_OK)
 
+
 class BillingViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows billings to be created, viewed and edited
@@ -218,6 +220,7 @@ class BillingViewSet(viewsets.ModelViewSet):
             return Response(data={"error": "Billing not found"}, status=status.HTTP_404_NOT_FOUND)
         billing.delete()
         return Response(data={"message": "Billing deleted successfully"}, status=status.HTTP_200_OK)
+
 
 class ClientViewSet(viewsets.ModelViewSet):
     """
@@ -353,6 +356,120 @@ class ReportViewSet(viewsets.ModelViewSet):
         return Response(data={"message": "Report deleted successfully"}, status=status.HTTP_200_OK)
 
 
+class ReminderViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows properties to be created, viewed and edited
+    """
+
+    queryset = Reminder.objects.all()
+    serializer_class = ReminderSerializer
+
+    def list(self, request):
+        client_email = request.query_params.get('client_email')
+        if client_email is not None:
+            queryset = Reminder.objects.filter(client_email=client_email)
+        else:
+            queryset = self.filter_queryset(self.get_queryset())
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request, pk=None):
+        try:
+            reminder = self.queryset.get(pk=pk)
+        except ObjectDoesNotExist:
+            return Response(data={"error": "Reminder not found"}, status=status.HTTP_404_NOT_FOUND)
+        serializer = ReminderSerializer(reminder)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def create(self, request, *args, **kwargs):
+        serializer = ReminderSerializer(
+            data=request.data, context={'request': request})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=201)
+        return Response(serializer.errors, status=400)
+
+    def update(self, request, pk=None):
+        try:
+            reminder = self.queryset.get(pk=pk)
+        except ObjectDoesNotExist:
+            return Response(data={"error": "Reminder not found"}, status=status.HTTP_404_NOT_FOUND)
+        serializer = ReminderSerializer(reminder, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=400)
+
+    def destroy(self, request, pk=None):
+        try:
+            reminder = self.queryset.get(pk=pk)
+        except ObjectDoesNotExist:
+            return Response(data={"error": "Reminder not found"}, status=status.HTTP_404_NOT_FOUND)
+        reminder.delete()
+        return Response(data={"message": "Reminder deleted successfully"}, status=status.HTTP_200_OK)
+
+class ReportLogViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows properties to be created, viewed and edited
+    """
+
+    queryset = ReportLog.objects.all()
+    serializer_class = ReportLogSerializer
+
+    def list(self, request):
+        client_email = request.query_params.get('client_email')
+        if client_email is not None:
+            queryset = ReportLog.objects.filter(client_email=client_email)
+        else:
+            queryset = self.filter_queryset(self.get_queryset())
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request, pk=None):
+        try:
+            report_log = self.queryset.get(pk=pk)
+        except ObjectDoesNotExist:
+            return Response(data={"error": "ReportLog not found"}, status=status.HTTP_404_NOT_FOUND)
+        serializer = ReportLogSerializer(report_log)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def create(self, request, *args, **kwargs):
+        serializer = ReportLogSerializer(
+            data=request.data, context={'request': request})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=201)
+        return Response(serializer.errors, status=400)
+
+    def update(self, request, pk=None):
+        try:
+            report_log = self.queryset.get(pk=pk)
+        except ObjectDoesNotExist:
+            return Response(data={"error": "ReportLog not found"}, status=status.HTTP_404_NOT_FOUND)
+        serializer = ReportLogSerializer(report_log, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=400)
+
+    def destroy(self, request, pk=None):
+        try:
+            report_log = self.queryset.get(pk=pk)
+        except ObjectDoesNotExist:
+            return Response(data={"error": "ReportLog not found"}, status=status.HTTP_404_NOT_FOUND)
+        report_log.delete()
+        return Response(data={"message": "ReportLog deleted successfully"}, status=status.HTTP_200_OK)
+
 class PropertySearchAPIView(generics.ListAPIView):
     serializer_class = PropertySerializer
 
@@ -393,7 +510,7 @@ class ScrapeProperties(APIView):
         apartments = []
         serialized_properties = []
         for apartment in apartments:
-            #print(apartment)
+            # print(apartment)
             # Assuming 'item' represents each scraped property data
             serializer = ScrappedPropertySerializer(data=apartment)
             if serializer.is_valid():

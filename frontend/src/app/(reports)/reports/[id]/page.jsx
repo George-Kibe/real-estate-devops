@@ -976,7 +976,7 @@ export default function SingleReportPage({params}) {
                         <SmartText text={property.comments || ""} />
                       </td>
                       <td className="px-2 py-1">
-                        <p className="">Tracking</p>
+                        <p className="">None</p>
                       </td>
                       <td className="px-2 py-1  self-center justify-center flex-col gap-2">
                         <PropertyActions 
