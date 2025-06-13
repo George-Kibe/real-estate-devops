@@ -7,12 +7,9 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import moment from "moment";
 import { Loader, Pencil, Trash2 } from "lucide-react";
-import { SingleClientReportActions } from "@/components/SingleClientReportActions";
 import Table from "@/components/Table";
-import AnimatedText from "@/components/AnimatedText";
 import ConfirmDeleteModal from "@/components/modals/ConfirmDeleteModal";
 import TableSearch from "@/components/TableSearch";
-import { generateReportBilling } from "@/utils/functions";
 
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
@@ -119,7 +116,7 @@ export default function TrackingPage({searchParams}) {
   }, [])
 
   const viewReport = (id) => {
-    router.push(`/reports/preview/${id}`)
+    router.push(`/tracking/${id}`)
   }
   
   const fetchAllReports = async( ) => {
@@ -158,7 +155,7 @@ export default function TrackingPage({searchParams}) {
           <span className="text-red-500">Cancelled</span>
         )}</td>
       <td className="">
-        <button className="cursor-pointer" onClick={() =>{}}>
+        <button className="cursor-pointer" onClick={() =>viewReport(report.pkid)}>
           <Pencil className="h-4 w-4 text-green-600 font-bold"/>
         </button>
         <button className="cursor-pointer ml-4" onClick={() =>{}}>
