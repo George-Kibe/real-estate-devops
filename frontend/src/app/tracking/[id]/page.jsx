@@ -6,7 +6,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import moment from "moment";
-import { ArrowDownUp, BadgeCheck, CalendarDays, ChevronRight, Clock, FolderUp, Loader, Pencil, Plus, SlidersHorizontal, Trash, TriangleAlert } from "lucide-react";
+import { ArrowDownUp, BadgeCheck, CalendarDays, ChevronRight, Clock, Eye, FolderUp, Loader, Pencil, Plus, SlidersHorizontal, Trash, TriangleAlert } from "lucide-react";
 import Table from "@/components/Table";
 import ConfirmDeleteModal from "@/components/modals/ConfirmDeleteModal";
 import TableSearch from "@/components/TableSearch";
@@ -15,6 +15,7 @@ import { logs, reminders } from "@/constants/reminders";
 import CallReminder from "@/components/follow-ups/CallReminder";
 import { Button } from "@/components/ui/button";
 import AddLogModal from "@/components/modals/AddLogModal";
+import AddReminderModal from "@/components/modals/AddReminderModal";
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
 //const BACKEND_URL = "http://localhost:8000"
@@ -59,6 +60,11 @@ const columns = [
     accessor: "notes",
     className: "md:table-cell",
   },
+   {
+    header: "Action",
+    accessor: "Action",
+    className: "md:table-cell",
+  },
 ];
 
 export default function TrackingPage({searchParams}) {
@@ -67,6 +73,7 @@ export default function TrackingPage({searchParams}) {
   const [initLoading, setInitLoading] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showAddLogModal, setShowAddLogModal] = useState(false);
+  const [showReminderModal , setshowReminderModal ] = useState(false);
   const [clients, setClients] = useState([]);
   const [allReports, setAllReports] = useState([]);
   const [members, setMembers] = useState([]);
@@ -148,6 +155,11 @@ export default function TrackingPage({searchParams}) {
       <td className="">
         {log.notes}
       </td>
+      <td className="">
+        <button onClick={() => router.push(`/tracking/logs/${log.id}`)} className="">
+          <Eye />
+        </button>
+      </td>
     </tr>
   );
 
@@ -206,9 +218,16 @@ export default function TrackingPage({searchParams}) {
         isOpen={showAddLogModal}
         onClose={() => setShowAddLogModal(false)}
       />
+
+      <AddReminderModal
+        isOpen={showReminderModal}
+        onClose={() => setshowReminderModal(false)}
+      />
       
       <h2 className="font-bold text-xl md:text-2xl mb-2 md:mb-8 flex flex-wrap items-center">
-        Follow Up Tracker
+        <button onClick={() => router.push("/tracking")} className="cursor-pointer">
+            Follow Up Tracker
+        </button>
         <ChevronRight className="h-6 w-6 ml-2 mr-2 text-[#45A71E]" />
         Client Follow Up
       </h2>
@@ -288,37 +307,43 @@ export default function TrackingPage({searchParams}) {
             </div>
         </div>
       </div>
-       <div className="bg-gray-100 m-2 p-2">
+       <div className="bg-gray-100 m-2 p-2 pt-4">
+          <div className="flex flex-col md:flex-row justify-between mr-8">
             <h2 className="font-bold text-xl mb-2 md:mb-4">Call Reminders</h2>
-            <p className="">You have 3 Call remainders today</p>
-            <div className="flex flex-col md:flex-row md:gap-4 w-full">
-                {
-                    reminders.map((reminder, index) => (
-                        <CallReminder index={index} reminder={reminder} />
-                    ))
-                }
-            </div>
+            <Button className={"flex"} onClick={() => setshowReminderModal(true)}>
+              <Plus />
+              Add Reminder
+            </Button>
+          </div>
+          <p className="mb-2">You have 3 Call remainders today</p>
+          <div className="flex flex-col md:flex-row md:gap-4 w-full">
+              {
+                  reminders.map((reminder, index) => (
+                      <CallReminder index={index} reminder={reminder} />
+                  ))
+              }
+          </div>
         </div>
      
       <div className="flex justify-between items-center mt-8 md:mt-12">
         <h2 className="font-bold text-xl my-2 md:my-4">Follow Up Logs</h2>
         <div className="flex gap-8 mr-8">
-            <Button className={"flex"} onClick={() => setShowAddLogModal(true)}>
-              <Plus />
-              Add New Log
-            </Button>
-            <TableSearch />
-            <button className="flex gap-1">
-            <ArrowDownUp />
-            <p>Sort</p>
-            </button> 
-            <button className="flex gap-1">
-            <SlidersHorizontal />
-            <p>Filter</p>
-            </button> 
+          <Button className={"flex"} onClick={() => setShowAddLogModal(true)}>
+            <Plus />
+            Add New Log
+          </Button>
+          <TableSearch />
+          <button className="flex gap-1">
+          <ArrowDownUp />
+          <p>Sort</p>
+          </button> 
+          <button className="flex gap-1">
+          <SlidersHorizontal />
+          <p>Filter</p>
+          </button> 
         </div>
       </div>
-      <Table columns={columns} renderRow={renderRow} data={logs} className={""}/>
+      <Table columns={columns} renderRow={renderRow} data={logs} headerClassName={"h-12 bg-[#E5FBDE]"}/>
     </div>
   );
 }

@@ -115,7 +115,7 @@ export default function TrackingPage({searchParams}) {
     getMembers()
   }, [])
 
-  const viewReport = (id) => {
+  const viewTrackReport = (id) => {
     router.push(`/tracking/${id}`)
   }
   
@@ -154,11 +154,12 @@ export default function TrackingPage({searchParams}) {
         ) : (
           <span className="text-red-500">Cancelled</span>
         )}</td>
-      <td className="">
-        <button className="cursor-pointer" onClick={() =>viewReport(report.pkid)}>
+      <td className="flex items-center">
+        <button className="flex gap-2 cursor-pointer border-1 border-green-500 p-2 rounded-full" onClick={() =>viewTrackReport(report.pkid)}>
           <Pencil className="h-4 w-4 text-green-600 font-bold"/>
+          Tracking
         </button>
-        <button className="cursor-pointer ml-4" onClick={() =>{}}>
+        <button className="flex gap-2 cursor-pointer border-1 p-2 border-red-500 rounded-full ml-2 px-4" onClick={() =>{}}>
           <Trash2 className="h-4 w-4 text-red-600 font-bold"/>
         </button>
       </td>
@@ -205,7 +206,7 @@ export default function TrackingPage({searchParams}) {
   
   return (
     <div className='flex flex-col justify-betweenm b-5 text-[#0B2B5F]'>
-      <h2 className="font-bold text-xl md:text-4xl mb-2 md:mb-8">Follow Up Tracker</h2>
+      <h2 className="font-bold text-xl md:text-4xl mb-2 md:mb-8">Follow Up And Tracker</h2>
       <h2 className="font-semibold text-xl md:text-2xl mb-2 md:mb-4">
         View and manage follow up records for each client
       </h2>

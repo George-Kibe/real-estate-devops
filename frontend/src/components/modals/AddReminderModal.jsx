@@ -9,7 +9,9 @@ import { useMainProvider } from '@/providers/MainProvider';
 const AddReminderModal = ({ isOpen, onClose, setLoading }) => {
   const [remLoading, setRemLoading] = useState(false);
   const [clientName, setClientName] = useState("");
+  const [title, setTitle] = useState("");
   const [contact, setContact] = useState('');
+  const [priority, setPriority] = useState("");
   const [email, setEmail] = useState('');
   const [clientReferralId, setClientReferralId] = useState("");
   const [landLordName, setLandLordName] = useState("");
@@ -19,12 +21,11 @@ const AddReminderModal = ({ isOpen, onClose, setLoading }) => {
   const [followUpTime, setFollowUpTime] = useState('');
   const [notes, setNotes] = useState('');
 
-
   const {currentUser, orgMode, tempUser} = useMainProvider();
   const username = currentUser?.orgName || currentUser?.username || " ";
   const currentUserName = orgMode? tempUser.firstName : currentUser.firstName;
 
-  const createLog = async(e) => {
+  const createReminder = async(e) => {
     e.preventDefault()
     setLoading(true);
     if(!clientName |!landLordName){
@@ -39,6 +40,8 @@ const AddReminderModal = ({ isOpen, onClose, setLoading }) => {
       landlord_referral_id: landLordReferralId,
       date: followUpDate,
       time: followUpTime,
+      title,
+      priority,
       staff_name: firstName + " " + lastName,
       staff_id: currentUser._id, 
       notes: notes,
@@ -88,26 +91,17 @@ const AddReminderModal = ({ isOpen, onClose, setLoading }) => {
         <div className="mb-2">
           <p className="font-semibold">Created by {currentUserName}</p>
         </div>
-
+      
+      <div className="">
+        <p className="">Reminder Name or Title</p>
+          <input type="text" placeholder='Reminder Name or Title' 
+            value={title}
+            onChange={ev => setTitle(ev.target.value)}
+            className="border-2 border-gray-300 rounded-md p-1 w-full 
+            mb-2 focus:border-blue-900" 
+          /> 
+       </div>
        <div className="flex flex-wrap gap-2">
-        <div className="w-full md:w-1/3">
-          <p className="">Client Name</p>
-          <input type="text" placeholder='Client Name' 
-            value={clientName}
-            onChange={ev => setClientName(ev.target.value)}
-            className="border-2 border-gray-300 rounded-md p-1 w-full 
-            mb-2 focus:border-blue-900" 
-          /> 
-        </div>
-        <div className="w-full md:w-1/3">
-          <p className="">Client Referral ID: </p>
-          <input type="text" placeholder='Client Referral ID' 
-            value={clientReferralId}
-            onChange={ev => setClientReferralId(ev.target.value)}
-            className="border-2 border-gray-300 rounded-md p-1 w-full 
-            mb-2 focus:border-blue-900" 
-          /> 
-        </div>
         <div className="w-full md:w-1/3">
           <p className="">Landlord Name: </p>
           <input type="text" placeholder='Landlord Name' 
@@ -187,9 +181,9 @@ const AddReminderModal = ({ isOpen, onClose, setLoading }) => {
           /> 
        </div>
 
-        <Button onClick={createLog} className="mt-2">
+        <Button onClick={createReminder} className="mt-2">
           {
-            remLoading? "Creating..." : "Create Log"
+            remLoading? "Creating..." : "Create Reminder"
           }
         </Button>
       </div>

@@ -68,6 +68,7 @@ class Report(TimeStampedUUIDModel):
     staff_id = models.CharField(max_length=100, blank=True, null=True)
     staff_name = models.CharField(max_length=100, blank=True, null=True)
     properties = models.JSONField(default=list, blank=True, null=True)
+    tracking_status = models.CharField(max_length=100, null=True, blank=True, default="Pending")
     additional_resources = models.JSONField(default=list, blank=True, null=True)
     report_activities = models.JSONField(default=list, blank=True, null=True)
     status = models.CharField(max_length=100, null=True, blank=True)
