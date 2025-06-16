@@ -21,7 +21,7 @@ import Testimonials from "@/components/Testimonials";
 
 export default function Home() {
   return (
-    <main className="flex flex-col items-center min-h-screen justify-between">
+    <div className="flex relative flex-col items-center min-h-screen justify-between">
 
       {/* <Hero />
       <AboutNuviane />
@@ -36,12 +36,12 @@ export default function Home() {
       <NuvianeOffering />
       <MoreFeatures />
       <NuvianeBranches />
-      <NuvianeSecurity />
+       <NuvianeSecurity />
       <GetnuvianeListed />
       <PricingDetails />
       <GetStarted />
       <NuvianeTeam />
       <NewHousing />
-    </main>
+    </div>
   );
 }

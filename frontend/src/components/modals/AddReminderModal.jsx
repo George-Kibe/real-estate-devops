@@ -7,9 +7,9 @@ import axios from 'axios';
 import { useMainProvider } from '@/providers/MainProvider';
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
 
-const AddReminderModal = ({ isOpen, onClose, setLoading, id, client_name, client_referral_id, fetchReminders }) => {
+const AddReminderModal = ({ isOpen, onClose, setLoading, id, client_name, client_referral_id, fetchReminders, properties }) => {
   const [remLoading, setRemLoading] = useState(false);
-  const [clientName, setClientName] = useState("");
+  const [property, setProperty] = useState();
   const [title, setTitle] = useState("");
   const [contact, setContact] = useState('');
   const [priority, setPriority] = useState("");
@@ -25,12 +25,12 @@ const AddReminderModal = ({ isOpen, onClose, setLoading, id, client_name, client
   const {currentUser, orgMode, tempUser} = useMainProvider();
   const username = currentUser?.orgName || currentUser?.username || " ";
   const currentUserName = orgMode? tempUser.firstName : currentUser.firstName;
-
+  console.log("Property: ", property)
   const createReminder = async(e) => {
     e.preventDefault()
     setLoading(true);
-    if(!title |!landLordName){
-      toast.error("You have missing details!");
+    if(!title |!landLordName |!property){
+      toast.error("You have missing mandatory details!");
       return
     }
     const data = {
@@ -48,17 +48,31 @@ const AddReminderModal = ({ isOpen, onClose, setLoading, id, client_name, client
       notes: notes,
       contact: contact,
       email, 
+      property,
       owner_id:currentUser._id,
       report: id,
     };
 
     try {
+      setLoading(true);
       setRemLoading(true);
       const response = await axios.post(`${BACKEND_URL}/drf-api/reminders/`, data);
       const newReminder = response.data
       console.log("Create Reminder Data: ", newReminder)
       if (response.status === 201){
-        toast.success("Reminder Created successfully!")
+        toast.success("Reminder Created successfully!");
+        setTitle("");
+        setLandLordName("");
+        setLandLordReferralId("");
+        setProperty("");
+        setPropertyNameAndAddress("");
+        setFollowUpDate("");
+        setFollowUpTime("");
+        setNotes("");
+        setPriority("");
+        setContact("");
+        setEmail("");
+        setClientReferralId("");
       }
       onClose()
     } catch (error) {
@@ -95,9 +109,29 @@ const AddReminderModal = ({ isOpen, onClose, setLoading, id, client_name, client
         <div className="mb-2">
           <p className="font-semibold">Created by {currentUserName}</p>
         </div>
-      
-      <div className="">
-        <p className="">Reminder Name or Title</p>
+        <div className="mb-4 md:w-[50%]">
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Property
+          </label>
+          <select
+            id="dropdown"
+            onChange={(event) => {
+              const selectedId = event.target.value;
+              const selectedProperty = properties.find(p => p.title === selectedId);
+              setProperty(selectedProperty);
+            }}
+            className="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+          >
+            <option value="">-Select Property-</option>
+            {
+              properties.map((property) => (
+                <option key={property.title} value={property.title}>{property.title}</option>
+              ))
+            }
+          </select>
+        </div>
+        <div className="">
+          <p className="">Reminder Name or Title</p>
           <input type="text" placeholder='Reminder Name or Title' 
             value={title}
             onChange={ev => setTitle(ev.target.value)}
@@ -185,7 +219,7 @@ const AddReminderModal = ({ isOpen, onClose, setLoading, id, client_name, client
           /> 
        </div>
 
-       <div className="mb-4 w-[50%]">
+       <div className="mb-4 md:w-[50%]">
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Priority
           </label>

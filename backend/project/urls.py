@@ -8,9 +8,9 @@ from django.urls import path, include
 from .views import ServerStatusView
 
 urlpatterns = [
-    path("admin-secret/", admin.site.urls),
+    path("drf-api/admin-secret/", admin.site.urls),
     path("drf-api/", include('core.urls')),
-    path('', ServerStatusView.as_view(), name='server-status'),
+    path('drf-api/server-status/', ServerStatusView.as_view(), name='server-status'),
 ]
 
 if settings.DEBUG:

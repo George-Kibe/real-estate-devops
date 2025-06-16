@@ -13,7 +13,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { useMainProvider } from "@/providers/MainProvider";
-import { toast } from "react-toastify";
 import Link from "next/link";
 
 export function UserMenu() {
@@ -43,16 +42,7 @@ export function UserMenu() {
     setCustomProperties(null);
     router.push("/")
   }
-  const switchToSeller = () => {
-    // check if user has subscribed, if not prompt them to subscribe
-    if (currentUser?.isPremium){
-      setSellerMode(true)
-      toast.success('Switched to seller Mode')
-      router.push("/my-account")
-    }else{
-      router.push("/features#pricing")
-    }
-  }
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>

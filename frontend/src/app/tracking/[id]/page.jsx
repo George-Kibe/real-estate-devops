@@ -176,6 +176,7 @@ export default function TrackingPage({params}) {
       />
       <AddLogModal
         isOpen={showAddLogModal}
+        properties={report?.properties || []}
         setLoading={setLoading}
         client_name={report?.client_name}
         client_referral_id={report?.client_referral_id}
@@ -187,6 +188,7 @@ export default function TrackingPage({params}) {
       <AddReminderModal
         setLoading={setLoading}
         id={id}
+        properties={report?.properties || []}
         fetchReminders={fetchReminders}
         client_name={report?.client_name}
         client_referral_id={report?.client_referral_id}
@@ -286,7 +288,7 @@ export default function TrackingPage({params}) {
             </Button>
           </div>
           <p className="mb-2">You have {reminders.length} Call remainders today</p>
-          <div className="flex flex-col md:flex-row md:gap-4 w-full">
+          <div className="flex flex-col md:flex-row md:flex-wrap w-full">
               {
                   reminders.map((reminder, index) => (
                       <CallReminder index={index} reminder={reminder} />
