@@ -13,7 +13,7 @@ const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
 //const BACKEND_URL = "http://localhost:8000"
 
 const AddClientModal = ({ isOpen, onClose, setLoading, client=null }) => {  
-  const {currentUser} = useMainProvider();
+  const {currentUser, tempUser} = useMainProvider();
   const [members, setMembers] = useState([]);
   const [first_name, setFirst_name] = useState('');
   const [last_name, setLast_name] = useState('');
@@ -82,20 +82,6 @@ const AddClientModal = ({ isOpen, onClose, setLoading, client=null }) => {
   const saveClient = async(e) => {
     e.preventDefault()
     if(!email |!first_name |!last_name |!address |!city |!phone_number |!house_type |!payor |!procode |!modifier |!service_type){
-      console.log("Missing details")
-      console.log("Email: ", email,
-        "First Name: ", first_name,
-        "Last Name: ", last_name,
-        "Address: ", address,
-        "City: ", city,
-        "Phone Number: ", phone_number,
-        "House Type: ", house_type,
-        "Payor: ", payor,
-        "Procode: ", procode,
-        "Modifier: ", modifier,
-        "Service Type: ", service_type
-      )
-      
       toast.error("You have missing details!");
       return
     }
@@ -108,7 +94,9 @@ const AddClientModal = ({ isOpen, onClose, setLoading, client=null }) => {
       additional_info, status,
       payor, procode, units, modifier, 
       service_type, pmiNumber, insuranceMemberID,
-      owner_id: currentUser._id
+      owner_id: currentUser._id,
+      staff_name: orgMode? tempUser.firstName : currentUser.firstName,
+      staff_contact: orgMode? tempUser.email : currentUser.email,
     };
     // console.log(data)
 
@@ -122,10 +110,7 @@ const AddClientModal = ({ isOpen, onClose, setLoading, client=null }) => {
         const res = await axios.put(`${BACKEND_URL}/drf-api/clients/${client.pkid}/`, data)
         if (res.status === 200){
           toast.success("Client Edited Successfully")
-          setLoading(false); setEmail(''); setFirst_name(''); setLast_name(''); setAddress('');
-          setPhoneNumber(''); setHouse_type(''); setAdditional_info(''); setCity('');
-          setStaff_id(''); setStatus('');
-          onClose()
+          handleClose()
         }
       } catch (error) {
         toast.error(error.response.data.message)
@@ -133,15 +118,12 @@ const AddClientModal = ({ isOpen, onClose, setLoading, client=null }) => {
       }
     }else{
       try {
-        // invite member logic
+        // create client login
         const response = await axios.post(`${BACKEND_URL}/drf-api/clients/`, data);
-        onClose()
         if (response.status === 201){
           toast.success("Client Created Successfully!")
+          handleClose()
         }
-        setLoading(false); setEmail(''); setFirst_name(''); setLast_name(''); setAddress('');
-        setPhoneNumber(''); setHouse_type(''); setAdditional_info(''); setCity('');
-        setStaff_id(''); setStatus('');
       } catch (error) {
         toast.error("Adding your client failed. Try Again!")
       }

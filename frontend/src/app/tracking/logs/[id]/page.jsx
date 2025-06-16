@@ -1,18 +1,17 @@
 "use client"
 
 import { useMainProvider } from "@/providers/MainProvider";
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import axios from "axios";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { ArrowDownUp, BadgeCheck, CalendarDays, CheckCircle, ChevronRight, Circle, Clock, Eye, FolderUp, Loader, Pencil, Plus, SlidersHorizontal, Trash, TriangleAlert } from "lucide-react";
+import { ArrowDownUp, CheckCircle, ChevronRight, Circle, Loader, SlidersHorizontal } from "lucide-react";
 import Table from "@/components/Table";
 import ConfirmDeleteModal from "@/components/modals/ConfirmDeleteModal";
 import TableSearch from "@/components/TableSearch";
 import { logs } from "@/constants/reminders";
-import AddLogModal from "@/components/modals/AddLogModal";
-import AddReminderModal from "@/components/modals/AddReminderModal";
 import { documents } from "../../../../../data/documents";
+import moment from "moment";
 
 const options = [
     "Daily email reminders for upcoming follow ups", 
@@ -98,15 +97,18 @@ const docColumns = [
   },
 ]
 
-export default function SingleLogPage({searchParams}) {
-  const search = searchParams?.search;
+export default function SingleLogPage({params}) {
+  const {id} = useParams();
+  const searchParams = useSearchParams();
+  const report_id  = searchParams.get('report_id');
+  const client_id  = searchParams.get('client_id');
   const [loading, setLoading] = useState(false);
-   const [selectedOptions, setSelectedOptions] = useState([]);
+  const [reportLogs, setReportLogs] = useState([]);
+  const [reportLog, setReportLog] = useState({});
+  const [selectedOptions, setSelectedOptions] = useState([]);
+  const [clientData, setClientData] = useState({});
   const [initLoading, setInitLoading] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [showAddLogModal, setShowAddLogModal] = useState(false);
-  const [showReminderModal , setshowReminderModal ] = useState(false);
-  const [clients, setClients] = useState([]);
   const [allReports, setAllReports] = useState([]);
   const [members, setMembers] = useState([]);
   const [reports, setReports] = useState([]);
@@ -115,50 +117,58 @@ export default function SingleLogPage({searchParams}) {
   const {orgMode, currentUser, currentClient, setCurrentClient} = useMainProvider();
   const router = useRouter();
   
-  const getMembers = async() => {
+  const getClientData = async() => {
     try {
-      const response = await axios.get(`/api/members/?owner_id=${currentUser?._id}`);
-      // console.log("Members Fetched : ", response.data)
-      setMembers(response.data);
+      const response = await axios.get(`${BACKEND_URL}/drf-api/clients/?client_id=${client_id}`);
+      setClientData(response.data.results[0]);
     } catch (error) {
-      toast.error("Fetching Members failed. Try Again!")
+      toast.error("Fetching client data failed!")
     }
   }
 
-  const fetchClients = async() => {
+  const fetchLogData = async() => {
     try {
-      const response = await axios.get(`${BACKEND_URL}/drf-api/clients/?owner_id=${currentUser?._id}`);
+      const response = await axios.get(`${BACKEND_URL}/drf-api/report-logs/${id}`);
       const data = response.data
-      setClients(data.results);
+      setReportLog(data);
     } catch (error) {
-      toast.error("Fetching Clients failed. Try Again!")
+      toast.error("Fetching Log data failed. Try Again!")
     }
   }
-
-  useEffect(() => {
-    fetchClients()
-  }, [loading]);
-
-  useEffect(() => {
-    getMembers()
-  }, [])
-
-  const fetchAllReports = async( ) => {
-    setInitLoading(true)
+   const fetchReportLogs = async() => {
     try {
-      const response = await axios.get(`${BACKEND_URL}/drf-api/logs/?owner_id=${currentUser?._id}`);
-      setAllReports(response.data.results);
-      setReports(response.data.results);
+      const response = await axios.get(`${BACKEND_URL}/drf-api/report-logs/?report_id=${parseInt(report_id)}`);
+      const data = response.data
+      setReportLogs(data.results);
     } catch (error) {
-      toast.error("Fetching Reports failed. Try Again!")
-    } finally {
-      setInitLoading(false)
+      console.log("Error: ", error)
     }
   }
+
   useEffect(() => {
-    fetchAllReports();
-  }, [loading])
-    
+    if (!id){
+      return;
+    }else{
+      fetchLogData();
+    }
+  }, [id])
+  
+  useEffect(() => {
+    if (!report_id){
+      return;
+    }else{
+      fetchReportLogs();
+    }
+  }, [report_id])
+
+  useEffect(() => {
+    if (!client_id){
+      return;
+    }
+    getClientData()
+  }, [client_id]);
+
+
   const toggleOption = (option) => {
     setSelectedOptions((prev) =>
       prev.includes(option)
@@ -173,12 +183,12 @@ export default function SingleLogPage({searchParams}) {
       key={log.id}
       className="border border-gray-200 text-sm h-10"
     >
-      <td className="md:table-cell font-semibold ">{log.serialNumber}</td>
-      <td className="md:table-cell text-xs">{log.date}/ {log.time}</td>
-      <td className="md:table-cell">{log.staffName}</td>
-      <td className="hidden md:table-cell">{log.nameAndAddress}</td>
-      <td className="md:table-cell">{log.phone}</td>
-      <td className="md:table-cell">{log.actionPerformed}</td>
+      <td className="md:table-cell font-semibold ">{log.pkid}</td>
+      <td className="md:table-cell text-xs">{moment(log.date).format("MMMM DD YYYY")}/ {log.time}</td>
+      <td className="md:table-cell">{log.staff_name}</td>
+      <td className="hidden md:table-cell">{log.property?.title || log.property_name_and_address }</td>
+      <td className="md:table-cell">{log.contact}</td>
+      <td className="md:table-cell">{log.action_performed}</td>
       <td className="hidden md:table-cell">{
         log.status === "Applied" ? (
           <span className="text-green-500">Applied</span>
@@ -251,23 +261,6 @@ export default function SingleLogPage({searchParams}) {
     }
   }, [currentStaff, allReports]);
 
-  // console.log("search: ", search)
-  // Filter logs based on search query
-  useEffect(() => {
-    if (search) {
-      const filteredReports = allReports.filter(log => {
-        const searchQuery = search.toLowerCase();
-        return (
-          log?.title?.toLowerCase().includes(searchQuery) ||
-          log?.client_name?.toLowerCase().includes(searchQuery) ||
-          log?.staff_name?.toLowerCase().includes(searchQuery)
-        );
-      });
-      setReports(filteredReports);
-    } else {
-      setReports(allReports);
-    }
-  }, [search, allReports]);
   
   return (
     <div className='flex flex-col justify-betweenm b-5 text-[#0B2B5F]'>
@@ -284,16 +277,6 @@ export default function SingleLogPage({searchParams}) {
         isOpen={showDeleteModal}
         onClose={() => setShowDeleteModal(false)}
       />
-      <AddLogModal
-        isOpen={showAddLogModal}
-        onClose={() => setShowAddLogModal(false)}
-      />
-
-      <AddReminderModal
-        isOpen={showReminderModal}
-        onClose={() => setshowReminderModal(false)}
-      />
-      
       <h2 className=" font-bold text-xl md:text-2xl mb-2 md:mb-8 flex flex-wrap items-center">
         <button onClick={() => router.push("/tracking")} className="cursor-pointer">
             Follow Up Tracker
@@ -306,8 +289,8 @@ export default function SingleLogPage({searchParams}) {
         Log Details
       </h2>
       <div className="flex flex-col gap-2 mb-2 md:mb-4">
-        <h2 className="font-bold text-xl">GreenField Apartments - Unit #204</h2>
-        <p className="">123 Main Street St. Paul MN 55101</p>
+        <h2 className="font-bold text-xl">{reportLog?.property?.title}</h2>
+        <p className="">{reportLog?.property?.street_address || "No address"}</p>
         
         <div className="flex mt-2 flex-col md:flex-row flex-wrap gap-2">
             <div className="w-full md:w-1/3 flex gap-4 my-2">
@@ -315,32 +298,34 @@ export default function SingleLogPage({searchParams}) {
                 <p className=""> 1 Bed/ 1 Bath</p>
             </div>
             <div className="w-full md:w-1/3 flex gap-4 my-2">
-                <p className="font-semibold">Agent Name: </p>
-                <p className=""> Sarah Johnson</p>
+                <p className="font-semibold">Agent or Landlord Name: </p>
+                <p className="">{reportLog?.landlord_name}</p>
             </div>
             <div className="w-full md:w-1/3 flex gap-4 my-2">
                 <p className="font-semibold">Rent Price: </p>
-                <p className=""> $2500/Month</p>
+                <p className=""> ${reportLog?.property?.price}/Month</p>
             </div>
             <div className="w-full md:w-1/3 flex gap-4 my-2">
                 <p className="font-semibold">Agent Phone Number: </p>
-                <p className=""> +1 (655) 676 2728</p>
+                <p className=""> {reportLog?.property?.phone_number}</p>
             </div>
             <div className="w-full md:w-1/3 flex gap-4 my-2">
                 <p className="font-semibold">Subsidized Housing: </p>
-                <p className="">Yes</p>
+                <p className="">
+                    {reportLog?.property?.isSubsidized ? "Yes" : "No"}
+                </p>
             </div>
             <div className="w-full md:w-1/3 flex gap-4 my-2">
                 <p className="font-semibold">Agent ID: </p>
-                <p className="">leading@housing.com</p>
+                <p className="">{reportLog?.agent_id || "Not Captured"}</p>
             </div>
             <div className="w-full md:w-1/3 flex gap-4 my-2">
                 <p className="font-semibold">Last Contacted: </p>
-                <p className="">March 25 2025</p>
+                <p className="">{moment(reportLog.updated_at).format("MMMM DD YYYY")}</p>
             </div>
             <div className="w-full md:w-1/3 flex gap-4 my-2">
                 <p className="font-semibold">Website</p>
-                <p className="">www.greenfields.com</p>
+                <p className="">{reportLog?.property?.website}</p>
             </div>
             <div className="w-full md:w-1/3 flex gap-4 my-2">
                 <p className="font-semibold">Availability Status</p>
@@ -354,7 +339,7 @@ export default function SingleLogPage({searchParams}) {
             <h2 className="font-bold text-xl mb-2 md:mb-4">Client Information</h2>
             <div className="w-full flex gap-4 my-2">
                 <p className="font-semibold">Client Name</p>
-                <p className="">John Doe</p>
+                <p className="">{clientData?.client_name}</p>
             </div>
             <div className="w-full flex gap-4 my-2">
                 <p className="font-semibold"> Case ID</p>
@@ -362,7 +347,7 @@ export default function SingleLogPage({searchParams}) {
             </div>
             <div className="w-full flex gap-4 my-2">
                 <p className="font-semibold">Client Preferences</p>
-                <p className="">1 Bedroom, max Rent $1200, Pet friendly</p>
+                <p className="">{clientData?.house_type}</p>
             </div>
             <div className="w-full flex gap-4 my-2">
                 <p className="font-semibold">Housing Assistance</p>
@@ -378,11 +363,11 @@ export default function SingleLogPage({searchParams}) {
             </div>
             <div className="w-full flex gap-4 my-2">
                 <p className="font-semibold">Case Manager</p>
-                <p className="">Micheal Smith</p>
+                <p className="">{clientData?.staff_name}</p>
             </div>
             <div className="w-full flex gap-4 my-2">
                 <p className="font-semibold"> Case Manager Contact</p>
-                <p className="">michealsmith@gmail.com</p>
+                <p className="">{clientData?.staff_email}</p>
             </div>
         </div>
         <div className="flex flex-col w-ful md:w-1/2">
@@ -431,7 +416,7 @@ export default function SingleLogPage({searchParams}) {
         </div>
       </div>
      
-      <Table columns={columns} renderRow={renderRow} data={logs} headerClassName={"h-12 bg-[#E5FBDE]"}/>
+      <Table columns={columns} renderRow={renderRow} data={reportLogs} headerClassName={"h-12 bg-[#E5FBDE]"}/>
 
       <div className="bg-[#E5FBDE] m-2 md:mt-4 p-2 flex flex-col">
         <h2 className="font-bold text-xl my-2 md:my-4">Next Steps</h2>

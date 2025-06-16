@@ -1,7 +1,7 @@
 "use client"
 
 import { useMainProvider } from "@/providers/MainProvider";
-import { useParams, useRouter } from 'next/navigation';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { ArrowDownUp, BadgeCheck, CalendarDays, ChevronRight, Clock, Eye, FolderUp, Loader, Plus, SlidersHorizontal, Trash, TriangleAlert } from "lucide-react";
@@ -9,12 +9,10 @@ import Table from "@/components/Table";
 import ConfirmDeleteModal from "@/components/modals/ConfirmDeleteModal";
 import TableSearch from "@/components/TableSearch";
 import Image from "next/image";
-import { logs, reminders } from "@/constants/reminders";
 import CallReminder from "@/components/follow-ups/CallReminder";
 import { Button } from "@/components/ui/button";
 import AddLogModal from "@/components/modals/AddLogModal";
 import AddReminderModal from "@/components/modals/AddReminderModal";
-import { set } from "mongoose";
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
 //const BACKEND_URL = "http://localhost:8000"
@@ -66,9 +64,10 @@ const columns = [
   },
 ];
 
-export default function TrackingPage({params}) {
+export default function TrackingPage() {
   const {id} = useParams();
-  const { search } =  React.use(params)
+  const searchParams = useSearchParams();
+  const search  = searchParams.get('search');
   const [loading, setLoading] = useState(false);
   const [initLoading, setInitLoading] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -152,7 +151,7 @@ export default function TrackingPage({params}) {
         {log.notes}
       </td>
       <td className="">
-        <button onClick={() => router.push(`/tracking/logs/${log.id}`)} className="">
+        <button onClick={() => router.push(`/tracking/logs/${log.pkid}/?report_id=${id}&client_id=${report.client_id}`)} className="">
           <Eye />
         </button>
       </td>

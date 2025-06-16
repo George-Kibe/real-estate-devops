@@ -43,6 +43,8 @@ class Client(TimeStampedUUIDModel):
     house_type = models.CharField(max_length=50, blank=True)
     additional_info = models.TextField(blank=True, null=True)
     staff_id = models.CharField(max_length=100, blank=True, null=True)
+    staff_name = models.CharField(max_length=100, blank=True, null=True)
+    staff_contact = models.CharField(max_length=100, blank=True, null=True)
     owner_id = models.CharField(max_length=100, blank=True, null=True)
     staff_email = models.EmailField(blank=True, null=True)
     payor = models.CharField(max_length=100, blank=True, null=True)
@@ -279,17 +281,11 @@ class ReportLog(TimeStampedUUIDModel):
     landlord_referral_id = models.CharField(max_length=100, null=True, blank=True)
     date = models.DateField(null=True, blank=True)
     time = models.TimeField(null=True, blank=True)
-    log = models.TextField(null=True, blank=True)
-    log_type = models.CharField(max_length=50, choices=[
-        ('Info', 'Info'),
-        ('Warning', 'Warning'),
-        ('Error', 'Error'),
-    ], null=True, default="Info", blank=True)
-
+    agent_id = models.CharField(max_length=100, null=True, blank=True)
     class Meta:
         verbose_name = "Report Log"
         verbose_name_plural = "Report Logs"
         ordering = ["-created_at"]
 
     def __str__(self):
-        return f"{self.report} ({self.log_type})"
+        return f"{self.notes} ({self.action_performed})"
