@@ -226,7 +226,7 @@ class ClientViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows clients to be created, viewed and edited
     """
-    queryset = Client.objects.all()
+    queryset = Client.objects.all().order_by('-created_at')
     serializer_class = ClientSerializer
 
     def list(self, request):
@@ -234,15 +234,14 @@ class ClientViewSet(viewsets.ModelViewSet):
         staff_id = request.query_params.get('staff_id')
         email = request.query_params.get('email')
         client_id = request.query_params.get('client_id')
-        # queryset = self.filter_queryset(self.get_queryset())
         if owner_id is not None:
-            queryset = Client.objects.filter(owner_id=owner_id)
+            queryset = Client.objects.filter(owner_id=owner_id).order_by('-created_at')
         elif staff_id is not None:
-            queryset = Client.objects.filter(staff_id=staff_id)
+            queryset = Client.objects.filter(staff_id=staff_id).order_by('-created_at')
         elif email is not None:
-            queryset = Client.objects.filter(email=email)
+            queryset = Client.objects.filter(email=email).order_by('-created_at')
         elif client_id is not None:
-            queryset = Client.objects.filter(id=client_id)
+            queryset = Client.objects.filter(id=client_id).order_by('-created_at')
         else:
             queryset = self.filter_queryset(self.get_queryset())
         page = self.paginate_queryset(queryset)

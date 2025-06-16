@@ -68,6 +68,7 @@ export default function TrackingPage() {
   const {id} = useParams();
   const searchParams = useSearchParams();
   const search  = searchParams.get('search');
+  const [reminderToDelete, setReminderToDelete] = useState({});
   const [loading, setLoading] = useState(false);
   const [initLoading, setInitLoading] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -121,6 +122,16 @@ export default function TrackingPage() {
       fetchReportLogs();
     }
   }, [id]);
+  const deleteReminder = async() => {
+    try {
+      const response = await axios.delete(`${BACKEND_URL}/drf-api/reminders/${reminderToDelete.pkid}/`);
+      const data = response.data
+      fetchReminders();
+    } catch (error) {
+      // toast.error("Fetching Clients failed. Try Again!")
+      console.log("Error: ", error)
+    }
+  }
   
   const renderRow = (log) => (
     <tr
@@ -169,9 +180,10 @@ export default function TrackingPage() {
         )
       }
       <ConfirmDeleteModal 
-        title={"Report"}
+        title={`Reminder ${reminderToDelete?.title}`}
         isOpen={showDeleteModal}
         onClose={() => setShowDeleteModal(false)}
+        deleteAction={deleteReminder}
       />
       <AddLogModal
         isOpen={showAddLogModal}
@@ -290,7 +302,13 @@ export default function TrackingPage() {
           <div className="flex flex-col md:flex-row md:flex-wrap w-full">
               {
                   reminders.map((reminder, index) => (
-                      <CallReminder index={index} reminder={reminder} />
+                      <CallReminder 
+                        index={index} 
+                        reminder={reminder} 
+                        showDeleteModal={showDeleteModal}
+                        setReminderToDelete={setReminderToDelete}
+                        setShowDeleteModal={setShowDeleteModal} 
+                      />
                   ))
               }
           </div>

@@ -13,7 +13,7 @@ const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
 //const BACKEND_URL = "http://localhost:8000"
 
 const AddClientModal = ({ isOpen, onClose, setLoading, client=null }) => {  
-  const {currentUser, tempUser} = useMainProvider();
+  const {currentUser,orgMode, tempUser} = useMainProvider();
   const [members, setMembers] = useState([]);
   const [first_name, setFirst_name] = useState('');
   const [last_name, setLast_name] = useState('');
@@ -98,7 +98,7 @@ const AddClientModal = ({ isOpen, onClose, setLoading, client=null }) => {
       staff_name: orgMode? tempUser.firstName : currentUser.firstName,
       staff_contact: orgMode? tempUser.email : currentUser.email,
     };
-    // console.log(data)
+    console.log("Client data: ", data)
 
     if (client){
       toast.info(`Updating ${email}'s Details`)

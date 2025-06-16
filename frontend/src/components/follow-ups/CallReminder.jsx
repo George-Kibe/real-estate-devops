@@ -1,12 +1,20 @@
-import { CalendarDays, Ellipsis } from 'lucide-react'
-import React from 'react'
 
-const CallReminder = ({index, reminder}) => {
+import { CalendarDays } from 'lucide-react'
+import React from 'react'
+import { ReminderActions } from './ReminderActions'
+
+const CallReminder = ({index, reminder, showDeleteModal, setShowDeleteModal, setReminderToDelete}) => {
   return (
     <div index={index} className='w-full md:w-1/4 p-2 mb-4'>
-        <div className="flex justify-between mr-4">
-            <h2 className={`text-sm rounded-md px-2 text-white ${reminder.priority === "High" ? "bg-red-500" : "bg-green-500"}`}>{reminder.priority}</h2>
-            <Ellipsis />
+        <div className="flex justify-between mr-4 items-center">
+            <h2 className={`text-sm rounded-md px-2 p-1 w-16 items-center h-8 text-white ${reminder.priority === "High" ? "bg-red-500" : "bg-green-500"}`}>{reminder.priority}
+            </h2>
+            <ReminderActions 
+                setReminderToDelete={setReminderToDelete}
+                setShowDeleteModal={setShowDeleteModal} 
+                showDeleteModal={showDeleteModal}
+                reminder={reminder}
+            />
         </div>
         <p className="flex gap-2 text-xs my-2"> <CalendarDays className='w-4 h-4' /> {reminder.date}</p>
         <h2 className="font-bold my-2">{reminder.title}</h2>

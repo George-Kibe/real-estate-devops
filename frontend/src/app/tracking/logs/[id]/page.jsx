@@ -5,13 +5,13 @@ import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { ArrowDownUp, CheckCircle, ChevronRight, Circle, Loader, SlidersHorizontal } from "lucide-react";
+import { ArrowDownUp, CheckCircle, ChevronRight, Circle, Loader, SlidersHorizontal, Trash2 } from "lucide-react";
 import Table from "@/components/Table";
 import ConfirmDeleteModal from "@/components/modals/ConfirmDeleteModal";
 import TableSearch from "@/components/TableSearch";
-import { logs } from "@/constants/reminders";
 import { documents } from "../../../../../data/documents";
 import moment from "moment";
+import { Button } from "@/components/ui/button";
 
 const options = [
     "Daily email reminders for upcoming follow ups", 
@@ -110,9 +110,7 @@ export default function SingleLogPage({params}) {
   const [initLoading, setInitLoading] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [allReports, setAllReports] = useState([]);
-  const [members, setMembers] = useState([]);
   const [reports, setReports] = useState([]);
-  const [logId, setlogId] = useState('');
   const [currentStaff, setCurrentStaff] = useState(null);
   const {orgMode, currentUser, currentClient, setCurrentClient} = useMainProvider();
   const router = useRouter();
@@ -135,7 +133,20 @@ export default function SingleLogPage({params}) {
       toast.error("Fetching Log data failed. Try Again!")
     }
   }
-   const fetchReportLogs = async() => {
+  
+  const deleteLog = async() => {
+    try {
+      const response = await axios.delete(`${BACKEND_URL}/drf-api/report-logs/${id}/`);
+      const data = response.data
+      router.push(`/tracking/${report_id}`);
+      toast.success("Log deleted successfully!");
+    } catch (error) {
+      console.log("Error: ", error)
+      toast.error("Deleting log failed. Try Again!")
+    }
+  }
+
+  const fetchReportLogs = async() => {
     try {
       const response = await axios.get(`${BACKEND_URL}/drf-api/report-logs/?report_id=${parseInt(report_id)}`);
       const data = response.data
@@ -273,9 +284,10 @@ export default function SingleLogPage({params}) {
         )
       }
       <ConfirmDeleteModal 
-        title={"Report"}
+        title={`Log ${reportLog?.notes}`}
         isOpen={showDeleteModal}
         onClose={() => setShowDeleteModal(false)}
+        deleteAction={deleteLog}
       />
       <h2 className=" font-bold text-xl md:text-2xl mb-2 md:mb-8 flex flex-wrap items-center">
         <button onClick={() => router.push("/tracking")} className="cursor-pointer">
@@ -288,14 +300,27 @@ export default function SingleLogPage({params}) {
         <ChevronRight className="h-6 w-6 ml-2 mr-2 text-[#45A71E]" />
         Log Details
       </h2>
+
       <div className="flex flex-col gap-2 mb-2 md:mb-4">
-        <h2 className="font-bold text-xl">{reportLog?.property?.title}</h2>
-        <p className="">{reportLog?.property?.street_address || "No address"}</p>
+        <div className="w-full font-bold text-xl flex gap-4 my-2">
+          <p className="font-semibold">Log Notes: </p>
+          <p className="">{reportLog.notes}</p>
+        </div>
+        <div className="flex flex-col md:flex-row md: justify-between md:mr-8">
+          <div className="gap-2 mb-2 ">
+            <h2 className="font-bold text-xl gap-2">{reportLog?.property?.title || "No Title"}</h2>
+            <p className="">{reportLog?.property?.street_address || "No address"}</p>
+          </div>
+          <Button className={"flex"} onClick={() => setShowDeleteModal(true)}>
+            <Trash2 />
+            Delete Log
+          </Button>
+        </div>
         
         <div className="flex mt-2 flex-col md:flex-row flex-wrap gap-2">
             <div className="w-full md:w-1/3 flex gap-4 my-2">
-                <p className="font-semibold">Bedrooms/Bathrooms: </p>
-                <p className=""> 1 Bed/ 1 Bath</p>
+              <p className="font-semibold">Bedrooms/Bathrooms: </p>
+              <p className=""> 1 Bed/ 1 Bath</p>
             </div>
             <div className="w-full md:w-1/3 flex gap-4 my-2">
                 <p className="font-semibold">Agent or Landlord Name: </p>
