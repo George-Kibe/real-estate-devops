@@ -5,7 +5,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
 import { ModeToggle } from './ModeToggle';
 import { UserMenu } from './UserMenu';
-import { useMainProvider } from '@/providers/MainProvider';
+import { useMainProvider  } from '@/providers/MainProvider';
 
 const CustomLink = ({href,name, items, toggle}) => {
   const pathname = usePathname();
@@ -27,7 +27,7 @@ const CustomLink = ({href,name, items, toggle}) => {
 const NavBar = () => {
   const [showMobileNav, setShowMobileNav] = useState(false);
   const [orgName, setOrgName] = useState('');
-  const { currentUser } = useMainProvider();
+  const { currentUser, orgMode, tempUser } = useMainProvider();
 
   useEffect(() => {
     if (currentUser?.orgName) {
@@ -38,8 +38,10 @@ const NavBar = () => {
   const handleClick = () => {
     setShowMobileNav(!showMobileNav)
   }
+  const profileImage = orgMode ? tempUser?.image : currentUser?.image || '/images/defaultProfile.png';
+  
   return (    
-    <nav className="bg-[#0B2B5F] text-white ">
+    <nav className="bg-[#0B2B5F] text-white w-full ">
       <div className="mx-auto px-4 mr-8">
         <div className="flex justify-between">
           <div className="flex space-x-2 justify-between flex-1">
@@ -66,7 +68,7 @@ const NavBar = () => {
                 {
                   currentUser ? (
                     <div className="flex flex-row items-center justify-center">
-                      <img src={currentUser?.image || '/images/defaultProfile.png' } alt="Profile" className="w-8 h-8 rounded-full" />
+                      <img src={profileImage} alt="Profile" className="w-8 h-8 rounded-full" />
                       <UserMenu />
                     </div>
                   ) : (
@@ -94,7 +96,7 @@ const NavBar = () => {
       {
         showMobileNav && (
           <div className="md:hidden flex flex-col">
-            <ModeToggle />
+            {/* <ModeToggle /> */}
             <CustomLink href={"/#"} name={"Home"} toggle={handleClick}/>
             <CustomLink href={"/case-studies"} name={"Case Studies"} toggle={handleClick}/>
             <CustomLink href={"/about-us"} name={"About Us"} toggle={handleClick}/>
@@ -104,7 +106,7 @@ const NavBar = () => {
             {
               currentUser ? (
                 <button className="flex flex-row ml-2 mb-2">
-                  <img src={currentUser?.image || '/images/defaultProfile.png' } alt="Profile" className="w-8 h-8 rounded-full" />
+                  <img src={profileImage} alt="Profile" className="w-8 h-8 rounded-full" />
                   <UserMenu />
                 </button>
               ) : (

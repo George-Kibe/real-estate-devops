@@ -136,7 +136,7 @@ const ProfessionalsPage = ({searchParams}) => {
                         {professional.name}
                       </a>
                     </h3>
-                    <p class="max-w-[370px] text-base text-body-color dark:text-dark-6">
+                    <p class="max-w-[370px] text-base text-[#004434] dark:text-dark-6">
                       {professional.professionalBio || "No professional bio provided"}
                     </p>
                   </div>

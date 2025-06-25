@@ -69,11 +69,11 @@ const PricingCard = ({
           </span>
           <h2 className="mb-5 text-[42px] font-bold text-dark dark:text-white">
             ${price}
-            <span className="text-base font-medium text-body-color dark:text-dark-6">
+            <span className="text-base font-medium text-[#004434] dark:text-dark-6">
               / {subscription}
             </span>
           </h2>
-          <p className="mb-8 border-b border-stroke pb-8 text-base text-body-color dark:border-dark-3 dark:text-dark-6">
+          <p className="mb-8 border-b border-stroke pb-8 text-base text-[#004434] dark:border-dark-3 dark:text-dark-6">
             {description}
           </p>
           
@@ -103,7 +103,7 @@ export default PricingCard;
 
 export const List = ({ children }) => {
   return (
-    <p className="text-base text-body-color dark:text-dark-6 flex">
+    <p className="text-base text-[#004434] dark:text-dark-6 flex">
       <BadgeCheck className="text-[#0B2B5F] mr-2" />
      {children}
     </p>

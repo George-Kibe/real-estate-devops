@@ -51,7 +51,7 @@ const ContactPage = () => {
                 <h2 className="mb-6 text-[32px] font-bold uppercase text-dark dark:text-white sm:text-[40px] lg:text-[36px] xl:text-[40px]">
                   GET IN TOUCH WITH US
                 </h2>
-                <p className="mb-9 text-base leading-relaxed text-body-color dark:text-dark-6">
+                <p className="mb-9 text-base leading-relaxed text-[#004434] dark:text-dark-6">
                   Minimize audit risks and ensure compliance with Nuviane's HSS-focused solutions. Streamline DHS-compliant note-taking and track HSS staff activities seamlessly, storing all daily apartment searches, activities, and billable work on Google Sheet cloud storage for thorough record-keeping.
                 </p>
                 <div className="mb-8 flex w-full max-w-[370px]">
@@ -62,10 +62,10 @@ const ContactPage = () => {
                     <h4 className="mb-1 text-xl font-bold text-dark dark:text-white">
                       Our Location
                     </h4>
-                    <p className="text-base text-body-color dark:text-dark-6">
+                    <p className="text-base text-[#004434] dark:text-dark-6">
                       428 Minnesota Street, Suite 500
                     </p>
-                    <p className="text-base text-body-color dark:text-dark-6">
+                    <p className="text-base text-[#004434] dark:text-dark-6">
                       Saint Paul, MN  Postal Code: 651
                     </p>
                   </div>
@@ -79,7 +79,7 @@ const ContactPage = () => {
                     <h4 className="mb-1 text-xl font-bold text-dark dark:text-white">
                       Phone Number
                     </h4>
-                    <p className="text-base text-body-color dark:text-dark-6">
+                    <p className="text-base text-[#004434] dark:text-dark-6">
                       +1 (651) 417-1699
                     </p>
                   </div>
@@ -93,7 +93,7 @@ const ContactPage = () => {
                     <h4 className="mb-1 text-xl font-bold text-dark dark:text-white">
                       Email Address
                     </h4>
-                    <p className="text-base text-body-color dark:text-dark-6">
+                    <p className="text-base text-[#004434] dark:text-dark-6">
                       info@Nuviane.com
                     </p>
                   </div>
@@ -168,7 +168,7 @@ const ContactTextArea = ({ row, placeholder, name, defaultValue }) => {
           rows={row}
           placeholder={placeholder}
           name={name}
-          className="w-full resize-none rounded border border-stroke px-[14px] py-3 text-base text-body-color outline-none focus:border-primary dark:border-dark-3 dark:bg-dark dark:text-dark-6"
+          className="w-full resize-none rounded border border-stroke px-[14px] py-3 text-base text-[#004434] outline-none focus:border-primary dark:border-dark-3 dark:bg-dark dark:text-dark-6"
           defaultValue={defaultValue}
         />
       </div>
@@ -184,7 +184,7 @@ const ContactInputBox = ({ type, placeholder, name }) => {
           type={type}
           placeholder={placeholder}
           name={name}
-          className="w-full rounded border border-stroke px-[14px] py-3 text-base text-body-color outline-none focus:border-primary dark:border-dark-3 dark:bg-dark dark:text-dark-6"
+          className="w-full rounded border border-stroke px-[14px] py-3 text-base text-[#004434] outline-none focus:border-primary dark:border-dark-3 dark:bg-dark dark:text-dark-6"
         />
       </div>
     </>

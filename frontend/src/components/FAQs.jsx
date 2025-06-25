@@ -22,7 +22,7 @@ const FAQS = () => {
               <h2 className="mb-4 text-3xl font-bold text-dark sm:text-[40px]/[48px]">
                 What you can get from Nuviane
               </h2>
-              <p className="text-base text-body-color ">
+              <p className="text-base text-[#004434] ">
                 Some of the features and details of our services
               </p>
             </div>
@@ -36,7 +36,7 @@ const FAQS = () => {
                 <AccordionTrigger className="text-lg font-semibold text-dark">
                   {feature.feature}
                 </AccordionTrigger>
-                <AccordionContent className="text-base text-body-color">
+                <AccordionContent className="text-base text-[#004434]">
                   {feature.description}
                 </AccordionContent>
               </AccordionItem>

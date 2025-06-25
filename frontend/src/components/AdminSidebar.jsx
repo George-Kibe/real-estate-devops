@@ -21,7 +21,7 @@ import { useState } from 'react';
   const AdminSidebar = () => {
     const [showSideBar, setShowSideBar] = useState(true);
     return (
-      <div className='flex flex-col'>
+      <div className='hidden md:flex md:flex-col'>
       {
         showSideBar? ( 
         <CircleChevronLeft 

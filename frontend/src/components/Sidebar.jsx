@@ -55,7 +55,7 @@ import { TaskList } from './dropdowns/TaskList';
     const membershipIsValid = moment(futureDate).isAfter(moment().format("YYYY-MM-DD"));
     
     return (
-      <div className='flex flex-col'>
+      <div className='hidden md:flex md:flex-col'>
         {
           showSideBar? ( 
           <CircleChevronLeft 

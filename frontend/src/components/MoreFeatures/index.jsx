@@ -56,7 +56,7 @@ const SingleService = ({service}) => {
       <h3 className="text-2xl font-semibold">
           {service.name}
       </h3>
-      <p class="max-w-[500px] my-2 md:my-4 text-base text-body-color dark:text-dark-6">
+      <p class="max-w-[500px] my-2 md:my-4 text-base text-[#004434] dark:text-dark-6">
           {service.description}
       </p>
       </div>

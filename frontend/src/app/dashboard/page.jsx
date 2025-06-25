@@ -44,9 +44,11 @@ const Dashboard = () => {
                 </div>
                 <div className="w-full">
                   <h5 className="mb-3 text-lg font-semibold text-[#004434]">
-                    Your membership is active
+                    {
+                      orgMode ? "Your Organization membership is active" : "Your membership is active"
+                    }
                   </h5>
-                  <p className="text-base leading-relaxed text-body-color">
+                  <p className="text-base leading-relaxed text-[#004434]">
                     Keep making best  use of Nuviane services
                   </p>
                 </div>
@@ -92,9 +94,11 @@ const Dashboard = () => {
                 </div>
                 <div className="w-full">
                   <h5 className="mb-3 text-lg font-semibold text-[#004434]">
-                    Your membership is active
+                    {
+                      orgMode ? "Your Organization membership is active" : "Your membership is active"
+                    }
                   </h5>
-                  <p className="text-base leading-relaxed text-body-color">
+                  <p className="text-base leading-relaxed text-[#004434]">
                     Keep making best  use of Nuviane services
                   </p>
                 </div>

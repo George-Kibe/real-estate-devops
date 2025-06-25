@@ -70,10 +70,10 @@ const supportLInks = [
 const Footer = () => {
   return (
     <footer
-      className="px-4 md:px-8 lg:px-16 bg-[#0B2B5F] relative pt-20 lg:pt-[100px]"
+      className="px-4 md:px-8 lg:px-16 bg-[#0B2B5F] relative pt-20 lg:pt-[100px] w-full"
       data-wow-delay=".15s"
     >
-      <div className="container">
+      <div className="">
         <div className="flex flex-wrap">
           <div className="w-full px-4 sm:w-1/2 md:w-1/2 lg:w-4/12 xl:w-3/12">
             <div className="mb-10 w-full">

@@ -71,7 +71,7 @@ const ResetPasswordPage = ({params}) => {
                   />
                 </div>
               </form>
-              <p className="text-base mt-4 text-body-color dark:text-dark-6">
+              <p className="text-base mt-4 text-[#004434] dark:text-dark-6">
                 <span className="pr-0.5">Already a Member?</span>
                 <Link
                   href="/login"
@@ -99,7 +99,7 @@ const InputBox = ({ type, placeholder, name, value, onChange }) => {
         onChange={onChange}
         placeholder={placeholder}
         name={name}
-        className="w-full rounded-md border border-stroke bg-transparent px-5 py-3 text-base text-body-color outline-none focus:border-primary focus-visible:shadow-none dark:border-dark-3 dark:text-white"
+        className="w-full rounded-md border border-stroke bg-transparent px-5 py-3 text-base text-[#004434] outline-none focus:border-primary focus-visible:shadow-none dark:border-dark-3 dark:text-white"
       />
     </div>
   );

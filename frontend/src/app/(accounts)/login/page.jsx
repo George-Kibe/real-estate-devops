@@ -5,7 +5,7 @@ import { useMainProvider } from "@/providers/MainProvider";
 import axios from "axios";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 
 const LoginPage = () => {
@@ -13,7 +13,7 @@ const LoginPage = () => {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-  const { setCurrentUser, setLoggedIn} = useMainProvider();  
+  const { setCurrentUser, setOrgMode, setSellerMode, setTempUser, orgMode} = useMainProvider();  
   
   const handleSubmit = async(e) => {
     e.preventDefault();
@@ -21,13 +21,22 @@ const LoginPage = () => {
     try {
       const body = { email:email.trim(), password };
       const response = await axios.post('/api/auth/login', body);
-      setCurrentUser(response.data);
+      if(response.data?.organization){
+        setOrgMode(true)
+        setTempUser(response.data)
+        setCurrentUser(response.data?.organization)
+      }else{
+        setCurrentUser(response.data);
+      }
+      if (response.data?.isPremium && !orgMode) {
+        setSellerMode(true);
+      }
       toast.success("Sign in Successful!")
       router.push("/dashboard");
-      setLoading(false);
     } catch (error) {
       toast.error("Sign in Error! Try Again!")
-      setLoading(false); 
+    } finally {
+      setLoading(false);
     }
   }
   
@@ -66,7 +75,7 @@ const LoginPage = () => {
               >
                 Forgot Password?
               </a>
-              <p className="text-base text-body-color dark:text-dark-6">
+              <p className="text-base text-[#004434] dark:text-dark-6">
                 <span className="pr-0.5">Not a member yet?</span>
                 <Link
                   href="/register"
@@ -94,7 +103,7 @@ const InputBox = ({ type, placeholder, name, value, onChange }) => {
         onChange={onChange}
         placeholder={placeholder}
         name={name}
-        className="w-full rounded-md border border-stroke bg-transparent px-5 py-3 text-base text-body-color outline-none focus:border-primary focus-visible:shadow-none dark:border-dark-3 dark:text-white"
+        className="w-full rounded-md border border-stroke bg-transparent px-5 py-3 text-base text-[#004434] outline-none focus:border-primary focus-visible:shadow-none dark:border-dark-3 dark:text-white"
       />
     </div>
   );

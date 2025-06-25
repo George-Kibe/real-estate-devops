@@ -1,25 +1,44 @@
 "use client"
 import AnimatedText from "@/components/AnimatedText";
 import { useMainProvider } from "@/providers/MainProvider";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {File} from 'lucide-react';
 import { toast } from "react-toastify";
 import { handleFileUpload } from "@/utils/google-cloud";
 
 export default function MyAccountPage() {
-  const {currentUser, setCurrentUser, orgMode} = useMainProvider();
-  const [userImage, setUserImage] = useState(currentUser?.image);
+  const {currentUser, setCurrentUser, tempUser,  orgMode} = useMainProvider();
+  const [userImage, setUserImage] = useState();
   const [uplaodLoading, setUploadLoading] = useState(false);
-  const [firstName, setFirstName] = useState(currentUser?.firstName || currentUser?.name);
-  const [lastName, setLastName] = useState(currentUser?.lastName);
-  const [orgName, setOrgName] = useState(currentUser?.orgName);
-  const [email, setEmail] = useState(currentUser?.email);
-  const [phoneNumber, setPhoneNumber] = useState(currentUser?.phoneNumber);
-  const [isAvailable, setIsAvailable] = useState(currentUser?.isAvailable);
-  const [favouriteLocation, setFavouriteLocation] = useState(currentUser?.favouriteLocation);
+  const [firstName, setFirstName] = useState();
+  const [lastName, setLastName] = useState();
+  const [orgName, setOrgName] = useState();
+  const [email, setEmail] = useState();
+  const [phoneNumber, setPhoneNumber] = useState();
+  const [isAvailable, setIsAvailable] = useState();
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    if (orgMode) {
+      setUserImage(tempUser?.image);
+      setFirstName(tempUser?.firstName || "");
+      setLastName(tempUser?.lastName || "");
+      setEmail(tempUser?.email || "");
+      setPhoneNumber(tempUser?.phoneNumber || "");
+      setIsAvailable(tempUser?.isAvailable || false);
+    } else {
+      setUserImage(currentUser?.image || "");
+      setFirstName(currentUser?.firstName || "");
+      setLastName(currentUser?.lastName || "");
+      setOrgName(currentUser?.orgName || ""); 
+      setIsAvailable(currentUser?.isAvailable || false);
+      setEmail(currentUser?.email || "");
+      setPhoneNumber(currentUser?.phoneNumber || "");
+    }
+  }, [])
+  
   // console.log("Name: ", name, "Email: ", email)
+  console.log("Temp User: ", tempUser);
   const uploadImage = async (e) => {
     e.preventDefault()
     setUploadLoading(true);
@@ -47,7 +66,8 @@ export default function MyAccountPage() {
     //console.log('Updating: ', body);
     try {
       setLoading(true)
-      const response = await fetch(`/api/auth/users/${currentUser._id}`, {
+      const userId = orgMode ? tempUser._id : currentUser._id;
+      const response = await fetch(`/api/auth/users/${userId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
@@ -87,7 +107,7 @@ export default function MyAccountPage() {
                   <File className='text-dark-6 dark:text-white' />
                 )}
               </span>
-              <span className='text-base text-body-color dark:text-dark-6'>
+              <span className='text-base text-[#004434] dark:text-dark-6'>
                 <span className='text-center underline'>
                   {uplaodLoading ? "Uploading..." : "Browse"}
                 </span>
