@@ -93,11 +93,9 @@ const AddVisit = () => {
           router.push(`/reports/${report.pkid}/?searchTerm=${currentClient?.city}`)
         }
       }
-      setLoading(false);
     } catch (error) {
       toast.error("Report Generation failed. Try Again!")
       console.log("Error: ", error)
-      setLoading(false);
     } finally {
       setLoading(false);
     }

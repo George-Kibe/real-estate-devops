@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { Ellipsis, Eye, Pencil, Share2, Trash, DiamondPlus, Heart } from "lucide-react"
+import { Ellipsis, Eye, Pencil, Share2, Trash, DiamondPlus, Heart, Square, Calendar, FileCheck2, TriangleAlert, BadgeCheck, CircleCheck, Notebook, MailPlus, Mail, PhoneCall, Download, FlagIcon, Clock9, ThumbsUp, ThumbsDown, CircleX } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -52,15 +52,87 @@ export function PropertyActions({
           <Share2 className="h-5 w-5 mr-2" />
           Share With Client
         </DropdownMenuItem>
+        <DropdownMenuItem onClick={handleShareProperty}>
+          <Calendar className="h-5 w-5 mr-2" />
+          Follow Up/Remind
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={handleShareProperty}>
+          <Calendar className="h-5 w-5 mr-2" />
+          Follow Up Again
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={handleShareProperty}>
+          <Square className="h-5 w-5 mr-2" />
+          Mark As Followed Up
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={handleShareProperty}>
+          <Square className="h-5 w-5 mr-2" />
+          Mark Submitted
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={handleShareProperty}>
+          <FileCheck2 className="h-5 w-5 mr-2" />
+          Signed Application
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={handleShareProperty}>
+          <TriangleAlert className="h-5 w-5 mr-2" />
+          No Response
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={handleShareProperty}>
+          <BadgeCheck className="h-5 w-5 mr-2" />
+          Approved
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={handleShareProperty}>
+          <CircleCheck className="h-5 w-5 mr-2" />
+          Applied
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={handleShareProperty}>
+          <Notebook className="h-5 w-5 mr-2" />
+          Add to Waiting List
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={handleShareProperty}>
+          <MailPlus className="h-5 w-5 mr-2" />
+          Apply For Benefits
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={handleShareProperty}>
+          <Mail className="h-5 w-5 mr-2" />
+          Left Voicemail/Email
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={handleShareProperty}>
+          <PhoneCall className="h-5 w-5 mr-2" />
+          Call Landlord
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={handleRemoveProperty}>
+          <Download className="h-5 w-5 mr-2" />
+          Archive
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={handleShareProperty}>
+          <FlagIcon className="h-5 w-5 mr-2" />
+          Flag For Supervisor Review
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={handleRemoveProperty}>
+          <Clock9 className="h-5 w-5 mr-2" />
+          Pending Response
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={handleRemoveProperty}>
+          <ThumbsUp className="h-5 w-5 mr-2" />
+          Fit
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={handleRemoveProperty}>
+          <ThumbsDown className="h-5 w-5 mr-2" />
+          Not Fit
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={handleRemoveProperty}>
+          <CircleX className="h-5 w-5 mr-2" />
+          Denied
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={handleRemoveProperty}>
+          <Trash className="h-5 w-5 mr-2" />
+          Remove Property
+        </DropdownMenuItem>
         <DropdownMenuItem onClick={handleMarkFavorite}>
           <Heart className="h-5 w-5 mr-2" />
             {
               isFavorite? "Unmark Favorite": "Mark As Favorite"
             }
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={handleRemoveProperty}>
-          <Trash className="h-5 w-5 mr-2" />
-          Remove Property
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
