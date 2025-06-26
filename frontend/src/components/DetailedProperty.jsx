@@ -23,7 +23,7 @@ const PropertyCard = ({ property }) => {
         <img
           radius="none"
           src={
-            property.images.length > 0 ? property.images[0]
+            property?.images?.length > 0 ? property.images[0]
               : `/images/${Math.floor(Math.random() * 9 + 1)}.jpg`
           }
           className="object-contain w-full h-64"
@@ -38,7 +38,7 @@ const PropertyCard = ({ property }) => {
           <p className="flex flex-wrap"><p className="font-semibold">Description:</p>{property.description}</p>
           <p className="flex gap-2 flex-row"><p className="font-semibold">Type:</p>{property.advert_type}</p>
           <p className="flex gap-2 flex-row"><p className="font-semibold">City:</p>{property.city}</p>
-          <p className="flex gap-2 flex-row"><p className="font-semibold">Status:</p>{property.status}</p>
+          <p className="flex gap-2 flex-row"><p className="font-semibold">Status:</p>{property.status?.pending? "Pending": "Active"}</p>
           <p className="flex gap-2 flex-row"><p className="font-semibold">Property type:</p>{property.property_type}</p>
           <p className="">
             {property.postal_code}, {property.street_address}
@@ -51,7 +51,7 @@ const PropertyCard = ({ property }) => {
           <p className="font-bold mr-2">Amenities:</p> {property.amenities?.map((a, index) => <p className="ml-1" key={index}>{a +", "}</p>)}
         </div>
         <div className="flex flex-row items-center gap-1 ">
-        {property.bedrooms}
+          {property.bedrooms}
           <FaBed /> | {property.bathrooms} <FaBath /> | {property.plot_area} sqft <BsGridFill />
           <div className="bg-black/80 dark:bg-white/80 rounded-md p-4 text-white dark:text-black flex justify-between">
             <p>Price: ${property.price}</p>

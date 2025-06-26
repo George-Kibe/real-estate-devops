@@ -25,7 +25,8 @@ const AddReminderModal = ({ isOpen, onClose, setLoading, id, client_name, client
   const {currentUser, orgMode, tempUser} = useMainProvider();
   const username = currentUser?.orgName || currentUser?.username || " ";
   const currentUserName = orgMode? tempUser.firstName : currentUser.firstName;
-  console.log("Property: ", property)
+  const staff_id = orgMode? tempUser._id : currentUser._id;
+
   const createReminder = async(e) => {
     e.preventDefault()
     setLoading(true);
@@ -44,7 +45,7 @@ const AddReminderModal = ({ isOpen, onClose, setLoading, id, client_name, client
       title,
       priority,
       staff_name: currentUserName,
-      staff_id: currentUser._id, 
+      staff_id: staff_id, 
       notes: notes,
       contact: contact,
       email, 
@@ -158,7 +159,8 @@ const AddReminderModal = ({ isOpen, onClose, setLoading, id, client_name, client
             mb-2 focus:border-blue-900" 
           /> 
         </div>
-         <div className="w-full md:w-1/3">
+        
+        <div className="w-full md:w-1/3">
           <p className="">Contact: </p>
           <input type="text" placeholder='Landlord Contact' 
             value={contact}

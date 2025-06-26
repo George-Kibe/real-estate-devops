@@ -5,7 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useMainProvider } from "@/providers/MainProvider";
 import axios from "axios";
 import { Tooltip as ReactTooltip } from "react-tooltip";
-import { LoaderCircle, Loader, Plus, Search, Copy, PlusCircle, Trash2, CloudDownload, CalendarDays, ChevronDown, MapPin, Sparkles  } from 'lucide-react';
+import { LoaderCircle, Loader, Plus, Search, Copy, PlusCircle, Trash2, CloudDownload, CalendarDays, ChevronDown, MapPin, Sparkles, Delete  } from 'lucide-react';
 import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
@@ -30,6 +30,12 @@ import { Label } from "@/components/ui/label";
 import SmartText from "@/components/SmartText";
 import { LinkActions } from "@/components/LinkActions";
 import ReportDescriptionModal from "@/components/modals/ReportDescriptionModal";
+import MarkAsPendingModal from "@/components/modals/actions/MarkAsPending";
+import MarkAsNonFitModal from "@/components/modals/actions/MarkAsNonFit";
+import MarkAsArchivedModal from "@/components/modals/actions/MarkArchived";
+import DeletePropertyModal from "@/components/modals/actions/DeletePropertyModal";
+import MarkAsDeniedModal from "@/components/modals/actions/MarkDenied";
+import FollowUpModal from "@/components/modals/actions/FollowUpModal";
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
 
@@ -43,6 +49,12 @@ export default function SingleReportPage({params}) {
   const [locationModalOpen, setLocationModalOpen] = useState(false);
   const [exportModalOpen, setExportModalOpen] = useState(false);
   const [descriptionModal, setDescriptionModal] = useState(false);
+  const [showMarkPendingModal, setShowMarkPendingModal] = useState(false);
+  const [showArchiveModal, setShowArchiveModal] = useState(false);
+  const [showNonFitModal, setShowNonFitModal] = useState(false);
+  const [showDeletePropertyModal, setShowDeletePropertyModal] = useState(false);
+  const [showMarkDeniedModal, setShowMarkDeniedModal] = useState(false);
+  const [showFollowUpModal, setShowFollowUpModal] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [isNew, setIsNew] = useState(false);
   const [report, setReport] = useState(null);
@@ -80,7 +92,7 @@ export default function SingleReportPage({params}) {
   const [reportActivities, setReportActivities] = useState([]);
 
   const [currentPropertiesIndex, setCurrentPropertiesIndex] = useState(5);
-  // console.log("User Properties: ", userProperties);
+  console.log("User Properties: ", userProperties);
   // console.log("Current Properties: ", currentProperties)
   // console.log("reportActivities: ", reportActivities)
   const {id} = useParams();
@@ -137,6 +149,39 @@ export default function SingleReportPage({params}) {
       toast.error("Fetching Properties failed. Try Again!")
       setLoading(false); setPropertiesLoading(false)
     }
+  }
+
+  const markPropertyAsPending = (property, index) => {
+    setShowMarkPendingModal(true);
+    setCurrentProperty(property);
+    setCurrentIndex(index)
+  }
+  const markPropertyNonFit = (property, index) => {
+    setShowNonFitModal(true);
+    setCurrentProperty(property);
+    setCurrentIndex(index)
+  }
+  const markPropertyAsArchived = (property, index) => {
+    setShowArchiveModal(true);
+    setCurrentProperty(property);
+    setCurrentIndex(index)
+  }
+  const markPropertyAsDenied = (property, index) => {
+    setShowMarkDeniedModal(true);
+    setCurrentProperty(property);
+    setCurrentIndex(index)
+  }
+
+  const handleDeleteProperty = (property, index) => {
+    setShowDeletePropertyModal(true);
+    setCurrentProperty(property);
+    setCurrentIndex(index)
+  }
+
+  const handleFollowUp = (property, index) => {
+    setShowFollowUpModal(true);
+    setCurrentProperty(property);
+    setCurrentIndex(index)
   }
 
   const exportToExcel = () => {
@@ -604,6 +649,60 @@ export default function SingleReportPage({params}) {
         property={currentProperty} 
       />
 
+      <MarkAsPendingModal 
+        isOpen={showMarkPendingModal} 
+        onClose={() => setShowMarkPendingModal(false)}
+        currentProperty={currentProperty}
+        userProperties={userProperties}
+        setUserProperties={setUserProperties}
+        currentIndex={currentIndex}
+      />
+      <MarkAsNonFitModal
+        isOpen={showNonFitModal} 
+        onClose={() => setShowNonFitModal(false)}
+        currentProperty={currentProperty}
+        userProperties={userProperties}
+        setUserProperties={setUserProperties}
+        currentIndex={currentIndex}
+      />
+
+      <MarkAsArchivedModal
+        isOpen={showArchiveModal} 
+        onClose={() => setShowArchiveModal(false)}
+        currentProperty={currentProperty}
+        userProperties={userProperties}
+        setUserProperties={setUserProperties}
+        currentIndex={currentIndex}
+      />
+      <DeletePropertyModal
+        isOpen={showDeletePropertyModal} 
+        onClose={() => setShowDeletePropertyModal(false)}
+        currentProperty={currentProperty}
+        userProperties={userProperties}
+        setUserProperties={setUserProperties}
+        currentIndex={currentIndex}
+      />
+
+      <MarkAsDeniedModal
+        isOpen={showMarkDeniedModal} 
+        onClose={() => setShowMarkDeniedModal(false)}
+        currentProperty={currentProperty}
+        userProperties={userProperties}
+        setUserProperties={setUserProperties}
+        currentIndex={currentIndex}
+      />
+
+      <FollowUpModal
+        isOpen={showFollowUpModal} 
+        onClose={() => setShowFollowUpModal(false)}
+        currentProperty={currentProperty}
+        userProperties={userProperties}
+        setUserProperties={setUserProperties}
+        currentClient={currentClient}
+        report={report}
+        currentIndex={currentIndex}
+      />
+
       <ReportDescriptionModal 
         isOpen={descriptionModal} 
         onClose={() => setDescriptionModal(false)}
@@ -916,6 +1015,12 @@ export default function SingleReportPage({params}) {
                     <PropertyActions 
                       handleEdit={() => handleEdit(property, index, false)}
                       viewProperty={() => viewProperty(property)} 
+                      markPropertyAsPending={() => markPropertyAsPending(property, index)}
+                      markPropertyNonFit={() => markPropertyNonFit(property, index)}
+                      markPropertyAsArchived={() => markPropertyAsArchived(property, index)}
+                      handleDeleteProperty={() => handleDeleteProperty(property, index)}
+                      markPropertyAsDenied={() => markPropertyAsDenied(property, index)}
+                      handleFollowUp={() => handleFollowUp(property, index)}
                       handleShareProperty={() => handleShareProperty(property)} 
                       handleRemoveProperty={() =>handleRemoveUserProperty(property.title)} 
                       isFavorite={property.isFavorite}

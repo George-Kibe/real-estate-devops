@@ -18,7 +18,13 @@ export function PropertyActions({
   isFavorite,
   viewProperty, 
   handleShareProperty,
-  handleRemoveProperty
+  markPropertyAsPending,
+  markPropertyNonFit,
+  markPropertyAsArchived,
+  markPropertyAsDenied,
+  handleRemoveProperty,
+  handleDeleteProperty,
+  handleFollowUp,
 }) {
   return (
     <DropdownMenu>
@@ -52,11 +58,11 @@ export function PropertyActions({
           <Share2 className="h-5 w-5 mr-2" />
           Share With Client
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={handleShareProperty}>
+        <DropdownMenuItem onClick={handleFollowUp}>
           <Calendar className="h-5 w-5 mr-2" />
           Follow Up/Remind
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={handleShareProperty}>
+        <DropdownMenuItem onClick={handleFollowUp}>
           <Calendar className="h-5 w-5 mr-2" />
           Follow Up Again
         </DropdownMenuItem>
@@ -100,7 +106,7 @@ export function PropertyActions({
           <PhoneCall className="h-5 w-5 mr-2" />
           Call Landlord
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={handleRemoveProperty}>
+        <DropdownMenuItem onClick={markPropertyAsArchived}>
           <Download className="h-5 w-5 mr-2" />
           Archive
         </DropdownMenuItem>
@@ -108,23 +114,23 @@ export function PropertyActions({
           <FlagIcon className="h-5 w-5 mr-2" />
           Flag For Supervisor Review
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={handleRemoveProperty}>
+        <DropdownMenuItem onClick={markPropertyAsPending}>
           <Clock9 className="h-5 w-5 mr-2" />
           Pending Response
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={handleRemoveProperty}>
+        <DropdownMenuItem onClick={markPropertyNonFit}>
           <ThumbsUp className="h-5 w-5 mr-2" />
           Fit
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={handleRemoveProperty}>
+        <DropdownMenuItem onClick={markPropertyNonFit}>
           <ThumbsDown className="h-5 w-5 mr-2" />
           Not Fit
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={handleRemoveProperty}>
+        <DropdownMenuItem onClick={markPropertyAsDenied}>
           <CircleX className="h-5 w-5 mr-2" />
           Denied
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={handleRemoveProperty}>
+        <DropdownMenuItem onClick={handleDeleteProperty}>
           <Trash className="h-5 w-5 mr-2" />
           Remove Property
         </DropdownMenuItem>
