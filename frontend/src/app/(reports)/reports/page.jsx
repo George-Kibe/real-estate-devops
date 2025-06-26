@@ -295,7 +295,7 @@ export default function ReportsPage({searchParams}) {
       key={report.id}
       className="border border-gray-200 text-sm"
     >
-      <td className="md:table-cell font-semibold">{report.report_date}</td>
+      <td className="md:table-cell font-semibold">{moment(report.report_date).format('MMMM DD YYYY')}</td>
       <td className="md:table-cell text-xs">{report.title.substring(0, 50)}</td>
       <td className="md:table-cell">{report.client_name}</td>
       <td className="hidden md:table-cell">{report.staff_name}</td>
