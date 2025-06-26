@@ -36,6 +36,9 @@ import MarkAsArchivedModal from "@/components/modals/actions/MarkArchived";
 import DeletePropertyModal from "@/components/modals/actions/DeletePropertyModal";
 import MarkAsDeniedModal from "@/components/modals/actions/MarkDenied";
 import FollowUpModal from "@/components/modals/actions/FollowUpModal";
+import SinglePropertyModal from "@/components/modals/actions/SinglePropertyModal";
+import MarkAsAppliedModal from "@/components/modals/actions/MarkAsApplied";
+import MarkAsApproveddModal from "@/components/modals/actions/MarkAsApproved";
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
 
@@ -55,6 +58,9 @@ export default function SingleReportPage({params}) {
   const [showDeletePropertyModal, setShowDeletePropertyModal] = useState(false);
   const [showMarkDeniedModal, setShowMarkDeniedModal] = useState(false);
   const [showFollowUpModal, setShowFollowUpModal] = useState(false);
+  const [showAppliedModal, setShowAppliedModal] = useState(false);
+  const [showApprovalModal, setShowApprovalModal] = useState(false);
+  const [showPropertyModal, setShowPropertyModal] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [isNew, setIsNew] = useState(false);
   const [report, setReport] = useState(null);
@@ -134,8 +140,11 @@ export default function SingleReportPage({params}) {
   }
   const viewProperty = (property) => {
     setTempProperty(property);
-    window.open(`/properties`, '_blank');
+    setShowPropertyModal(true);
+    setCurrentProperty(property)
+    // window.open(`/properties`, '_blank');
   }
+
   const fetchProperties = async() => {
     setLoading(true); setPropertiesLoading(true)
     try {
@@ -168,6 +177,18 @@ export default function SingleReportPage({params}) {
   }
   const markPropertyAsDenied = (property, index) => {
     setShowMarkDeniedModal(true);
+    setCurrentProperty(property);
+    setCurrentIndex(index)
+  }
+
+  const markPropertyAsApplied = (property, index) => {
+    setShowAppliedModal(true);
+    setCurrentProperty(property);
+    setCurrentIndex(index)
+  }
+
+  const markPropertyAsApproved = (property, index) => {
+    setShowApprovalModal(true);
     setCurrentProperty(property);
     setCurrentIndex(index)
   }
@@ -702,12 +723,37 @@ export default function SingleReportPage({params}) {
         report={report}
         currentIndex={currentIndex}
       />
+      <MarkAsAppliedModal
+        isOpen={showAppliedModal} 
+        onClose={() => setShowAppliedModal(false)}
+        currentProperty={currentProperty}
+        userProperties={userProperties}
+        setUserProperties={setUserProperties}
+        currentClient={currentClient}
+        report={report}
+        currentIndex={currentIndex}
+      />
+
+      <MarkAsApproveddModal
+        isOpen={showApprovalModal} 
+        onClose={() => setShowApprovalModal(false)}
+        currentProperty={currentProperty}
+        userProperties={userProperties}
+        setUserProperties={setUserProperties}
+        currentIndex={currentIndex}
+      />
+
 
       <ReportDescriptionModal 
         isOpen={descriptionModal} 
         onClose={() => setDescriptionModal(false)}
         reportActivities={reportActivities}
         setReportActivities={setReportActivities}
+      />
+      <SinglePropertyModal
+        isOpen={showPropertyModal} 
+        onClose={() => setShowPropertyModal(false)} 
+        currentProperty={currentProperty}
       />
 
         <div className="px-2">
@@ -1015,11 +1061,14 @@ export default function SingleReportPage({params}) {
                     <PropertyActions 
                       handleEdit={() => handleEdit(property, index, false)}
                       viewProperty={() => viewProperty(property)} 
+                      currentProperty={property}
                       markPropertyAsPending={() => markPropertyAsPending(property, index)}
                       markPropertyNonFit={() => markPropertyNonFit(property, index)}
                       markPropertyAsArchived={() => markPropertyAsArchived(property, index)}
                       handleDeleteProperty={() => handleDeleteProperty(property, index)}
                       markPropertyAsDenied={() => markPropertyAsDenied(property, index)}
+                      markPropertyAsApplied={() => markPropertyAsApplied(property, index)}
+                      markPropertyAsApproved={() => markPropertyAsApproved(property, index)}
                       handleFollowUp={() => handleFollowUp(property, index)}
                       handleShareProperty={() => handleShareProperty(property)} 
                       handleRemoveProperty={() =>handleRemoveUserProperty(property.title)} 

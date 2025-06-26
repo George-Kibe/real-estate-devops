@@ -4,13 +4,10 @@ import { Button } from '@/components/ui/button';
 import React, { useState } from 'react';
 
 
-const MarkAsNonFitModal = ({ isOpen, onClose, currentProperty, userProperties, setUserProperties, currentIndex }) => {
+const MarkAsAppliedModal = ({ isOpen, onClose, currentProperty, userProperties, setUserProperties, currentIndex }) => {
   const [reason, setReason] = useState('');
-  console.log("Current Property: ", currentProperty)
-
-
-  const markAsNonFit = () => {
-    const updatedProperty = { ...currentProperty, isFit: { isFit: currentProperty?.isFit?.isFit? false : true, reason: reason} };
+  const markAsApplied = () => {
+    const updatedProperty = { ...currentProperty, isApplied: { isApplied: currentProperty?.isApplied?.isApplied? false : true, reason: reason} };
     const updatedProperties = userProperties.map((prop, index) =>
       index === currentIndex ? updatedProperty : prop
     );
@@ -38,24 +35,22 @@ const MarkAsNonFitModal = ({ isOpen, onClose, currentProperty, userProperties, s
         >
           <p className="font-bold text-2xl p-2">X</p>
         </button>
-        <p className="font-semibold text-xl mb-4 pr-2">Mark Property as {currentProperty?.isFit?.isFit? "Non Fit" : "Fit"} Property </p>
+        <p className="font-semibold text-xl mb-4 pr-2">Mark Property as Applied  </p>
         <p className="">
-          You are about to mark this proiperty as a non fit. This action will remove it from the active listings and notify the relevant team.
+          You are about to mark this proiperty as applied. This action will notify the relevant team.
         </p>
         <div className="flex flex-col gap-2 mt-4 ">
             <p className="font-semibold pr-2">
-              Please let us know why this property is not a good fit
+              Any Application Notes
             </p>
-            <textarea type="text" className="border-1" placeholder="e.g. property doesn't meet client requirements" value={reason} onChange={(e) => setReason(e.target.value)} />
+            <textarea type="text" className="border-1" placeholder="e.g. property meets requirements" value={reason} onChange={(e) => setReason(e.target.value)} />
         </div>
         <div className="flex flex-col justify-end md:flex-row gap-4">
           <Button onClick={onClose} className='bg-white hover:bg-gray-50 text-black border-1 mt-2 rounded-xs'>
             Cancel
           </Button>
-          <Button onClick={markAsNonFit} className="mt-2 bg-green-600 hover:bg-lime-500 rounded-xs">
-            {
-              currentProperty?.isFit?.isFit? "Mark as Non Fit" : "Mark as Fit"
-            }
+          <Button onClick={markAsApplied} className="mt-2 bg-green-600 hover:bg-lime-500 rounded-xs">
+            Mark Applied
           </Button>
         </div>
       </div>
@@ -63,4 +58,4 @@ const MarkAsNonFitModal = ({ isOpen, onClose, currentProperty, userProperties, s
   );
 };
 
-export default MarkAsNonFitModal;
+export default MarkAsAppliedModal;

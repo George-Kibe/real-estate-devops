@@ -14,6 +14,7 @@ export function PropertyActions({
   handleEdit, 
   handleAddProperty, 
   handleMarkFavorite,
+  currentProperty,
   isNew,
   isFavorite,
   viewProperty, 
@@ -24,6 +25,8 @@ export function PropertyActions({
   markPropertyAsDenied,
   handleRemoveProperty,
   handleDeleteProperty,
+  markPropertyAsApplied,
+  markPropertyAsApproved,
   handleFollowUp,
 }) {
   return (
@@ -66,43 +69,43 @@ export function PropertyActions({
           <Calendar className="h-5 w-5 mr-2" />
           Follow Up Again
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={handleShareProperty}>
+        <DropdownMenuItem>
           <Square className="h-5 w-5 mr-2" />
           Mark As Followed Up
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={handleShareProperty}>
+        <DropdownMenuItem>
           <Square className="h-5 w-5 mr-2" />
           Mark Submitted
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={handleShareProperty}>
+        <DropdownMenuItem>
           <FileCheck2 className="h-5 w-5 mr-2" />
           Signed Application
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={handleShareProperty}>
+        <DropdownMenuItem>
           <TriangleAlert className="h-5 w-5 mr-2" />
           No Response
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={handleShareProperty}>
-          <BadgeCheck className="h-5 w-5 mr-2" />
+        <DropdownMenuItem onClick={markPropertyAsApproved}>
+          <BadgeCheck className={`${currentProperty.isApproved?.isApproved? "text-green-500" : "" } h-5 w-5 mr-2} `} />
           Approved
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={handleShareProperty}>
-          <CircleCheck className="h-5 w-5 mr-2" />
+        <DropdownMenuItem onClick={markPropertyAsApplied}>
+          <CircleCheck className={`${currentProperty.isApplied?.isApplied? "text-green-500" : "" } h-5 w-5 mr-2} `} />
           Applied
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={handleShareProperty}>
+        <DropdownMenuItem>
           <Notebook className="h-5 w-5 mr-2" />
           Add to Waiting List
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={handleShareProperty}>
+        <DropdownMenuItem>
           <MailPlus className="h-5 w-5 mr-2" />
           Apply For Benefits
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={handleShareProperty}>
+        <DropdownMenuItem>
           <Mail className="h-5 w-5 mr-2" />
           Left Voicemail/Email
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={handleShareProperty}>
+        <DropdownMenuItem>
           <PhoneCall className="h-5 w-5 mr-2" />
           Call Landlord
         </DropdownMenuItem>
@@ -110,7 +113,7 @@ export function PropertyActions({
           <Download className="h-5 w-5 mr-2" />
           Archive
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={handleShareProperty}>
+        <DropdownMenuItem>
           <FlagIcon className="h-5 w-5 mr-2" />
           Flag For Supervisor Review
         </DropdownMenuItem>
@@ -119,15 +122,15 @@ export function PropertyActions({
           Pending Response
         </DropdownMenuItem>
         <DropdownMenuItem onClick={markPropertyNonFit}>
-          <ThumbsUp className="h-5 w-5 mr-2" />
-          Fit
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={markPropertyNonFit}>
-          <ThumbsDown className="h-5 w-5 mr-2" />
+          <ThumbsUp className={`${currentProperty.isFit?.isFit? "" : "text-red-500" } h-5 w-5 mr-2} `} />
           Not Fit
         </DropdownMenuItem>
+        <DropdownMenuItem onClick={markPropertyNonFit}>
+          <ThumbsUp className={`${currentProperty.isFit?.isFit? "text-green-500" : "" } h-5 w-5 mr-2} `} />
+          Fit
+        </DropdownMenuItem>
         <DropdownMenuItem onClick={markPropertyAsDenied}>
-          <CircleX className="h-5 w-5 mr-2" />
+          <CircleX className={`${currentProperty.denied?.denied? "text-red-500" : "" } h-5 w-5 mr-2} `}/>
           Denied
         </DropdownMenuItem>
         <DropdownMenuItem onClick={handleDeleteProperty}>

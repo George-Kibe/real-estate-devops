@@ -18,6 +18,13 @@ const InviteMemberModal = ({ isOpen, onClose, setLoading }) => {
   const inviteMember = async(e) => {
     e.preventDefault()
     setLoading(true);
+    // validate email
+    // const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!emailRegex.test(email)) {
+      toast.error("Invalid email format!");
+      return;
+    }
     if(!email |!username |!firstName){
       toast.error("You have missing details!");
       return
