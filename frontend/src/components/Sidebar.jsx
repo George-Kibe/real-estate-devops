@@ -23,7 +23,18 @@ import { useMainProvider } from '@/providers/MainProvider';
     BookText,
     FilesIcon,
     CogIcon,
-    Search
+    Search,
+    Recycle,
+    HousePlus,
+    Wrench,
+    User,
+    Calendar,
+    FilePen,
+    FileChartPie,
+    FileClock,
+    Clock10,
+    FileEditIcon,
+    Warehouse
   } from 'lucide-react';
 
 import Link from 'next/link';
@@ -249,6 +260,77 @@ const MainSideBar = () => {
                   <MenuItem component={<Link href="/my-clients" />} icon={<Users />}> My Clients</MenuItem>
                 )}
               </SubMenu>
+
+            {
+              (orgMode || sellerMode) &&
+                <Menu>
+                  <SubMenu label="Clinical Module" icon={<Recycle />}>
+                    <MenuItem icon={<LayoutDashboard />}> Clinical Dashboard</MenuItem>
+                    <SubMenu label="Clients" icon={<User />}>
+                      <MenuItem> Client Roster</MenuItem>
+                      <MenuItem> Care Plan</MenuItem>
+                      <MenuItem> Diagnosis</MenuItem>
+                      <MenuItem> Session History</MenuItem>
+                      <MenuItem> Assessments</MenuItem>
+                      <MenuItem> SOAP/Progress Notes</MenuItem>
+                    </SubMenu>
+                    <SubMenu label="Scheduler" icon={<Calendar />}>
+                      <MenuItem> Weekly Sessions</MenuItem>
+                      <MenuItem> Availability Calendar</MenuItem>
+                      <MenuItem> Cancel/Reschedule</MenuItem>
+                    </SubMenu> 
+                    <SubMenu label="Documentation" icon={<FilePen />}>
+                      <MenuItem> Treatment Plans</MenuItem>
+                      <MenuItem> Supervisor Notes</MenuItem>
+                      <MenuItem> Parent Training Logs</MenuItem>
+                    </SubMenu>  
+                    <SubMenu label="Outcomes & Goals" icon={<FileChartPie />}>
+                      <MenuItem> Graph Progress</MenuItem>
+                      <MenuItem> Behaviour Data Logging</MenuItem>
+                      <MenuItem> Skill Acquisition Tracker</MenuItem>
+                    </SubMenu>
+                    <SubMenu label="Compliance" icon={<FileClock />}>
+                      <MenuItem> Auth Tracking</MenuItem>
+                      <MenuItem> Session Verification</MenuItem>
+                      <MenuItem> Staff License Monitor</MenuItem>
+                    </SubMenu>                  
+                  </SubMenu>
+                </Menu>
+            }
+
+            {
+              (orgMode || sellerMode) &&
+                <Menu>
+                  <SubMenu label="Homecare Module" icon={<HousePlus />}>
+                    <MenuItem icon={<LayoutDashboard />}> Homecare Dahsboard</MenuItem>
+                    <SubMenu label="Clients & Caregivers" icon={<Recycle />}>
+                      <MenuItem> Assign Caregivers</MenuItem>
+                      <MenuItem> Shift Logs</MenuItem>
+                      <MenuItem> Health Conditions</MenuItem>
+                    </SubMenu>  
+                    <SubMenu label="EVV" icon={<Clock10 />}>
+                      <MenuItem> Clock In/Out</MenuItem>
+                      <MenuItem> GPS Capture</MenuItem>
+                      <MenuItem> Visit Type Selection</MenuItem>
+                    </SubMenu>  
+                    <SubMenu label="Documentation" icon={<FileEditIcon />}>
+                      <MenuItem> ADL/IADL Checklist</MenuItem>
+                      <MenuItem> Daily Health Notes</MenuItem>
+                      <MenuItem> Medication Tracking</MenuItem>
+                      <MenuItem> Caregiver Notes</MenuItem>
+                    </SubMenu> 
+                    <SubMenu label="Timesheets" icon={<Warehouse />}>
+                      <MenuItem> Staff TimeSheet Approval</MenuItem>
+                      <MenuItem> Overtime Monitor</MenuItem>
+                    </SubMenu> 
+                    <SubMenu label="Scheduling" icon={<Calendar1 />}>
+                      <MenuItem> Shift Planner</MenuItem>
+                      <MenuItem> Recurring Visits</MenuItem>
+                      <MenuItem> PTO/Absence Calendar</MenuItem>
+                    </SubMenu>    
+                  </SubMenu>
+                </Menu>
+            }
               
               <SubMenu label="Transportation Module" icon={<Car />}>
                 <MenuItem icon={<LayoutDashboard />}>Transport Dashboard</MenuItem>
@@ -345,18 +427,16 @@ const MainSideBar = () => {
                 </Menu>
             }
 
-            <Menu>
-              <SubMenu label="Settings & Roles" icon={<CogIcon />}>
-                { (!orgMode || sellerMode) &&
-                  <>
-                    <MenuItem> Role Based Access</MenuItem>
-                    <MenuItem> Agency Settings</MenuItem>
-                    <MenuItem> Provider License Upload</MenuItem>
-                    <MenuItem> Module Visibility Toggle</MenuItem>
-                  </>
-                }
-              </SubMenu>
-            </Menu>
+            { (!orgMode && sellerMode) &&
+              <Menu>
+                <SubMenu label="Settings & Roles" icon={<Wrench />}>
+                  <MenuItem> Role Based Access</MenuItem>
+                  <MenuItem> Agency Settings</MenuItem>
+                  <MenuItem> Provider License Upload</MenuItem>
+                  <MenuItem> Module Visibility Toggle</MenuItem>                  
+                </SubMenu>
+              </Menu>
+            }
 
              {
               (orgMode || sellerMode) &&

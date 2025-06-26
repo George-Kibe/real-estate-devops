@@ -23,10 +23,8 @@ import SmartText from "@/components/SmartText";
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
 
 export default function MembersPage() {
-  const {currentClient, setTempProperty} = useMainProvider();
-  
+  const {currentClient, setTempProperty} = useMainProvider();  
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-  const [sendModalOpen, setSendModalOpen] = useState(false);
   const [exportModalOpen, setExportModalOpen] = useState(false);
   
   const [report, setReport] = useState(null);
@@ -223,7 +221,7 @@ export default function MembersPage() {
   }
   return (
     <div className='flex flex-col justify-between gap-5 mb-5 text-[#0B2B5F]'>
-      <div ref={divRef} className="">
+      <div className="">
         <div className="flex flex-col md:flex-row justify-between my-2 md:my-8">
           <p className="flex flex-col md:flex-row gap-2 text-2xl">
             Report for 
@@ -244,278 +242,282 @@ export default function MembersPage() {
         onClose={closeDeleteModal} 
         title={report?.title}
       />
+        <div ref={divRef} className="">
+          <div className="px-2">
+            {
+              errors.length > 0 &&(
+                <div className="p-2 flex flex-col items-center gap-2">
+                  <p className="text-red-500">Errors!!</p>
+                  {
+                    errors.map((error, index) => (
+                      <div className="flex flex-row">
+                        <p key={index} className="text-red-500">
+                          {index+1}. {error}
+                        </p>
+                      </div>
+                    ))
+                  }
+                </div>
+              ) 
+            }
+            <div className="flex flex-col md:flex-row md:flex-wrap">
+              <div className="flex gap-2 w-full md:w-1/3 my-2 ">
+                <div className="flex flex-col gap-1 w-full">
+                  <p className="font-semibold">Report Title:</p>
+                  <div className=" border p-2 rounded-sm">
+                    <p>{report?.title}</p>
+                  </div>
+                </div>
+              </div>
+              <div className="flex gap-2 w-full md:w-1/3 my-2">
+                <div className="flex flex-col gap-1 w-full">
+                  <p className="font-semibold">Report Title:</p>
+                  <div className="w-full border p-2 rounded-sm">
+                    <p>{report?.report_type}</p>
+                  </div>
+                </div>
+              </div>
+              <div className="flex gap-2 w-full md:w-1/3 my-2">
+                <div className="flex flex-col gap-1 w-full">
+                  <p className="font-semibold">Location</p>
+                  <div className="relative w-full border rounded-sm">
+                    <p className="p-2">{report?.report_location || staffLocation || "None"}</p>
+                  </div>
+                </div>
+              </div>
+              <div className="flex gap-2 w-full md:w-1/3 my-2">
+                <div className="flex flex-col gap-1 w-full">
+                  <p className="font-semibold">Report By:</p>
+                  <div className="w-full border p-2 rounded-sm">
+                    <p>{report?.staff_name}</p>
+                  </div>
+                </div>
+              </div>
+              <div className="flex gap-2 w-full md:w-1/3 my-2">
+                <div className="flex flex-col gap-1 w-full">
+                  <p className="font-semibold">Visit Date:</p>
+                  <div className="w-full border p-2 rounded-sm">
+                    <p>{moment(report?.report_date ? report?.report_date : report?.created_at).format('MMMM DD YYYY')}</p>
+                  </div>
+                </div>
+              </div>
 
-        <div className="px-2">
-          {
-            errors.length > 0 &&(
-              <div className="p-2 flex flex-col items-center gap-2">
-                <p className="text-red-500">Errors!!</p>
+              <div className="flex gap-2 w-full md:w-1/3 my-2">
+                <div className="flex flex-col gap-1 w-full">
+                  <p className="font-semibold">Report Visit Type:</p>
+                  <div className="relative w-full border p-2 rounded-sm">
+                    <p className="">
+                      {report?.report_view_type || visitType || "None"}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex gap-2 w-full md:w-1/3 my-2">
+                <div className="flex flex-col gap-1 w-full">
+                  <p className="font-semibold">{report?.start_time ? "Edit": "Set"} Start Time:</p>
+                  <div className="w-full border flex gap-4 p-2 rounded-sm">
+                    <input 
+                      type="time" 
+                      id="startTimeInput"
+                      value={startTime} 
+                      disabled
+                      onChange={e => setStartTime(e.target.value)} 
+                    />
+                    {/* <p className="">{startTime ||report?.start_time}</p> */}
+                  </div>
+                </div>
+              </div>
+              <div className="flex gap-2 w-full md:w-1/3 my-2">
+                <div className="flex flex-col gap-1 w-full">
+                  <p className="font-semibold">{report?.end_time ? "Edit": "Set"} End Time:</p>
+                  <div className="w-full border p-2 rounded-sm">
+                    <input 
+                      type="time" 
+                      id="startTimeInput"
+                      value={endTime} 
+                      disabled
+                      onChange={e => setEndTime(e.target.value)} 
+                    />
+                  </div>
+                </div>
+              </div>
+              <div className="flex gap-2 w-full md:w-1/3 my-2">
+                <div className="flex flex-col gap-1 w-full">
+                  <p className="font-semibold">Time Spent:</p>
+                  <div className="w-full border p-2 rounded-sm">
+                    <p>
+                      {getTimeDifference(report?.start_time , report?.end_time)}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className='flex flex-col gap-2 my-4 md:my-8'>
+              <p className='flex flex-row gap-4'>
+                Report Description:</p> 
+              <p className="font-semibold">
+                {report?.report_activities.join(" ")}
+              </p>
+            </div>
+          </div>
+        
+          <div className="relative shadow-md sm:rounded-lg">
+            <table className="w-full table-row text-sm text-left text-gray-500 dark:text-gray-400">
+              <thead className="bg-[#E8FDDF] h-12 text-xs text-gray-700 uppercase dark:bg-gray-700 dark:text-gray-400">
+                <tr>
+                  <th scope="col" className="px-2 py-1 w-24">
+                    No
+                  </th>
+                  <th scope="col" className="px-2 py-1">
+                    Image
+                  </th>
+                  <th scope="col" className="px-2 py-1">
+                      Name
+                  </th>
+                  <th scope="col" className="px-2 py-1">
+                      Address
+                  </th>
+                  <th scope="col" className="px-2 py-1">
+                      Price
+                  </th>
+                  <th scope="col" className="px-2 py-1">
+                    Phone Number
+                  </th>
+                  <th scope="col" className="px-2 py-1">
+                    Description
+                  </th>
+                  <th scope="col" className="px-2 py-1">
+                    Resources
+                  </th>
+                  <th scope="col" className="px-2 py-1">
+                    Comments
+                  </th>
+                  <th scope="col" className="px-2 py-1">
+                    Tracking
+                  </th>
+                </tr>
+              </thead>
+              {
+                propertiesLoading && 
+                <tbody>
+                  <tr>
+                    <td colSpan={6} className="text-center flex flex-row"><LoaderCircle className="animate-spin mr-2" />Loading Properties...</td>
+                    </tr>
+                </tbody>
+              }
+              {
+                !propertiesLoading && !userProperties.length && !properties?.length &&
+                <tbody>
+                  <tr className="mt-2 md:mt-4">
+                      <td colSpan={7} className="text-center mt-2 md:mt-4">No Properties Found</td>
+                    </tr>
+                </tbody>
+              }
+              {/* user properties; These are properties Added to report */}
+              <tbody>
                 {
-                  errors.map((error, index) => (
-                    <div className="flex flex-row">
-                      <p key={index} className="text-red-500">
-                        {index+1}. {error}
-                      </p>
-                    </div>
+                  userProperties?.map((property, index) => (
+                    <tr key={property.id} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                      <td className="">
+                        {index+1}.
+                      </td>
+                      <td scope="row" className="flex gap-2 relative items-center py-2 text-gray-900 whitespace-nowrap dark:text-white">
+                        {
+                          property.isFavorite && <FaHeart className='h-6 w-6 absolute top-3 left-0 text-red-500 mr-2'  />
+                        }
+                        {property?.images?.[0] ? (
+                          <Image width={60} height={40} src={property.images[0]} className="rounded-md object-fill" alt="image" />
+                        ) : (
+                          <p>No Image</p>
+                        )}
+                        {/* <div className="max-w-60">
+                          <div className="text-base text-wrap ">Name: {property.title}</div>
+                          <div className="text-sm font-semibold text-wrap">Address: {property.street_address || property.address}</div>
+                          <div className="font-normal text-gray-500 flex flex-row flex-wrap">
+                            <p className="font-bold mr-2">Amenities:</p> {property?.amenities?.map((a, index) => <p className="ml-1" key={index}>{a +", "}</p>)}
+                          </div>
+                          <div className="font-normal text-gray-500 flex flex-row flex-wrap">
+                            <p className="font-bold mr-2">Bathrooms:</p>{property.bathrooms}  
+                          </div>
+                          <div className="font-normal text-gray-500 flex flex-row flex-wrap">
+                            <p className="font-bold mr-2">Website:</p>{property.website}  
+                          </div>
+                        </div>   */}
+                      </td>
+                      <td className="px-2 py-1">
+                        {property.title}
+                      </td>
+                      <td className="px-2 py-1">
+                        {property.property_address || property.street_address}
+                      </td>
+                      <td className="px-2 py-1">
+                        {property.price}
+                      </td>
+                      <td className="px-2 py-1">
+                          <div className="flex items-center w-28">
+                              {property.phone_number}
+                          </div>
+                      </td>
+                      <td className="px-2 py-1">
+                        <SmartText text={property.description} />
+                      </td>
+                      <td className="px-2 py-1">
+                        <div className="flex flex-col items-center gap-2">
+                          {property.additionalResources?.map((resource, index) => (
+                            <a
+                              key={index}
+                              href={resource.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-blue-500 hover:underline"
+                            >
+                              <p className="flex flex-row gap-1">{resource.name} <CloudDownload className="h-6 w-6" /></p>
+                            </a>
+                          ))}
+                        </div>
+                      </td>
+                      <td className="px-2 py-1">
+                        <SmartText text={property.comments} />
+                      </td>
+                      <td className="px-2 py-1">
+                        <p className="">Tracking</p>
+                      </td>
+                    </tr>
                   ))
                 }
-              </div>
-            ) 
-          }
-          <div className="flex flex-col md:flex-row md:flex-wrap">
-            <div className="flex gap-2 w-full md:w-1/3 my-2 ">
-              <div className="flex flex-col gap-1 w-full">
-                <p className="font-semibold">Report Title:</p>
-                <div className=" border p-2 rounded-sm">
-                  <p>{report?.title}</p>
-                </div>
-              </div>
-            </div>
-            <div className="flex gap-2 w-full md:w-1/3 my-2">
-              <div className="flex flex-col gap-1 w-full">
-                <p className="font-semibold">Report Title:</p>
-                <div className="w-full border p-2 rounded-sm">
-                  <p>{report?.report_type}</p>
-                </div>
-              </div>
-            </div>
-            <div className="flex gap-2 w-full md:w-1/3 my-2">
-              <div className="flex flex-col gap-1 w-full">
-                <p className="font-semibold">Location</p>
-                <div className="relative w-full border rounded-sm">
-                  <p className="p-2">{report?.report_location || staffLocation || "None"}</p>
-                </div>
-              </div>
-            </div>
-            <div className="flex gap-2 w-full md:w-1/3 my-2">
-              <div className="flex flex-col gap-1 w-full">
-                <p className="font-semibold">Report By:</p>
-                <div className="w-full border p-2 rounded-sm">
-                  <p>{report?.staff_name}</p>
-                </div>
-              </div>
-            </div>
-            <div className="flex gap-2 w-full md:w-1/3 my-2">
-              <div className="flex flex-col gap-1 w-full">
-                <p className="font-semibold">Visit Date:</p>
-                <div className="w-full border p-2 rounded-sm">
-                  <p>{moment(report?.report_date ? report?.report_date : report?.created_at).format('MMMM DD YYYY')}</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="flex gap-2 w-full md:w-1/3 my-2">
-              <div className="flex flex-col gap-1 w-full">
-                <p className="font-semibold">Report Visit Type:</p>
-                <div className="relative w-full border p-2 rounded-sm">
-                  <p className="">
-                    {report?.report_view_type || visitType || "None"}
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div className="flex gap-2 w-full md:w-1/3 my-2">
-              <div className="flex flex-col gap-1 w-full">
-                <p className="font-semibold">{report?.start_time ? "Edit": "Set"} Start Time:</p>
-                <div className="w-full border flex gap-4 p-2 rounded-sm">
-                  <input 
-                    type="time" 
-                    id="startTimeInput"
-                    value={startTime} 
-                    disabled
-                    onChange={e => setStartTime(e.target.value)} 
-                  />
-                  {/* <p className="">{startTime ||report?.start_time}</p> */}
-                </div>
-              </div>
-            </div>
-            <div className="flex gap-2 w-full md:w-1/3 my-2">
-              <div className="flex flex-col gap-1 w-full">
-                <p className="font-semibold">{report?.end_time ? "Edit": "Set"} End Time:</p>
-                <div className="w-full border p-2 rounded-sm">
-                  <input 
-                    type="time" 
-                    id="startTimeInput"
-                    value={endTime} 
-                    disabled
-                    onChange={e => setEndTime(e.target.value)} 
-                  />
-                </div>
-              </div>
-            </div>
-            <div className="flex gap-2 w-full md:w-1/3 my-2">
-              <div className="flex flex-col gap-1 w-full">
-                <p className="font-semibold">Time Spent:</p>
-                <div className="w-full border p-2 rounded-sm">
-                  <p>
-                    {getTimeDifference(report?.start_time , report?.end_time)}
-                  </p>
-                </div>
-              </div>
-            </div>
+              </tbody>
+            </table>
           </div>
 
-          <div className='flex flex-col gap-2 my-4 md:my-8'>
-            <p className='flex flex-row gap-4'>
-              Report Description:</p> 
-            <p className="font-semibold">
-              {report?.report_activities.join(" ")}
-            </p>
-          </div>
-        </div>
-      
-        <div className="relative shadow-md sm:rounded-lg">
-          <table className="w-full table-row text-sm text-left text-gray-500 dark:text-gray-400">
-            <thead className="bg-[#E8FDDF] h-12 text-xs text-gray-700 uppercase dark:bg-gray-700 dark:text-gray-400">
-              <tr>
-                <th scope="col" className="px-2 py-1 w-24">
-                  No
-                </th>
-                <th scope="col" className="px-2 py-1">
-                  Image
-                </th>
-                <th scope="col" className="px-2 py-1">
-                    Name
-                </th>
-                <th scope="col" className="px-2 py-1">
-                    Address
-                </th>
-                <th scope="col" className="px-2 py-1">
-                    Price
-                </th>
-                <th scope="col" className="px-2 py-1">
-                  Phone Number
-                </th>
-                <th scope="col" className="px-2 py-1">
-                  Description
-                </th>
-                <th scope="col" className="px-2 py-1">
-                  Resources
-                </th>
-                <th scope="col" className="px-2 py-1">
-                  Comments
-                </th>
-                <th scope="col" className="px-2 py-1">
-                  Tracking
-                </th>
-              </tr>
-            </thead>
-            {
-              propertiesLoading && 
-              <tbody>
-                <tr>
-                  <td colSpan={6} className="text-center flex flex-row"><LoaderCircle className="animate-spin mr-2" />Loading Properties...</td>
-                  </tr>
-              </tbody>
-            }
-            {
-              !propertiesLoading && !userProperties.length && !properties?.length &&
-              <tbody>
-                <tr className="mt-2 md:mt-4">
-                    <td colSpan={7} className="text-center mt-2 md:mt-4">No Properties Found</td>
-                  </tr>
-              </tbody>
-            }
-            {/* user properties; These are properties Added to report */}
-            <tbody>
+          <div className="flex p-4 flex-col gap-4">
+            <form className='mt-7'>
               {
-                userProperties?.map((property, index) => (
-                  <tr key={property.id} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                    <td className="">
-                      {index+1}.
-                    </td>
-                    <td scope="row" className="flex gap-2 relative items-center py-2 text-gray-900 whitespace-nowrap dark:text-white">
-                      {
-                        property.isFavorite && <FaHeart className='h-6 w-6 absolute top-3 left-0 text-red-500 mr-2'  />
-                      }
-                      {property?.images?.[0] ? (
-                        <Image width={60} height={40} src={property.images[0]} className="rounded-md object-fill" alt="image" />
-                      ) : (
-                        <p>No Image</p>
-                      )}
-                      {/* <div className="max-w-60">
-                        <div className="text-base text-wrap ">Name: {property.title}</div>
-                        <div className="text-sm font-semibold text-wrap">Address: {property.street_address || property.address}</div>
-                        <div className="font-normal text-gray-500 flex flex-row flex-wrap">
-                          <p className="font-bold mr-2">Amenities:</p> {property?.amenities?.map((a, index) => <p className="ml-1" key={index}>{a +", "}</p>)}
-                        </div>
-                        <div className="font-normal text-gray-500 flex flex-row flex-wrap">
-                          <p className="font-bold mr-2">Bathrooms:</p>{property.bathrooms}  
-                        </div>
-                        <div className="font-normal text-gray-500 flex flex-row flex-wrap">
-                          <p className="font-bold mr-2">Website:</p>{property.website}  
-                        </div>
-                      </div>   */}
-                    </td>
-                    <td className="px-2 py-1">
-                      {property.title}
-                    </td>
-                    <td className="px-2 py-1">
-                      {property.property_address || property.street_address}
-                    </td>
-                    <td className="px-2 py-1">
-                      {property.price}
-                    </td>
-                    <td className="px-2 py-1">
-                        <div className="flex items-center w-28">
-                            {property.phone_number}
-                        </div>
-                    </td>
-                    <td className="px-2 py-1">
-                      <SmartText text={property.description} />
-                    </td>
-                    <td className="px-2 py-1">
-                      <div className="flex flex-col items-center gap-2">
-                        {property.additionalResources?.map((resource, index) => (
-                          <a
-                            key={index}
-                            href={resource.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-blue-500 hover:underline"
-                          >
-                            <p className="flex flex-row gap-1">{resource.name} <CloudDownload className="h-6 w-6" /></p>
-                          </a>
-                        ))}
-                      </div>
-                    </td>
-                    <td className="px-2 py-1">
-                      <SmartText text={property.comments} />
-                    </td>
-                    <td className="px-2 py-1">
-                      <p className="">Tracking</p>
-                    </td>
-                  </tr>
-                ))
+                summaryFinal && (
+                  <div className='flex flex-col  items-start'>
+                    <label className="font-semibold mt-2">Final Summary</label>
+                    <p className="text-sm mt-2 border border-gray p-2 mb-2 relative">
+                      {summaryFinal}
+                    </p>
+                  </div>
+                )
               }
-            </tbody>
-          </table>
+              {
+                followUpNotes && (
+                  <div className='flex flex-col  items-start'>
+                    <label className="font-semibold mt-2">Follow up Notes</label>
+                    <p className="text-sm mt-2 border border-gray p-2 mb-2 relative">
+                      {followUpNotes}
+                    </p>
+                  </div>
+                )
+              }
+            </form>
+          </div>
         </div>
         
         <div className='flex p-4 flex-col gap-4'>
-          <form className='mt-7'>
-            {
-              summaryFinal && (
-                <div className='flex flex-col  items-start'>
-                  <label className="font-semibold mt-2">Final Summary</label>
-                  <p className="text-sm mt-2 border border-gray p-2 mb-2 relative">
-                    {summaryFinal}
-                  </p>
-                </div>
-              )
-            }
-            {
-              followUpNotes && (
-                <div className='flex flex-col  items-start'>
-                  <label className="font-semibold mt-2">Follow up Notes</label>
-                  <p className="text-sm mt-2 border border-gray p-2 mb-2 relative">
-                    {followUpNotes}
-                  </p>
-                </div>
-              )
-            }
-          </form>
           <div>
             {
               !questionMode && (

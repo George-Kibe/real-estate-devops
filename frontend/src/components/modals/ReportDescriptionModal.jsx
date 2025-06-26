@@ -15,7 +15,7 @@ const ReportDescriptionModal = ({ isOpen, onClose, reportActivities, setReportAc
     > 
       <div 
         onClick={(e) => e.stopPropagation()}
-        className={`bg-white w-full md:w-1/2 dark:bg-black rounded-xl p-2 md:p-8 shadow transition-all 
+        className={`bg-white w-full md:w-1/2 dark:bg-black rounded-xl p-2 md:p-4 shadow transition-all 
           ${isOpen ? "scale-100 opacity-100": "sclae-125 opacity-0"}
           `}
       >
@@ -27,12 +27,12 @@ const ReportDescriptionModal = ({ isOpen, onClose, reportActivities, setReportAc
         </button>
 
         <div className="flex flex-col p-2">              
-          <div className="mb-4">
+          <div className="mb-4 h-full">
             <label className="block my-2 font-bold text-xl ">
               Select Activities
             </label>
             <select
-              className="shadow appearance-none border rounded w-full py-2 px-3 leading-tight focus:outline-none focus:shadow-outline" 
+              className="shadow appearance-none h-[60vh] border rounded w-full py-2 px-4 focus:outline-none focus:shadow-outline" 
               id="reportActivities"
               name="reportActivities"
               value={Array.isArray(reportActivities) ? reportActivities : []}
@@ -42,11 +42,11 @@ const ReportDescriptionModal = ({ isOpen, onClose, reportActivities, setReportAc
                 setReportActivities(options);
               }}
             >
-              <option value="">-Select Activity-</option>
+              <option value="my-2">-Select Activity-</option>
               {
                 staffActivities?.map((activity, index) => (
-                  <option className="mt-1" key={activity.id} value={activity.value}>
-                    {index + 1}. {activity.value}
+                  <option className="mt-1 my-4" key={activity.id} value={activity.value}>
+                    • {activity.value}
                   </option>
                 ))
               }

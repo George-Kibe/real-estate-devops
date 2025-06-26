@@ -33,7 +33,11 @@ const AddPropertyModal = ({
   const [comments, setComments] = useState('');
   const [resourceName, setResourceName] = useState('');
   const [resourceUrl, setResourceUrl] = useState(null);
-  const [fileUploading, setFileUploading] = useState(false);
+  const [housingType, setHousingType] = useState('');
+  const [contactMade, setContactMade] = useState('');
+  const [clientHousingPriority, setClientHousingPriority] = useState('');
+  const [addressClientConcerns, setAddressClientConcerns] = useState('');
+  const [clientQualification, setClientQualification] = useState("")
 
   const [agentSelected, setAgentSelected] = useState('');
   const [resourcesSelected, setResourcesSelected] = useState('');
@@ -41,6 +45,7 @@ const AddPropertyModal = ({
   const [additionalResources, setAdditionalResources] = useState([]);
   const [uploadLoading, setUploadLoading] = useState(false);
   const [copiedText, setCopiedText] = useState('');
+  const [fileUploading, setFileUploading] = useState(false);
   // console.log("Additional Resources: ", additionalResources)
 
   const uploadImage = async(e) => {
@@ -121,6 +126,11 @@ const AddPropertyModal = ({
       resourcesSelected: resourcesSelected,
       agentName: agentName.trim().replace(/\s+/g, ' '),
       additionalResources,
+      housingType,
+      contactMade,
+      clientHousingPriority,
+      addressClientConcerns,
+      clientQualification
     };
 
     if (editMode && !isNew) {
@@ -148,7 +158,8 @@ const AddPropertyModal = ({
     setDescription(''); setPrice(''); setComments('');
     setWebsite(''); setAgentName(''); setAdditionalResources([]);
     setAgentSelected('');  setResourcesSelected('');
-    setResourceName('');
+    setResourceName(''); setHousingType(); setContactMade('');
+    setAddressClientConcerns(''); setClientHousingPriority(''); setClientQualification('')
   }
   useEffect(() => {
     if (!currentProperty) return;
@@ -164,6 +175,12 @@ const AddPropertyModal = ({
     setAgentSelected(currentProperty.agentSelected || '');
     setResourcesSelected(currentProperty.resourcesSelected || '');
     setAgentName(currentProperty.agentName || '');
+    setHousingType(currentProperty.housingType || '');
+    setContactMade(currentProperty.contactMade || '');
+    setAddressClientConcerns(currentProperty.addressClientConcerns || '');
+    setClientHousingPriority(currentProperty.clientHousingPriority || '');
+    setClientQualification(currentProperty.clientQualification || '');
+    
     // check if currentproperty.additonal resources is a list
     if (Array.isArray(currentProperty.additionalResources)) {
       setAdditionalResources(currentProperty.additionalResources);
@@ -329,7 +346,119 @@ const AddPropertyModal = ({
         </div>
 
         <div className="flex flex-col items-start p-2">
-          <h2 className="text-xl font-bold mb-4">Did you talk with Staff/agent?</h2>
+          <h2 className="text-xl font-bold mb-4">Housing Type</h2>
+          <div className="">
+            <RadioGroup value={housingType} defaultValue="Market Rate" onValueChange={setHousingType}>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="Affordable LIHT" id="r1" />
+                <Label htmlFor="r1">Affordable LIHT</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="Subsidized Housing" id="r2" />
+                <Label htmlFor="r2">Subsidized Housing</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="Section 8/Voucher Friendly" id="r3" />
+                <Label htmlFor="r3">Section 8/Voucher Friendly</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="Market Rate" id="r4" />
+                <Label htmlFor="r4">Market Rate</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="Supportive Housing" id="r5" />
+                <Label htmlFor="r5">Supportive Housing</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="Senior/ Disability Housing" id="r6" />
+                <Label htmlFor="r6">Supportive Housing</Label>
+              </div>
+            </RadioGroup>
+          </div>
+        </div>
+
+         <div className="flex flex-col items-start p-2 my-4">
+          <h2 className="text-xl font-bold mb-4">Additional Inquiries</h2>
+          
+          <h2 className="text-xl font-bold mb-4">1. How was the Contact Made?</h2>
+          <div className="">
+            <RadioGroup value={contactMade} defaultValue="Phone" onValueChange={setContactMade}>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="Phone" id="r1" />
+                <Label htmlFor="r1">Phone</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="Email" id="r2" />
+                <Label htmlFor="r2">Email</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="Not Applicable" id="r3" />
+                <Label htmlFor="r3">Not Applicable</Label>
+              </div>
+            </RadioGroup>
+          </div>
+
+          <h2 className="text-xl font-bold mb-4 mt-4">2. Does this meet client's housing priorities?</h2>
+          <div className="">
+            <RadioGroup value={clientHousingPriority} defaultValue="Partially meets the client's priorities" 
+              onValueChange={setClientHousingPriority}>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="Fully meets the client's priorities" id="r1" />
+                <Label htmlFor="r1">Fully meets the client's priorities</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="Partially meets the client's priorities" id="r2" />
+                <Label htmlFor="r2">Partially meets the client's priorities</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="Doesn't meet the client's priorities" id="r3" />
+                <Label htmlFor="r3">Doesn't meet the client's priorities</Label>
+              </div>
+            </RadioGroup>
+          </div>
+
+          <h2 className="text-xl font-bold mb-4 mt-4">3. Does this address the client's concerns?</h2>
+          <div className="">
+            <RadioGroup value={addressClientConcerns} defaultValue="Partially addresses the client's concerns" 
+              onValueChange={setAddressClientConcerns}>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="Fully addresses the client's concerns" id="r1" />
+                <Label htmlFor="r1">Fully addresses the client's concerns</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="Partially addresses the client's concerns" id="r2" />
+                <Label htmlFor="r2">Partially addresses the client's concerns</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="Doesn't address the client's concerns" id="r3" />
+                <Label htmlFor="r3">Doesn't address the client's concerns</Label>
+              </div>
+            </RadioGroup>
+          </div>
+
+          <h2 className="text-xl font-bold mb-4 mt-4">4. Does this option align with the client's qualification?</h2>
+          <div className="">
+            <RadioGroup value={clientQualification} defaultValue="Partially aligns with the client's qualification" 
+              onValueChange={setClientQualification}>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="Fully aligns with the client's qualification" id="r1" />
+                <Label htmlFor="r1">Fully aligns with the client's qualification</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="Partially aligns with the client's qualification" id="r2" />
+                <Label htmlFor="r2">Partially aligns with the client's qualification</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="Doesn't align with the client's qualification" id="r3" />
+                <Label htmlFor="r3">Doesn't align with the client's qualification</Label>
+              </div>
+            </RadioGroup>
+          </div>
+
+        </div>
+
+        <div className="flex flex-col items-start p-2">
+          <h2 className="text-xl font-bold mb-4">Did you talk with someone?</h2>
           <div className="">
             <RadioGroup value={agentSelected} defaultValue="Yes" onValueChange={setAgentSelected}>
               <div className="flex items-center space-x-2">
