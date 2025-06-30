@@ -21,7 +21,7 @@ export default function StripePayment({searchParams: { amount=99.99}}) {
         <div className="text-[#0B2B5F]"> 
             <main className="max-w-6xl mx-auto p-10 text-center">
                 <div className="mb-10">
-                    <h1 className="text-4xl mb-2">{currentUser?.name}-Test</h1>
+                    <h1 className="text-4xl mb-2">{currentUser?.name}</h1>
                     <h2>Amount: {amount}</h2>
                 </div>
                 <Elements stripe={stripePromise}

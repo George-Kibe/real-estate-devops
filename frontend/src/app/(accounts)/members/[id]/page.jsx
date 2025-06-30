@@ -22,6 +22,7 @@ const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
 const SingleMemberPage = () => {
   const [member, setMember] = useState();
   const [loading, setLoading] = useState(false);
+  const [resendLoading, setResendLoading] = useState(false)
   const [modalOpen, setModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [excelLoading, setExcelLoading] = useState(false);
@@ -76,6 +77,25 @@ const SingleMemberPage = () => {
       console.log("Error: ", error)
       toast.error("Error fetching member details")
       setLoading(false);
+    }
+  }
+  const resendInvitation = async () => {
+    try {
+      setResendLoading(true);
+      const data = {
+        username: currentUser?.name,
+        orgName: currentUser?.orgName,
+        userId: id,
+      }
+      const response = await axios.post(`/api/resend-invitation-email`, data);
+      if (response.status === 200){
+        toast.success("Invitation Email sent successfully!")
+      }
+    } catch (error) {
+      console.log("Error: ", error)
+      toast.error("Error sending invitation email")
+    } finally{
+      setResendLoading(false);
     }
   }
 
@@ -324,10 +344,15 @@ const SingleMemberPage = () => {
             {
               !orgMode && (
                 <div className="mt-4 flex flex-col md:flex-row gap-4 mx-2">
+                  <Button disabled={resendLoading || removeLoading} onClick={resendInvitation}>
+                    {
+                      resendLoading? "Resending..." : "Resend Invitation"
+                    }
+                  </Button>
                   <Button onClick={editRole}>
                     Edit Role
                   </Button>
-                  <Button onClick={() => (setDeleteModalOpen(true))} className="">
+                  <Button disabled={removeLoading || resendLoading} onClick={() => (setDeleteModalOpen(true))} className="">
                     {
                       removeLoading? "Removing..." : "Remove from Organization"
                     }
