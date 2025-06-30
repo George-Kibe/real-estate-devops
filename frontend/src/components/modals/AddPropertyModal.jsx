@@ -33,6 +33,7 @@ const AddPropertyModal = ({
   const [comments, setComments] = useState('');
   const [resourceName, setResourceName] = useState('');
   const [resourceUrl, setResourceUrl] = useState(null);
+  const [resourceNotes, setResourceNotes] = useState('');
   const [housingType, setHousingType] = useState('');
   const [contactMade, setContactMade] = useState('');
   const [clientHousingPriority, setClientHousingPriority] = useState('');
@@ -46,6 +47,7 @@ const AddPropertyModal = ({
   const [uploadLoading, setUploadLoading] = useState(false);
   const [copiedText, setCopiedText] = useState('');
   const [fileUploading, setFileUploading] = useState(false);
+  
   // console.log("Additional Resources: ", additionalResources)
 
   const uploadImage = async(e) => {
@@ -84,9 +86,9 @@ const AddPropertyModal = ({
       return
     };
     if (additionalResources?.length > 0){
-      setAdditionalResources((prev) => [...prev, {name: resourceName, url: resourceUrl}]);
+      setAdditionalResources((prev) => [...prev, {date: new Date(), notes: resourceNotes, name: resourceName, url: resourceUrl, status: "Uploaded"}]);
     } else {
-      setAdditionalResources([{name: resourceName, url: resourceUrl}]);
+      setAdditionalResources([{date: new Date(), notes: resourceNotes, name: resourceName, url: resourceUrl, status: "Uploaded"}]);
     }
     setResourceName(""); setResourceUrl('');
   }
@@ -158,7 +160,7 @@ const AddPropertyModal = ({
     setDescription(''); setPrice(''); setComments('');
     setWebsite(''); setAgentName(''); setAdditionalResources([]);
     setAgentSelected('');  setResourcesSelected('');
-    setResourceName(''); setHousingType(); setContactMade('');
+    setResourceName(''); setResourceNotes(''); setHousingType(); setContactMade('');
     setAddressClientConcerns(''); setClientHousingPriority(''); setClientQualification('')
   }
   useEffect(() => {
@@ -524,6 +526,12 @@ const AddPropertyModal = ({
               <input type="text" placeholder='Resource Name'
                 value={resourceName}
                 onChange={ev => setResourceName(ev.target.value)}
+                className="border-2 border-gray-300 rounded-md p-1
+                mb-2 focus:border-blue-900 h-10"
+              />
+              <input type="text" placeholder='Resource Notes'
+                value={resourceNotes}
+                onChange={ev => setResourceNotes(ev.target.value)}
                 className="border-2 border-gray-300 rounded-md p-1
                 mb-2 focus:border-blue-900 h-10"
               />

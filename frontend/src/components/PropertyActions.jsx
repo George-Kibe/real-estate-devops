@@ -15,6 +15,7 @@ export function PropertyActions({
   handleAddProperty, 
   handleMarkFavorite,
   currentProperty,
+  hanldeAddResponse,
   isNew,
   isFavorite,
   viewProperty, 
@@ -61,82 +62,88 @@ export function PropertyActions({
           <Share2 className="h-5 w-5 mr-2" />
           Share With Client
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={handleFollowUp}>
-          <Calendar className="h-5 w-5 mr-2" />
-          Follow Up/Remind
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={handleFollowUp}>
-          <Calendar className="h-5 w-5 mr-2" />
-          Follow Up Again
-        </DropdownMenuItem>
-        <DropdownMenuItem>
-          <Square className="h-5 w-5 mr-2" />
-          Mark As Followed Up
-        </DropdownMenuItem>
-        <DropdownMenuItem>
-          <Square className="h-5 w-5 mr-2" />
-          Mark Submitted
-        </DropdownMenuItem>
-        <DropdownMenuItem>
-          <FileCheck2 className="h-5 w-5 mr-2" />
-          Signed Application
-        </DropdownMenuItem>
-        <DropdownMenuItem>
-          <TriangleAlert className="h-5 w-5 mr-2" />
-          No Response
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={markPropertyAsApproved}>
-          <BadgeCheck className={`${currentProperty.isApproved?.isApproved? "text-green-500" : "" } h-5 w-5 mr-2} `} />
-          Approved
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={markPropertyAsApplied}>
-          <CircleCheck className={`${currentProperty.isApplied?.isApplied? "text-green-500" : "" } h-5 w-5 mr-2} `} />
-          Applied
-        </DropdownMenuItem>
-        <DropdownMenuItem>
-          <Notebook className="h-5 w-5 mr-2" />
-          Add to Waiting List
-        </DropdownMenuItem>
-        <DropdownMenuItem>
-          <MailPlus className="h-5 w-5 mr-2" />
-          Apply For Benefits
-        </DropdownMenuItem>
-        <DropdownMenuItem>
-          <Mail className="h-5 w-5 mr-2" />
-          Left Voicemail/Email
-        </DropdownMenuItem>
-        <DropdownMenuItem>
-          <PhoneCall className="h-5 w-5 mr-2" />
-          Call Landlord
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={markPropertyAsArchived}>
-          <Download className="h-5 w-5 mr-2" />
-          Archive
-        </DropdownMenuItem>
-        <DropdownMenuItem>
-          <FlagIcon className="h-5 w-5 mr-2" />
-          Flag For Supervisor Review
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={markPropertyAsPending}>
-          <Clock9 className="h-5 w-5 mr-2" />
-          Pending Response
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={markPropertyNonFit}>
-          <ThumbsUp className={`${currentProperty.isFit?.isFit? "" : "text-red-500" } h-5 w-5 mr-2} `} />
-          Not Fit
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={markPropertyNonFit}>
-          <ThumbsUp className={`${currentProperty.isFit?.isFit? "text-green-500" : "" } h-5 w-5 mr-2} `} />
-          Fit
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={markPropertyAsDenied}>
-          <CircleX className={`${currentProperty.denied?.denied? "text-red-500" : "" } h-5 w-5 mr-2} `}/>
-          Denied
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={handleDeleteProperty}>
-          <Trash className="h-5 w-5 mr-2" />
-          Remove Property
-        </DropdownMenuItem>
+        {
+          !isNew && (
+          <>
+            <DropdownMenuItem onClick={handleFollowUp}>
+              <Calendar className="h-5 w-5 mr-2" />
+              Follow Up/Remind
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={handleFollowUp}>
+              <Calendar className="h-5 w-5 mr-2" />
+              Follow Up Again
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <Square className="h-5 w-5 mr-2" />
+              Mark As Followed Up
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <Square className="h-5 w-5 mr-2" />
+              Mark Submitted
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <FileCheck2 className="h-5 w-5 mr-2" />
+              Signed Application
+            </DropdownMenuItem>
+
+            <DropdownMenuItem onClick={hanldeAddResponse}>
+              <TriangleAlert className="h-5 w-5 mr-2" />
+              Add Response
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={markPropertyAsApproved}>
+              <BadgeCheck className={`${currentProperty.isApproved?.isApproved? "text-green-500" : "" } h-5 w-5 mr-2} `} />
+              Approved
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={markPropertyAsApplied}>
+              <CircleCheck className={`${currentProperty.isApplied?.isApplied? "text-green-500" : "" } h-5 w-5 mr-2} `} />
+              Applied
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <Notebook className="h-5 w-5 mr-2" />
+              Add to Waiting List
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <MailPlus className="h-5 w-5 mr-2" />
+              Apply For Benefits
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <Mail className="h-5 w-5 mr-2" />
+              Left Voicemail/Email
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <PhoneCall className="h-5 w-5 mr-2" />
+              Call Landlord
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={markPropertyAsArchived}>
+              <Download className="h-5 w-5 mr-2" />
+              Archive
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <FlagIcon className="h-5 w-5 mr-2" />
+              Flag For Supervisor Review
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={markPropertyAsPending}>
+              <Clock9 className="h-5 w-5 mr-2" />
+              Pending Response
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={markPropertyNonFit}>
+              <ThumbsUp className={`${currentProperty.isFit?.isFit? "" : "text-red-500" } h-5 w-5 mr-2} `} />
+              Not Fit
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={markPropertyNonFit}>
+              <ThumbsUp className={`${currentProperty.isFit?.isFit? "text-green-500" : "" } h-5 w-5 mr-2} `} />
+              Fit
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={markPropertyAsDenied}>
+              <CircleX className={`${currentProperty.denied?.denied? "text-red-500" : "" } h-5 w-5 mr-2} `}/>
+              Denied
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={handleDeleteProperty}>
+              <Trash className="h-5 w-5 mr-2" />
+              Remove Property
+            </DropdownMenuItem>
+        </>)
+        }
         <DropdownMenuItem onClick={handleMarkFavorite}>
           <Heart className="h-5 w-5 mr-2" />
             {

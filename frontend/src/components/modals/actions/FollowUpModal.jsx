@@ -5,11 +5,12 @@ import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { useMainProvider } from '@/providers/MainProvider';
 import axios from 'axios';
+import next from 'next';
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
-const FollowUpModal = ({ isOpen, onClose, currentProperty, currentClient,report }) => {
+const FollowUpModal = ({ isOpen, onClose, currentProperty, currentClient,report, userProperties, setUserProperties, currentIndex }) => {
     const [loading, setLoading] = useState(false);
     const [title, setTitle] = useState("");
     const [contact, setContact] = useState('');
@@ -21,12 +22,33 @@ const FollowUpModal = ({ isOpen, onClose, currentProperty, currentClient,report 
     const [followUpDate, setFollowUpDate] = useState('');
     const [followUpTime, setFollowUpTime] = useState('');
     const [notes, setNotes] = useState('');
+    const [plannedAction, setPlannedAction] = useState("");
+    const [alternativeOptions, setAlternativeOptions] = useState("");
+    const [clientStatus, setClientStatus] = useState("")
   
     const {currentUser, orgMode, tempUser} = useMainProvider();
     const username = currentUser?.orgName || currentUser?.username || " ";
     const currentUserName = orgMode? tempUser.firstName : currentUser.firstName;
     const staff_id = orgMode? tempUser._id : currentUser._id;
 
+    const handleNextSteps = () => {
+      const updatedProperty = { ...currentProperty, nextSteps: {
+          followUpDate: followUpDate,
+          followUpTime: followUpTime,
+          title: title,
+          priority: priority,
+          notes: notes,
+          contact: contact,
+          email: email,
+          plannedAction: plannedAction,
+          alternativeOptions: alternativeOptions,
+          clientStatus: clientStatus,
+        } };
+      const updatedProperties = userProperties.map((prop, index) =>
+        index === currentIndex ? updatedProperty : prop
+      );
+      setUserProperties(updatedProperties);
+    };
    
 
     const createFollowUp = async(e) => {
@@ -55,7 +77,7 @@ const FollowUpModal = ({ isOpen, onClose, currentProperty, currentClient,report 
         report: report.pkid,
       };
       console.log("Create Reminder Data: ", data)
-  
+      handleNextSteps();
       try {
         setLoading(true);
         const response = await axios.post(`${BACKEND_URL}/drf-api/reminders/`, data);
@@ -78,7 +100,6 @@ const FollowUpModal = ({ isOpen, onClose, currentProperty, currentClient,report 
       } catch (error) {
         console.log("Error: ", error.message)
       } finally {
-        fetchReminders();
         setLoading(false);
       }
     }
@@ -92,7 +113,7 @@ const FollowUpModal = ({ isOpen, onClose, currentProperty, currentClient,report 
     > 
       <div 
         onClick={(e) => e.stopPropagation()}
-        className={`bg-white max-w-xl md:w-1/2 dark:bg-black rounded-xl p-2 md:p-8 shadow transition-all 
+        className={` max-h-[90vh] bg-white max-w-xl md:w-1/2 dark:bg-black rounded-xl p-2 md:p-8 shadow transition-all overflow-auto 
           ${isOpen ? "scale-100 opacity-100": "sclae-125 opacity-0"}
           `}
       >
@@ -158,15 +179,41 @@ const FollowUpModal = ({ isOpen, onClose, currentProperty, currentClient,report 
           </div>
 
           <div className="">
-          <p className="">Reminder Notes</p>
-            <textarea type="text" placeholder='Notes' 
-              value={notes}
-              onChange={ev => setNotes(ev.target.value)}
-              className="border-2 border-gray-300 rounded-md p-1 w-full 
-              mb-2 focus:border-blue-900" 
-            /> 
-        </div>
-
+            <p className="">Reminder Notes</p>
+              <textarea type="text" placeholder='Notes' 
+                value={notes}
+                onChange={ev => setNotes(ev.target.value)}
+                className="border-2 border-gray-300 rounded-md p-1 w-full 
+                mb-2 focus:border-blue-900" 
+              /> 
+          </div>
+          <div className="">
+            <p className="">Planned Action</p>
+              <textarea type="text" placeholder='Planned Action' 
+                value={plannedAction}
+                onChange={ev => setPlannedAction(ev.target.value)}
+                className="border-2 border-gray-300 rounded-md p-1 w-full 
+                mb-2 focus:border-blue-900" 
+              /> 
+          </div>
+          <div className="">
+            <p className="">Alternative Options</p>
+              <textarea type="text" placeholder='Alternative Options' 
+                value={alternativeOptions}
+                onChange={ev => setAlternativeOptions(ev.target.value)}
+                className="border-2 border-gray-300 rounded-md p-1 w-full 
+                mb-2 focus:border-blue-900" 
+              /> 
+          </div>
+          <div className="">
+            <p className="">Client Status</p>
+              <textarea type="text" placeholder='Client Status' 
+                value={clientStatus}
+                onChange={ev => setClientStatus(ev.target.value)}
+                className="border-2 border-gray-300 rounded-md p-1 w-full 
+                mb-2 focus:border-blue-900" 
+              /> 
+          </div>
         </div>
 
         <div className="flex flex-col items-start p-2 my-4">

@@ -6,7 +6,7 @@ import { useMainProvider } from "@/providers/MainProvider";
 import axios from "axios";
 import { Tooltip as ReactTooltip } from "react-tooltip";
 import { LoaderCircle, Loader, Plus, Copy, PlusCircle, Trash2, CloudDownload, CalendarDays, ChevronDown, MapPin, Sparkles } from 'lucide-react';
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { saveAs } from 'file-saver';
@@ -40,11 +40,13 @@ import MarkAsAppliedModal from "@/components/modals/actions/MarkAsApplied";
 import MarkAsApproveddModal from "@/components/modals/actions/MarkAsApproved";
 import AiSummaryModal from "@/components/modals/AiSummaryModal";
 import AskMeAnythingModal from "@/components/modals/AskMeAnythingModal";
+import AddResponseModal from "@/components/modals/actions/AddResponse";
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
 
-export default function SingleReportPage({params}) {
-  const { location } =  React.use(params)
+export default function SingleReportPage({}) {
+  const searchParams = useSearchParams();
+  const location  = searchParams.get('location');
   const {currentClient, orgMode, currentUser, tempUser, setCurrentClient, setTempProperty} = useMainProvider();
   const [searchLocation, setSearchLocation] = useState(location);
   const [propertyModalOpen, setPropertyModalOpen] = useState(false);
@@ -64,6 +66,7 @@ export default function SingleReportPage({params}) {
   const [showPropertyModal, setShowPropertyModal] = useState(false);
   const [showAiModal, setShowAiModal] = useState(false);
   const [showAskAnythingModal, setShowAskAnythingModal] = useState(false);
+  const [showAddResponseModal, setShowAddResponseModal] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [isNew, setIsNew] = useState(false);
   const [report, setReport] = useState(null);
@@ -84,7 +87,7 @@ export default function SingleReportPage({params}) {
   const [localLoading, setLocalLoading] = useState(false);
   const [propertiesLoading, setPropertiesLoading] = useState(false);
   const [summaryAiLoading, setSummaryAiLoading] = useState(false);
-  const [summary, setSummary] = useState();
+  const [summary, setSummary] = useState("");
   const [followUpNotes, setFollowUpNotes] = useState('');
   const [summaryFinal, setSummaryFinal] = useState('');
   const [allComments, setAllComments] = useState('');
@@ -98,7 +101,7 @@ export default function SingleReportPage({params}) {
   const [reportActivities, setReportActivities] = useState([]);
 
   const [currentPropertiesIndex, setCurrentPropertiesIndex] = useState(5);
-  // console.log("User Properties: ", userProperties);
+  console.log("User Properties: ", userProperties);
   // console.log("Current Properties: ", currentProperties)
   // console.log("reportActivities: ", reportActivities)
   const {id} = useParams();
@@ -172,6 +175,11 @@ export default function SingleReportPage({params}) {
   }
   const markPropertyAsArchived = (property, index) => {
     setShowArchiveModal(true);
+    setCurrentProperty(property);
+    setCurrentIndex(index)
+  }
+  const hanldeAddResponse = (property, index) => {
+    setShowAddResponseModal(true);
     setCurrentProperty(property);
     setCurrentIndex(index)
   }
@@ -388,24 +396,7 @@ export default function SingleReportPage({params}) {
       toast.error("Please add additional resources before adding property or click no!")
       setErrors([...errors, "Please add additional resources before adding property or click no!"])
       return;
-    }
-    // ensure end time is not after current time
-    const now = moment();
-    const end = moment(endTime, "HH:mm:ss");
-    
-    // Create full datetime for today with the endTime
-    const todayEndTime = moment()
-      .set({
-        hour: end.get("hour"),
-        minute: end.get("minute"),
-        second: end.get("second"),
-      });
-    
-    if (todayEndTime.isAfter(now)) {
-      toast.error("Checkout time cannot be after current time!");
-      setErrors([...errors, "Checkout time cannot be after current time!"]);
-      return;
-    }
+    }    
     
     setLoading(true);
     const data = {
@@ -675,6 +666,15 @@ export default function SingleReportPage({params}) {
       <MarkAsArchivedModal
         isOpen={showArchiveModal} 
         onClose={() => setShowArchiveModal(false)}
+        currentProperty={currentProperty}
+        userProperties={userProperties}
+        setUserProperties={setUserProperties}
+        currentIndex={currentIndex}
+      />
+
+      <AddResponseModal
+        isOpen={showAddResponseModal} 
+        onClose={() => setShowAddResponseModal(false)}
         currentProperty={currentProperty}
         userProperties={userProperties}
         setUserProperties={setUserProperties}
@@ -1000,7 +1000,7 @@ export default function SingleReportPage({params}) {
                     {property?.images?.[0] ? (
                       <Image width={60} height={40} src={property.images[0]} className="rounded-md object-cover" alt="image" />
                     ) : (
-                      <p>No Image</p>
+                      <p></p>
                     )}
                     {/* <div className="max-w-60">
                       <div className="font-normal text-gray-500 flex flex-row flex-wrap">
@@ -1064,6 +1064,7 @@ export default function SingleReportPage({params}) {
                       markPropertyAsPending={() => markPropertyAsPending(property, index)}
                       markPropertyNonFit={() => markPropertyNonFit(property, index)}
                       markPropertyAsArchived={() => markPropertyAsArchived(property, index)}
+                      hanldeAddResponse={() => hanldeAddResponse(property, index)}
                       handleDeleteProperty={() => handleDeleteProperty(property, index)}
                       markPropertyAsDenied={() => markPropertyAsDenied(property, index)}
                       markPropertyAsApplied={() => markPropertyAsApplied(property, index)}
@@ -1095,7 +1096,7 @@ export default function SingleReportPage({params}) {
                         {property?.images?.[0] ? (
                           <Image width={100} height={100} src={property.images[0]} className="rounded-md object-fill" alt="image" />
                         ) : (
-                          <p>No Image</p>
+                          <p></p>
                         )}
                       </td>
                       <td className="">

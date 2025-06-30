@@ -43,7 +43,7 @@ const AddLogModal = ({ isOpen, onClose, setLoading, id, client_name, client_refe
       date: followUpDate,
       time: followUpTime,
       staff_name: currentUserName,
-      staff_id: currentUser._id, 
+      staff_id: orgMode? tempUser._id : currentUser._id, 
       notes: notes,
       contact: contact,
       email, 
@@ -73,7 +73,8 @@ const AddLogModal = ({ isOpen, onClose, setLoading, id, client_name, client_refe
       }
       onClose()
     } catch (error) {
-      console.log("Error: ", error.message)
+      console.log("Error: ", error.message);
+      toast.error(`Error: ${error.message}`)
     } finally {
       setLoading(false);
       setLogLoading(false);
@@ -208,7 +209,7 @@ const AddLogModal = ({ isOpen, onClose, setLoading, id, client_name, client_refe
         </div>
           <div className="">
           <p className="">Action Performed</p>
-            <input type="text" placeholder='Property Name And Address' 
+            <input type="text" placeholder='Action Performed' 
               value={actionPerformed}
               onChange={ev => setActionPerformed(ev.target.value)}
               className="border-2 border-gray-300 rounded-md p-1 w-full 
@@ -218,7 +219,7 @@ const AddLogModal = ({ isOpen, onClose, setLoading, id, client_name, client_refe
           
           <div className="flex flex-wrap gap-4">
             <div className="w-full md:w-1/3">
-              <p className="">Follow Up Date: </p>
+              <p className="">Report Log Date: </p>
               <input type="date" placeholder='Follow Up Date' 
                 value={followUpDate}
                 onChange={ev => setFollowUpDate(ev.target.value)}
@@ -227,7 +228,7 @@ const AddLogModal = ({ isOpen, onClose, setLoading, id, client_name, client_refe
               /> 
             </div>
             <div className="w-full md:w-1/3">
-              <p className="">Follow Up Time: </p>
+              <p className="">Report Log Time: </p>
               <input type="time" placeholder='Follow Up Time' 
                 value={followUpTime}
                 onChange={ev => setFollowUpTime(ev.target.value)}

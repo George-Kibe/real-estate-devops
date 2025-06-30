@@ -133,7 +133,8 @@ export default function TrackingPage() {
   }
   console.log(report?.properties)
   // get number of noResponses, applications, followups, approved, pending, deleted/archives
-  const noResponses = report?.properties?.filter(property => property.status?.pending === true).length;
+  const noResponses = report?.properties?.filter(property => !property.response).length;
+  const responses = report?.properties?.filter(property => property.response).length;
   const applications = report?.properties?.filter(property => property.status?.pending === true).length;
   const approvedProperties = report?.properties?.filter(property => property.isApproved?.isApproved === true).length;
   const pendingProperties = report?.properties?.filter(property => property.status?.pending === true).length;
@@ -174,7 +175,7 @@ export default function TrackingPage() {
         ) : log.status === "Archived" ? (
           <span className="text-blue-500">Archived</span>
         ): (
-          <span className="">No Response</span>
+          <span className="">{log.status}</span>
         )}</td>
       <td className="">
         {log.notes}
@@ -251,7 +252,7 @@ export default function TrackingPage() {
             </div>
             <div className="flex gap-4">
                 <p className="">Responses from Follow Ups: </p>
-                <p className="font-semibold">{reportLogs.length}</p>
+                <p className="font-semibold">{responses}</p>
             </div>
         </div>
         <div className="mt-4 md:mt-8 flex gap-4 flex-wrap">

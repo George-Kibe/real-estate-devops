@@ -1,17 +1,17 @@
 "use client"
 
-import { useMainProvider } from "@/providers/MainProvider";
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { ArrowDownUp, CheckCircle, ChevronRight, Circle, Loader, SlidersHorizontal, Trash2 } from "lucide-react";
+import { ArrowDownUp, CheckCircle, ChevronRight, Circle, CloudDownload, Loader, SlidersHorizontal, Trash2 } from "lucide-react";
 import Table from "@/components/Table";
 import ConfirmDeleteModal from "@/components/modals/ConfirmDeleteModal";
 import TableSearch from "@/components/TableSearch";
-import { documents } from "../../../../../data/documents";
+// import { documents } from "../../../../../data/documents";
 import moment from "moment";
 import { Button } from "@/components/ui/button";
+import next from 'next';
 
 const options = [
     "Daily email reminders for upcoming follow ups", 
@@ -97,11 +97,12 @@ const docColumns = [
   },
 ]
 
-export default function SingleLogPage({params}) {
+export default function SingleLogPage({}) {
   const {id} = useParams();
   const searchParams = useSearchParams();
   const report_id  = searchParams.get('report_id');
   const client_id  = searchParams.get('client_id');
+  const [nextSteps, setnextSteps] = useState();
   const [loading, setLoading] = useState(false);
   const [reportLogs, setReportLogs] = useState([]);
   const [reportLog, setReportLog] = useState({});
@@ -109,10 +110,8 @@ export default function SingleLogPage({params}) {
   const [clientData, setClientData] = useState({});
   const [initLoading, setInitLoading] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [allReports, setAllReports] = useState([]);
-  const [reports, setReports] = useState([]);
-  const [currentStaff, setCurrentStaff] = useState(null);
-  const {orgMode, currentUser, currentClient, setCurrentClient} = useMainProvider();
+  const [report, setReport] = useState([]);
+  const [documents, setDocuments] = useState([]);
   const router = useRouter();
   
   const getClientData = async() => {
@@ -123,7 +122,6 @@ export default function SingleLogPage({params}) {
       toast.error("Fetching client data failed!")
     }
   }
-
   const fetchLogData = async() => {
     try {
       const response = await axios.get(`${BACKEND_URL}/drf-api/report-logs/${id}`);
@@ -155,6 +153,27 @@ export default function SingleLogPage({params}) {
       console.log("Error: ", error)
     }
   }
+  const fetchReport = async() => {
+    try {
+      const response = await axios.get(`${BACKEND_URL}/drf-api/reports/${report_id}`);
+      const data = response.data
+      setReport(data);
+    } catch (error) {
+      console.log("Error: ", error)
+    }
+  }
+  const getDocuments = () => {
+    const property =  report.properties.filter( property => property.title === reportLog.property?.title)[0];
+    setnextSteps(property.nextSteps);
+    setDocuments(property.additionalResources)
+  }
+  useEffect(() => {
+    if (!report.id || !reportLog.id){
+      return;
+    }else{
+      getDocuments();
+    }
+  }, [report.id,reportLog.id ])
 
   useEffect(() => {
     if (!id){
@@ -169,6 +188,7 @@ export default function SingleLogPage({params}) {
       return;
     }else{
       fetchReportLogs();
+      fetchReport();
     }
   }, [report_id])
 
@@ -187,7 +207,7 @@ export default function SingleLogPage({params}) {
         : [...prev, option]
     );
   };
-
+  const propertyLogs = reportLogs.filter(log => log.property.title === reportLog.property?.title);
 
   const renderRow = (log) => (
     <tr
@@ -230,9 +250,18 @@ export default function SingleLogPage({params}) {
       key={document.id}
       className="border border-gray-200 text-sm h-10"
     >
-      <td className="md:table-cell font-semibold ">{document.date}</td>
-      <td className="md:table-cell text-xs">{document.document_name}</td>
-      <td className="md:table-cell">{document.document_type}</td>
+      <td className="md:table-cell font-semibold ">{moment(document.date).format("MMMM DD YYYY")}</td>
+      <td className="md:table-cell t">
+         <a
+            href={document.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-500 hover:underline"
+          >
+            <p className="flex flex-row gap-1">{document.name} <CloudDownload className="h-6 w-6" /></p>
+          </a>
+      </td>
+      <td className="md:table-cell">{document.url.split(".")[3].toUpperCase()}</td>
       <td className="hidden md:table-cell">{
         document.status === "Submitted" ? (
           <span className="text-green-500">Submitted</span>
@@ -253,26 +282,7 @@ export default function SingleLogPage({params}) {
       </td>
     </tr>
   );
-
-  useEffect(() => {
-    if (currentClient) {
-      const filteredReports = allReports.filter(log => log.client_id === currentClient.id);
-      setReports(filteredReports);
-    } else {
-      setReports(allReports);
-    }
-  }, [currentClient, allReports]);
-
-  useEffect(() => {
-    if (currentStaff) {
-      const filteredReports = allReports.filter(log => log.staff_id === currentStaff._id);
-      setReports(filteredReports);
-    } else {
-      setReports(allReports);
-    }
-  }, [currentStaff, allReports]);
-
-  
+  // console.log("Report Log: ", reportLog)  
   return (
     <div className='flex flex-col justify-betweenm b-5 text-[#0B2B5F]'>
       {
@@ -425,6 +435,13 @@ export default function SingleLogPage({params}) {
       </div>
 
      <Table columns={docColumns} renderRow={renderDocRow} data={documents} headerClassName={"h-12 bg-[#E5FBDE]"}/>
+     {
+      documents.length === 0 && (
+        <div className="flex flex-row gap-2 justify-center items-center">
+          <p className="">No Documents For this Property</p>
+        </div>
+      )
+     }
       
       <div className="flex justify-between items-center mt-8 md:mt-12">
         <h2 className="font-bold text-xl my-2 md:my-4">Follow Up History</h2>
@@ -441,25 +458,25 @@ export default function SingleLogPage({params}) {
         </div>
       </div>
      
-      <Table columns={columns} renderRow={renderRow} data={reportLogs} headerClassName={"h-12 bg-[#E5FBDE]"}/>
+      <Table columns={columns} renderRow={renderRow} data={propertyLogs} headerClassName={"h-12 bg-[#E5FBDE]"}/>
 
       <div className="bg-[#E5FBDE] m-2 md:mt-4 p-2 flex flex-col">
         <h2 className="font-bold text-xl my-2 md:my-4">Next Steps</h2>
         <div className="w-full flex gap-4 my-2">
             <p className="font-semibold">Follow Up Date:</p>
-            <p className="">March 28, 2025</p>
+            <p className="">{moment(nextSteps?.followUpDate).format("MMMM DD YYYY")}</p>
         </div>
         <div className="w-full flex gap-4 my-2">
             <p className="font-semibold">Planned Action:</p>
-            <p className="">Call Leasing office again to check for updates on availabitiy</p>
+            <p className="">{nextSteps?.plannedAction}</p>
         </div>
         <div className="w-full flex gap-4 my-2">
             <p className="font-semibold">Alternative Options:</p>
-            <p className="">Continue searching for other subsidized housing properties in the area</p>
+            <p className="">{nextSteps?.alternativeOptions}</p>
         </div>
         <div className="w-full flex gap-4 my-2">
             <p className="font-semibold">Client Status:</p>
-            <p className="">Waiting for response, considering alternative options</p>
+            <p className="">{nextSteps?.clientStatus}</p>
         </div>
       </div>
       

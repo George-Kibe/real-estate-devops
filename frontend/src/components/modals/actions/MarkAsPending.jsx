@@ -6,9 +6,7 @@ import React, { useState } from 'react';
 
 const MarkAsPendingModal = ({ isOpen, onClose, currentProperty, userProperties, setUserProperties, currentIndex }) => {
   const [reason, setReason] = useState('');
-  console.log("Current Property: ", currentProperty)
-
-
+  // console.log("Current Property: ", currentProperty)
   const markPropertyAsPending = () => {
     const updatedProperty = { ...currentProperty, status: { pending: currentProperty.status?.pending? false : true, reason: reason} };
     const updatedProperties = userProperties.map((prop, index) =>

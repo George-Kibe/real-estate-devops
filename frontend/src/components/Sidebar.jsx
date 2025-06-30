@@ -190,6 +190,7 @@ const MainSideBar = () => {
                         <MenuItem> Tasks & Reminders</MenuItem>
                         <MenuItem component={<Link href="/tracking" />}> Follow Up Tracker</MenuItem>
                         <MenuItem> Waiting Application Log</MenuItem>
+                        <MenuItem> Incident Report</MenuItem>
                         <MenuItem> Benefits Tracker</MenuItem>
                         <MenuItem> Folder</MenuItem>
                         {/* <MenuItem component={<Link href="/clients" />}>Invite Clients</MenuItem> */}
