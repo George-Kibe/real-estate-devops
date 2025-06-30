@@ -5,7 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useMainProvider } from "@/providers/MainProvider";
 import axios from "axios";
 import { Tooltip as ReactTooltip } from "react-tooltip";
-import { LoaderCircle, Loader, Plus, Search, Copy, PlusCircle, Trash2, CloudDownload, CalendarDays, ChevronDown, MapPin, Sparkles, Delete  } from 'lucide-react';
+import { LoaderCircle, Loader, Plus, Copy, PlusCircle, Trash2, CloudDownload, CalendarDays, ChevronDown, MapPin, Sparkles } from 'lucide-react';
 import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
@@ -20,9 +20,8 @@ import { getTimeDifference } from "@/lib/getTimeDifference";
 import ConfirmExportModal from "@/components/modals/ConfirmExportModal";
 import { PropertyActions } from "@/components/PropertyActions";
 import { FaHeart } from "react-icons/fa";
-import ReactMarkdown from 'react-markdown';
-import { GeneralSearchButton, SearchButton } from "@/components/TableSearch";
-import { callAIPrompt, generalAIPrompt, generateAISummary, shuffleArray } from "@/utils/functions";
+import { SearchButton } from "@/components/TableSearch";
+import { callAIPrompt, generateAISummary, shuffleArray } from "@/utils/functions";
 import Image from "next/image";
 import { handleFileUpload } from "@/utils/google-cloud";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -39,6 +38,8 @@ import FollowUpModal from "@/components/modals/actions/FollowUpModal";
 import SinglePropertyModal from "@/components/modals/actions/SinglePropertyModal";
 import MarkAsAppliedModal from "@/components/modals/actions/MarkAsApplied";
 import MarkAsApproveddModal from "@/components/modals/actions/MarkAsApproved";
+import AiSummaryModal from "@/components/modals/AiSummaryModal";
+import AskMeAnythingModal from "@/components/modals/AskMeAnythingModal";
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
 
@@ -61,6 +62,8 @@ export default function SingleReportPage({params}) {
   const [showAppliedModal, setShowAppliedModal] = useState(false);
   const [showApprovalModal, setShowApprovalModal] = useState(false);
   const [showPropertyModal, setShowPropertyModal] = useState(false);
+  const [showAiModal, setShowAiModal] = useState(false);
+  const [showAskAnythingModal, setShowAskAnythingModal] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [isNew, setIsNew] = useState(false);
   const [report, setReport] = useState(null);
@@ -84,9 +87,6 @@ export default function SingleReportPage({params}) {
   const [summary, setSummary] = useState();
   const [followUpNotes, setFollowUpNotes] = useState('');
   const [summaryFinal, setSummaryFinal] = useState('');
-  const [anyAnswer, setAnyAnswer] = useState('');
-  const [questionMode, setQuestionMode] = useState(false);
-  const [anyQLoading, setAnyQLoading] = useState(false);
   const [allComments, setAllComments] = useState('');
 
   const [resourceName, setResourceName] = useState('');
@@ -98,7 +98,7 @@ export default function SingleReportPage({params}) {
   const [reportActivities, setReportActivities] = useState([]);
 
   const [currentPropertiesIndex, setCurrentPropertiesIndex] = useState(5);
-  console.log("User Properties: ", userProperties);
+  // console.log("User Properties: ", userProperties);
   // console.log("Current Properties: ", currentProperties)
   // console.log("reportActivities: ", reportActivities)
   const {id} = useParams();
@@ -347,23 +347,7 @@ export default function SingleReportPage({params}) {
       setSearchLoading(false)
     }
   }
-  const handleAiSearch = async() => {
-    if (!searchText) {
-      toast.error("Please enter a search phrase!");
-      return;
-    }
-    setAnyQLoading(true)
-    try {
-      const result = await generalAIPrompt(searchText);
-      // console.log("Search Result: ", results)
-      setAnyAnswer(result)
-      setSearchText('')
-      setAnyQLoading(false)
-    } catch (error) {
-      toast.error("Some Error occured while searching. Try Again!")
-      setAnyQLoading(false)
-    }
-  }
+
 
   useEffect(() => {
     if (searchLocation){
@@ -454,11 +438,12 @@ export default function SingleReportPage({params}) {
     }
   }
   // console.log("Current Report: ", report)
-  const GenerateSummaryFromAI = async() => {
+  const GenerateSummaryWithAI = async() => {
     if (!summary && ! allComments) {
       toast.error("Please enter a summary!");
       return;
     }
+    setShowAiModal(true);
     try {
       setSummaryAiLoading(true);
       let text;
@@ -743,12 +728,26 @@ export default function SingleReportPage({params}) {
         currentIndex={currentIndex}
       />
 
+      <AiSummaryModal
+        isOpen={showAiModal} 
+        onClose={() => setShowAiModal(false)}
+        summary={summary}
+        generateAISummary={GenerateSummaryWithAI}
+        setSummaryAiLoading={setSummaryAiLoading}
+        summaryAiLoading={summaryAiLoading}
+        summaryFinal={summaryFinal}
+        setSummary={setSummary}
+      />
 
       <ReportDescriptionModal 
         isOpen={descriptionModal} 
         onClose={() => setDescriptionModal(false)}
         reportActivities={reportActivities}
         setReportActivities={setReportActivities}
+      />
+      <AskMeAnythingModal 
+        isOpen={showAskAnythingModal}
+        onClose={() => setShowAskAnythingModal(false)}
       />
       <SinglePropertyModal
         isOpen={showPropertyModal} 
@@ -1200,7 +1199,7 @@ export default function SingleReportPage({params}) {
               onChange={(e)=>setSummary(e.target.value)}
             />
             <div className="flex w-full justify-end">
-              <Button variant="outline" data-tooltip-id="summary-tooltop"  onClick={GenerateSummaryFromAI} 
+              <Button variant="outline" data-tooltip-id="summary-tooltop"  onClick={GenerateSummaryWithAI} 
                 type="button" size="sm" className="border-primary bg-black self-end text-white mt-2 flex gap-2"> 
                 {
                   summaryAiLoading ? <p className="flex items-center justify-center">
@@ -1300,57 +1299,13 @@ export default function SingleReportPage({params}) {
           </div>
         )}
 
-          <div>
-            {
-              !questionMode && (
-                <div className='flex justify-between relative'>
-                  <Button variant="outline" onClick={() => setQuestionMode(true)} 
-                  type="button" size="sm" className="border-primary text-primary flex gap-2"> 
-                   <p className="flex items-center gap-2"><Plus className='h-4 w-4' /> Any Questions?</p>
-                  </Button>
-                </div>
-              )
-            }
-            {
-              questionMode && (
-                <div className="flex w-[80%] items-center mt-4 mx-8  my-2 flex-col md:flex-row">
-                  <GeneralSearchButton 
-                    onClick={handleAiSearch} 
-                    value={searchText} 
-                    setSearchText={setSearchText} 
-                  />
-                  {
-                    anyQLoading ?  (
-                      <p className="flex items-center justify-center">
-                        <Loader className="animate-spin ml-auto" /> Loading....
-                      </p>
-                    ):
-                    (
-                      <button onClick={handleAiSearch} className="flex items-center ml-auto gap-2">
-                        <Search className='h-4 w-4'  /> Search
-                      </button>
-                    )
-                  }
-                    <button onClick={() => setQuestionMode(false)}
-                      className='top-2 right-2 p-1 px-2 rounded-lg text-red-700 bg-white'
-                    >
-                      <p className="font-bold text-2xl p-4">X</p>
-                    </button>
-                </div>
-              )
-            }
-            {
-              anyAnswer && (
-                <div className='flex flex-col  items-start'>
-                  <label className="mt-2 font-bold">Answer</label>
-                  <ReactMarkdown>
-                    {anyAnswer}
-                  </ReactMarkdown>
-                </div>
-              )
-            }
-
+          <div className='flex justify-between relative'>
+            <Button variant="outline" onClick={() => setShowAskAnythingModal(true)} 
+            type="button" size="sm" className="border-primary text-primary flex gap-2"> 
+              <p className="flex items-center gap-2"><Plus className='h-4 w-4' /> Any Questions?</p>
+            </Button>
           </div>
+
           <div className='flex gap-2'>
             <Button 
               className='bg-[#45A71E] text-white rounded-full md:p-6 md:px-16'
