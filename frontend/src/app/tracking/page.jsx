@@ -28,12 +28,12 @@ const columns = [
   {
     header: "Contact Number",
     accessor: "contactNumber",
-    className: "md:table-cell",
+    className: "hidden md:table-cell",
   },
   {
     header: "AgentResponsible",
     accessor: "agentResponsible",
-    className: "md:table-cell",
+    className: "hidden md:table-cell",
   },
   {
     header: "Address",
@@ -142,10 +142,10 @@ export default function TrackingPage({searchParams}) {
     >
       <td className="md:table-cell font-semibold ">{report.client_name}</td>
       <td className="md:table-cell text-xs">{report.client_email}</td>
-      <td className="md:table-cell">{report.client_phone_number}</td>
+      <td className="hidden md:table-cell">{report.client_phone_number}</td>
       <td className="hidden md:table-cell">{report.staff_name}</td>
-      <td className="md:table-cell">{report.client_address}</td>
-      <td className="md:table-cell">{moment(report.updated_at).format("MM/DD/YYYY")}</td>
+      <td className="hidden md:table-cell">{report.client_address}</td>
+      <td className="hidden md:table-cell">{moment(report.updated_at).format("MM/DD/YYYY")}</td>
       <td className="hidden md:table-cell">{
         report.status === "completed" ? (
           <span className="text-green-500">Completed</span>
@@ -155,18 +155,18 @@ export default function TrackingPage({searchParams}) {
           <span className="text-red-500">Cancelled</span>
         )}</td>
       <td className="flex">
-        <div className="flex">
-          <button className="flex gap-2 cursor-pointer border-1 border-green-500 p-2 rounded-full" 
+        <div className="flex items-center justify-center">
+          <button className="ml-2 mt-1 flex gap-2 cursor-pointer border-1 border-green-500 p-1 rounded-full" 
           onClick={() =>viewTrackReport(report.pkid)}>
           <Pencil className="h-4 w-4 text-green-600 font-bold"/>
           Tracking
         </button>
-        <button className="flex gap-2 cursor-pointer border-1 p-2 border-red-500 rounded-full ml-2 px-4" onClick={() =>{}}>
+        {/* <button className="flex gap-2 cursor-pointer border-1 p-2 border-red-500 rounded-full ml-2 px-4" onClick={() =>{}}>
           <Trash2 className="h-4 w-4 text-red-600 font-bold"/>
-        </button>
-        <button className="">
+        </button> */}
+        {/* <button className="">
           <Ellipsis className="h-6 w-6 ml-2 font-bold" />
-        </button>
+        </button> */}
         </div>
       </td>
     </tr>

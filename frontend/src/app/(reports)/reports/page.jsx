@@ -39,7 +39,7 @@ const columns = [
   {
     header: "Staff Name",
     accessor: "staffName",
-    className: "md:table-cell",
+    className: "hidden md:table-cell",
   },
   {
     header: "Report Type",
@@ -299,8 +299,8 @@ export default function ReportsPage({searchParams}) {
       <td className="md:table-cell text-xs">{report.title.substring(0, 50)}</td>
       <td className="md:table-cell">{report.client_name}</td>
       <td className="hidden md:table-cell">{report.staff_name}</td>
-      <td className="md:table-cell">{report.report_type}</td>
-      <td className="md:table-cell">{report.report_location}</td>
+      <td className="hidden md:table-cell">{report.report_type}</td>
+      <td className="hidden md:table-cell">{report.report_location}</td>
       <td className="hidden md:table-cell">{report.properties.length}</td>
       <td className="hidden md:table-cell">
         <p className="">

@@ -199,6 +199,8 @@ const SingleMemberPage = () => {
       const response = await axios.post(`/api/remove-staff`, body);
       // console.log("Response: ", response)
       if (response.status === 200){
+        // delete account of the removed user
+        await axios.delete(`/api/auth/users/${member?._id}`);
         toast.success("Member removed from organization successfully!")
         // remove this member form currentUser members
         const newMembers = currentUser?.members?.filter(m => m?._id !== member?._id)

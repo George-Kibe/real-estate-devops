@@ -5,6 +5,9 @@ import { toast } from 'react-toastify';
 import { Button } from '../ui/button';
 import axios from 'axios';
 import { useMainProvider } from '@/providers/MainProvider';
+import GooglePlacesAutocomplete from 'react-google-places-autocomplete';
+
+const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
 
 const AddReminderModal = ({ isOpen, onClose, setLoading, id, client_name, client_referral_id, fetchReminders, properties }) => {
@@ -181,13 +184,24 @@ const AddReminderModal = ({ isOpen, onClose, setLoading, id, client_name, client
        </div>
 
        <div className="">
-        <p className="">Property Name and Address</p>
-          <input type="text" placeholder='Property Name And Address' 
+        <p className="">Property Address</p>
+          {/* <input type="text" placeholder='Property Name And Address' 
             value={propertyNameAndAddress}
             onChange={ev => setPropertyNameAndAddress(ev.target.value)}
             className="border-2 border-gray-300 rounded-md p-1 w-full 
             mb-2 focus:border-blue-900" 
-          /> 
+          />  */}
+          <GooglePlacesAutocomplete
+            apiKey={GOOGLE_MAPS_API_KEY}
+            selectProps={{
+              propertyNameAndAddress,
+              placeholder: "Search Location...",
+              isClearable: true,  
+              isDisabled: false,  
+              isLoading: false,  
+              onChange: (val) => setPropertyNameAndAddress(val ? val.label : null)
+            }}
+          />
        </div>
         
         <div className="flex flex-wrap gap-4">

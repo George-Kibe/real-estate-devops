@@ -185,7 +185,7 @@ const MainSideBar = () => {
                    {
                     (orgMode || sellerMode) &&  
                       <>
-                        <MenuItem component={<Link href="/clients" />}>Daily Logs</MenuItem>
+                        <MenuItem component={<Link href="/tracking" />}>Daily Logs</MenuItem>
                         <MenuItem component={<Link href="/tracking" />}> Housing History</MenuItem>
                         <MenuItem> Tasks & Reminders</MenuItem>
                         <MenuItem component={<Link href="/tracking" />}> Follow Up Tracker</MenuItem>

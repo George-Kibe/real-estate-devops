@@ -4,7 +4,7 @@ import { useMainProvider } from "@/providers/MainProvider";
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { ArrowDownUp, BadgeCheck, CalendarDays, ChevronRight, Clock, Eye, FolderUp, Loader, Plus, SlidersHorizontal, Trash, TriangleAlert } from "lucide-react";
+import { ArrowDownUp, BadgeCheck, Ban, CalendarDays, ChevronRight, Clock, Eye, FolderUp, Loader, Plus, SearchX, SlidersHorizontal, Trash, TriangleAlert } from "lucide-react";
 import Table from "@/components/Table";
 import ConfirmDeleteModal from "@/components/modals/ConfirmDeleteModal";
 import TableSearch from "@/components/TableSearch";
@@ -13,6 +13,7 @@ import CallReminder from "@/components/follow-ups/CallReminder";
 import { Button } from "@/components/ui/button";
 import AddLogModal from "@/components/modals/AddLogModal";
 import AddReminderModal from "@/components/modals/AddReminderModal";
+import { toast } from "react-toastify";
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
 //const BACKEND_URL = "http://localhost:8000"
@@ -77,8 +78,6 @@ export default function TrackingPage() {
   const [reminders, setReminders] = useState([]);
   const [reportLogs, setReportLogs] = useState([]);
   const [report, setReport] = useState();
-  const [currentStaff, setCurrentStaff] = useState(null);
-  const {orgMode, currentUser, currentClient, setCurrentClient} = useMainProvider();
   const router = useRouter();
 
 
@@ -132,7 +131,26 @@ export default function TrackingPage() {
       console.log("Error: ", error)
     }
   }
-  
+  console.log(report?.properties)
+  // get number of noResponses, applications, followups, approved, pending, deleted/archives
+  const noResponses = report?.properties?.filter(property => property.status?.pending === true).length;
+  const applications = report?.properties?.filter(property => property.status?.pending === true).length;
+  const approvedProperties = report?.properties?.filter(property => property.isApproved?.isApproved === true).length;
+  const pendingProperties = report?.properties?.filter(property => property.status?.pending === true).length;
+  const deletedproperties = report?.properties?.filter(property => property.archived?.archived === true).length;
+  const nonFitProperties = report?.properties?.filter(property => property.isFit?.isFit === false).length;
+  const deniedProperties = report?.properties?.filter(property => property.denied?.denied === true).length;
+
+  // to get followups. 
+  // Get all reminders, then group them by property name to get the number of unique property names
+  const uniqueTitles = new Set();
+  reminders.forEach(reminder => {
+    const title = reminder.property?.title;
+    if (title) {
+      uniqueTitles.add(title);
+    }
+  });
+
   const renderRow = (log) => (
     <tr
       key={log.id}
@@ -168,6 +186,9 @@ export default function TrackingPage() {
       </td>
     </tr>
   );
+  const handleSort = () => {
+    toast.success("Property Logs sorted.")
+  }
 
   return (
     <div className='flex flex-col justify-betweenm b-5 text-[#0B2B5F]'>
@@ -226,67 +247,85 @@ export default function TrackingPage() {
         <div className="flex flex-col md:flex-row md:gap-4">
             <div className="flex gap-4">
                 <p className="">Number of Follow Ups:</p>
-                <p className="font-semibold">{reminders.length +  reportLogs.length}</p>
+                <p className="font-semibold">{reminders.length}</p>
             </div>
             <div className="flex gap-4">
                 <p className="">Responses from Follow Ups: </p>
-                <p className="font-semibold">12</p>
+                <p className="font-semibold">{reportLogs.length}</p>
             </div>
         </div>
         <div className="mt-4 md:mt-8 flex gap-4 flex-wrap">
             <div className="flex bg-gray-200 gap-6 items-center p-2 px-4 rounded-md">
-                <div className="flex flex-col gap-4">
-                    <h2 className="">No Response</h2>
-                    <p className="">12</p>
-                </div>
-                <div className="">
-                    <TriangleAlert className="text-blue-500" />
-                </div>
+              <div className="flex flex-col gap-4">
+                  <h2 className="">No Response</h2>
+                  <p className="">{noResponses}</p>
+              </div>
+              <div className="">
+                  <TriangleAlert className="text-blue-500" />
+              </div>
             </div>
             <div className="flex bg-gray-200 gap-6 items-center p-2 px-4 rounded-md">
-                <div className="flex flex-col gap-4">
-                    <h2 className="">Applications</h2>
-                    <p className="">27</p>
-                </div>
-                <div className="">
-                    <FolderUp className="text-blue-500" />
-                </div>
+              <div className="flex flex-col gap-4">
+                <h2 className="">Applications</h2>
+                <p className="">{applications}</p>
+              </div>
+              <div className="">
+                <FolderUp className="text-blue-500" />
+              </div>
             </div>
             <div className="flex bg-gray-200 gap-6 items-center p-2 px-4 rounded-md">
-                <div className="flex flex-col gap-4">
-                    <h2 className="">Follow Up Again</h2>
-                    <p className="">7</p>
-                </div>
-                <div className="">
-                    <CalendarDays className="text-blue-500" />
-                </div>
+              <div className="flex flex-col gap-4">
+                <h2 className="">Follow Ups</h2>
+                <p className="">{uniqueTitles.size}</p>
+              </div>
+              <div className="">
+                <CalendarDays className="text-blue-500" />
+              </div>
             </div>
             <div className="flex bg-gray-200 gap-6 items-center p-2 px-4 rounded-md">
-                <div className="flex flex-col gap-4">
-                    <h2 className="">Approved</h2>
-                    <p className="">12</p>
-                </div>
-                <div className="">
-                    <BadgeCheck className="text-green-500" />
-                </div>
+              <div className="flex flex-col gap-4">
+                <h2 className="">Approved</h2>
+                <p className="">{approvedProperties}</p>
+              </div>
+              <div className="">
+                <BadgeCheck className="text-green-500" />
+              </div>
             </div>
             <div className="flex bg-gray-200 gap-6 items-center p-2 px-4 rounded-md">
-                <div className="flex flex-col gap-4">
-                    <h2 className="">Pending</h2>
-                    <p className="">1</p>
-                </div>
-                <div className="">
-                    <Clock className="text-blue-500" />
-                </div>
+              <div className="flex flex-col gap-4">
+                <h2 className="">Pending</h2>
+                <p className="">{pendingProperties}</p>
+              </div>
+              <div className="">
+                <Clock className="text-blue-500" />
+              </div>
             </div>
             <div className="flex bg-gray-200 gap-6 items-center p-2 px-4 rounded-md">
-                <div className="flex flex-col gap-4">
-                    <h2 className="">Deleted</h2>
-                    <p className="">9</p>
-                </div>
-                <div className="">
-                    <Trash className="text-red-500" />
-                </div>
+              <div className="flex flex-col gap-4">
+                <h2 className="">Deleted</h2>
+                <p className="">{deletedproperties}</p>
+              </div>
+              <div className="">
+                <Trash className="text-red-500" />
+              </div>
+            </div>
+            <div className="flex bg-gray-200 gap-6 items-center p-2 px-4 rounded-md">
+              <div className="flex flex-col gap-4">
+                <h2 className="">Non Fit</h2>
+                <p className="">{nonFitProperties}</p>
+              </div>
+              <div className="">
+                <SearchX className="text-red-500" />
+              </div>
+            </div>
+            <div className="flex bg-gray-200 gap-6 items-center p-2 px-4 rounded-md">
+              <div className="flex flex-col gap-4">
+                <h2 className="">Denied</h2>
+                <p className="">{deniedProperties}</p>
+              </div>
+              <div className="">
+                <Ban className="text-red-500" />
+              </div>
             </div>
         </div>
       </div>
@@ -298,19 +337,19 @@ export default function TrackingPage() {
               Add Reminder
             </Button>
           </div>
-          <p className="mb-2">You have {reminders.length} Call remainders today</p>
+          <p className="mb-2">You have {reminders.length} Call remainders</p>
           <div className="flex flex-col md:flex-row md:flex-wrap w-full">
-              {
-                  reminders.map((reminder, index) => (
-                      <CallReminder 
-                        index={index} 
-                        reminder={reminder} 
-                        showDeleteModal={showDeleteModal}
-                        setReminderToDelete={setReminderToDelete}
-                        setShowDeleteModal={setShowDeleteModal} 
-                      />
-                  ))
-              }
+            {
+              reminders.map((reminder, index) => (
+                  <CallReminder 
+                    index={index} 
+                    reminder={reminder} 
+                    showDeleteModal={showDeleteModal}
+                    setReminderToDelete={setReminderToDelete}
+                    setShowDeleteModal={setShowDeleteModal} 
+                  />
+              ))
+            }
           </div>
         </div>
      
@@ -322,14 +361,14 @@ export default function TrackingPage() {
             Add New Log
           </Button>
           <TableSearch />
-          <button className="flex gap-1">
+          <button onClick={handleSort} className="flex gap-1">
           <ArrowDownUp />
           <p>Sort</p>
           </button> 
-          <button className="flex gap-1">
-          <SlidersHorizontal />
-          <p>Filter</p>
-          </button> 
+          {/* <button className="flex gap-1">
+            <SlidersHorizontal />
+            <p>Filter</p>
+          </button>  */}
         </div>
       </div>
       <Table columns={columns} renderRow={renderRow} data={reportLogs} headerClassName={"h-12 bg-[#E5FBDE]"}/>
